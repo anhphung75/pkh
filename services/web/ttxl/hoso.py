@@ -13,11 +13,11 @@ def get_mahoso_tiep(mahoso=None):
     else:
         vitri = mahoso.index('hs')
         nam = mahoso[:vitri]
-    dktim = '{}hs%'.format(namhoso)
+    dktim = '{}hs%'.format(nam)
     r = db.query(bdl.mahoso).filter(bdl.mahoso.like(dktim)).order_by(
         desc(bdl.mahoso)).first()
     if r == None:
-        _mahoso = namhoso + 'hs000000'
+        _mahoso = nam + 'hs000000'
     else:
         last_mahoso = r.mahoso
         vitri = last_mahoso.index('hs')
