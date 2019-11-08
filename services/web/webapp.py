@@ -25,8 +25,8 @@ class ApiBase(web.RequestHandler):
 
 class MainHandler(WebBase):
     def get(self):
-        self.render("home.html", webapp_title='PKH')
-        #self.write("Hello World")
+        #self.render("home.html", webapp_title='PKH')
+        self.write("Hello World")
 
 
 class Hoso_Handler(WebBase):
@@ -63,11 +63,11 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
-            (r"/api1108/hoso/([^/]+)?", ApiFitMn1),
-            (r"/api1108/hoso/([^/]+)/([^/]+)?", ApiMMO_Fit),
+            (r"/api1108/hoso/([^/]+)?", Api1108_Hoso_All),
+            (r"/api1108/hoso/([^/]+)/([^/]+)?", Api1108_Hoso_Crud),
         ]
         settings = dict(
-            webapp_title=u"MMO 2020",
+            webapp_title=u"PKH",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             #ui_modules={"Entry": EntryModule},
