@@ -3,23 +3,21 @@ version: '3.7'
 services:
   web:
     build: ./services/web
-    command: python manage.py run -h 0.0.0.0
+    command: python blog.py
     volumes:
       - ./services/web/:/usr/src/app/
     ports:
-      - 5000:5000
+      - 8888:8888
     env_file:
-      - ./.env.dev
+      - ./.env.web
     depends_on:
       - db
   db:
     image: postgres:12.0-alpine
     volumes:
       - postgres_data:/var/lib/postgresql/data/
-    environment:
-      - POSTGRES_USER=hello_flask
-      - POSTGRES_PASSWORD=hello_flask
-      - POSTGRES_DB=hello_flask_dev
+    env_file:
+      - ./.env.db
 
 volumes:
   postgres_data:
