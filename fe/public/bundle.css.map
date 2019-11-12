@@ -1,0 +1,14 @@
+{
+  "version": 3,
+  "file": "bundle.css",
+  "sources": [
+    "../src/App.svelte",
+    "../src/Khach.svelte"
+  ],
+  "sourcesContent": [
+    "<script>\n  import { writable } from \"svelte/store\";\n  import Khach from \"./Khach.svelte\";\n  \n  let dskh = [\n    {\n      mahoso: \"2019hs001\",\n      khachhang: \"Nguyen Van A\",\n      diachi: \"123 Tran Van Thoi, Q12\"\n    },\n    {\n      mahoso: \"2019hs002\",\n      khachhang: \"Nguyen Van A\",\n      diachi: \"123 Tran Van Thoi, Q12\"\n    },\n    {\n      mahoso: \"2019hs003\",\n      khachhang: \"Nguyen Van A\",\n      diachi: \"123 Tran Van Thoi, Q12\"\n    },\n    {\n      mahoso: \"2019hs004\",\n      khachhang: \"Nguyen Van A\",\n      diachi: \"123 Tran Van Thoi, Q12\"\n    }\n  ];\n  let a2 = writable({});\n  $a2.dskh = dskh\n</script>\n\n<style>\n  .vbox {\n    display: flex;\n    flex-flow: column nowrap;\n  }\n  .hbox {\n    display: flex;\n    flex-flow: row nowrap;\n  }\n  h1 {\n    color: purple;\n  }\n</style>\n\n<h1>Hello {name}!</h1>\n<div class=\"hbox\">\n  <div>Nam</div>\n  <div>Search</div>\n</div>\n\n<ul>\n  {#each $a2.dskh as khach}\n    <Khach {...khach} />\n  {/each}\n</ul>\n",
+    "<script>\n    export let mahoso;\n    export let khachhang;\n    export let diachi;\n    \n    function suaHoso() {\n        \n    };\n    function showHoso() {\n        \n    };\n</script>\n\n<style>\n  .hbox {\n    display: flex;\n    flex-flow: row nowrap;\n    align-items: flex-start \n  }\n  .hbox span{\n      flex: 1 1 auto;\n  }\n  .mahoso{flex: 1 1 auto;}\n  .khachhang{flex: 3 3 auto;}\n  .diachi{flex: 7 7 auto;}\n</style>\n\n<li class=\"hbox\">\n    <span class=\"hover-cursor\">\n        <i class=\"fa fa-lg\"></i>\n    </span>\n    <span class='mahoso'>{mahoso}</span>\n    <span class='khachhang'>{khachhang}</span>\n    <span class='diachi'>{diachi}</span>\n    \n    \n    <span class=\"hover-cursor text-danger pull-right\" on:click={suaHoso}>\n        <i class=\"fa fa-trash-o fa-lg\"></i>\n    </span>\n</li>"
+  ],
+  "names": [],
+  "mappings": "AAmCE,KAAK,cAAC,CAAC,AACL,OAAO,CAAE,IAAI,CACb,SAAS,CAAE,GAAG,CAAC,MAAM,AACvB,CAAC,AACD,EAAE,cAAC,CAAC,AACF,KAAK,CAAE,MAAM,AACf,CAAC;AC3BD,KAAK,aAAC,CAAC,AACL,OAAO,CAAE,IAAI,CACb,SAAS,CAAE,GAAG,CAAC,MAAM,CACrB,WAAW,CAAE,UAAU;EACzB,CAAC,AACD,kBAAK,CAAC,iBAAI,CAAC,AACP,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,AAClB,CAAC,AACD,oBAAO,CAAC,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,AAAC,CAAC,AACxB,uBAAU,CAAC,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,AAAC,CAAC,AAC3B,oBAAO,CAAC,IAAI,CAAE,CAAC,CAAC,CAAC,CAAC,IAAI,AAAC,CAAC"
+}
