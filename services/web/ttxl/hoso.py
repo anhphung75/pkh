@@ -100,7 +100,7 @@ def xem(mahoso=None):
 def xemds(nam=None):
     bdl = Hoso
     if nam==None:
-        data = db.query(bdl).filter(bdl.mahoso != None).all()
+        data = db.query(bdl).filter(bdl.sohoso != None).all()
     else:
         sdk='{}%'.format(nam)
         data = db.query(bdl).filter(bdl.mahoso.like(sdk)).all()

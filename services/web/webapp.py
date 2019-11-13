@@ -37,10 +37,12 @@ class Hoso_Handler(WebBase):
 
 class Api1108_Hoso_All(ApiBase):
     def get(self, nam):
-        res = {}
+        res = {'info': '', 'hoso': []}
         try:
-            nam = int(nam)
-            res = hoso.xemds(nam)
+            data = hoso.xemds(nam)
+            print('hoso={}'.format(data))
+            res['hoso'] = data
+            res['info'] = 'OK'
         except:
             res['info'] = 'Không có dữ liệu'
         self.send_response(res)
@@ -48,11 +50,10 @@ class Api1108_Hoso_All(ApiBase):
 
 class Api1108_Hoso_Crud(ApiBase):
     def get(self, nam, mahoso):
-        res = {}
+        res = {'info': '', 'hoso': []}
         try:
-            nam = int(nam)
-            res = apidata(self.db, ngaytinh)
-            res['info'] = ''
+            res['hoso'] = hoso.xem(mahoso)
+            res['info'] = 'OK'
         except:
             res['info'] = 'Không có dữ liệu'
         self.send_response(res)
