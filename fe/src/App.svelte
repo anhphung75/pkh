@@ -6,7 +6,8 @@
 
   const API_URL = "http://localhost:8888/api1108/";
   let namhoso = 2019;
-  $kho.progress = 100;
+  $kho.progress = 20;
+  $kho.showProgress = true;
   $kho.dskh = [];
 
   function xemHoso() {
@@ -57,7 +58,8 @@
       diachikhachhang: "125 Tran Van Thoi, Q12"
     }
   ];
-  $kho.dskh = dskh;
+  // tim kiem
+  // $kho.dskh = dskh;
   let stim = "";
   let dstim = [];
   let curdstim = 0;
@@ -66,10 +68,10 @@
       dstim = [...dstim, stim];
       stim = "";
     }
-  };
-  function xoaDstim(){
+  }
+  function xoaDstim() {
     dstim.splice(curdstim);
-  };
+  }
   function locNhom(nhom) {
     let l = nhom.length || 0;
     let data = $kho.dskh;
@@ -82,84 +84,158 @@
     return data;
   }
   $: dsLocNhom = locNhom(dstim);
-  $: dsLoc = filterListObj(dsLocNhom, stim);
+  $: dsLoc = filterListObj($kho.dskh, stim);
+  let curHoso = 0;
+  // phan trang
 </script>
 
 <style>
+  * {
+    text-align: left;
+  }
   .hbox {
     display: flex;
     flex-flow: row nowrap;
-    justify-content: space-between;
   }
+  section {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    height: 95vh;
+    width: 100vw;
+    overflow: hidden;
+  }
+  header {
+    width: 95vw;
+  }
+  main {
+    flex: 1 1 auto;
+    width: 95vw;
+    overflow-y: scroll;
+  }
+  footer {
+    width: 95vw;
+  }
+
   h1 {
     color: purple;
+    text-align: center;
   }
-  .image {
-    height: 100%;
-    width: 100%;
-  }
+
   .search {
-    height: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+    width: 100%;
+    overflow: hidden;
   }
+  .search .cot1{
+    flex: 1 1 auto;
+  }
+
   .cloud-search {
     display: flex;
     flex-flow: row wrap;
     justify-content: space-between;
     align-items: flex-start;
+    width: 100%;
+    border: 2px solid blue;
   }
   .cloud-search-item {
     flex: 1 1 auto;
+    padding: 12px ;
+  }
+  .cloud-search-item:hover {
+    background-color: yellowgreen;
+  }
+  .input {
+    border: 2px solid blue;
+  }
+  input{width: 23em;}
+  .image {
+    height: 100%;
+    width: 100%;
+  }
+  .hbox-2ben {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+  }
+  .btn {
+    background-color: DodgerBlue; /* Blue background */
+    border: none; /* Remove borders */
+    color: white; /* White text */
+    padding: 12px 16px; /* Some padding */
+    cursor: pointer; /* Mouse pointer on hover */
+  }
+
+  /* Darker background on mouse-over */
+  .btn:hover {
+    background-color: RoyalBlue;
   }
 </style>
 
-<h1>
-  DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN Năm
-  <div class="nam">
-    <span>{namhoso}</span>
-    <span class="image nutcapnhat" on:click={xemHoso}>
-      <i class="fa fa-refresh" />
-    </span>
-  </div>
-</h1>
+<section>
+  <header>
+    <h1>
+      DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN NĂM
+      <span>{namhoso}</span>
+      <span class="image nutcapnhat" on:click={xemHoso}>
+        <i class="fa fa-refresh" />
+      </span>
+    </h1>
 
-{#if $kho.progress < 100}
-  <div class="hbox">
-    <progress value={$kho.progress} max="100" />
-  </div>
-{/if}
-
-<div class="hbox search">
-  {#if dstim.length > 0}
-    <span class="hbox">
-      <div class="cloud-search">
-        {#each dstim as item, id}
-          <div class="cloud-search-item" on:click={() => {curdstim=id; xoaDstim();}}>
-            {item}-{id}-{curdstim}
-            <i class="fa fa-remove" />
-          </div>
-        {/each}
+    {#if $kho.showProgress}
+      <div class="hbox">
+        <span>Tiến trình {$kho.progress} % ...</span>
+        <progress value={$kho.progress} max="100" />
       </div>
-      <div on:click={() => (dstim = [])}>
-        <i class="fa fa-trash fa-lg" />
+    {/if}
+  </header>
+  <main>
+    <div class="search">
+      <div class="hbox cot1">
+        <div class="cloud-search">
+          {#each dstim as item, id}
+            <div
+              class="cloud-search-item"
+              on:click={() => {
+                curdstim = id;
+                xoaDstim();
+              }}>
+              {item}
+            </div>
+          {/each}
+        </div>
       </div>
-    </span>
-  {/if}
-  <span class="hbox">
-    <div>
-      <input
-        type="search"
-        bind:value={stim}
-        on:keydown={addDsTim}
-        placeholder="Search ..." />
+      <div class="hbox cot2">
+        <div class="input">
+          <input
+            type="search"
+            bind:value={stim}
+            on:keydown={addDsTim}
+            placeholder="Tìm ... (không phân biệt chữ hoa hay thường)" />
+          <button class="btn" on:click={() => (dstim = [])}>
+            <i class="fa fa-trash fa-lg" />
+            Xóa
+          </button>
+        </div>
+      </div>
     </div>
-    <div>
-      <i class="fa fa-search fa-lg" />
-    </div>
-  </span>
-</div>
 
-<ul>
-  {#each dsLoc as khach}
-    <Khach {...khach} />
-  {/each}
-</ul>
+    <ul>
+      {#each dsLoc as khach, id}
+        <Khach {...khach} on:click={() => (curHoso = id)} />
+      {/each}
+    </ul>
+  </main>
+  <footer>
+    <br />
+    <div class="hbox-2ben">
+      <div>Tổng số hồ sơ: {$kho.dskh.length}</div>
+      <div>
+        bạn đang xem hồ sơ thứ {curHoso} trong {dsLoc.length} hồ sơ chọn lọc
+      </div>
+    </div>
+  </footer>
+</section>
