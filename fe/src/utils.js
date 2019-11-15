@@ -6,7 +6,8 @@ function sarrayObj2objObj(sdata) {
 
 function filterListObj(listobj, stim) {
   let s = stim.toLowerCase() || '';
-  return listobj.filter(v => JSON.stringify(v).toLowerCase().indexOf(s) > -1);
+  let data = listobj.filter(v => JSON.stringify(v).toLowerCase().indexOf(s) > -1);
+  return JSON.parse(JSON.stringify(data));
 };
 
 function getDateDelta(strdate1, strdate2) {

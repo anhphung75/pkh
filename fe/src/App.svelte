@@ -65,13 +65,28 @@
   let dstim = [];
   let curdstim = 0;
   function addDsTim(event) {
-    if (event.key === "Enter") {
-      dstim = [...dstim, stim];
+    if (event.key === "Enter" && stim.length > 0) {
+      stim = stim.trim();
+      let dai = dstim.length;
+      let data = [stim,];
+      for (let i = 0; i < dai; i++) {
+        if (dstim[i] !== stim) {
+          data.push(dstim[i]);
+        }
+      }
+      dstim = data;
       stim = "";
     }
   }
   function xoaDstim() {
-    dstim.splice(curdstim);
+    let dai = dstim.length;
+    let data = [];
+    for (let i = 0; i < dai; i++) {
+      if (i !== curdstim) {
+        data.push(dstim[i]);
+      }
+    }
+    dstim = data;
   }
   function locNhom(nhom) {
     let l = nhom.length || 0;
@@ -142,11 +157,9 @@
                 <button
                   type="button"
                   class="btn btn-outline-info"
-                  on:click={() => {
-                    curdstim = id;
-                    xoaDstim();
-                  }}>
-                  {item}
+                  on:mouseover={() => (curdstim = id)}
+                  on:click|preventDefault={xoaDstim}>
+                  {item} - id={id} - cur={curdstim}
                 </button>
               {/each}
             </div>
@@ -185,7 +198,7 @@
         <tbody>
           {#each dsLoc as khach, id}
             <tr>
-              <th scope="row">{id+1}</th>
+              <th scope="row">{id + 1}</th>
               <Khach {...khach} />
             </tr>
           {/each}
@@ -196,9 +209,9 @@
   <footer>
     <br />
     <div class="row">
-      <div class='col-auto'>Tổng số hồ sơ: {$kho.dskh.length}</div>
-      <div class='col'></div>
-      <div class='col-auto'>
+      <div class="col-auto">Tổng số hồ sơ: {$kho.dskh.length}</div>
+      <div class="col" />
+      <div class="col-auto">
         bạn đang xem hồ sơ thứ {curHoso} trong {dsLoc.length} hồ sơ chọn lọc
       </div>
     </div>
