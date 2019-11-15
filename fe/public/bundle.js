@@ -92,6 +92,19 @@ var app = (function () {
     function set_style(node, key, value, important) {
         node.style.setProperty(key, value, important ? 'important' : '');
     }
+    function select_option(select, value) {
+        for (let i = 0; i < select.options.length; i += 1) {
+            const option = select.options[i];
+            if (option.__value === value) {
+                option.selected = true;
+                return;
+            }
+        }
+    }
+    function select_value(select) {
+        const selected_option = select.querySelector(':checked') || select.options[0];
+        return selected_option && selected_option.__value;
+    }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
@@ -379,10 +392,6 @@ var app = (function () {
             dispatch_dev("SvelteDOMRemoveAttribute", { node, attribute });
         else
             dispatch_dev("SvelteDOMSetAttribute", { node, attribute, value });
-    }
-    function prop_dev(node, property, value) {
-        node[property] = value;
-        dispatch_dev("SvelteDOMSetProperty", { node, property, value });
     }
     function set_data_dev(text, data) {
         data = '' + data;
@@ -1845,124 +1854,110 @@ var app = (function () {
     const file = "src\\Khach.svelte";
 
     function create_fragment(ctx) {
-    	let li;
-    	let span0;
-    	let i0;
+    	let td0;
     	let t0;
-    	let span1;
     	let t1;
+    	let td1;
     	let t2;
-    	let span2;
     	let t3;
+    	let td2;
     	let t4;
-    	let span3;
     	let t5;
+    	let td3;
     	let t6;
-    	let span4;
     	let t7;
+    	let td4;
     	let t8;
-    	let span5;
     	let t9;
+    	let td5;
     	let t10;
-    	let span6;
     	let t11;
-    	let t12;
-    	let span7;
-    	let i1;
+    	let td6;
+    	let i;
     	let dispose;
 
     	const block = {
     		c: function create() {
-    			li = element("li");
-    			span0 = element("span");
-    			i0 = element("i");
-    			t0 = space();
-    			span1 = element("span");
-    			t1 = text(ctx.mahoso);
-    			t2 = space();
-    			span2 = element("span");
-    			t3 = text(ctx.sohoso);
-    			t4 = space();
-    			span3 = element("span");
-    			t5 = text(ctx.khachhang);
-    			t6 = space();
-    			span4 = element("span");
-    			t7 = text(ctx.diachikhachhang);
-    			t8 = space();
-    			span5 = element("span");
-    			t9 = text(ctx.lienhe);
-    			t10 = space();
-    			span6 = element("span");
-    			t11 = text(ctx.ghichu);
-    			t12 = space();
-    			span7 = element("span");
-    			i1 = element("i");
-    			attr_dev(i0, "class", "fa fa-plus-square-o");
-    			set_style(i0, "color", "blue");
-    			add_location(i0, file, 36, 4, 576);
-    			attr_dev(span0, "class", "hover-cursor svelte-15gifcs");
-    			add_location(span0, file, 35, 2, 543);
-    			attr_dev(span1, "class", "mahoso svelte-15gifcs");
-    			add_location(span1, file, 38, 2, 643);
-    			attr_dev(span2, "class", "sohoso svelte-15gifcs");
-    			add_location(span2, file, 39, 2, 683);
-    			attr_dev(span3, "class", "khachhang svelte-15gifcs");
-    			add_location(span3, file, 40, 2, 723);
-    			attr_dev(span4, "class", "diachi svelte-15gifcs");
-    			add_location(span4, file, 41, 2, 769);
-    			attr_dev(span5, "class", "lienhe svelte-15gifcs");
-    			add_location(span5, file, 42, 2, 818);
-    			attr_dev(span6, "class", "mota svelte-15gifcs");
-    			add_location(span6, file, 43, 2, 858);
-    			attr_dev(i1, "class", "fa fa-edit");
-    			add_location(i1, file, 45, 4, 971);
-    			attr_dev(span7, "class", "hover-cursor text-danger pull-right svelte-15gifcs");
-    			add_location(span7, file, 44, 2, 896);
-    			attr_dev(li, "class", "hbox svelte-15gifcs");
-    			add_location(li, file, 34, 0, 522);
-    			dispose = listen_dev(span7, "click", suaHoso, false, false, false);
+    			td0 = element("td");
+    			t0 = text(ctx.mahoso);
+    			t1 = space();
+    			td1 = element("td");
+    			t2 = text(ctx.sohoso);
+    			t3 = space();
+    			td2 = element("td");
+    			t4 = text(ctx.khachhang);
+    			t5 = space();
+    			td3 = element("td");
+    			t6 = text(ctx.diachikhachhang);
+    			t7 = space();
+    			td4 = element("td");
+    			t8 = text(ctx.lienhe);
+    			t9 = space();
+    			td5 = element("td");
+    			t10 = text(ctx.ghichu);
+    			t11 = space();
+    			td6 = element("td");
+    			i = element("i");
+    			add_location(td0, file, 18, 0, 268);
+    			add_location(td1, file, 19, 0, 287);
+    			add_location(td2, file, 20, 0, 306);
+    			add_location(td3, file, 21, 0, 328);
+    			add_location(td4, file, 22, 0, 356);
+    			add_location(td5, file, 23, 0, 375);
+    			attr_dev(i, "class", "fa fa-edit");
+    			add_location(i, file, 25, 2, 421);
+    			add_location(td6, file, 24, 0, 394);
+    			dispose = listen_dev(td6, "click", suaHoso, false, false, false);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, li, anchor);
-    			append_dev(li, span0);
-    			append_dev(span0, i0);
-    			append_dev(li, t0);
-    			append_dev(li, span1);
-    			append_dev(span1, t1);
-    			append_dev(li, t2);
-    			append_dev(li, span2);
-    			append_dev(span2, t3);
-    			append_dev(li, t4);
-    			append_dev(li, span3);
-    			append_dev(span3, t5);
-    			append_dev(li, t6);
-    			append_dev(li, span4);
-    			append_dev(span4, t7);
-    			append_dev(li, t8);
-    			append_dev(li, span5);
-    			append_dev(span5, t9);
-    			append_dev(li, t10);
-    			append_dev(li, span6);
-    			append_dev(span6, t11);
-    			append_dev(li, t12);
-    			append_dev(li, span7);
-    			append_dev(span7, i1);
+    			insert_dev(target, td0, anchor);
+    			append_dev(td0, t0);
+    			insert_dev(target, t1, anchor);
+    			insert_dev(target, td1, anchor);
+    			append_dev(td1, t2);
+    			insert_dev(target, t3, anchor);
+    			insert_dev(target, td2, anchor);
+    			append_dev(td2, t4);
+    			insert_dev(target, t5, anchor);
+    			insert_dev(target, td3, anchor);
+    			append_dev(td3, t6);
+    			insert_dev(target, t7, anchor);
+    			insert_dev(target, td4, anchor);
+    			append_dev(td4, t8);
+    			insert_dev(target, t9, anchor);
+    			insert_dev(target, td5, anchor);
+    			append_dev(td5, t10);
+    			insert_dev(target, t11, anchor);
+    			insert_dev(target, td6, anchor);
+    			append_dev(td6, i);
     		},
     		p: function update(changed, ctx) {
-    			if (changed.mahoso) set_data_dev(t1, ctx.mahoso);
-    			if (changed.sohoso) set_data_dev(t3, ctx.sohoso);
-    			if (changed.khachhang) set_data_dev(t5, ctx.khachhang);
-    			if (changed.diachikhachhang) set_data_dev(t7, ctx.diachikhachhang);
-    			if (changed.lienhe) set_data_dev(t9, ctx.lienhe);
-    			if (changed.ghichu) set_data_dev(t11, ctx.ghichu);
+    			if (changed.mahoso) set_data_dev(t0, ctx.mahoso);
+    			if (changed.sohoso) set_data_dev(t2, ctx.sohoso);
+    			if (changed.khachhang) set_data_dev(t4, ctx.khachhang);
+    			if (changed.diachikhachhang) set_data_dev(t6, ctx.diachikhachhang);
+    			if (changed.lienhe) set_data_dev(t8, ctx.lienhe);
+    			if (changed.ghichu) set_data_dev(t10, ctx.ghichu);
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(li);
+    			if (detaching) detach_dev(td0);
+    			if (detaching) detach_dev(t1);
+    			if (detaching) detach_dev(td1);
+    			if (detaching) detach_dev(t3);
+    			if (detaching) detach_dev(td2);
+    			if (detaching) detach_dev(t5);
+    			if (detaching) detach_dev(td3);
+    			if (detaching) detach_dev(t7);
+    			if (detaching) detach_dev(td4);
+    			if (detaching) detach_dev(t9);
+    			if (detaching) detach_dev(td5);
+    			if (detaching) detach_dev(t11);
+    			if (detaching) detach_dev(td6);
     			dispose();
     		}
     	};
@@ -2157,54 +2152,102 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (188:4) {#if $kho.showProgress}
-    function create_if_block(ctx) {
-    	let div;
-    	let span;
-    	let t0;
-    	let t1_value = ctx.$kho.progress + "";
-    	let t1;
-    	let t2;
-    	let t3;
-    	let progress;
-    	let progress_value_value;
+    function get_each_context_2(ctx, list, i) {
+    	const child_ctx = Object.create(ctx);
+    	child_ctx.namlamviec = list[i];
+    	return child_ctx;
+    }
+
+    // (105:10) {#each dsnam as namlamviec}
+    function create_each_block_2(ctx) {
+    	let option;
+    	let t_value = ctx.namlamviec + "";
+    	let t;
+    	let option_value_value;
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			span = element("span");
-    			t0 = text("Tiến trình ");
-    			t1 = text(t1_value);
-    			t2 = text(" % ...");
-    			t3 = space();
-    			progress = element("progress");
-    			attr_dev(span, "class", "svelte-u8xih");
-    			add_location(span, file$1, 189, 8, 4246);
-    			progress.value = progress_value_value = ctx.$kho.progress;
-    			attr_dev(progress, "max", "100");
-    			attr_dev(progress, "class", "svelte-u8xih");
-    			add_location(progress, file$1, 190, 8, 4301);
-    			attr_dev(div, "class", "hbox svelte-u8xih");
-    			add_location(div, file$1, 188, 6, 4218);
+    			option = element("option");
+    			t = text(t_value);
+    			option.__value = option_value_value = ctx.namlamviec;
+    			option.value = option.__value;
+    			add_location(option, file$1, 105, 12, 2807);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, span);
-    			append_dev(span, t0);
-    			append_dev(span, t1);
-    			append_dev(span, t2);
-    			append_dev(div, t3);
-    			append_dev(div, progress);
+    			insert_dev(target, option, anchor);
+    			append_dev(option, t);
+    		},
+    		p: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(option);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_each_block_2.name,
+    		type: "each",
+    		source: "(105:10) {#each dsnam as namlamviec}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (116:4) {#if $kho.showProgress}
+    function create_if_block(ctx) {
+    	let div3;
+    	let div2;
+    	let div1;
+    	let div0;
+    	let t0_value = ctx.$kho.progress + "";
+    	let t0;
+    	let t1;
+    	let div0_aria_valuenow_value;
+
+    	const block = {
+    		c: function create() {
+    			div3 = element("div");
+    			div2 = element("div");
+    			div1 = element("div");
+    			div0 = element("div");
+    			t0 = text(t0_value);
+    			t1 = text("%");
+    			attr_dev(div0, "class", "progress-bar progress-bar-striped progress-bar-animated\r\n              bg-info");
+    			attr_dev(div0, "role", "progressbar");
+    			attr_dev(div0, "aria-valuenow", div0_aria_valuenow_value = ctx.$kho.progress);
+    			attr_dev(div0, "aria-valuemin", "0");
+    			attr_dev(div0, "aria-valuemax", "100");
+    			set_style(div0, "width", ctx.$kho.progress + "%");
+    			add_location(div0, file$1, 119, 12, 3233);
+    			attr_dev(div1, "class", "progress");
+    			add_location(div1, file$1, 118, 10, 3197);
+    			attr_dev(div2, "class", "col");
+    			add_location(div2, file$1, 117, 8, 3168);
+    			attr_dev(div3, "class", "row");
+    			add_location(div3, file$1, 116, 6, 3141);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div3, anchor);
+    			append_dev(div3, div2);
+    			append_dev(div2, div1);
+    			append_dev(div1, div0);
+    			append_dev(div0, t0);
+    			append_dev(div0, t1);
     		},
     		p: function update(changed, ctx) {
-    			if (changed.$kho && t1_value !== (t1_value = ctx.$kho.progress + "")) set_data_dev(t1, t1_value);
+    			if (changed.$kho && t0_value !== (t0_value = ctx.$kho.progress + "")) set_data_dev(t0, t0_value);
 
-    			if (changed.$kho && progress_value_value !== (progress_value_value = ctx.$kho.progress)) {
-    				prop_dev(progress, "value", progress_value_value);
+    			if (changed.$kho && div0_aria_valuenow_value !== (div0_aria_valuenow_value = ctx.$kho.progress)) {
+    				attr_dev(div0, "aria-valuenow", div0_aria_valuenow_value);
+    			}
+
+    			if (changed.$kho) {
+    				set_style(div0, "width", ctx.$kho.progress + "%");
     			}
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(div3);
     		}
     	};
 
@@ -2212,16 +2255,16 @@ var app = (function () {
     		block,
     		id: create_if_block.name,
     		type: "if",
-    		source: "(188:4) {#if $kho.showProgress}",
+    		source: "(116:4) {#if $kho.showProgress}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (199:10) {#each dstim as item, id}
+    // (141:14) {#each dstim as item, id}
     function create_each_block_1(ctx) {
-    	let div;
+    	let button;
     	let t0_value = ctx.item + "";
     	let t0;
     	let t1;
@@ -2233,24 +2276,25 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			div = element("div");
+    			button = element("button");
     			t0 = text(t0_value);
     			t1 = space();
-    			attr_dev(div, "class", "cloud-search-item svelte-u8xih");
-    			add_location(div, file$1, 199, 12, 4537);
-    			dispose = listen_dev(div, "click", click_handler, false, false, false);
+    			attr_dev(button, "type", "button");
+    			attr_dev(button, "class", "btn btn-outline-info");
+    			add_location(button, file$1, 141, 16, 3896);
+    			dispose = listen_dev(button, "click", click_handler, false, false, false);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, t0);
-    			append_dev(div, t1);
+    			insert_dev(target, button, anchor);
+    			append_dev(button, t0);
+    			append_dev(button, t1);
     		},
     		p: function update(changed, new_ctx) {
     			ctx = new_ctx;
     			if (changed.dstim && t0_value !== (t0_value = ctx.item + "")) set_data_dev(t0, t0_value);
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			if (detaching) detach_dev(button);
     			dispose();
     		}
     	};
@@ -2259,22 +2303,23 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(199:10) {#each dstim as item, id}",
+    		source: "(141:14) {#each dstim as item, id}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (227:6) {#each dsLoc as khach, id}
+    // (186:10) {#each dsLoc as khach, id}
     function create_each_block(ctx) {
+    	let tr;
+    	let th;
+    	let t0_value = ctx.id + 1 + "";
+    	let t0;
+    	let t1;
+    	let t2;
     	let current;
     	const khach_spread_levels = [ctx.khach];
-
-    	function click_handler_2(...args) {
-    		return ctx.click_handler_2(ctx, ...args);
-    	}
-
     	let khach_props = {};
 
     	for (let i = 0; i < khach_spread_levels.length; i += 1) {
@@ -2282,19 +2327,29 @@ var app = (function () {
     	}
 
     	const khach = new Khach({ props: khach_props, $$inline: true });
-    	khach.$on("click", click_handler_2);
 
     	const block = {
     		c: function create() {
+    			tr = element("tr");
+    			th = element("th");
+    			t0 = text(t0_value);
+    			t1 = space();
     			create_component(khach.$$.fragment);
+    			t2 = space();
+    			attr_dev(th, "scope", "row");
+    			add_location(th, file$1, 187, 14, 5316);
+    			add_location(tr, file$1, 186, 12, 5296);
     		},
     		m: function mount(target, anchor) {
-    			mount_component(khach, target, anchor);
+    			insert_dev(target, tr, anchor);
+    			append_dev(tr, th);
+    			append_dev(th, t0);
+    			append_dev(tr, t1);
+    			mount_component(khach, tr, null);
+    			append_dev(tr, t2);
     			current = true;
     		},
-    		p: function update(changed, new_ctx) {
-    			ctx = new_ctx;
-
+    		p: function update(changed, ctx) {
     			const khach_changes = changed.dsLoc
     			? get_spread_update(khach_spread_levels, [get_spread_object(ctx.khach)])
     			: {};
@@ -2311,7 +2366,8 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			destroy_component(khach, detaching);
+    			if (detaching) detach_dev(tr);
+    			destroy_component(khach);
     		}
     	};
 
@@ -2319,7 +2375,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(227:6) {#each dsLoc as khach, id}",
+    		source: "(186:10) {#each dsLoc as khach, id}",
     		ctx
     	});
 
@@ -2330,46 +2386,80 @@ var app = (function () {
     	let section;
     	let header;
     	let h1;
-    	let t0;
-    	let span0;
+    	let div0;
+    	let t1;
+    	let div1;
+    	let select;
     	let t2;
-    	let span1;
+    	let div2;
+    	let button0;
     	let i0;
     	let t3;
     	let t4;
     	let main;
-    	let div4;
-    	let div1;
-    	let div0;
-    	let t5;
+    	let div9;
+    	let div8;
+    	let div6;
+    	let div5;
     	let div3;
-    	let div2;
-    	let input;
-    	let t6;
-    	let button;
+    	let t5;
+    	let div4;
+    	let button1;
     	let i1;
+    	let t6;
     	let t7;
+    	let div7;
+    	let input;
     	let t8;
-    	let ul;
-    	let t9;
+    	let div10;
+    	let table;
+    	let thead;
+    	let tr;
+    	let th0;
+    	let t10;
+    	let th1;
+    	let t12;
+    	let th2;
+    	let t14;
+    	let th3;
+    	let t16;
+    	let th4;
+    	let t18;
+    	let th5;
+    	let t20;
+    	let th6;
+    	let t22;
+    	let th7;
+    	let t24;
+    	let tbody;
+    	let t25;
     	let footer;
     	let br;
-    	let t10;
-    	let div7;
-    	let div5;
-    	let t11;
-    	let t12_value = ctx.$kho.dskh.length + "";
-    	let t12;
-    	let t13;
-    	let div6;
-    	let t14;
-    	let t15;
-    	let t16;
-    	let t17_value = ctx.dsLoc.length + "";
-    	let t17;
-    	let t18;
+    	let t26;
+    	let div14;
+    	let div11;
+    	let t27;
+    	let t28_value = ctx.$kho.dskh.length + "";
+    	let t28;
+    	let t29;
+    	let div12;
+    	let t30;
+    	let div13;
+    	let t31;
+    	let t32;
+    	let t33;
+    	let t34_value = ctx.dsLoc.length + "";
+    	let t34;
+    	let t35;
     	let current;
     	let dispose;
+    	let each_value_2 = ctx.dsnam;
+    	let each_blocks_2 = [];
+
+    	for (let i = 0; i < each_value_2.length; i += 1) {
+    		each_blocks_2[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
+    	}
+
     	let if_block = ctx.$kho.showProgress && create_if_block(ctx);
     	let each_value_1 = ctx.dstim;
     	let each_blocks_1 = [];
@@ -2394,104 +2484,177 @@ var app = (function () {
     			section = element("section");
     			header = element("header");
     			h1 = element("h1");
-    			t0 = text("DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN NĂM\r\n      ");
-    			span0 = element("span");
-    			span0.textContent = `${namhoso}`;
+    			div0 = element("div");
+    			div0.textContent = "DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN NĂM";
+    			t1 = space();
+    			div1 = element("div");
+    			select = element("select");
+
+    			for (let i = 0; i < each_blocks_2.length; i += 1) {
+    				each_blocks_2[i].c();
+    			}
+
     			t2 = space();
-    			span1 = element("span");
+    			div2 = element("div");
+    			button0 = element("button");
     			i0 = element("i");
     			t3 = space();
     			if (if_block) if_block.c();
     			t4 = space();
     			main = element("main");
-    			div4 = element("div");
-    			div1 = element("div");
-    			div0 = element("div");
+    			div9 = element("div");
+    			div8 = element("div");
+    			div6 = element("div");
+    			div5 = element("div");
+    			div3 = element("div");
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].c();
     			}
 
     			t5 = space();
-    			div3 = element("div");
-    			div2 = element("div");
-    			input = element("input");
-    			t6 = space();
-    			button = element("button");
+    			div4 = element("div");
+    			button1 = element("button");
     			i1 = element("i");
-    			t7 = text("\r\n            Xóa");
+    			t6 = text("\r\n                Xóa hết");
+    			t7 = space();
+    			div7 = element("div");
+    			input = element("input");
     			t8 = space();
-    			ul = element("ul");
+    			div10 = element("div");
+    			table = element("table");
+    			thead = element("thead");
+    			tr = element("tr");
+    			th0 = element("th");
+    			th0.textContent = "STT";
+    			t10 = space();
+    			th1 = element("th");
+    			th1.textContent = "Mã hồ sơ";
+    			t12 = space();
+    			th2 = element("th");
+    			th2.textContent = "Số hồ sơ";
+    			t14 = space();
+    			th3 = element("th");
+    			th3.textContent = "Khách hàng";
+    			t16 = space();
+    			th4 = element("th");
+    			th4.textContent = "Địa chỉ";
+    			t18 = space();
+    			th5 = element("th");
+    			th5.textContent = "Liên hệ";
+    			t20 = space();
+    			th6 = element("th");
+    			th6.textContent = "Ghi chú";
+    			t22 = space();
+    			th7 = element("th");
+    			th7.textContent = "Action";
+    			t24 = space();
+    			tbody = element("tbody");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t9 = space();
+    			t25 = space();
     			footer = element("footer");
     			br = element("br");
-    			t10 = space();
-    			div7 = element("div");
-    			div5 = element("div");
-    			t11 = text("Tổng số hồ sơ: ");
-    			t12 = text(t12_value);
-    			t13 = space();
-    			div6 = element("div");
-    			t14 = text("bạn đang xem hồ sơ thứ ");
-    			t15 = text(ctx.curHoso);
-    			t16 = text(" trong ");
-    			t17 = text(t17_value);
-    			t18 = text(" hồ sơ chọn lọc");
-    			attr_dev(span0, "class", "svelte-u8xih");
-    			add_location(span0, file$1, 181, 6, 4036);
-    			attr_dev(i0, "class", "fa fa-refresh svelte-u8xih");
-    			add_location(i0, file$1, 183, 8, 4126);
-    			attr_dev(span1, "class", "image nutcapnhat svelte-u8xih");
-    			add_location(span1, file$1, 182, 6, 4066);
-    			attr_dev(h1, "class", "svelte-u8xih");
-    			add_location(h1, file$1, 179, 4, 3981);
-    			attr_dev(header, "class", "svelte-u8xih");
-    			add_location(header, file$1, 178, 2, 3967);
-    			attr_dev(div0, "class", "cloud-search svelte-u8xih");
-    			add_location(div0, file$1, 197, 8, 4460);
-    			attr_dev(div1, "class", "hbox cot1 svelte-u8xih");
-    			add_location(div1, file$1, 196, 6, 4427);
+    			t26 = space();
+    			div14 = element("div");
+    			div11 = element("div");
+    			t27 = text("Tổng số hồ sơ: ");
+    			t28 = text(t28_value);
+    			t29 = space();
+    			div12 = element("div");
+    			t30 = space();
+    			div13 = element("div");
+    			t31 = text("bạn đang xem hồ sơ thứ ");
+    			t32 = text(curHoso);
+    			t33 = text(" trong ");
+    			t34 = text(t34_value);
+    			t35 = text(" hồ sơ chọn lọc");
+    			attr_dev(div0, "class", "col-md-auto");
+    			add_location(div0, file$1, 101, 6, 2580);
+    			attr_dev(select, "class", "form-control");
+    			attr_dev(select, "id", "selectnam");
+    			if (ctx.namhoso === void 0) add_render_callback(() => ctx.select_change_handler.call(select));
+    			add_location(select, file$1, 103, 8, 2689);
+    			attr_dev(div1, "class", "col-md-auto");
+    			add_location(div1, file$1, 102, 6, 2654);
+    			attr_dev(i0, "class", "fa fa-sync-alt");
+    			attr_dev(i0, "aria-hidden", "true");
+    			add_location(i0, file$1, 111, 10, 3013);
+    			attr_dev(button0, "class", "btn btn-primary");
+    			add_location(button0, file$1, 110, 8, 2950);
+    			attr_dev(div2, "class", "col-md-auto");
+    			add_location(div2, file$1, 109, 6, 2915);
+    			attr_dev(h1, "class", "row justify-content-md-center text-primary svelte-12gyg4y");
+    			add_location(h1, file$1, 100, 4, 2517);
+    			attr_dev(header, "class", "container-fluid");
+    			add_location(header, file$1, 99, 2, 2479);
+    			attr_dev(div3, "class", "col");
+    			add_location(div3, file$1, 139, 12, 3820);
+    			attr_dev(i1, "class", "fa fa-trash fa-lg");
+    			add_location(i1, file$1, 154, 16, 4329);
+    			attr_dev(button1, "class", "btn");
+    			add_location(button1, file$1, 153, 14, 4261);
+    			attr_dev(div4, "class", "col-auto");
+    			add_location(div4, file$1, 152, 12, 4223);
+    			attr_dev(div5, "class", "row");
+    			add_location(div5, file$1, 138, 10, 3789);
+    			attr_dev(div6, "class", "col border border-primary");
+    			add_location(div6, file$1, 137, 8, 3738);
+    			attr_dev(input, "class", "col");
     			attr_dev(input, "type", "search");
     			attr_dev(input, "placeholder", "Tìm ... (không phân biệt chữ hoa hay thường)");
-    			attr_dev(input, "class", "svelte-u8xih");
-    			add_location(input, file$1, 212, 10, 4858);
-    			attr_dev(i1, "class", "fa fa-trash fa-lg svelte-u8xih");
-    			add_location(i1, file$1, 218, 12, 5108);
-    			attr_dev(button, "class", "btn svelte-u8xih");
-    			add_location(button, file$1, 217, 10, 5044);
-    			attr_dev(div2, "class", "input svelte-u8xih");
-    			add_location(div2, file$1, 211, 8, 4827);
-    			attr_dev(div3, "class", "hbox cot2 svelte-u8xih");
-    			add_location(div3, file$1, 210, 6, 4794);
-    			attr_dev(div4, "class", "search svelte-u8xih");
-    			add_location(div4, file$1, 195, 4, 4399);
-    			attr_dev(ul, "class", "svelte-u8xih");
-    			add_location(ul, file$1, 225, 4, 5227);
-    			attr_dev(main, "class", "svelte-u8xih");
-    			add_location(main, file$1, 194, 2, 4387);
-    			attr_dev(br, "class", "svelte-u8xih");
-    			add_location(br, file$1, 232, 4, 5382);
-    			attr_dev(div5, "class", "svelte-u8xih");
-    			add_location(div5, file$1, 234, 6, 5425);
-    			attr_dev(div6, "class", "svelte-u8xih");
-    			add_location(div6, file$1, 235, 6, 5477);
-    			attr_dev(div7, "class", "hbox-2ben svelte-u8xih");
-    			add_location(div7, file$1, 233, 4, 5394);
-    			attr_dev(footer, "class", "svelte-u8xih");
-    			add_location(footer, file$1, 231, 2, 5368);
-    			attr_dev(section, "class", "svelte-u8xih");
-    			add_location(section, file$1, 177, 0, 3954);
+    			add_location(input, file$1, 161, 10, 4505);
+    			attr_dev(div7, "class", "col-3");
+    			add_location(div7, file$1, 160, 8, 4474);
+    			attr_dev(div8, "class", "row");
+    			add_location(div8, file$1, 136, 6, 3711);
+    			attr_dev(div9, "class", "container-fluid");
+    			add_location(div9, file$1, 135, 4, 3674);
+    			attr_dev(th0, "scope", "col");
+    			add_location(th0, file$1, 174, 12, 4870);
+    			attr_dev(th1, "scope", "col");
+    			add_location(th1, file$1, 175, 12, 4908);
+    			attr_dev(th2, "scope", "col");
+    			add_location(th2, file$1, 176, 12, 4951);
+    			attr_dev(th3, "scope", "col");
+    			add_location(th3, file$1, 177, 12, 4994);
+    			attr_dev(th4, "scope", "col");
+    			add_location(th4, file$1, 178, 12, 5039);
+    			attr_dev(th5, "scope", "col");
+    			add_location(th5, file$1, 179, 12, 5081);
+    			attr_dev(th6, "scope", "col");
+    			add_location(th6, file$1, 180, 12, 5123);
+    			attr_dev(th7, "scope", "col");
+    			add_location(th7, file$1, 181, 12, 5165);
+    			add_location(tr, file$1, 173, 10, 4852);
+    			add_location(thead, file$1, 172, 8, 4833);
+    			add_location(tbody, file$1, 184, 8, 5237);
+    			attr_dev(table, "class", "table table-hover");
+    			add_location(table, file$1, 171, 6, 4790);
+    			attr_dev(div10, "class", "table-responsive");
+    			add_location(div10, file$1, 170, 4, 4752);
+    			add_location(main, file$1, 134, 2, 3662);
+    			add_location(br, file$1, 196, 4, 5492);
+    			attr_dev(div11, "class", "col-auto");
+    			add_location(div11, file$1, 198, 6, 5529);
+    			attr_dev(div12, "class", "col");
+    			add_location(div12, file$1, 199, 6, 5598);
+    			attr_dev(div13, "class", "col-auto");
+    			add_location(div13, file$1, 200, 6, 5629);
+    			attr_dev(div14, "class", "row");
+    			add_location(div14, file$1, 197, 4, 5504);
+    			add_location(footer, file$1, 195, 2, 5478);
+    			add_location(section, file$1, 98, 0, 2466);
 
     			dispose = [
-    				listen_dev(span1, "click", ctx.xemHoso, false, false, false),
+    				listen_dev(select, "change", ctx.select_change_handler),
+    				listen_dev(button0, "click", ctx.xemHoso, false, false, false),
+    				listen_dev(button1, "click", ctx.click_handler_1, false, false, false),
     				listen_dev(input, "input", ctx.input_input_handler),
-    				listen_dev(input, "keydown", ctx.addDsTim, false, false, false),
-    				listen_dev(button, "click", ctx.click_handler_1, false, false, false)
+    				listen_dev(input, "keydown", ctx.addDsTim, false, false, false)
     			];
     		},
     		l: function claim(nodes) {
@@ -2501,57 +2664,117 @@ var app = (function () {
     			insert_dev(target, section, anchor);
     			append_dev(section, header);
     			append_dev(header, h1);
-    			append_dev(h1, t0);
-    			append_dev(h1, span0);
+    			append_dev(h1, div0);
+    			append_dev(h1, t1);
+    			append_dev(h1, div1);
+    			append_dev(div1, select);
+
+    			for (let i = 0; i < each_blocks_2.length; i += 1) {
+    				each_blocks_2[i].m(select, null);
+    			}
+
+    			select_option(select, ctx.namhoso);
     			append_dev(h1, t2);
-    			append_dev(h1, span1);
-    			append_dev(span1, i0);
+    			append_dev(h1, div2);
+    			append_dev(div2, button0);
+    			append_dev(button0, i0);
     			append_dev(header, t3);
     			if (if_block) if_block.m(header, null);
     			append_dev(section, t4);
     			append_dev(section, main);
-    			append_dev(main, div4);
-    			append_dev(div4, div1);
-    			append_dev(div1, div0);
+    			append_dev(main, div9);
+    			append_dev(div9, div8);
+    			append_dev(div8, div6);
+    			append_dev(div6, div5);
+    			append_dev(div5, div3);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
-    				each_blocks_1[i].m(div0, null);
+    				each_blocks_1[i].m(div3, null);
     			}
 
-    			append_dev(div4, t5);
-    			append_dev(div4, div3);
-    			append_dev(div3, div2);
-    			append_dev(div2, input);
+    			append_dev(div5, t5);
+    			append_dev(div5, div4);
+    			append_dev(div4, button1);
+    			append_dev(button1, i1);
+    			append_dev(button1, t6);
+    			append_dev(div8, t7);
+    			append_dev(div8, div7);
+    			append_dev(div7, input);
     			set_input_value(input, ctx.stim);
-    			append_dev(div2, t6);
-    			append_dev(div2, button);
-    			append_dev(button, i1);
-    			append_dev(button, t7);
     			append_dev(main, t8);
-    			append_dev(main, ul);
+    			append_dev(main, div10);
+    			append_dev(div10, table);
+    			append_dev(table, thead);
+    			append_dev(thead, tr);
+    			append_dev(tr, th0);
+    			append_dev(tr, t10);
+    			append_dev(tr, th1);
+    			append_dev(tr, t12);
+    			append_dev(tr, th2);
+    			append_dev(tr, t14);
+    			append_dev(tr, th3);
+    			append_dev(tr, t16);
+    			append_dev(tr, th4);
+    			append_dev(tr, t18);
+    			append_dev(tr, th5);
+    			append_dev(tr, t20);
+    			append_dev(tr, th6);
+    			append_dev(tr, t22);
+    			append_dev(tr, th7);
+    			append_dev(table, t24);
+    			append_dev(table, tbody);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
-    				each_blocks[i].m(ul, null);
+    				each_blocks[i].m(tbody, null);
     			}
 
-    			append_dev(section, t9);
+    			append_dev(section, t25);
     			append_dev(section, footer);
     			append_dev(footer, br);
-    			append_dev(footer, t10);
-    			append_dev(footer, div7);
-    			append_dev(div7, div5);
-    			append_dev(div5, t11);
-    			append_dev(div5, t12);
-    			append_dev(div7, t13);
-    			append_dev(div7, div6);
-    			append_dev(div6, t14);
-    			append_dev(div6, t15);
-    			append_dev(div6, t16);
-    			append_dev(div6, t17);
-    			append_dev(div6, t18);
+    			append_dev(footer, t26);
+    			append_dev(footer, div14);
+    			append_dev(div14, div11);
+    			append_dev(div11, t27);
+    			append_dev(div11, t28);
+    			append_dev(div14, t29);
+    			append_dev(div14, div12);
+    			append_dev(div14, t30);
+    			append_dev(div14, div13);
+    			append_dev(div13, t31);
+    			append_dev(div13, t32);
+    			append_dev(div13, t33);
+    			append_dev(div13, t34);
+    			append_dev(div13, t35);
     			current = true;
     		},
     		p: function update(changed, ctx) {
+    			if (changed.dsnam) {
+    				each_value_2 = ctx.dsnam;
+    				let i;
+
+    				for (i = 0; i < each_value_2.length; i += 1) {
+    					const child_ctx = get_each_context_2(ctx, each_value_2, i);
+
+    					if (each_blocks_2[i]) {
+    						each_blocks_2[i].p(changed, child_ctx);
+    					} else {
+    						each_blocks_2[i] = create_each_block_2(child_ctx);
+    						each_blocks_2[i].c();
+    						each_blocks_2[i].m(select, null);
+    					}
+    				}
+
+    				for (; i < each_blocks_2.length; i += 1) {
+    					each_blocks_2[i].d(1);
+    				}
+
+    				each_blocks_2.length = each_value_2.length;
+    			}
+
+    			if (changed.namhoso) {
+    				select_option(select, ctx.namhoso);
+    			}
+
     			if (ctx.$kho.showProgress) {
     				if (if_block) {
     					if_block.p(changed, ctx);
@@ -2577,7 +2800,7 @@ var app = (function () {
     					} else {
     						each_blocks_1[i] = create_each_block_1(child_ctx);
     						each_blocks_1[i].c();
-    						each_blocks_1[i].m(div0, null);
+    						each_blocks_1[i].m(div3, null);
     					}
     				}
 
@@ -2592,7 +2815,7 @@ var app = (function () {
     				set_input_value(input, ctx.stim);
     			}
 
-    			if (changed.dsLoc || changed.curHoso) {
+    			if (changed.dsLoc) {
     				each_value = ctx.dsLoc;
     				let i;
 
@@ -2606,7 +2829,7 @@ var app = (function () {
     						each_blocks[i] = create_each_block(child_ctx);
     						each_blocks[i].c();
     						transition_in(each_blocks[i], 1);
-    						each_blocks[i].m(ul, null);
+    						each_blocks[i].m(tbody, null);
     					}
     				}
 
@@ -2619,9 +2842,8 @@ var app = (function () {
     				check_outros();
     			}
 
-    			if ((!current || changed.$kho) && t12_value !== (t12_value = ctx.$kho.dskh.length + "")) set_data_dev(t12, t12_value);
-    			if (!current || changed.curHoso) set_data_dev(t15, ctx.curHoso);
-    			if ((!current || changed.dsLoc) && t17_value !== (t17_value = ctx.dsLoc.length + "")) set_data_dev(t17, t17_value);
+    			if ((!current || changed.$kho) && t28_value !== (t28_value = ctx.$kho.dskh.length + "")) set_data_dev(t28, t28_value);
+    			if ((!current || changed.dsLoc) && t34_value !== (t34_value = ctx.dsLoc.length + "")) set_data_dev(t34, t34_value);
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -2643,6 +2865,7 @@ var app = (function () {
     		},
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(section);
+    			destroy_each(each_blocks_2, detaching);
     			if (if_block) if_block.d();
     			destroy_each(each_blocks_1, detaching);
     			destroy_each(each_blocks, detaching);
@@ -2660,13 +2883,15 @@ var app = (function () {
 
     	return block;
     }
-    let namhoso = 2019;
+    let curHoso = 0;
 
     function instance$1($$self, $$props, $$invalidate) {
     	let $kho;
     	validate_store(kho, "kho");
     	component_subscribe($$self, kho, $$value => $$invalidate("$kho", $kho = $$value));
-    	set_store_value(kho, $kho.progress = 20, $kho);
+    	let dsnam = [2020, 2019, 2018, 2017, 2016];
+    	let namhoso = 2019;
+    	set_store_value(kho, $kho.progress = 0, $kho);
     	set_store_value(kho, $kho.showProgress = true, $kho);
     	set_store_value(kho, $kho.dskh = [], $kho);
 
@@ -2718,6 +2943,7 @@ var app = (function () {
     		}
     	];
 
+    	set_store_value(kho, $kho.dskh = dskh, $kho);
     	let stim = "";
     	let dstim = [];
     	let curdstim = 0;
@@ -2739,34 +2965,38 @@ var app = (function () {
 
     		if (l > 0) {
     			for (let i = 0; i < l; i++) {
-    				let stim = nhom[i];
-    				data = filterListObj(data, stim);
+    				let s = nhom[i];
+    				data = filterListObj(data, s);
     			}
     		}
 
     		return data;
     	}
 
-    	let curHoso = 0;
+    	function select_change_handler() {
+    		namhoso = select_value(this);
+    		$$invalidate("namhoso", namhoso);
+    		$$invalidate("dsnam", dsnam);
+    	}
 
     	const click_handler = ({ id }) => {
     		$$invalidate("curdstim", curdstim = id);
     		xoaDstim();
     	};
 
+    	const click_handler_1 = () => $$invalidate("dstim", dstim = []);
+
     	function input_input_handler() {
     		stim = this.value;
     		$$invalidate("stim", stim);
     	}
-
-    	const click_handler_1 = () => $$invalidate("dstim", dstim = []);
-    	const click_handler_2 = ({ id }) => $$invalidate("curHoso", curHoso = id);
 
     	$$self.$capture_state = () => {
     		return {};
     	};
 
     	$$self.$inject_state = $$props => {
+    		if ("dsnam" in $$props) $$invalidate("dsnam", dsnam = $$props.dsnam);
     		if ("namhoso" in $$props) $$invalidate("namhoso", namhoso = $$props.namhoso);
     		if ("dskh" in $$props) dskh = $$props.dskh;
     		if ("stim" in $$props) $$invalidate("stim", stim = $$props.stim);
@@ -2774,37 +3004,38 @@ var app = (function () {
     		if ("curdstim" in $$props) $$invalidate("curdstim", curdstim = $$props.curdstim);
     		if ("curHoso" in $$props) $$invalidate("curHoso", curHoso = $$props.curHoso);
     		if ("$kho" in $$props) kho.set($kho = $$props.$kho);
-    		if ("dsLocNhom" in $$props) dsLocNhom = $$props.dsLocNhom;
+    		if ("dsLocNhom" in $$props) $$invalidate("dsLocNhom", dsLocNhom = $$props.dsLocNhom);
     		if ("dsLoc" in $$props) $$invalidate("dsLoc", dsLoc = $$props.dsLoc);
     	};
 
     	let dsLocNhom;
     	let dsLoc;
 
-    	$$self.$$.update = (changed = { dstim: 1, $kho: 1, stim: 1 }) => {
+    	$$self.$$.update = (changed = { dstim: 1, dsLocNhom: 1, stim: 1 }) => {
     		if (changed.dstim) {
-    			 dsLocNhom = locNhom(dstim);
+    			 $$invalidate("dsLocNhom", dsLocNhom = locNhom(dstim));
     		}
 
-    		if (changed.$kho || changed.stim) {
-    			 $$invalidate("dsLoc", dsLoc = filterListObj($kho.dskh, stim));
+    		if (changed.dsLocNhom || changed.stim) {
+    			 $$invalidate("dsLoc", dsLoc = filterListObj(dsLocNhom, stim));
     		}
     	};
 
     	return {
+    		dsnam,
+    		namhoso,
     		xemHoso,
     		stim,
     		dstim,
     		curdstim,
     		addDsTim,
     		xoaDstim,
-    		curHoso,
     		$kho,
     		dsLoc,
+    		select_change_handler,
     		click_handler,
-    		input_input_handler,
     		click_handler_1,
-    		click_handler_2
+    		input_input_handler
     	};
     }
 

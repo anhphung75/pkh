@@ -5,8 +5,9 @@
   import { filterListObj } from "./utils.js";
 
   const API_URL = "http://localhost:8888/api1108/";
+  let dsnam = [2020, 2019, 2018, 2017, 2016];
   let namhoso = 2019;
-  $kho.progress = 20;
+  $kho.progress = 0;
   $kho.showProgress = true;
   $kho.dskh = [];
 
@@ -59,7 +60,7 @@
     }
   ];
   // tim kiem
-  // $kho.dskh = dskh;
+  $kho.dskh = dskh;
   let stim = "";
   let dstim = [];
   let curdstim = 0;
@@ -77,163 +78,127 @@
     let data = $kho.dskh;
     if (l > 0) {
       for (let i = 0; i < l; i++) {
-        let stim = nhom[i];
-        data = filterListObj(data, stim);
+        let s = nhom[i];
+        data = filterListObj(data, s);
       }
     }
     return data;
   }
   $: dsLocNhom = locNhom(dstim);
-  $: dsLoc = filterListObj($kho.dskh, stim);
+  $: dsLoc = filterListObj(dsLocNhom, stim);
   let curHoso = 0;
   // phan trang
 </script>
 
 <style>
-  * {
-    text-align: left;
-  }
-  .hbox {
-    display: flex;
-    flex-flow: row nowrap;
-  }
-  section {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-between;
-    height: 95vh;
-    width: 100vw;
-    overflow: hidden;
-  }
-  header {
-    width: 95vw;
-  }
-  main {
-    flex: 1 1 auto;
-    width: 95vw;
-    overflow-y: scroll;
-  }
-  footer {
-    width: 95vw;
-  }
-
   h1 {
     color: purple;
-    text-align: center;
-  }
-
-  .search {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: flex-end;
-    width: 100%;
-    overflow: hidden;
-  }
-  .search .cot1{
-    flex: 1 1 auto;
-  }
-
-  .cloud-search {
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-between;
-    align-items: flex-start;
-    width: 100%;
-    border: 2px solid blue;
-  }
-  .cloud-search-item {
-    flex: 1 1 auto;
-    padding: 12px ;
-  }
-  .cloud-search-item:hover {
-    background-color: yellowgreen;
-  }
-  .input {
-    border: 2px solid blue;
-  }
-  input{width: 23em;}
-  .image {
-    height: 100%;
-    width: 100%;
-  }
-  .hbox-2ben {
-    display: flex;
-    flex-flow: row nowrap;
-    justify-content: space-between;
-  }
-  .btn {
-    background-color: DodgerBlue; /* Blue background */
-    border: none; /* Remove borders */
-    color: white; /* White text */
-    padding: 12px 16px; /* Some padding */
-    cursor: pointer; /* Mouse pointer on hover */
-  }
-
-  /* Darker background on mouse-over */
-  .btn:hover {
-    background-color: RoyalBlue;
   }
 </style>
 
 <section>
-  <header>
-    <h1>
-      DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN NĂM
-      <span>{namhoso}</span>
-      <span class="image nutcapnhat" on:click={xemHoso}>
-        <i class="fa fa-refresh" />
-      </span>
+  <header class="container-fluid">
+    <h1 class="row justify-content-md-center text-primary">
+      <div class="col-md-auto">DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN NĂM</div>
+      <div class="col-md-auto">
+        <select bind:value={namhoso} class="form-control" id="selectnam">
+          {#each dsnam as namlamviec}
+            <option value={namlamviec}>{namlamviec}</option>
+          {/each}
+        </select>
+      </div>
+      <div class="col-md-auto">
+        <button class="btn btn-primary" on:click={xemHoso}>
+          <i class="fa fa-sync-alt" aria-hidden="true" />
+        </button>
+      </div>
     </h1>
-
     {#if $kho.showProgress}
-      <div class="hbox">
-        <span>Tiến trình {$kho.progress} % ...</span>
-        <progress value={$kho.progress} max="100" />
+      <div class="row">
+        <div class="col">
+          <div class="progress">
+            <div
+              class="progress-bar progress-bar-striped progress-bar-animated
+              bg-info"
+              role="progressbar"
+              aria-valuenow={$kho.progress}
+              aria-valuemin="0"
+              aria-valuemax="100"
+              style="width: {$kho.progress}%">
+              {$kho.progress}%
+            </div>
+          </div>
+        </div>
       </div>
     {/if}
   </header>
   <main>
-    <div class="search">
-      <div class="hbox cot1">
-        <div class="cloud-search">
-          {#each dstim as item, id}
-            <div
-              class="cloud-search-item"
-              on:click={() => {
-                curdstim = id;
-                xoaDstim();
-              }}>
-              {item}
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col border border-primary">
+          <div class="row">
+            <div class="col">
+              {#each dstim as item, id}
+                <button
+                  type="button"
+                  class="btn btn-outline-info"
+                  on:click={() => {
+                    curdstim = id;
+                    xoaDstim();
+                  }}>
+                  {item}
+                </button>
+              {/each}
             </div>
-          {/each}
+            <div class="col-auto">
+              <button class="btn" on:click={() => (dstim = [])}>
+                <i class="fa fa-trash fa-lg" />
+                Xóa hết
+              </button>
+            </div>
+          </div>
         </div>
-      </div>
-      <div class="hbox cot2">
-        <div class="input">
+        <div class="col-3">
           <input
+            class="col"
             type="search"
             bind:value={stim}
             on:keydown={addDsTim}
             placeholder="Tìm ... (không phân biệt chữ hoa hay thường)" />
-          <button class="btn" on:click={() => (dstim = [])}>
-            <i class="fa fa-trash fa-lg" />
-            Xóa
-          </button>
         </div>
       </div>
     </div>
-
-    <ul>
-      {#each dsLoc as khach, id}
-        <Khach {...khach} on:click={() => (curHoso = id)} />
-      {/each}
-    </ul>
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Mã hồ sơ</th>
+            <th scope="col">Số hồ sơ</th>
+            <th scope="col">Khách hàng</th>
+            <th scope="col">Địa chỉ</th>
+            <th scope="col">Liên hệ</th>
+            <th scope="col">Ghi chú</th>
+            <th scope="col">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each dsLoc as khach, id}
+            <tr>
+              <th scope="row">{id+1}</th>
+              <Khach {...khach} />
+            </tr>
+          {/each}
+        </tbody>
+      </table>
+    </div>
   </main>
   <footer>
     <br />
-    <div class="hbox-2ben">
-      <div>Tổng số hồ sơ: {$kho.dskh.length}</div>
-      <div>
+    <div class="row">
+      <div class='col-auto'>Tổng số hồ sơ: {$kho.dskh.length}</div>
+      <div class='col'></div>
+      <div class='col-auto'>
         bạn đang xem hồ sơ thứ {curHoso} trong {dsLoc.length} hồ sơ chọn lọc
       </div>
     </div>
