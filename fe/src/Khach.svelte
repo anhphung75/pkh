@@ -30,9 +30,10 @@
 </script>
 
 <style>
-tr {
+  tr {
     display: table;
     table-layout: fixed;
+  }
 </style>
 
 <tr style="width:{$kho.tblWidth}px;">
