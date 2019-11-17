@@ -112,6 +112,34 @@ var app = (function () {
         const selected_option = select.querySelector(':checked') || select.options[0];
         return selected_option && selected_option.__value;
     }
+    function add_resize_listener(element, fn) {
+        if (getComputedStyle(element).position === 'static') {
+            element.style.position = 'relative';
+        }
+        const object = document.createElement('object');
+        object.setAttribute('style', 'display: block; position: absolute; top: 0; left: 0; height: 100%; width: 100%; overflow: hidden; pointer-events: none; z-index: -1;');
+        object.type = 'text/html';
+        object.tabIndex = -1;
+        let win;
+        object.onload = () => {
+            win = object.contentDocument.defaultView;
+            win.addEventListener('resize', fn);
+        };
+        if (/Trident/.test(navigator.userAgent)) {
+            element.appendChild(object);
+            object.data = 'about:blank';
+        }
+        else {
+            object.data = 'about:blank';
+            element.appendChild(object);
+        }
+        return {
+            cancel: () => {
+                win && win.removeEventListener && win.removeEventListener('resize', fn);
+                element.removeChild(object);
+            }
+        };
+    }
     function custom_event(type, detail) {
         const e = document.createEvent('CustomEvent');
         e.initCustomEvent(type, false, false, detail);
@@ -422,1386 +450,6 @@ var app = (function () {
         }
     }
 
-    var bind = function bind(fn, thisArg) {
-      return function wrap() {
-        var args = new Array(arguments.length);
-        for (var i = 0; i < args.length; i++) {
-          args[i] = arguments[i];
-        }
-        return fn.apply(thisArg, args);
-      };
-    };
-
-    /*!
-     * Determine if an object is a Buffer
-     *
-     * @author   Feross Aboukhadijeh <https://feross.org>
-     * @license  MIT
-     */
-
-    var isBuffer = function isBuffer (obj) {
-      return obj != null && obj.constructor != null &&
-        typeof obj.constructor.isBuffer === 'function' && obj.constructor.isBuffer(obj)
-    };
-
-    /*global toString:true*/
-
-    // utils is a library of generic helper functions non-specific to axios
-
-    var toString = Object.prototype.toString;
-
-    /**
-     * Determine if a value is an Array
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is an Array, otherwise false
-     */
-    function isArray(val) {
-      return toString.call(val) === '[object Array]';
-    }
-
-    /**
-     * Determine if a value is an ArrayBuffer
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is an ArrayBuffer, otherwise false
-     */
-    function isArrayBuffer(val) {
-      return toString.call(val) === '[object ArrayBuffer]';
-    }
-
-    /**
-     * Determine if a value is a FormData
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is an FormData, otherwise false
-     */
-    function isFormData(val) {
-      return (typeof FormData !== 'undefined') && (val instanceof FormData);
-    }
-
-    /**
-     * Determine if a value is a view on an ArrayBuffer
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a view on an ArrayBuffer, otherwise false
-     */
-    function isArrayBufferView(val) {
-      var result;
-      if ((typeof ArrayBuffer !== 'undefined') && (ArrayBuffer.isView)) {
-        result = ArrayBuffer.isView(val);
-      } else {
-        result = (val) && (val.buffer) && (val.buffer instanceof ArrayBuffer);
-      }
-      return result;
-    }
-
-    /**
-     * Determine if a value is a String
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a String, otherwise false
-     */
-    function isString(val) {
-      return typeof val === 'string';
-    }
-
-    /**
-     * Determine if a value is a Number
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a Number, otherwise false
-     */
-    function isNumber(val) {
-      return typeof val === 'number';
-    }
-
-    /**
-     * Determine if a value is undefined
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if the value is undefined, otherwise false
-     */
-    function isUndefined(val) {
-      return typeof val === 'undefined';
-    }
-
-    /**
-     * Determine if a value is an Object
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is an Object, otherwise false
-     */
-    function isObject(val) {
-      return val !== null && typeof val === 'object';
-    }
-
-    /**
-     * Determine if a value is a Date
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a Date, otherwise false
-     */
-    function isDate(val) {
-      return toString.call(val) === '[object Date]';
-    }
-
-    /**
-     * Determine if a value is a File
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a File, otherwise false
-     */
-    function isFile(val) {
-      return toString.call(val) === '[object File]';
-    }
-
-    /**
-     * Determine if a value is a Blob
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a Blob, otherwise false
-     */
-    function isBlob(val) {
-      return toString.call(val) === '[object Blob]';
-    }
-
-    /**
-     * Determine if a value is a Function
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a Function, otherwise false
-     */
-    function isFunction(val) {
-      return toString.call(val) === '[object Function]';
-    }
-
-    /**
-     * Determine if a value is a Stream
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a Stream, otherwise false
-     */
-    function isStream(val) {
-      return isObject(val) && isFunction(val.pipe);
-    }
-
-    /**
-     * Determine if a value is a URLSearchParams object
-     *
-     * @param {Object} val The value to test
-     * @returns {boolean} True if value is a URLSearchParams object, otherwise false
-     */
-    function isURLSearchParams(val) {
-      return typeof URLSearchParams !== 'undefined' && val instanceof URLSearchParams;
-    }
-
-    /**
-     * Trim excess whitespace off the beginning and end of a string
-     *
-     * @param {String} str The String to trim
-     * @returns {String} The String freed of excess whitespace
-     */
-    function trim(str) {
-      return str.replace(/^\s*/, '').replace(/\s*$/, '');
-    }
-
-    /**
-     * Determine if we're running in a standard browser environment
-     *
-     * This allows axios to run in a web worker, and react-native.
-     * Both environments support XMLHttpRequest, but not fully standard globals.
-     *
-     * web workers:
-     *  typeof window -> undefined
-     *  typeof document -> undefined
-     *
-     * react-native:
-     *  navigator.product -> 'ReactNative'
-     * nativescript
-     *  navigator.product -> 'NativeScript' or 'NS'
-     */
-    function isStandardBrowserEnv() {
-      if (typeof navigator !== 'undefined' && (navigator.product === 'ReactNative' ||
-                                               navigator.product === 'NativeScript' ||
-                                               navigator.product === 'NS')) {
-        return false;
-      }
-      return (
-        typeof window !== 'undefined' &&
-        typeof document !== 'undefined'
-      );
-    }
-
-    /**
-     * Iterate over an Array or an Object invoking a function for each item.
-     *
-     * If `obj` is an Array callback will be called passing
-     * the value, index, and complete array for each item.
-     *
-     * If 'obj' is an Object callback will be called passing
-     * the value, key, and complete object for each property.
-     *
-     * @param {Object|Array} obj The object to iterate
-     * @param {Function} fn The callback to invoke for each item
-     */
-    function forEach(obj, fn) {
-      // Don't bother if no value provided
-      if (obj === null || typeof obj === 'undefined') {
-        return;
-      }
-
-      // Force an array if not already something iterable
-      if (typeof obj !== 'object') {
-        /*eslint no-param-reassign:0*/
-        obj = [obj];
-      }
-
-      if (isArray(obj)) {
-        // Iterate over array values
-        for (var i = 0, l = obj.length; i < l; i++) {
-          fn.call(null, obj[i], i, obj);
-        }
-      } else {
-        // Iterate over object keys
-        for (var key in obj) {
-          if (Object.prototype.hasOwnProperty.call(obj, key)) {
-            fn.call(null, obj[key], key, obj);
-          }
-        }
-      }
-    }
-
-    /**
-     * Accepts varargs expecting each argument to be an object, then
-     * immutably merges the properties of each object and returns result.
-     *
-     * When multiple objects contain the same key the later object in
-     * the arguments list will take precedence.
-     *
-     * Example:
-     *
-     * ```js
-     * var result = merge({foo: 123}, {foo: 456});
-     * console.log(result.foo); // outputs 456
-     * ```
-     *
-     * @param {Object} obj1 Object to merge
-     * @returns {Object} Result of all merge properties
-     */
-    function merge(/* obj1, obj2, obj3, ... */) {
-      var result = {};
-      function assignValue(val, key) {
-        if (typeof result[key] === 'object' && typeof val === 'object') {
-          result[key] = merge(result[key], val);
-        } else {
-          result[key] = val;
-        }
-      }
-
-      for (var i = 0, l = arguments.length; i < l; i++) {
-        forEach(arguments[i], assignValue);
-      }
-      return result;
-    }
-
-    /**
-     * Function equal to merge with the difference being that no reference
-     * to original objects is kept.
-     *
-     * @see merge
-     * @param {Object} obj1 Object to merge
-     * @returns {Object} Result of all merge properties
-     */
-    function deepMerge(/* obj1, obj2, obj3, ... */) {
-      var result = {};
-      function assignValue(val, key) {
-        if (typeof result[key] === 'object' && typeof val === 'object') {
-          result[key] = deepMerge(result[key], val);
-        } else if (typeof val === 'object') {
-          result[key] = deepMerge({}, val);
-        } else {
-          result[key] = val;
-        }
-      }
-
-      for (var i = 0, l = arguments.length; i < l; i++) {
-        forEach(arguments[i], assignValue);
-      }
-      return result;
-    }
-
-    /**
-     * Extends object a by mutably adding to it the properties of object b.
-     *
-     * @param {Object} a The object to be extended
-     * @param {Object} b The object to copy properties from
-     * @param {Object} thisArg The object to bind function to
-     * @return {Object} The resulting value of object a
-     */
-    function extend(a, b, thisArg) {
-      forEach(b, function assignValue(val, key) {
-        if (thisArg && typeof val === 'function') {
-          a[key] = bind(val, thisArg);
-        } else {
-          a[key] = val;
-        }
-      });
-      return a;
-    }
-
-    var utils = {
-      isArray: isArray,
-      isArrayBuffer: isArrayBuffer,
-      isBuffer: isBuffer,
-      isFormData: isFormData,
-      isArrayBufferView: isArrayBufferView,
-      isString: isString,
-      isNumber: isNumber,
-      isObject: isObject,
-      isUndefined: isUndefined,
-      isDate: isDate,
-      isFile: isFile,
-      isBlob: isBlob,
-      isFunction: isFunction,
-      isStream: isStream,
-      isURLSearchParams: isURLSearchParams,
-      isStandardBrowserEnv: isStandardBrowserEnv,
-      forEach: forEach,
-      merge: merge,
-      deepMerge: deepMerge,
-      extend: extend,
-      trim: trim
-    };
-
-    function encode(val) {
-      return encodeURIComponent(val).
-        replace(/%40/gi, '@').
-        replace(/%3A/gi, ':').
-        replace(/%24/g, '$').
-        replace(/%2C/gi, ',').
-        replace(/%20/g, '+').
-        replace(/%5B/gi, '[').
-        replace(/%5D/gi, ']');
-    }
-
-    /**
-     * Build a URL by appending params to the end
-     *
-     * @param {string} url The base of the url (e.g., http://www.google.com)
-     * @param {object} [params] The params to be appended
-     * @returns {string} The formatted url
-     */
-    var buildURL = function buildURL(url, params, paramsSerializer) {
-      /*eslint no-param-reassign:0*/
-      if (!params) {
-        return url;
-      }
-
-      var serializedParams;
-      if (paramsSerializer) {
-        serializedParams = paramsSerializer(params);
-      } else if (utils.isURLSearchParams(params)) {
-        serializedParams = params.toString();
-      } else {
-        var parts = [];
-
-        utils.forEach(params, function serialize(val, key) {
-          if (val === null || typeof val === 'undefined') {
-            return;
-          }
-
-          if (utils.isArray(val)) {
-            key = key + '[]';
-          } else {
-            val = [val];
-          }
-
-          utils.forEach(val, function parseValue(v) {
-            if (utils.isDate(v)) {
-              v = v.toISOString();
-            } else if (utils.isObject(v)) {
-              v = JSON.stringify(v);
-            }
-            parts.push(encode(key) + '=' + encode(v));
-          });
-        });
-
-        serializedParams = parts.join('&');
-      }
-
-      if (serializedParams) {
-        var hashmarkIndex = url.indexOf('#');
-        if (hashmarkIndex !== -1) {
-          url = url.slice(0, hashmarkIndex);
-        }
-
-        url += (url.indexOf('?') === -1 ? '?' : '&') + serializedParams;
-      }
-
-      return url;
-    };
-
-    function InterceptorManager() {
-      this.handlers = [];
-    }
-
-    /**
-     * Add a new interceptor to the stack
-     *
-     * @param {Function} fulfilled The function to handle `then` for a `Promise`
-     * @param {Function} rejected The function to handle `reject` for a `Promise`
-     *
-     * @return {Number} An ID used to remove interceptor later
-     */
-    InterceptorManager.prototype.use = function use(fulfilled, rejected) {
-      this.handlers.push({
-        fulfilled: fulfilled,
-        rejected: rejected
-      });
-      return this.handlers.length - 1;
-    };
-
-    /**
-     * Remove an interceptor from the stack
-     *
-     * @param {Number} id The ID that was returned by `use`
-     */
-    InterceptorManager.prototype.eject = function eject(id) {
-      if (this.handlers[id]) {
-        this.handlers[id] = null;
-      }
-    };
-
-    /**
-     * Iterate over all the registered interceptors
-     *
-     * This method is particularly useful for skipping over any
-     * interceptors that may have become `null` calling `eject`.
-     *
-     * @param {Function} fn The function to call for each interceptor
-     */
-    InterceptorManager.prototype.forEach = function forEach(fn) {
-      utils.forEach(this.handlers, function forEachHandler(h) {
-        if (h !== null) {
-          fn(h);
-        }
-      });
-    };
-
-    var InterceptorManager_1 = InterceptorManager;
-
-    /**
-     * Transform the data for a request or a response
-     *
-     * @param {Object|String} data The data to be transformed
-     * @param {Array} headers The headers for the request or response
-     * @param {Array|Function} fns A single function or Array of functions
-     * @returns {*} The resulting transformed data
-     */
-    var transformData = function transformData(data, headers, fns) {
-      /*eslint no-param-reassign:0*/
-      utils.forEach(fns, function transform(fn) {
-        data = fn(data, headers);
-      });
-
-      return data;
-    };
-
-    var isCancel = function isCancel(value) {
-      return !!(value && value.__CANCEL__);
-    };
-
-    var normalizeHeaderName = function normalizeHeaderName(headers, normalizedName) {
-      utils.forEach(headers, function processHeader(value, name) {
-        if (name !== normalizedName && name.toUpperCase() === normalizedName.toUpperCase()) {
-          headers[normalizedName] = value;
-          delete headers[name];
-        }
-      });
-    };
-
-    /**
-     * Update an Error with the specified config, error code, and response.
-     *
-     * @param {Error} error The error to update.
-     * @param {Object} config The config.
-     * @param {string} [code] The error code (for example, 'ECONNABORTED').
-     * @param {Object} [request] The request.
-     * @param {Object} [response] The response.
-     * @returns {Error} The error.
-     */
-    var enhanceError = function enhanceError(error, config, code, request, response) {
-      error.config = config;
-      if (code) {
-        error.code = code;
-      }
-
-      error.request = request;
-      error.response = response;
-      error.isAxiosError = true;
-
-      error.toJSON = function() {
-        return {
-          // Standard
-          message: this.message,
-          name: this.name,
-          // Microsoft
-          description: this.description,
-          number: this.number,
-          // Mozilla
-          fileName: this.fileName,
-          lineNumber: this.lineNumber,
-          columnNumber: this.columnNumber,
-          stack: this.stack,
-          // Axios
-          config: this.config,
-          code: this.code
-        };
-      };
-      return error;
-    };
-
-    /**
-     * Create an Error with the specified message, config, error code, request and response.
-     *
-     * @param {string} message The error message.
-     * @param {Object} config The config.
-     * @param {string} [code] The error code (for example, 'ECONNABORTED').
-     * @param {Object} [request] The request.
-     * @param {Object} [response] The response.
-     * @returns {Error} The created error.
-     */
-    var createError = function createError(message, config, code, request, response) {
-      var error = new Error(message);
-      return enhanceError(error, config, code, request, response);
-    };
-
-    /**
-     * Resolve or reject a Promise based on response status.
-     *
-     * @param {Function} resolve A function that resolves the promise.
-     * @param {Function} reject A function that rejects the promise.
-     * @param {object} response The response.
-     */
-    var settle = function settle(resolve, reject, response) {
-      var validateStatus = response.config.validateStatus;
-      if (!validateStatus || validateStatus(response.status)) {
-        resolve(response);
-      } else {
-        reject(createError(
-          'Request failed with status code ' + response.status,
-          response.config,
-          null,
-          response.request,
-          response
-        ));
-      }
-    };
-
-    // Headers whose duplicates are ignored by node
-    // c.f. https://nodejs.org/api/http.html#http_message_headers
-    var ignoreDuplicateOf = [
-      'age', 'authorization', 'content-length', 'content-type', 'etag',
-      'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
-      'last-modified', 'location', 'max-forwards', 'proxy-authorization',
-      'referer', 'retry-after', 'user-agent'
-    ];
-
-    /**
-     * Parse headers into an object
-     *
-     * ```
-     * Date: Wed, 27 Aug 2014 08:58:49 GMT
-     * Content-Type: application/json
-     * Connection: keep-alive
-     * Transfer-Encoding: chunked
-     * ```
-     *
-     * @param {String} headers Headers needing to be parsed
-     * @returns {Object} Headers parsed into an object
-     */
-    var parseHeaders = function parseHeaders(headers) {
-      var parsed = {};
-      var key;
-      var val;
-      var i;
-
-      if (!headers) { return parsed; }
-
-      utils.forEach(headers.split('\n'), function parser(line) {
-        i = line.indexOf(':');
-        key = utils.trim(line.substr(0, i)).toLowerCase();
-        val = utils.trim(line.substr(i + 1));
-
-        if (key) {
-          if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
-            return;
-          }
-          if (key === 'set-cookie') {
-            parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
-          } else {
-            parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-          }
-        }
-      });
-
-      return parsed;
-    };
-
-    var isURLSameOrigin = (
-      utils.isStandardBrowserEnv() ?
-
-      // Standard browser envs have full support of the APIs needed to test
-      // whether the request URL is of the same origin as current location.
-        (function standardBrowserEnv() {
-          var msie = /(msie|trident)/i.test(navigator.userAgent);
-          var urlParsingNode = document.createElement('a');
-          var originURL;
-
-          /**
-        * Parse a URL to discover it's components
-        *
-        * @param {String} url The URL to be parsed
-        * @returns {Object}
-        */
-          function resolveURL(url) {
-            var href = url;
-
-            if (msie) {
-            // IE needs attribute set twice to normalize properties
-              urlParsingNode.setAttribute('href', href);
-              href = urlParsingNode.href;
-            }
-
-            urlParsingNode.setAttribute('href', href);
-
-            // urlParsingNode provides the UrlUtils interface - http://url.spec.whatwg.org/#urlutils
-            return {
-              href: urlParsingNode.href,
-              protocol: urlParsingNode.protocol ? urlParsingNode.protocol.replace(/:$/, '') : '',
-              host: urlParsingNode.host,
-              search: urlParsingNode.search ? urlParsingNode.search.replace(/^\?/, '') : '',
-              hash: urlParsingNode.hash ? urlParsingNode.hash.replace(/^#/, '') : '',
-              hostname: urlParsingNode.hostname,
-              port: urlParsingNode.port,
-              pathname: (urlParsingNode.pathname.charAt(0) === '/') ?
-                urlParsingNode.pathname :
-                '/' + urlParsingNode.pathname
-            };
-          }
-
-          originURL = resolveURL(window.location.href);
-
-          /**
-        * Determine if a URL shares the same origin as the current location
-        *
-        * @param {String} requestURL The URL to test
-        * @returns {boolean} True if URL shares the same origin, otherwise false
-        */
-          return function isURLSameOrigin(requestURL) {
-            var parsed = (utils.isString(requestURL)) ? resolveURL(requestURL) : requestURL;
-            return (parsed.protocol === originURL.protocol &&
-                parsed.host === originURL.host);
-          };
-        })() :
-
-      // Non standard browser envs (web workers, react-native) lack needed support.
-        (function nonStandardBrowserEnv() {
-          return function isURLSameOrigin() {
-            return true;
-          };
-        })()
-    );
-
-    var cookies = (
-      utils.isStandardBrowserEnv() ?
-
-      // Standard browser envs support document.cookie
-        (function standardBrowserEnv() {
-          return {
-            write: function write(name, value, expires, path, domain, secure) {
-              var cookie = [];
-              cookie.push(name + '=' + encodeURIComponent(value));
-
-              if (utils.isNumber(expires)) {
-                cookie.push('expires=' + new Date(expires).toGMTString());
-              }
-
-              if (utils.isString(path)) {
-                cookie.push('path=' + path);
-              }
-
-              if (utils.isString(domain)) {
-                cookie.push('domain=' + domain);
-              }
-
-              if (secure === true) {
-                cookie.push('secure');
-              }
-
-              document.cookie = cookie.join('; ');
-            },
-
-            read: function read(name) {
-              var match = document.cookie.match(new RegExp('(^|;\\s*)(' + name + ')=([^;]*)'));
-              return (match ? decodeURIComponent(match[3]) : null);
-            },
-
-            remove: function remove(name) {
-              this.write(name, '', Date.now() - 86400000);
-            }
-          };
-        })() :
-
-      // Non standard browser env (web workers, react-native) lack needed support.
-        (function nonStandardBrowserEnv() {
-          return {
-            write: function write() {},
-            read: function read() { return null; },
-            remove: function remove() {}
-          };
-        })()
-    );
-
-    var xhr = function xhrAdapter(config) {
-      return new Promise(function dispatchXhrRequest(resolve, reject) {
-        var requestData = config.data;
-        var requestHeaders = config.headers;
-
-        if (utils.isFormData(requestData)) {
-          delete requestHeaders['Content-Type']; // Let the browser set it
-        }
-
-        var request = new XMLHttpRequest();
-
-        // HTTP basic authentication
-        if (config.auth) {
-          var username = config.auth.username || '';
-          var password = config.auth.password || '';
-          requestHeaders.Authorization = 'Basic ' + btoa(username + ':' + password);
-        }
-
-        request.open(config.method.toUpperCase(), buildURL(config.url, config.params, config.paramsSerializer), true);
-
-        // Set the request timeout in MS
-        request.timeout = config.timeout;
-
-        // Listen for ready state
-        request.onreadystatechange = function handleLoad() {
-          if (!request || request.readyState !== 4) {
-            return;
-          }
-
-          // The request errored out and we didn't get a response, this will be
-          // handled by onerror instead
-          // With one exception: request that using file: protocol, most browsers
-          // will return status as 0 even though it's a successful request
-          if (request.status === 0 && !(request.responseURL && request.responseURL.indexOf('file:') === 0)) {
-            return;
-          }
-
-          // Prepare the response
-          var responseHeaders = 'getAllResponseHeaders' in request ? parseHeaders(request.getAllResponseHeaders()) : null;
-          var responseData = !config.responseType || config.responseType === 'text' ? request.responseText : request.response;
-          var response = {
-            data: responseData,
-            status: request.status,
-            statusText: request.statusText,
-            headers: responseHeaders,
-            config: config,
-            request: request
-          };
-
-          settle(resolve, reject, response);
-
-          // Clean up request
-          request = null;
-        };
-
-        // Handle browser request cancellation (as opposed to a manual cancellation)
-        request.onabort = function handleAbort() {
-          if (!request) {
-            return;
-          }
-
-          reject(createError('Request aborted', config, 'ECONNABORTED', request));
-
-          // Clean up request
-          request = null;
-        };
-
-        // Handle low level network errors
-        request.onerror = function handleError() {
-          // Real errors are hidden from us by the browser
-          // onerror should only fire if it's a network error
-          reject(createError('Network Error', config, null, request));
-
-          // Clean up request
-          request = null;
-        };
-
-        // Handle timeout
-        request.ontimeout = function handleTimeout() {
-          reject(createError('timeout of ' + config.timeout + 'ms exceeded', config, 'ECONNABORTED',
-            request));
-
-          // Clean up request
-          request = null;
-        };
-
-        // Add xsrf header
-        // This is only done if running in a standard browser environment.
-        // Specifically not if we're in a web worker, or react-native.
-        if (utils.isStandardBrowserEnv()) {
-          var cookies$1 = cookies;
-
-          // Add xsrf header
-          var xsrfValue = (config.withCredentials || isURLSameOrigin(config.url)) && config.xsrfCookieName ?
-            cookies$1.read(config.xsrfCookieName) :
-            undefined;
-
-          if (xsrfValue) {
-            requestHeaders[config.xsrfHeaderName] = xsrfValue;
-          }
-        }
-
-        // Add headers to the request
-        if ('setRequestHeader' in request) {
-          utils.forEach(requestHeaders, function setRequestHeader(val, key) {
-            if (typeof requestData === 'undefined' && key.toLowerCase() === 'content-type') {
-              // Remove Content-Type if data is undefined
-              delete requestHeaders[key];
-            } else {
-              // Otherwise add header to the request
-              request.setRequestHeader(key, val);
-            }
-          });
-        }
-
-        // Add withCredentials to request if needed
-        if (config.withCredentials) {
-          request.withCredentials = true;
-        }
-
-        // Add responseType to request if needed
-        if (config.responseType) {
-          try {
-            request.responseType = config.responseType;
-          } catch (e) {
-            // Expected DOMException thrown by browsers not compatible XMLHttpRequest Level 2.
-            // But, this can be suppressed for 'json' type as it can be parsed by default 'transformResponse' function.
-            if (config.responseType !== 'json') {
-              throw e;
-            }
-          }
-        }
-
-        // Handle progress if needed
-        if (typeof config.onDownloadProgress === 'function') {
-          request.addEventListener('progress', config.onDownloadProgress);
-        }
-
-        // Not all browsers support upload events
-        if (typeof config.onUploadProgress === 'function' && request.upload) {
-          request.upload.addEventListener('progress', config.onUploadProgress);
-        }
-
-        if (config.cancelToken) {
-          // Handle cancellation
-          config.cancelToken.promise.then(function onCanceled(cancel) {
-            if (!request) {
-              return;
-            }
-
-            request.abort();
-            reject(cancel);
-            // Clean up request
-            request = null;
-          });
-        }
-
-        if (requestData === undefined) {
-          requestData = null;
-        }
-
-        // Send the request
-        request.send(requestData);
-      });
-    };
-
-    var DEFAULT_CONTENT_TYPE = {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    };
-
-    function setContentTypeIfUnset(headers, value) {
-      if (!utils.isUndefined(headers) && utils.isUndefined(headers['Content-Type'])) {
-        headers['Content-Type'] = value;
-      }
-    }
-
-    function getDefaultAdapter() {
-      var adapter;
-      // Only Node.JS has a process variable that is of [[Class]] process
-      if (typeof process !== 'undefined' && Object.prototype.toString.call(process) === '[object process]') {
-        // For node use HTTP adapter
-        adapter = xhr;
-      } else if (typeof XMLHttpRequest !== 'undefined') {
-        // For browsers use XHR adapter
-        adapter = xhr;
-      }
-      return adapter;
-    }
-
-    var defaults = {
-      adapter: getDefaultAdapter(),
-
-      transformRequest: [function transformRequest(data, headers) {
-        normalizeHeaderName(headers, 'Accept');
-        normalizeHeaderName(headers, 'Content-Type');
-        if (utils.isFormData(data) ||
-          utils.isArrayBuffer(data) ||
-          utils.isBuffer(data) ||
-          utils.isStream(data) ||
-          utils.isFile(data) ||
-          utils.isBlob(data)
-        ) {
-          return data;
-        }
-        if (utils.isArrayBufferView(data)) {
-          return data.buffer;
-        }
-        if (utils.isURLSearchParams(data)) {
-          setContentTypeIfUnset(headers, 'application/x-www-form-urlencoded;charset=utf-8');
-          return data.toString();
-        }
-        if (utils.isObject(data)) {
-          setContentTypeIfUnset(headers, 'application/json;charset=utf-8');
-          return JSON.stringify(data);
-        }
-        return data;
-      }],
-
-      transformResponse: [function transformResponse(data) {
-        /*eslint no-param-reassign:0*/
-        if (typeof data === 'string') {
-          try {
-            data = JSON.parse(data);
-          } catch (e) { /* Ignore */ }
-        }
-        return data;
-      }],
-
-      /**
-       * A timeout in milliseconds to abort a request. If set to 0 (default) a
-       * timeout is not created.
-       */
-      timeout: 0,
-
-      xsrfCookieName: 'XSRF-TOKEN',
-      xsrfHeaderName: 'X-XSRF-TOKEN',
-
-      maxContentLength: -1,
-
-      validateStatus: function validateStatus(status) {
-        return status >= 200 && status < 300;
-      }
-    };
-
-    defaults.headers = {
-      common: {
-        'Accept': 'application/json, text/plain, */*'
-      }
-    };
-
-    utils.forEach(['delete', 'get', 'head'], function forEachMethodNoData(method) {
-      defaults.headers[method] = {};
-    });
-
-    utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-      defaults.headers[method] = utils.merge(DEFAULT_CONTENT_TYPE);
-    });
-
-    var defaults_1 = defaults;
-
-    /**
-     * Determines whether the specified URL is absolute
-     *
-     * @param {string} url The URL to test
-     * @returns {boolean} True if the specified URL is absolute, otherwise false
-     */
-    var isAbsoluteURL = function isAbsoluteURL(url) {
-      // A URL is considered absolute if it begins with "<scheme>://" or "//" (protocol-relative URL).
-      // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
-      // by any combination of letters, digits, plus, period, or hyphen.
-      return /^([a-z][a-z\d\+\-\.]*:)?\/\//i.test(url);
-    };
-
-    /**
-     * Creates a new URL by combining the specified URLs
-     *
-     * @param {string} baseURL The base URL
-     * @param {string} relativeURL The relative URL
-     * @returns {string} The combined URL
-     */
-    var combineURLs = function combineURLs(baseURL, relativeURL) {
-      return relativeURL
-        ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-        : baseURL;
-    };
-
-    /**
-     * Throws a `Cancel` if cancellation has been requested.
-     */
-    function throwIfCancellationRequested(config) {
-      if (config.cancelToken) {
-        config.cancelToken.throwIfRequested();
-      }
-    }
-
-    /**
-     * Dispatch a request to the server using the configured adapter.
-     *
-     * @param {object} config The config that is to be used for the request
-     * @returns {Promise} The Promise to be fulfilled
-     */
-    var dispatchRequest = function dispatchRequest(config) {
-      throwIfCancellationRequested(config);
-
-      // Support baseURL config
-      if (config.baseURL && !isAbsoluteURL(config.url)) {
-        config.url = combineURLs(config.baseURL, config.url);
-      }
-
-      // Ensure headers exist
-      config.headers = config.headers || {};
-
-      // Transform request data
-      config.data = transformData(
-        config.data,
-        config.headers,
-        config.transformRequest
-      );
-
-      // Flatten headers
-      config.headers = utils.merge(
-        config.headers.common || {},
-        config.headers[config.method] || {},
-        config.headers || {}
-      );
-
-      utils.forEach(
-        ['delete', 'get', 'head', 'post', 'put', 'patch', 'common'],
-        function cleanHeaderConfig(method) {
-          delete config.headers[method];
-        }
-      );
-
-      var adapter = config.adapter || defaults_1.adapter;
-
-      return adapter(config).then(function onAdapterResolution(response) {
-        throwIfCancellationRequested(config);
-
-        // Transform response data
-        response.data = transformData(
-          response.data,
-          response.headers,
-          config.transformResponse
-        );
-
-        return response;
-      }, function onAdapterRejection(reason) {
-        if (!isCancel(reason)) {
-          throwIfCancellationRequested(config);
-
-          // Transform response data
-          if (reason && reason.response) {
-            reason.response.data = transformData(
-              reason.response.data,
-              reason.response.headers,
-              config.transformResponse
-            );
-          }
-        }
-
-        return Promise.reject(reason);
-      });
-    };
-
-    /**
-     * Config-specific merge-function which creates a new config-object
-     * by merging two configuration objects together.
-     *
-     * @param {Object} config1
-     * @param {Object} config2
-     * @returns {Object} New object resulting from merging config2 to config1
-     */
-    var mergeConfig = function mergeConfig(config1, config2) {
-      // eslint-disable-next-line no-param-reassign
-      config2 = config2 || {};
-      var config = {};
-
-      utils.forEach(['url', 'method', 'params', 'data'], function valueFromConfig2(prop) {
-        if (typeof config2[prop] !== 'undefined') {
-          config[prop] = config2[prop];
-        }
-      });
-
-      utils.forEach(['headers', 'auth', 'proxy'], function mergeDeepProperties(prop) {
-        if (utils.isObject(config2[prop])) {
-          config[prop] = utils.deepMerge(config1[prop], config2[prop]);
-        } else if (typeof config2[prop] !== 'undefined') {
-          config[prop] = config2[prop];
-        } else if (utils.isObject(config1[prop])) {
-          config[prop] = utils.deepMerge(config1[prop]);
-        } else if (typeof config1[prop] !== 'undefined') {
-          config[prop] = config1[prop];
-        }
-      });
-
-      utils.forEach([
-        'baseURL', 'transformRequest', 'transformResponse', 'paramsSerializer',
-        'timeout', 'withCredentials', 'adapter', 'responseType', 'xsrfCookieName',
-        'xsrfHeaderName', 'onUploadProgress', 'onDownloadProgress', 'maxContentLength',
-        'validateStatus', 'maxRedirects', 'httpAgent', 'httpsAgent', 'cancelToken',
-        'socketPath'
-      ], function defaultToConfig2(prop) {
-        if (typeof config2[prop] !== 'undefined') {
-          config[prop] = config2[prop];
-        } else if (typeof config1[prop] !== 'undefined') {
-          config[prop] = config1[prop];
-        }
-      });
-
-      return config;
-    };
-
-    /**
-     * Create a new instance of Axios
-     *
-     * @param {Object} instanceConfig The default config for the instance
-     */
-    function Axios(instanceConfig) {
-      this.defaults = instanceConfig;
-      this.interceptors = {
-        request: new InterceptorManager_1(),
-        response: new InterceptorManager_1()
-      };
-    }
-
-    /**
-     * Dispatch a request
-     *
-     * @param {Object} config The config specific for this request (merged with this.defaults)
-     */
-    Axios.prototype.request = function request(config) {
-      /*eslint no-param-reassign:0*/
-      // Allow for axios('example/url'[, config]) a la fetch API
-      if (typeof config === 'string') {
-        config = arguments[1] || {};
-        config.url = arguments[0];
-      } else {
-        config = config || {};
-      }
-
-      config = mergeConfig(this.defaults, config);
-      config.method = config.method ? config.method.toLowerCase() : 'get';
-
-      // Hook up interceptors middleware
-      var chain = [dispatchRequest, undefined];
-      var promise = Promise.resolve(config);
-
-      this.interceptors.request.forEach(function unshiftRequestInterceptors(interceptor) {
-        chain.unshift(interceptor.fulfilled, interceptor.rejected);
-      });
-
-      this.interceptors.response.forEach(function pushResponseInterceptors(interceptor) {
-        chain.push(interceptor.fulfilled, interceptor.rejected);
-      });
-
-      while (chain.length) {
-        promise = promise.then(chain.shift(), chain.shift());
-      }
-
-      return promise;
-    };
-
-    Axios.prototype.getUri = function getUri(config) {
-      config = mergeConfig(this.defaults, config);
-      return buildURL(config.url, config.params, config.paramsSerializer).replace(/^\?/, '');
-    };
-
-    // Provide aliases for supported request methods
-    utils.forEach(['delete', 'get', 'head', 'options'], function forEachMethodNoData(method) {
-      /*eslint func-names:0*/
-      Axios.prototype[method] = function(url, config) {
-        return this.request(utils.merge(config || {}, {
-          method: method,
-          url: url
-        }));
-      };
-    });
-
-    utils.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method) {
-      /*eslint func-names:0*/
-      Axios.prototype[method] = function(url, data, config) {
-        return this.request(utils.merge(config || {}, {
-          method: method,
-          url: url,
-          data: data
-        }));
-      };
-    });
-
-    var Axios_1 = Axios;
-
-    /**
-     * A `Cancel` is an object that is thrown when an operation is canceled.
-     *
-     * @class
-     * @param {string=} message The message.
-     */
-    function Cancel(message) {
-      this.message = message;
-    }
-
-    Cancel.prototype.toString = function toString() {
-      return 'Cancel' + (this.message ? ': ' + this.message : '');
-    };
-
-    Cancel.prototype.__CANCEL__ = true;
-
-    var Cancel_1 = Cancel;
-
-    /**
-     * A `CancelToken` is an object that can be used to request cancellation of an operation.
-     *
-     * @class
-     * @param {Function} executor The executor function.
-     */
-    function CancelToken(executor) {
-      if (typeof executor !== 'function') {
-        throw new TypeError('executor must be a function.');
-      }
-
-      var resolvePromise;
-      this.promise = new Promise(function promiseExecutor(resolve) {
-        resolvePromise = resolve;
-      });
-
-      var token = this;
-      executor(function cancel(message) {
-        if (token.reason) {
-          // Cancellation has already been requested
-          return;
-        }
-
-        token.reason = new Cancel_1(message);
-        resolvePromise(token.reason);
-      });
-    }
-
-    /**
-     * Throws a `Cancel` if cancellation has been requested.
-     */
-    CancelToken.prototype.throwIfRequested = function throwIfRequested() {
-      if (this.reason) {
-        throw this.reason;
-      }
-    };
-
-    /**
-     * Returns an object that contains a new `CancelToken` and a function that, when called,
-     * cancels the `CancelToken`.
-     */
-    CancelToken.source = function source() {
-      var cancel;
-      var token = new CancelToken(function executor(c) {
-        cancel = c;
-      });
-      return {
-        token: token,
-        cancel: cancel
-      };
-    };
-
-    var CancelToken_1 = CancelToken;
-
-    /**
-     * Syntactic sugar for invoking a function and expanding an array for arguments.
-     *
-     * Common use case would be to use `Function.prototype.apply`.
-     *
-     *  ```js
-     *  function f(x, y, z) {}
-     *  var args = [1, 2, 3];
-     *  f.apply(null, args);
-     *  ```
-     *
-     * With `spread` this example can be re-written.
-     *
-     *  ```js
-     *  spread(function(x, y, z) {})([1, 2, 3]);
-     *  ```
-     *
-     * @param {Function} callback
-     * @returns {Function}
-     */
-    var spread = function spread(callback) {
-      return function wrap(arr) {
-        return callback.apply(null, arr);
-      };
-    };
-
-    /**
-     * Create an instance of Axios
-     *
-     * @param {Object} defaultConfig The default config for the instance
-     * @return {Axios} A new instance of Axios
-     */
-    function createInstance(defaultConfig) {
-      var context = new Axios_1(defaultConfig);
-      var instance = bind(Axios_1.prototype.request, context);
-
-      // Copy axios.prototype to instance
-      utils.extend(instance, Axios_1.prototype, context);
-
-      // Copy context to instance
-      utils.extend(instance, context);
-
-      return instance;
-    }
-
-    // Create the default instance to be exported
-    var axios = createInstance(defaults_1);
-
-    // Expose Axios class to allow class inheritance
-    axios.Axios = Axios_1;
-
-    // Factory for creating new instances
-    axios.create = function create(instanceConfig) {
-      return createInstance(mergeConfig(axios.defaults, instanceConfig));
-    };
-
-    // Expose Cancel & CancelToken
-    axios.Cancel = Cancel_1;
-    axios.CancelToken = CancelToken_1;
-    axios.isCancel = isCancel;
-
-    // Expose all/spread
-    axios.all = function all(promises) {
-      return Promise.all(promises);
-    };
-    axios.spread = spread;
-
-    var axios_1 = axios;
-
-    // Allow use of default import syntax in TypeScript
-    var default_1 = axios;
-    axios_1.default = default_1;
-
-    var axios$1 = axios_1;
-
     const subscriber_queue = [];
     /**
      * Create a `Writable` store that allows both updating and reading by subscription.
@@ -1857,115 +505,356 @@ var app = (function () {
     let kho = writable({});
 
     /* src/Khach.svelte generated by Svelte v3.14.0 */
-
     const file = "src/Khach.svelte";
 
-    function create_fragment(ctx) {
-    	let td0;
-    	let t0;
-    	let t1;
-    	let td1;
-    	let t2;
-    	let t3;
-    	let td2;
-    	let t4;
-    	let t5;
-    	let td3;
-    	let t6;
-    	let t7;
-    	let td4;
-    	let t8;
-    	let t9;
-    	let td5;
-    	let t10;
-    	let t11;
-    	let td6;
+    // (66:2) {:else}
+    function create_else_block(ctx) {
+    	let th;
+    	let button;
     	let i;
+    	let t0;
+    	let t1_value = ctx.id + 1 + "";
+    	let t1;
+    	let t2;
+    	let td0;
+    	let t3;
+    	let t4;
+    	let td1;
+    	let t5;
+    	let t6;
+    	let td2;
+    	let t7;
+    	let t8;
+    	let td3;
+    	let t9;
+    	let t10;
+    	let td4;
+    	let t11;
+    	let t12;
+    	let td5;
+    	let t13;
     	let dispose;
 
     	const block = {
     		c: function create() {
+    			th = element("th");
+    			button = element("button");
+    			i = element("i");
+    			t0 = space();
+    			t1 = text(t1_value);
+    			t2 = space();
     			td0 = element("td");
-    			t0 = text(ctx.mahoso);
-    			t1 = space();
+    			t3 = text(ctx.mahoso);
+    			t4 = space();
     			td1 = element("td");
-    			t2 = text(ctx.sohoso);
-    			t3 = space();
+    			t5 = text(ctx.sohoso);
+    			t6 = space();
     			td2 = element("td");
-    			t4 = text(ctx.khachhang);
-    			t5 = space();
+    			t7 = text(ctx.khachhang);
+    			t8 = space();
     			td3 = element("td");
-    			t6 = text(ctx.diachikhachhang);
-    			t7 = space();
+    			t9 = text(ctx.diachi);
+    			t10 = space();
     			td4 = element("td");
-    			t8 = text(ctx.lienhe);
+    			t11 = text(ctx.lienhe);
+    			t12 = space();
+    			td5 = element("td");
+    			t13 = text(ctx.mota);
+    			attr_dev(i, "class", "fa fa-edit");
+    			add_location(i, file, 71, 8, 1417);
+    			attr_dev(button, "class", "btn btn-outline-secondary");
+    			attr_dev(button, "type", "button");
+    			add_location(button, file, 67, 6, 1295);
+    			attr_dev(th, "scope", "row");
+    			add_location(th, file, 66, 4, 1272);
+    			add_location(td0, file, 75, 4, 1489);
+    			add_location(td1, file, 76, 4, 1511);
+    			add_location(td2, file, 77, 4, 1533);
+    			add_location(td3, file, 78, 4, 1558);
+    			add_location(td4, file, 79, 4, 1580);
+    			add_location(td5, file, 80, 4, 1602);
+    			dispose = listen_dev(button, "click", ctx.click_handler_1, false, false, false);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, th, anchor);
+    			append_dev(th, button);
+    			append_dev(button, i);
+    			append_dev(button, t0);
+    			append_dev(button, t1);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, td0, anchor);
+    			append_dev(td0, t3);
+    			insert_dev(target, t4, anchor);
+    			insert_dev(target, td1, anchor);
+    			append_dev(td1, t5);
+    			insert_dev(target, t6, anchor);
+    			insert_dev(target, td2, anchor);
+    			append_dev(td2, t7);
+    			insert_dev(target, t8, anchor);
+    			insert_dev(target, td3, anchor);
+    			append_dev(td3, t9);
+    			insert_dev(target, t10, anchor);
+    			insert_dev(target, td4, anchor);
+    			append_dev(td4, t11);
+    			insert_dev(target, t12, anchor);
+    			insert_dev(target, td5, anchor);
+    			append_dev(td5, t13);
+    		},
+    		p: function update(changed, ctx) {
+    			if (changed.id && t1_value !== (t1_value = ctx.id + 1 + "")) set_data_dev(t1, t1_value);
+    			if (changed.mahoso) set_data_dev(t3, ctx.mahoso);
+    			if (changed.sohoso) set_data_dev(t5, ctx.sohoso);
+    			if (changed.khachhang) set_data_dev(t7, ctx.khachhang);
+    			if (changed.diachi) set_data_dev(t9, ctx.diachi);
+    			if (changed.lienhe) set_data_dev(t11, ctx.lienhe);
+    			if (changed.mota) set_data_dev(t13, ctx.mota);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(th);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(td0);
+    			if (detaching) detach_dev(t4);
+    			if (detaching) detach_dev(td1);
+    			if (detaching) detach_dev(t6);
+    			if (detaching) detach_dev(td2);
+    			if (detaching) detach_dev(t8);
+    			if (detaching) detach_dev(td3);
+    			if (detaching) detach_dev(t10);
+    			if (detaching) detach_dev(td4);
+    			if (detaching) detach_dev(t12);
+    			if (detaching) detach_dev(td5);
+    			dispose();
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(66:2) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (37:2) {#if isEdit}
+    function create_if_block(ctx) {
+    	let th;
+    	let button;
+    	let i;
+    	let t0;
+    	let t1_value = ctx.id + 1 + "";
+    	let t1;
+    	let t2;
+    	let td0;
+    	let t3;
+    	let t4_value = ctx.$kho.tblWidth + "";
+    	let t4;
+    	let t5;
+    	let td1;
+    	let input0;
+    	let t6;
+    	let td2;
+    	let input1;
+    	let t7;
+    	let td3;
+    	let input2;
+    	let t8;
+    	let td4;
+    	let input3;
+    	let t9;
+    	let td5;
+    	let input4;
+    	let dispose;
+
+    	const block = {
+    		c: function create() {
+    			th = element("th");
+    			button = element("button");
+    			i = element("i");
+    			t0 = space();
+    			t1 = text(t1_value);
+    			t2 = space();
+    			td0 = element("td");
+    			t3 = text(ctx.mahoso);
+    			t4 = text(t4_value);
+    			t5 = space();
+    			td1 = element("td");
+    			input0 = element("input");
+    			t6 = space();
+    			td2 = element("td");
+    			input1 = element("input");
+    			t7 = space();
+    			td3 = element("td");
+    			input2 = element("input");
+    			t8 = space();
+    			td4 = element("td");
+    			input3 = element("input");
     			t9 = space();
     			td5 = element("td");
-    			t10 = text(ctx.ghichu);
-    			t11 = space();
-    			td6 = element("td");
-    			i = element("i");
-    			add_location(td0, file, 18, 0, 250);
-    			add_location(td1, file, 19, 0, 268);
-    			add_location(td2, file, 20, 0, 286);
-    			add_location(td3, file, 21, 0, 307);
-    			add_location(td4, file, 22, 0, 334);
-    			add_location(td5, file, 23, 0, 352);
-    			attr_dev(i, "class", "fa fa-edit");
-    			add_location(i, file, 25, 2, 396);
-    			add_location(td6, file, 24, 0, 370);
-    			dispose = listen_dev(td6, "click", suaHoso, false, false, false);
+    			input4 = element("input");
+    			attr_dev(i, "class", "fa fa-save");
+    			add_location(i, file, 45, 8, 877);
+    			attr_dev(button, "class", "btn btn-outline-secondary");
+    			attr_dev(button, "type", "button");
+    			add_location(button, file, 38, 6, 712);
+    			attr_dev(th, "scope", "row");
+    			add_location(th, file, 37, 4, 656);
+    			add_location(td0, file, 49, 4, 949);
+    			add_location(input0, file, 51, 6, 997);
+    			add_location(td1, file, 50, 4, 986);
+    			add_location(input1, file, 54, 6, 1052);
+    			add_location(td2, file, 53, 4, 1041);
+    			add_location(input2, file, 57, 6, 1110);
+    			add_location(td3, file, 56, 4, 1099);
+    			add_location(input3, file, 60, 6, 1165);
+    			add_location(td4, file, 59, 4, 1154);
+    			add_location(input4, file, 63, 6, 1220);
+    			add_location(td5, file, 62, 4, 1209);
+
+    			dispose = [
+    				listen_dev(button, "click", ctx.click_handler, false, false, false),
+    				listen_dev(th, "blur", ctx.blur_handler, false, false, false),
+    				listen_dev(input0, "input", ctx.input0_input_handler),
+    				listen_dev(input1, "input", ctx.input1_input_handler),
+    				listen_dev(input2, "input", ctx.input2_input_handler),
+    				listen_dev(input3, "input", ctx.input3_input_handler),
+    				listen_dev(input4, "input", ctx.input4_input_handler)
+    			];
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, th, anchor);
+    			append_dev(th, button);
+    			append_dev(button, i);
+    			append_dev(button, t0);
+    			append_dev(button, t1);
+    			insert_dev(target, t2, anchor);
+    			insert_dev(target, td0, anchor);
+    			append_dev(td0, t3);
+    			append_dev(td0, t4);
+    			insert_dev(target, t5, anchor);
+    			insert_dev(target, td1, anchor);
+    			append_dev(td1, input0);
+    			set_input_value(input0, ctx.sohoso);
+    			insert_dev(target, t6, anchor);
+    			insert_dev(target, td2, anchor);
+    			append_dev(td2, input1);
+    			set_input_value(input1, ctx.khachhang);
+    			insert_dev(target, t7, anchor);
+    			insert_dev(target, td3, anchor);
+    			append_dev(td3, input2);
+    			set_input_value(input2, ctx.diachi);
+    			insert_dev(target, t8, anchor);
+    			insert_dev(target, td4, anchor);
+    			append_dev(td4, input3);
+    			set_input_value(input3, ctx.lienhe);
+    			insert_dev(target, t9, anchor);
+    			insert_dev(target, td5, anchor);
+    			append_dev(td5, input4);
+    			set_input_value(input4, ctx.mota);
+    		},
+    		p: function update(changed, ctx) {
+    			if (changed.id && t1_value !== (t1_value = ctx.id + 1 + "")) set_data_dev(t1, t1_value);
+    			if (changed.mahoso) set_data_dev(t3, ctx.mahoso);
+    			if (changed.$kho && t4_value !== (t4_value = ctx.$kho.tblWidth + "")) set_data_dev(t4, t4_value);
+
+    			if (changed.sohoso && input0.value !== ctx.sohoso) {
+    				set_input_value(input0, ctx.sohoso);
+    			}
+
+    			if (changed.khachhang && input1.value !== ctx.khachhang) {
+    				set_input_value(input1, ctx.khachhang);
+    			}
+
+    			if (changed.diachi && input2.value !== ctx.diachi) {
+    				set_input_value(input2, ctx.diachi);
+    			}
+
+    			if (changed.lienhe && input3.value !== ctx.lienhe) {
+    				set_input_value(input3, ctx.lienhe);
+    			}
+
+    			if (changed.mota && input4.value !== ctx.mota) {
+    				set_input_value(input4, ctx.mota);
+    			}
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(th);
+    			if (detaching) detach_dev(t2);
+    			if (detaching) detach_dev(td0);
+    			if (detaching) detach_dev(t5);
+    			if (detaching) detach_dev(td1);
+    			if (detaching) detach_dev(t6);
+    			if (detaching) detach_dev(td2);
+    			if (detaching) detach_dev(t7);
+    			if (detaching) detach_dev(td3);
+    			if (detaching) detach_dev(t8);
+    			if (detaching) detach_dev(td4);
+    			if (detaching) detach_dev(t9);
+    			if (detaching) detach_dev(td5);
+    			run_all(dispose);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(37:2) {#if isEdit}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment(ctx) {
+    	let tr;
+
+    	function select_block_type(changed, ctx) {
+    		if (ctx.isEdit) return create_if_block;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type(null, ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			tr = element("tr");
+    			if_block.c();
+    			set_style(tr, "width", ctx.$kho.tblWidth + "px");
+    			add_location(tr, file, 35, 0, 599);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, td0, anchor);
-    			append_dev(td0, t0);
-    			insert_dev(target, t1, anchor);
-    			insert_dev(target, td1, anchor);
-    			append_dev(td1, t2);
-    			insert_dev(target, t3, anchor);
-    			insert_dev(target, td2, anchor);
-    			append_dev(td2, t4);
-    			insert_dev(target, t5, anchor);
-    			insert_dev(target, td3, anchor);
-    			append_dev(td3, t6);
-    			insert_dev(target, t7, anchor);
-    			insert_dev(target, td4, anchor);
-    			append_dev(td4, t8);
-    			insert_dev(target, t9, anchor);
-    			insert_dev(target, td5, anchor);
-    			append_dev(td5, t10);
-    			insert_dev(target, t11, anchor);
-    			insert_dev(target, td6, anchor);
-    			append_dev(td6, i);
+    			insert_dev(target, tr, anchor);
+    			if_block.m(tr, null);
     		},
     		p: function update(changed, ctx) {
-    			if (changed.mahoso) set_data_dev(t0, ctx.mahoso);
-    			if (changed.sohoso) set_data_dev(t2, ctx.sohoso);
-    			if (changed.khachhang) set_data_dev(t4, ctx.khachhang);
-    			if (changed.diachikhachhang) set_data_dev(t6, ctx.diachikhachhang);
-    			if (changed.lienhe) set_data_dev(t8, ctx.lienhe);
-    			if (changed.ghichu) set_data_dev(t10, ctx.ghichu);
+    			if (current_block_type === (current_block_type = select_block_type(changed, ctx)) && if_block) {
+    				if_block.p(changed, ctx);
+    			} else {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(tr, null);
+    				}
+    			}
+
+    			if (changed.$kho) {
+    				set_style(tr, "width", ctx.$kho.tblWidth + "px");
+    			}
     		},
     		i: noop,
     		o: noop,
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(td0);
-    			if (detaching) detach_dev(t1);
-    			if (detaching) detach_dev(td1);
-    			if (detaching) detach_dev(t3);
-    			if (detaching) detach_dev(td2);
-    			if (detaching) detach_dev(t5);
-    			if (detaching) detach_dev(td3);
-    			if (detaching) detach_dev(t7);
-    			if (detaching) detach_dev(td4);
-    			if (detaching) detach_dev(t9);
-    			if (detaching) detach_dev(td5);
-    			if (detaching) detach_dev(t11);
-    			if (detaching) detach_dev(td6);
-    			dispose();
+    			if (detaching) detach_dev(tr);
+    			if_block.d();
     		}
     	};
 
@@ -1982,61 +871,194 @@ var app = (function () {
 
     let isOpen = false;
 
-    function suaHoso() {
-    	
-    }
-
     function instance($$self, $$props, $$invalidate) {
+    	let $kho;
+    	validate_store(kho, "kho");
+    	component_subscribe($$self, kho, $$value => $$invalidate("$kho", $kho = $$value));
+    	let { id } = $$props;
     	let { mahoso } = $$props;
     	let { sohoso } = $$props;
     	let { khachhang } = $$props;
-    	let { diachikhachhang } = $$props;
+    	let { diachi } = $$props;
     	let { lienhe } = $$props;
-    	let { ghichu } = $$props;
-    	const writable_props = ["mahoso", "sohoso", "khachhang", "diachikhachhang", "lienhe", "ghichu"];
+    	let { maq } = $$props;
+    	let { maqp } = $$props;
+    	let { mota } = $$props;
+    	let { ngaygan } = $$props;
+    	let { sodhn } = $$props;
+    	let { hieudhn } = $$props;
+    	let { chisodhn } = $$props;
+    	let { madma } = $$props;
+    	let { malotrinh } = $$props;
+    	let { trongai } = $$props;
+    	let { tainhap } = $$props;
+    	let { taithicong } = $$props;
+    	let { hoantien } = $$props;
+    	let isEdit = false;
+
+    	const writable_props = [
+    		"id",
+    		"mahoso",
+    		"sohoso",
+    		"khachhang",
+    		"diachi",
+    		"lienhe",
+    		"maq",
+    		"maqp",
+    		"mota",
+    		"ngaygan",
+    		"sodhn",
+    		"hieudhn",
+    		"chisodhn",
+    		"madma",
+    		"malotrinh",
+    		"trongai",
+    		"tainhap",
+    		"taithicong",
+    		"hoantien"
+    	];
 
     	Object.keys($$props).forEach(key => {
     		if (!writable_props.includes(key) && !key.startsWith("$$")) console.warn(`<Khach> was created with unknown prop '${key}'`);
     	});
 
+    	const click_handler = () => {
+    		$$invalidate("isEdit", isEdit = false);
+    	};
+
+    	const blur_handler = () => $$invalidate("isEdit", isEdit = false);
+
+    	function input0_input_handler() {
+    		sohoso = this.value;
+    		$$invalidate("sohoso", sohoso);
+    	}
+
+    	function input1_input_handler() {
+    		khachhang = this.value;
+    		$$invalidate("khachhang", khachhang);
+    	}
+
+    	function input2_input_handler() {
+    		diachi = this.value;
+    		$$invalidate("diachi", diachi);
+    	}
+
+    	function input3_input_handler() {
+    		lienhe = this.value;
+    		$$invalidate("lienhe", lienhe);
+    	}
+
+    	function input4_input_handler() {
+    		mota = this.value;
+    		$$invalidate("mota", mota);
+    	}
+
+    	const click_handler_1 = () => $$invalidate("isEdit", isEdit = true);
+
     	$$self.$set = $$props => {
+    		if ("id" in $$props) $$invalidate("id", id = $$props.id);
     		if ("mahoso" in $$props) $$invalidate("mahoso", mahoso = $$props.mahoso);
     		if ("sohoso" in $$props) $$invalidate("sohoso", sohoso = $$props.sohoso);
     		if ("khachhang" in $$props) $$invalidate("khachhang", khachhang = $$props.khachhang);
-    		if ("diachikhachhang" in $$props) $$invalidate("diachikhachhang", diachikhachhang = $$props.diachikhachhang);
+    		if ("diachi" in $$props) $$invalidate("diachi", diachi = $$props.diachi);
     		if ("lienhe" in $$props) $$invalidate("lienhe", lienhe = $$props.lienhe);
-    		if ("ghichu" in $$props) $$invalidate("ghichu", ghichu = $$props.ghichu);
+    		if ("maq" in $$props) $$invalidate("maq", maq = $$props.maq);
+    		if ("maqp" in $$props) $$invalidate("maqp", maqp = $$props.maqp);
+    		if ("mota" in $$props) $$invalidate("mota", mota = $$props.mota);
+    		if ("ngaygan" in $$props) $$invalidate("ngaygan", ngaygan = $$props.ngaygan);
+    		if ("sodhn" in $$props) $$invalidate("sodhn", sodhn = $$props.sodhn);
+    		if ("hieudhn" in $$props) $$invalidate("hieudhn", hieudhn = $$props.hieudhn);
+    		if ("chisodhn" in $$props) $$invalidate("chisodhn", chisodhn = $$props.chisodhn);
+    		if ("madma" in $$props) $$invalidate("madma", madma = $$props.madma);
+    		if ("malotrinh" in $$props) $$invalidate("malotrinh", malotrinh = $$props.malotrinh);
+    		if ("trongai" in $$props) $$invalidate("trongai", trongai = $$props.trongai);
+    		if ("tainhap" in $$props) $$invalidate("tainhap", tainhap = $$props.tainhap);
+    		if ("taithicong" in $$props) $$invalidate("taithicong", taithicong = $$props.taithicong);
+    		if ("hoantien" in $$props) $$invalidate("hoantien", hoantien = $$props.hoantien);
     	};
 
     	$$self.$capture_state = () => {
     		return {
+    			id,
     			mahoso,
     			sohoso,
     			khachhang,
-    			diachikhachhang,
+    			diachi,
     			lienhe,
-    			ghichu,
-    			isOpen
+    			maq,
+    			maqp,
+    			mota,
+    			ngaygan,
+    			sodhn,
+    			hieudhn,
+    			chisodhn,
+    			madma,
+    			malotrinh,
+    			trongai,
+    			tainhap,
+    			taithicong,
+    			hoantien,
+    			isOpen,
+    			isEdit,
+    			$kho
     		};
     	};
 
     	$$self.$inject_state = $$props => {
+    		if ("id" in $$props) $$invalidate("id", id = $$props.id);
     		if ("mahoso" in $$props) $$invalidate("mahoso", mahoso = $$props.mahoso);
     		if ("sohoso" in $$props) $$invalidate("sohoso", sohoso = $$props.sohoso);
     		if ("khachhang" in $$props) $$invalidate("khachhang", khachhang = $$props.khachhang);
-    		if ("diachikhachhang" in $$props) $$invalidate("diachikhachhang", diachikhachhang = $$props.diachikhachhang);
+    		if ("diachi" in $$props) $$invalidate("diachi", diachi = $$props.diachi);
     		if ("lienhe" in $$props) $$invalidate("lienhe", lienhe = $$props.lienhe);
-    		if ("ghichu" in $$props) $$invalidate("ghichu", ghichu = $$props.ghichu);
+    		if ("maq" in $$props) $$invalidate("maq", maq = $$props.maq);
+    		if ("maqp" in $$props) $$invalidate("maqp", maqp = $$props.maqp);
+    		if ("mota" in $$props) $$invalidate("mota", mota = $$props.mota);
+    		if ("ngaygan" in $$props) $$invalidate("ngaygan", ngaygan = $$props.ngaygan);
+    		if ("sodhn" in $$props) $$invalidate("sodhn", sodhn = $$props.sodhn);
+    		if ("hieudhn" in $$props) $$invalidate("hieudhn", hieudhn = $$props.hieudhn);
+    		if ("chisodhn" in $$props) $$invalidate("chisodhn", chisodhn = $$props.chisodhn);
+    		if ("madma" in $$props) $$invalidate("madma", madma = $$props.madma);
+    		if ("malotrinh" in $$props) $$invalidate("malotrinh", malotrinh = $$props.malotrinh);
+    		if ("trongai" in $$props) $$invalidate("trongai", trongai = $$props.trongai);
+    		if ("tainhap" in $$props) $$invalidate("tainhap", tainhap = $$props.tainhap);
+    		if ("taithicong" in $$props) $$invalidate("taithicong", taithicong = $$props.taithicong);
+    		if ("hoantien" in $$props) $$invalidate("hoantien", hoantien = $$props.hoantien);
     		if ("isOpen" in $$props) isOpen = $$props.isOpen;
+    		if ("isEdit" in $$props) $$invalidate("isEdit", isEdit = $$props.isEdit);
+    		if ("$kho" in $$props) kho.set($kho = $$props.$kho);
     	};
 
     	return {
+    		id,
     		mahoso,
     		sohoso,
     		khachhang,
-    		diachikhachhang,
+    		diachi,
     		lienhe,
-    		ghichu
+    		maq,
+    		maqp,
+    		mota,
+    		ngaygan,
+    		sodhn,
+    		hieudhn,
+    		chisodhn,
+    		madma,
+    		malotrinh,
+    		trongai,
+    		tainhap,
+    		taithicong,
+    		hoantien,
+    		isEdit,
+    		$kho,
+    		click_handler,
+    		blur_handler,
+    		input0_input_handler,
+    		input1_input_handler,
+    		input2_input_handler,
+    		input3_input_handler,
+    		input4_input_handler,
+    		click_handler_1
     	};
     }
 
@@ -2045,12 +1067,25 @@ var app = (function () {
     		super(options);
 
     		init(this, options, instance, create_fragment, safe_not_equal, {
+    			id: 0,
     			mahoso: 0,
     			sohoso: 0,
     			khachhang: 0,
-    			diachikhachhang: 0,
+    			diachi: 0,
     			lienhe: 0,
-    			ghichu: 0
+    			maq: 0,
+    			maqp: 0,
+    			mota: 0,
+    			ngaygan: 0,
+    			sodhn: 0,
+    			hieudhn: 0,
+    			chisodhn: 0,
+    			madma: 0,
+    			malotrinh: 0,
+    			trongai: 0,
+    			tainhap: 0,
+    			taithicong: 0,
+    			hoantien: 0
     		});
 
     		dispatch_dev("SvelteRegisterComponent", {
@@ -2062,6 +1097,10 @@ var app = (function () {
 
     		const { ctx } = this.$$;
     		const props = options.props || ({});
+
+    		if (ctx.id === undefined && !("id" in props)) {
+    			console.warn("<Khach> was created without expected prop 'id'");
+    		}
 
     		if (ctx.mahoso === undefined && !("mahoso" in props)) {
     			console.warn("<Khach> was created without expected prop 'mahoso'");
@@ -2075,17 +1114,73 @@ var app = (function () {
     			console.warn("<Khach> was created without expected prop 'khachhang'");
     		}
 
-    		if (ctx.diachikhachhang === undefined && !("diachikhachhang" in props)) {
-    			console.warn("<Khach> was created without expected prop 'diachikhachhang'");
+    		if (ctx.diachi === undefined && !("diachi" in props)) {
+    			console.warn("<Khach> was created without expected prop 'diachi'");
     		}
 
     		if (ctx.lienhe === undefined && !("lienhe" in props)) {
     			console.warn("<Khach> was created without expected prop 'lienhe'");
     		}
 
-    		if (ctx.ghichu === undefined && !("ghichu" in props)) {
-    			console.warn("<Khach> was created without expected prop 'ghichu'");
+    		if (ctx.maq === undefined && !("maq" in props)) {
+    			console.warn("<Khach> was created without expected prop 'maq'");
     		}
+
+    		if (ctx.maqp === undefined && !("maqp" in props)) {
+    			console.warn("<Khach> was created without expected prop 'maqp'");
+    		}
+
+    		if (ctx.mota === undefined && !("mota" in props)) {
+    			console.warn("<Khach> was created without expected prop 'mota'");
+    		}
+
+    		if (ctx.ngaygan === undefined && !("ngaygan" in props)) {
+    			console.warn("<Khach> was created without expected prop 'ngaygan'");
+    		}
+
+    		if (ctx.sodhn === undefined && !("sodhn" in props)) {
+    			console.warn("<Khach> was created without expected prop 'sodhn'");
+    		}
+
+    		if (ctx.hieudhn === undefined && !("hieudhn" in props)) {
+    			console.warn("<Khach> was created without expected prop 'hieudhn'");
+    		}
+
+    		if (ctx.chisodhn === undefined && !("chisodhn" in props)) {
+    			console.warn("<Khach> was created without expected prop 'chisodhn'");
+    		}
+
+    		if (ctx.madma === undefined && !("madma" in props)) {
+    			console.warn("<Khach> was created without expected prop 'madma'");
+    		}
+
+    		if (ctx.malotrinh === undefined && !("malotrinh" in props)) {
+    			console.warn("<Khach> was created without expected prop 'malotrinh'");
+    		}
+
+    		if (ctx.trongai === undefined && !("trongai" in props)) {
+    			console.warn("<Khach> was created without expected prop 'trongai'");
+    		}
+
+    		if (ctx.tainhap === undefined && !("tainhap" in props)) {
+    			console.warn("<Khach> was created without expected prop 'tainhap'");
+    		}
+
+    		if (ctx.taithicong === undefined && !("taithicong" in props)) {
+    			console.warn("<Khach> was created without expected prop 'taithicong'");
+    		}
+
+    		if (ctx.hoantien === undefined && !("hoantien" in props)) {
+    			console.warn("<Khach> was created without expected prop 'hoantien'");
+    		}
+    	}
+
+    	get id() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set id(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
     	get mahoso() {
@@ -2112,11 +1207,11 @@ var app = (function () {
     		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	get diachikhachhang() {
+    	get diachi() {
     		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set diachikhachhang(value) {
+    	set diachi(value) {
     		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
@@ -2128,11 +1223,107 @@ var app = (function () {
     		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	get ghichu() {
+    	get maq() {
     		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
 
-    	set ghichu(value) {
+    	set maq(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get maqp() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set maqp(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get mota() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set mota(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get ngaygan() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set ngaygan(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get sodhn() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set sodhn(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get hieudhn() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set hieudhn(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get chisodhn() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set chisodhn(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get madma() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set madma(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get malotrinh() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set malotrinh(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get trongai() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set trongai(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get tainhap() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set tainhap(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get taithicong() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set taithicong(value) {
+    		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get hoantien() {
+    		throw new Error("<Khach>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set hoantien(value) {
     		throw new Error("<Khach>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
@@ -2166,7 +1357,7 @@ var app = (function () {
     	return child_ctx;
     }
 
-    // (120:10) {#each dsnam as namlamviec}
+    // (137:12) {#each dsnam as namlamviec}
     function create_each_block_2(ctx) {
     	let option;
     	let t_value = ctx.namlamviec + "";
@@ -2179,7 +1370,7 @@ var app = (function () {
     			t = text(t_value);
     			option.__value = option_value_value = ctx.namlamviec;
     			option.value = option.__value;
-    			add_location(option, file$1, 120, 12, 3055);
+    			add_location(option, file$1, 137, 14, 3305);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, option, anchor);
@@ -2195,15 +1386,15 @@ var app = (function () {
     		block,
     		id: create_each_block_2.name,
     		type: "each",
-    		source: "(120:10) {#each dsnam as namlamviec}",
+    		source: "(137:12) {#each dsnam as namlamviec}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (131:4) {#if $kho.showProgress}
-    function create_if_block(ctx) {
+    // (152:4) {#if $kho.showProgress}
+    function create_if_block$1(ctx) {
     	let div3;
     	let div2;
     	let div1;
@@ -2227,13 +1418,13 @@ var app = (function () {
     			attr_dev(div0, "aria-valuemin", "0");
     			attr_dev(div0, "aria-valuemax", "100");
     			set_style(div0, "width", ctx.$kho.progress + "%");
-    			add_location(div0, file$1, 134, 12, 3467);
+    			add_location(div0, file$1, 155, 12, 3779);
     			attr_dev(div1, "class", "progress");
-    			add_location(div1, file$1, 133, 10, 3432);
+    			add_location(div1, file$1, 154, 10, 3744);
     			attr_dev(div2, "class", "col");
-    			add_location(div2, file$1, 132, 8, 3404);
+    			add_location(div2, file$1, 153, 8, 3716);
     			attr_dev(div3, "class", "row");
-    			add_location(div3, file$1, 131, 6, 3378);
+    			add_location(div3, file$1, 152, 6, 3690);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, div3, anchor);
@@ -2261,16 +1452,16 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
-    		id: create_if_block.name,
+    		id: create_if_block$1.name,
     		type: "if",
-    		source: "(131:4) {#if $kho.showProgress}",
+    		source: "(152:4) {#if $kho.showProgress}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (156:14) {#each dstim as item, id}
+    // (175:12) {#each dstim as item, id}
     function create_each_block_1(ctx) {
     	let button;
     	let t0_value = ctx.item + "";
@@ -2297,7 +1488,7 @@ var app = (function () {
     			t5 = space();
     			attr_dev(button, "type", "button");
     			attr_dev(button, "class", "btn btn-outline-info");
-    			add_location(button, file$1, 156, 16, 4108);
+    			add_location(button, file$1, 175, 14, 4375);
 
     			dispose = [
     				listen_dev(button, "mouseover", mouseover_handler, false, false, false),
@@ -2328,23 +1519,17 @@ var app = (function () {
     		block,
     		id: create_each_block_1.name,
     		type: "each",
-    		source: "(156:14) {#each dstim as item, id}",
+    		source: "(175:12) {#each dstim as item, id}",
     		ctx
     	});
 
     	return block;
     }
 
-    // (199:10) {#each dsLoc as khach, id}
+    // (220:12) {#each dsLoc as khach, id}
     function create_each_block(ctx) {
-    	let tr;
-    	let th;
-    	let t0_value = ctx.id + 1 + "";
-    	let t0;
-    	let t1;
-    	let t2;
     	let current;
-    	const khach_spread_levels = [ctx.khach];
+    	const khach_spread_levels = [ctx.khach, { ",": true }, { id: true }];
     	let khach_props = {};
 
     	for (let i = 0; i < khach_spread_levels.length; i += 1) {
@@ -2355,28 +1540,19 @@ var app = (function () {
 
     	const block = {
     		c: function create() {
-    			tr = element("tr");
-    			th = element("th");
-    			t0 = text(t0_value);
-    			t1 = space();
     			create_component(khach.$$.fragment);
-    			t2 = space();
-    			attr_dev(th, "scope", "row");
-    			add_location(th, file$1, 200, 14, 5493);
-    			add_location(tr, file$1, 199, 12, 5474);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, tr, anchor);
-    			append_dev(tr, th);
-    			append_dev(th, t0);
-    			append_dev(tr, t1);
-    			mount_component(khach, tr, null);
-    			append_dev(tr, t2);
+    			mount_component(khach, target, anchor);
     			current = true;
     		},
     		p: function update(changed, ctx) {
     			const khach_changes = changed.dsLoc
-    			? get_spread_update(khach_spread_levels, [get_spread_object(ctx.khach)])
+    			? get_spread_update(khach_spread_levels, [
+    					get_spread_object(ctx.khach),
+    					khach_spread_levels[1],
+    					khach_spread_levels[2]
+    				])
     			: {};
 
     			khach.$set(khach_changes);
@@ -2391,8 +1567,7 @@ var app = (function () {
     			current = false;
     		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(tr);
-    			destroy_component(khach);
+    			destroy_component(khach, detaching);
     		}
     	};
 
@@ -2400,7 +1575,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(199:10) {#each dsLoc as khach, id}",
+    		source: "(220:12) {#each dsLoc as khach, id}",
     		ctx
     	});
 
@@ -2410,72 +1585,82 @@ var app = (function () {
     function create_fragment$1(ctx) {
     	let section;
     	let header;
-    	let h1;
+    	let div4;
     	let div0;
+    	let h3;
     	let t1;
+    	let div2;
     	let div1;
     	let select;
     	let t2;
-    	let div2;
+    	let div3;
     	let button0;
     	let i0;
     	let t3;
     	let t4;
-    	let main;
+    	let div5;
+    	let t6;
+    	let div11;
     	let div9;
     	let div8;
     	let div6;
-    	let div5;
-    	let div3;
-    	let t5;
-    	let div4;
-    	let button1;
-    	let i1;
-    	let t6;
     	let t7;
     	let div7;
-    	let input;
+    	let button1;
+    	let i1;
     	let t8;
+    	let t9;
     	let div10;
+    	let input;
+    	let t10;
+    	let hr;
+    	let t11;
+    	let main;
+    	let div13;
+    	let div12;
     	let table;
     	let thead;
     	let tr;
     	let th0;
-    	let t10;
+    	let t13;
     	let th1;
-    	let t12;
+    	let t15;
     	let th2;
-    	let t14;
+    	let t17;
     	let th3;
-    	let t16;
+    	let t19;
     	let th4;
-    	let t18;
+    	let t21;
     	let th5;
-    	let t20;
+    	let t23;
     	let th6;
-    	let t22;
-    	let th7;
-    	let t24;
-    	let tbody;
     	let t25;
+    	let tbody;
+    	let div12_resize_listener;
+    	let t26;
     	let footer;
     	let br;
-    	let t26;
-    	let div14;
-    	let div11;
     	let t27;
-    	let t28_value = ctx.$kho.dskh.length + "";
+    	let div17;
+    	let div14;
     	let t28;
+    	let t29_value = ctx.$kho.dskh.length + "";
     	let t29;
-    	let div12;
     	let t30;
-    	let div13;
+    	let div15;
     	let t31;
     	let t32;
     	let t33;
-    	let t34_value = ctx.dsLoc.length + "";
+    	let t34_value = ctx.$kho.tblWidth + "";
     	let t34;
     	let t35;
+    	let div16;
+    	let t36;
+    	let t37;
+    	let t38;
+    	let t39_value = ctx.dsLoc.length + "";
+    	let t39;
+    	let t40;
     	let current;
     	let dispose;
     	let each_value_2 = ctx.dsnam;
@@ -2485,7 +1670,7 @@ var app = (function () {
     		each_blocks_2[i] = create_each_block_2(get_each_context_2(ctx, each_value_2, i));
     	}
 
-    	let if_block = ctx.$kho.showProgress && create_if_block(ctx);
+    	let if_block = ctx.$kho.showProgress && create_if_block$1(ctx);
     	let each_value_1 = ctx.dstim;
     	let each_blocks_1 = [];
 
@@ -2508,10 +1693,12 @@ var app = (function () {
     		c: function create() {
     			section = element("section");
     			header = element("header");
-    			h1 = element("h1");
+    			div4 = element("div");
     			div0 = element("div");
-    			div0.textContent = "DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN NĂM";
+    			h3 = element("h3");
+    			h3.textContent = "DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN NĂM ";
     			t1 = space();
+    			div2 = element("div");
     			div1 = element("div");
     			select = element("select");
 
@@ -2520,159 +1707,173 @@ var app = (function () {
     			}
 
     			t2 = space();
-    			div2 = element("div");
+    			div3 = element("div");
     			button0 = element("button");
     			i0 = element("i");
     			t3 = space();
     			if (if_block) if_block.c();
     			t4 = space();
-    			main = element("main");
+    			div5 = element("div");
+    			div5.textContent = " ";
+    			t6 = space();
+    			div11 = element("div");
     			div9 = element("div");
     			div8 = element("div");
     			div6 = element("div");
-    			div5 = element("div");
-    			div3 = element("div");
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
     				each_blocks_1[i].c();
     			}
 
-    			t5 = space();
-    			div4 = element("div");
-    			button1 = element("button");
-    			i1 = element("i");
-    			t6 = text("\n                Xóa hết");
     			t7 = space();
     			div7 = element("div");
-    			input = element("input");
-    			t8 = space();
+    			button1 = element("button");
+    			i1 = element("i");
+    			t8 = text("\n              Xóa hết");
+    			t9 = space();
     			div10 = element("div");
+    			input = element("input");
+    			t10 = space();
+    			hr = element("hr");
+    			t11 = space();
+    			main = element("main");
+    			div13 = element("div");
+    			div12 = element("div");
     			table = element("table");
     			thead = element("thead");
     			tr = element("tr");
     			th0 = element("th");
     			th0.textContent = "STT";
-    			t10 = space();
+    			t13 = space();
     			th1 = element("th");
     			th1.textContent = "Mã hồ sơ";
-    			t12 = space();
+    			t15 = space();
     			th2 = element("th");
     			th2.textContent = "Số hồ sơ";
-    			t14 = space();
+    			t17 = space();
     			th3 = element("th");
     			th3.textContent = "Khách hàng";
-    			t16 = space();
+    			t19 = space();
     			th4 = element("th");
     			th4.textContent = "Địa chỉ";
-    			t18 = space();
+    			t21 = space();
     			th5 = element("th");
     			th5.textContent = "Liên hệ";
-    			t20 = space();
+    			t23 = space();
     			th6 = element("th");
     			th6.textContent = "Ghi chú";
-    			t22 = space();
-    			th7 = element("th");
-    			th7.textContent = "Action";
-    			t24 = space();
+    			t25 = space();
     			tbody = element("tbody");
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].c();
     			}
 
-    			t25 = space();
+    			t26 = space();
     			footer = element("footer");
     			br = element("br");
-    			t26 = space();
+    			t27 = space();
+    			div17 = element("div");
     			div14 = element("div");
-    			div11 = element("div");
-    			t27 = text("Tổng số hồ sơ: ");
-    			t28 = text(t28_value);
-    			t29 = space();
-    			div12 = element("div");
+    			t28 = text("Tổng số hồ sơ: ");
+    			t29 = text(t29_value);
     			t30 = space();
-    			div13 = element("div");
-    			t31 = text("bạn đang xem hồ sơ thứ ");
-    			t32 = text(curHoso);
-    			t33 = text(" trong ");
+    			div15 = element("div");
+    			t31 = text("rongbang = ");
+    			t32 = text(ctx.rongbang);
+    			t33 = text(" - $kho.tblWidth=");
     			t34 = text(t34_value);
-    			t35 = text(" hồ sơ chọn lọc");
-    			attr_dev(div0, "class", "col-md-auto");
-    			add_location(div0, file$1, 116, 6, 2832);
-    			attr_dev(select, "class", "form-control");
+    			t35 = space();
+    			div16 = element("div");
+    			t36 = text("bạn đang xem hồ sơ thứ ");
+    			t37 = text(curHoso);
+    			t38 = text(" trong ");
+    			t39 = text(t39_value);
+    			t40 = text(" hồ sơ chọn lọc");
+    			attr_dev(h3, "class", "svelte-1xadhab");
+    			add_location(h3, file$1, 131, 8, 3047);
+    			attr_dev(div0, "class", "col-auto");
+    			add_location(div0, file$1, 130, 6, 3016);
+    			attr_dev(select, "class", "custom-select");
     			attr_dev(select, "id", "selectnam");
     			if (ctx.namhoso === void 0) add_render_callback(() => ctx.select_change_handler.call(select));
-    			add_location(select, file$1, 118, 8, 2939);
-    			attr_dev(div1, "class", "col-md-auto");
-    			add_location(div1, file$1, 117, 6, 2905);
+    			add_location(select, file$1, 135, 10, 3184);
+    			attr_dev(div1, "class", "input-group");
+    			add_location(div1, file$1, 134, 8, 3148);
+    			attr_dev(div2, "class", "col-auto");
+    			add_location(div2, file$1, 133, 6, 3117);
     			attr_dev(i0, "class", "fa fa-sync-alt");
-    			attr_dev(i0, "aria-hidden", "true");
-    			add_location(i0, file$1, 126, 10, 3255);
-    			attr_dev(button0, "class", "btn btn-primary");
-    			add_location(button0, file$1, 125, 8, 3193);
-    			attr_dev(div2, "class", "col-md-auto");
-    			add_location(div2, file$1, 124, 6, 3159);
-    			attr_dev(h1, "class", "row justify-content-md-center text-primary svelte-1ucbz36");
-    			add_location(h1, file$1, 115, 4, 2770);
-    			attr_dev(header, "class", "container-fluid");
-    			add_location(header, file$1, 114, 2, 2733);
-    			attr_dev(div3, "class", "col");
-    			add_location(div3, file$1, 154, 12, 4034);
+    			add_location(i0, file$1, 147, 10, 3585);
+    			attr_dev(button0, "class", "btn btn-outline-primary btn-rounded");
+    			attr_dev(button0, "type", "button");
+    			add_location(button0, file$1, 143, 8, 3459);
+    			attr_dev(div3, "class", "col-auto");
+    			add_location(div3, file$1, 142, 6, 3428);
+    			attr_dev(div4, "class", "row justify-content-center text-primary");
+    			add_location(div4, file$1, 129, 4, 2956);
+    			add_location(div5, file$1, 169, 4, 4183);
+    			attr_dev(div6, "class", "col");
+    			add_location(div6, file$1, 173, 10, 4305);
     			attr_dev(i1, "class", "fa fa-trash fa-lg");
-    			add_location(i1, file$1, 167, 16, 4539);
+    			add_location(i1, file$1, 186, 14, 4784);
     			attr_dev(button1, "class", "btn");
-    			add_location(button1, file$1, 166, 14, 4472);
-    			attr_dev(div4, "class", "col-auto");
-    			add_location(div4, file$1, 165, 12, 4435);
-    			attr_dev(div5, "class", "row");
-    			add_location(div5, file$1, 153, 10, 4004);
-    			attr_dev(div6, "class", "col border border-primary");
-    			add_location(div6, file$1, 152, 8, 3954);
+    			add_location(button1, file$1, 185, 12, 4719);
+    			attr_dev(div7, "class", "col-auto");
+    			add_location(div7, file$1, 184, 10, 4684);
+    			attr_dev(div8, "class", "row");
+    			add_location(div8, file$1, 172, 8, 4277);
+    			attr_dev(div9, "class", "col border border-primary");
+    			add_location(div9, file$1, 171, 6, 4229);
     			attr_dev(input, "class", "col");
     			attr_dev(input, "type", "search");
     			attr_dev(input, "placeholder", "Tìm ... (không phân biệt chữ hoa hay thường)");
-    			add_location(input, file$1, 174, 10, 4708);
-    			attr_dev(div7, "class", "col-3");
-    			add_location(div7, file$1, 173, 8, 4678);
-    			attr_dev(div8, "class", "row");
-    			add_location(div8, file$1, 151, 6, 3928);
-    			attr_dev(div9, "class", "container-fluid");
-    			add_location(div9, file$1, 150, 4, 3892);
+    			add_location(input, file$1, 193, 8, 4939);
+    			attr_dev(div10, "class", "col-3");
+    			add_location(div10, file$1, 192, 6, 4911);
+    			attr_dev(div11, "class", "row");
+    			add_location(div11, file$1, 170, 4, 4205);
+    			add_location(hr, file$1, 201, 4, 5152);
+    			attr_dev(header, "class", "container-fluid");
+    			add_location(header, file$1, 128, 2, 2919);
     			attr_dev(th0, "scope", "col");
-    			add_location(th0, file$1, 187, 12, 5060);
+    			add_location(th0, file$1, 209, 14, 5403);
     			attr_dev(th1, "scope", "col");
-    			add_location(th1, file$1, 188, 12, 5097);
+    			add_location(th1, file$1, 210, 14, 5442);
     			attr_dev(th2, "scope", "col");
-    			add_location(th2, file$1, 189, 12, 5139);
+    			add_location(th2, file$1, 211, 14, 5486);
     			attr_dev(th3, "scope", "col");
-    			add_location(th3, file$1, 190, 12, 5181);
+    			add_location(th3, file$1, 212, 14, 5530);
     			attr_dev(th4, "scope", "col");
-    			add_location(th4, file$1, 191, 12, 5225);
+    			add_location(th4, file$1, 213, 14, 5576);
     			attr_dev(th5, "scope", "col");
-    			add_location(th5, file$1, 192, 12, 5266);
+    			add_location(th5, file$1, 214, 14, 5619);
     			attr_dev(th6, "scope", "col");
-    			add_location(th6, file$1, 193, 12, 5307);
-    			attr_dev(th7, "scope", "col");
-    			add_location(th7, file$1, 194, 12, 5348);
-    			add_location(tr, file$1, 186, 10, 5043);
-    			add_location(thead, file$1, 185, 8, 5025);
-    			add_location(tbody, file$1, 197, 8, 5417);
+    			add_location(th6, file$1, 215, 14, 5662);
+    			add_location(tr, file$1, 208, 12, 5384);
+    			set_style(thead, "width", ctx.$kho.tblWidth + "px");
+    			attr_dev(thead, "class", "svelte-1xadhab");
+    			add_location(thead, file$1, 207, 10, 5331);
+    			attr_dev(tbody, "class", "svelte-1xadhab");
+    			add_location(tbody, file$1, 218, 10, 5738);
     			attr_dev(table, "class", "table table-hover");
-    			add_location(table, file$1, 184, 6, 4983);
-    			attr_dev(div10, "class", "table-responsive");
-    			add_location(div10, file$1, 183, 4, 4946);
-    			add_location(main, file$1, 149, 2, 3881);
-    			add_location(br, file$1, 209, 4, 5662);
-    			attr_dev(div11, "class", "col-auto");
-    			add_location(div11, file$1, 211, 6, 5697);
-    			attr_dev(div12, "class", "col");
-    			add_location(div12, file$1, 212, 6, 5765);
-    			attr_dev(div13, "class", "col-auto");
-    			add_location(div13, file$1, 213, 6, 5791);
-    			attr_dev(div14, "class", "row");
-    			add_location(div14, file$1, 210, 4, 5673);
-    			add_location(footer, file$1, 208, 2, 5649);
-    			add_location(section, file$1, 113, 0, 2721);
+    			add_location(table, file$1, 206, 8, 5287);
+    			attr_dev(div12, "class", "table-responsive");
+    			add_render_callback(() => ctx.div12_resize_handler.call(div12));
+    			add_location(div12, file$1, 205, 6, 5220);
+    			attr_dev(div13, "class", "container-fluid");
+    			add_location(div13, file$1, 204, 4, 5184);
+    			add_location(main, file$1, 203, 2, 5173);
+    			add_location(br, file$1, 228, 4, 5930);
+    			attr_dev(div14, "class", "col-auto");
+    			add_location(div14, file$1, 230, 6, 5965);
+    			attr_dev(div15, "class", "col");
+    			add_location(div15, file$1, 231, 6, 6033);
+    			attr_dev(div16, "class", "col-auto");
+    			add_location(div16, file$1, 234, 6, 6132);
+    			attr_dev(div17, "class", "row");
+    			add_location(div17, file$1, 229, 4, 5941);
+    			add_location(footer, file$1, 227, 2, 5917);
+    			add_location(section, file$1, 127, 0, 2907);
 
     			dispose = [
     				listen_dev(select, "change", ctx.select_change_handler),
@@ -2688,10 +1889,12 @@ var app = (function () {
     		m: function mount(target, anchor) {
     			insert_dev(target, section, anchor);
     			append_dev(section, header);
-    			append_dev(header, h1);
-    			append_dev(h1, div0);
-    			append_dev(h1, t1);
-    			append_dev(h1, div1);
+    			append_dev(header, div4);
+    			append_dev(div4, div0);
+    			append_dev(div0, h3);
+    			append_dev(div4, t1);
+    			append_dev(div4, div2);
+    			append_dev(div2, div1);
     			append_dev(div1, select);
 
     			for (let i = 0; i < each_blocks_2.length; i += 1) {
@@ -2699,77 +1902,84 @@ var app = (function () {
     			}
 
     			select_option(select, ctx.namhoso);
-    			append_dev(h1, t2);
-    			append_dev(h1, div2);
-    			append_dev(div2, button0);
+    			append_dev(div4, t2);
+    			append_dev(div4, div3);
+    			append_dev(div3, button0);
     			append_dev(button0, i0);
     			append_dev(header, t3);
     			if (if_block) if_block.m(header, null);
-    			append_dev(section, t4);
-    			append_dev(section, main);
-    			append_dev(main, div9);
+    			append_dev(header, t4);
+    			append_dev(header, div5);
+    			append_dev(header, t6);
+    			append_dev(header, div11);
+    			append_dev(div11, div9);
     			append_dev(div9, div8);
     			append_dev(div8, div6);
-    			append_dev(div6, div5);
-    			append_dev(div5, div3);
 
     			for (let i = 0; i < each_blocks_1.length; i += 1) {
-    				each_blocks_1[i].m(div3, null);
+    				each_blocks_1[i].m(div6, null);
     			}
 
-    			append_dev(div5, t5);
-    			append_dev(div5, div4);
-    			append_dev(div4, button1);
-    			append_dev(button1, i1);
-    			append_dev(button1, t6);
     			append_dev(div8, t7);
     			append_dev(div8, div7);
-    			append_dev(div7, input);
+    			append_dev(div7, button1);
+    			append_dev(button1, i1);
+    			append_dev(button1, t8);
+    			append_dev(div11, t9);
+    			append_dev(div11, div10);
+    			append_dev(div10, input);
     			set_input_value(input, ctx.stim);
-    			append_dev(main, t8);
-    			append_dev(main, div10);
-    			append_dev(div10, table);
+    			append_dev(header, t10);
+    			append_dev(header, hr);
+    			append_dev(section, t11);
+    			append_dev(section, main);
+    			append_dev(main, div13);
+    			append_dev(div13, div12);
+    			append_dev(div12, table);
     			append_dev(table, thead);
     			append_dev(thead, tr);
     			append_dev(tr, th0);
-    			append_dev(tr, t10);
+    			append_dev(tr, t13);
     			append_dev(tr, th1);
-    			append_dev(tr, t12);
+    			append_dev(tr, t15);
     			append_dev(tr, th2);
-    			append_dev(tr, t14);
+    			append_dev(tr, t17);
     			append_dev(tr, th3);
-    			append_dev(tr, t16);
+    			append_dev(tr, t19);
     			append_dev(tr, th4);
-    			append_dev(tr, t18);
+    			append_dev(tr, t21);
     			append_dev(tr, th5);
-    			append_dev(tr, t20);
+    			append_dev(tr, t23);
     			append_dev(tr, th6);
-    			append_dev(tr, t22);
-    			append_dev(tr, th7);
-    			append_dev(table, t24);
+    			append_dev(table, t25);
     			append_dev(table, tbody);
 
     			for (let i = 0; i < each_blocks.length; i += 1) {
     				each_blocks[i].m(tbody, null);
     			}
 
-    			append_dev(section, t25);
+    			div12_resize_listener = add_resize_listener(div12, ctx.div12_resize_handler.bind(div12));
+    			append_dev(section, t26);
     			append_dev(section, footer);
     			append_dev(footer, br);
-    			append_dev(footer, t26);
-    			append_dev(footer, div14);
-    			append_dev(div14, div11);
-    			append_dev(div11, t27);
-    			append_dev(div11, t28);
+    			append_dev(footer, t27);
+    			append_dev(footer, div17);
+    			append_dev(div17, div14);
+    			append_dev(div14, t28);
     			append_dev(div14, t29);
-    			append_dev(div14, div12);
-    			append_dev(div14, t30);
-    			append_dev(div14, div13);
-    			append_dev(div13, t31);
-    			append_dev(div13, t32);
-    			append_dev(div13, t33);
-    			append_dev(div13, t34);
-    			append_dev(div13, t35);
+    			append_dev(div17, t30);
+    			append_dev(div17, div15);
+    			append_dev(div15, t31);
+    			append_dev(div15, t32);
+    			append_dev(div15, t33);
+    			append_dev(div15, t34);
+    			append_dev(div17, t35);
+    			append_dev(div17, div16);
+    			append_dev(div16, t36);
+    			append_dev(div16, t37);
+    			append_dev(div16, t38);
+    			append_dev(div16, t39);
+    			append_dev(div16, t40);
     			current = true;
     		},
     		p: function update(changed, ctx) {
@@ -2804,9 +2014,9 @@ var app = (function () {
     				if (if_block) {
     					if_block.p(changed, ctx);
     				} else {
-    					if_block = create_if_block(ctx);
+    					if_block = create_if_block$1(ctx);
     					if_block.c();
-    					if_block.m(header, null);
+    					if_block.m(header, t4);
     				}
     			} else if (if_block) {
     				if_block.d(1);
@@ -2825,7 +2035,7 @@ var app = (function () {
     					} else {
     						each_blocks_1[i] = create_each_block_1(child_ctx);
     						each_blocks_1[i].c();
-    						each_blocks_1[i].m(div3, null);
+    						each_blocks_1[i].m(div6, null);
     					}
     				}
 
@@ -2838,6 +2048,10 @@ var app = (function () {
 
     			if (changed.stim) {
     				set_input_value(input, ctx.stim);
+    			}
+
+    			if (!current || changed.$kho) {
+    				set_style(thead, "width", ctx.$kho.tblWidth + "px");
     			}
 
     			if (changed.dsLoc) {
@@ -2867,8 +2081,10 @@ var app = (function () {
     				check_outros();
     			}
 
-    			if ((!current || changed.$kho) && t28_value !== (t28_value = ctx.$kho.dskh.length + "")) set_data_dev(t28, t28_value);
-    			if ((!current || changed.dsLoc) && t34_value !== (t34_value = ctx.dsLoc.length + "")) set_data_dev(t34, t34_value);
+    			if ((!current || changed.$kho) && t29_value !== (t29_value = ctx.$kho.dskh.length + "")) set_data_dev(t29, t29_value);
+    			if (!current || changed.rongbang) set_data_dev(t32, ctx.rongbang);
+    			if ((!current || changed.$kho) && t34_value !== (t34_value = ctx.$kho.tblWidth + "")) set_data_dev(t34, t34_value);
+    			if ((!current || changed.dsLoc) && t39_value !== (t39_value = ctx.dsLoc.length + "")) set_data_dev(t39, t39_value);
     		},
     		i: function intro(local) {
     			if (current) return;
@@ -2894,6 +2110,7 @@ var app = (function () {
     			if (if_block) if_block.d();
     			destroy_each(each_blocks_1, detaching);
     			destroy_each(each_blocks, detaching);
+    			div12_resize_listener.cancel();
     			run_all(dispose);
     		}
     	};
@@ -2916,13 +2133,14 @@ var app = (function () {
     	component_subscribe($$self, kho, $$value => $$invalidate("$kho", $kho = $$value));
     	let dsnam = [2020, 2019, 2018, 2017, 2016];
     	let namhoso = 2019;
+    	set_store_value(kho, $kho.tblWidth = 20000, $kho);
     	set_store_value(kho, $kho.progress = 0, $kho);
     	set_store_value(kho, $kho.showProgress = true, $kho);
     	set_store_value(kho, $kho.dskh = [], $kho);
 
     	function xemHoso() {
 
-    		axios$1({
+    		axios({
     			method: "get",
     			url: "http://localhost:8888/api1108/hoso/",
     			responseType: "json",
@@ -2949,22 +2167,22 @@ var app = (function () {
     			mahoso: "2019hs001",
     			khachhang: "Nguyen Van A",
     			sohoso: "GM01200/19",
-    			diachikhachhang: "123 Tran Van Thoi, Q10"
+    			diachi: "123 Tran Van Thoi, Q10"
     		},
     		{
     			mahoso: "2019hs002",
     			khachhang: "Pham Van Tuan",
-    			diachikhachhang: "625 Tran Van Thoi, Q11"
+    			diachi: "625 Tran Van Thoi, Q11"
     		},
     		{
     			mahoso: "2019hs003",
     			khachhang: "Tran Van Ty",
-    			diachikhachhang: "1243 Tran Van Thoi, Q12"
+    			diachi: "1243 Tran Van Thoi, Q12"
     		},
     		{
     			mahoso: "2019hs004",
     			khachhang: "Nguyen Thi Nhanh",
-    			diachikhachhang: "125 Tran Van Thoi, Q12"
+    			diachi: "125 Tran Van Thoi, Q12"
     		}
     	];
 
@@ -3017,6 +2235,8 @@ var app = (function () {
     		return data;
     	}
 
+    	let rongbang = 2000;
+
     	function select_change_handler() {
     		namhoso = select_value(this);
     		$$invalidate("namhoso", namhoso);
@@ -3031,6 +2251,11 @@ var app = (function () {
     		$$invalidate("stim", stim);
     	}
 
+    	function div12_resize_handler() {
+    		rongbang = this.clientWidth;
+    		$$invalidate("rongbang", rongbang);
+    	}
+
     	$$self.$capture_state = () => {
     		return {};
     	};
@@ -3043,6 +2268,7 @@ var app = (function () {
     		if ("dstim" in $$props) $$invalidate("dstim", dstim = $$props.dstim);
     		if ("curdstim" in $$props) $$invalidate("curdstim", curdstim = $$props.curdstim);
     		if ("curHoso" in $$props) $$invalidate("curHoso", curHoso = $$props.curHoso);
+    		if ("rongbang" in $$props) $$invalidate("rongbang", rongbang = $$props.rongbang);
     		if ("$kho" in $$props) kho.set($kho = $$props.$kho);
     		if ("dsLocNhom" in $$props) $$invalidate("dsLocNhom", dsLocNhom = $$props.dsLocNhom);
     		if ("dsLoc" in $$props) $$invalidate("dsLoc", dsLoc = $$props.dsLoc);
@@ -3051,13 +2277,17 @@ var app = (function () {
     	let dsLocNhom;
     	let dsLoc;
 
-    	$$self.$$.update = (changed = { dstim: 1, dsLocNhom: 1, stim: 1 }) => {
+    	$$self.$$.update = (changed = { dstim: 1, dsLocNhom: 1, stim: 1, rongbang: 1 }) => {
     		if (changed.dstim) {
     			 $$invalidate("dsLocNhom", dsLocNhom = locNhom(dstim));
     		}
 
     		if (changed.dsLocNhom || changed.stim) {
     			 $$invalidate("dsLoc", dsLoc = filterListObj(dsLocNhom, stim));
+    		}
+
+    		if (changed.rongbang) {
+    			 set_store_value(kho, $kho.tblWidth = rongbang - 10, $kho);
     		}
     	};
 
@@ -3070,12 +2300,14 @@ var app = (function () {
     		curdstim,
     		addDsTim,
     		xoaDstim,
+    		rongbang,
     		$kho,
     		dsLoc,
     		select_change_handler,
     		mouseover_handler,
     		click_handler,
-    		input_input_handler
+    		input_input_handler,
+    		div12_resize_handler
     	};
     }
 
