@@ -3,6 +3,11 @@ import json
 import datetime
 import tornado.ioloop
 import tornado.web as web
+import logging
+import tornado.escape
+import tornado.options
+import tornado.websocket
+
 
 from ttxl import hoso
 
@@ -59,11 +64,56 @@ class Api1108_Hoso_Crud(ApiBase):
         self.send_response(res)
 
 
+class Api1108_ws(tornado.websocket.WebSocketHandler):
+    waiters = set()
+    cache = []
+    cache_size = 200
+
+    def get_compression_options(self):
+        # Non-None enables compression with default options.
+        return {}
+
+    def open(self):
+        print("WebSocket opened is {}".format(Api1108_ws.selected_subprotocol))
+        Api1108_ws.waiters.add(self)
+
+    def on_close(self):
+        Api1108_ws.waiters.remove(self)
+
+    @classmethod
+    def update_cache(cls, chat):
+        cls.cache.append(chat)
+        if len(cls.cache) > cls.cache_size:
+            cls.cache = cls.cache[-cls.cache_size:]
+
+    @classmethod
+    def send_updates(cls, chat):
+        logging.info("sending message to %d waiters", len(cls.waiters))
+        for waiter in cls.waiters:
+            try:
+                waiter.write_message(chat)
+            except:
+                logging.error("Error sending message", exc_info=True)
+
+    def check_origin(self, origin):
+        return True
+
+    def on_message(self, message):
+        logging.info("got message %r", message)
+        print('tin tu client {}'.format(message))
+        parsed = tornado.escape.json_decode(message)
+        chat = {"tin": parsed['tin'], "goi": parsed['goi']}
+
+        Api1108_ws.update_cache(chat)
+        Api1108_ws.send_updates(chat)
+
+
 class WebApp(web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
+            (r"/hoso/api1108", Api1108_ws),
             (r"/api1108/hoso/([^/]+)?", Api1108_Hoso_All),
             (r"/api1108/hoso/([^/]+)/([^/]+)?", Api1108_Hoso_Crud),
         ]

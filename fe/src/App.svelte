@@ -4,6 +4,7 @@
   import { filterListObj } from "./utils.js";
 
   const API_URL = "http://localhost:8888/api1108/";
+  const socket_url = "ws://localhost:8888/hoso/api1108";
 
   let dsnam = [2020, 2019, 2018, 2017, 2016];
   let namhoso = 2019;
@@ -36,28 +37,102 @@
       }
     });
   }
+  // socket
+  function nhantinServer() {
+    var ws = new WebSocket(socket_url);
+    ws.onmessage = function(event) {
+      let objjson = JSON.parse(event.data);
+      console.log("tin tu server: " + objjson);
+      return objjson;
+    };
+  }
 
+  function guitinServer(sjson) {
+    var ws = new WebSocket(socket_url);
+    ws.send(JSON.stringify(sjson));
+  }
+  $: tincapnhat = JSON.stringify($kho.tinserver);
+  //tam dskh
   let dskh = [
     {
       mahoso: "2019hs001",
       khachhang: "Nguyen Van A",
       sohoso: "GM01200/19",
-      diachi: "123 Tran Van Thoi, Q10"
+      diachi: "123 Tran Van Thoi, Q10",
+      maq:'01',
+      maqp:'0102',
+      mota:'',
+      ngaygan: '2019/10/20',
+      sodhn: '1232',
+      chisodhn:0.00,
+      madma:'xxx',
+      malotrinh:'112',
+      trongai:'',
+      tainhap:'',
+      taithicong:'',
+      hoantien:'',
+      lienhe:'',
+      hieudhn:'kent'
     },
     {
       mahoso: "2019hs002",
       khachhang: "Pham Van Tuan",
-      diachi: "625 Tran Van Thoi, Q11"
+      diachi: "625 Tran Van Thoi, Q11",
+      maq:'01',
+      maqp:'0102',
+      mota:'',
+      ngaygan: '2019/10/20',
+      sodhn: '1232',
+      chisodhn:0.00,
+      madma:'xxx',
+      malotrinh:'112',
+      trongai:'',
+      tainhap:'',
+      taithicong:'',
+      hoantien:'',
+      lienhe:'',
+      hieudhn:'kent',
+      sohoso:''
     },
     {
       mahoso: "2019hs003",
       khachhang: "Tran Van Ty",
-      diachi: "1243 Tran Van Thoi, Q12"
+      diachi: "1243 Tran Van Thoi, Q12",
+      maq:'01',
+      maqp:'0102',
+      mota:'',
+      ngaygan: '2019/10/20',
+      sodhn: '1232',
+      chisodhn:0.00,
+      madma:'xxx',
+      malotrinh:'112',
+      trongai:'',
+      tainhap:'',
+      taithicong:'',
+      hoantien:'',
+      lienhe:'',
+      hieudhn:'kent',
+      sohoso:''
     },
     {
       mahoso: "2019hs004",
       khachhang: "Nguyen Thi Nhanh",
-      diachi: "125 Tran Van Thoi, Q12"
+      diachi: "125 Tran Van Thoi, Q12",
+      maq:'01',
+      maqp:'0102',
+      mota:'',
+      ngaygan: '2019/10/20',
+      sodhn: '1232',
+      chisodhn:0.00,
+      madma:'xxx',
+      malotrinh:'112',
+      trongai:'',
+      tainhap:'',
+      taithicong:'',
+      hoantien:'',
+      lienhe:'',
+      hieudhn:'kent',
+      sohoso:''
     }
   ];
   // tim kiem
@@ -106,6 +181,9 @@
   // phan trang
   // tao scroll y
   let rongbang = 2000;
+  let caobang = 500;
+  let caotieude = 16;
+  $: caonoidung = caobang - caotieude;
   $: $kho.tblWidth = rongbang - 10;
 </script>
 
@@ -115,10 +193,9 @@
   }
   tbody {
     display: block;
-    max-height: 36px;
     overflow-y: auto;
   }
-  thead, tbody tr {
+  thead {
     display: table;
     table-layout: fixed;
   }
@@ -201,10 +278,10 @@
     <hr />
   </header>
   <main>
-    <div class="container-fluid">
+    <div class="container-fluid" bind:clientHeight={caobang}>
       <div class="table-responsive" bind:clientWidth={rongbang}>
         <table class="table table-hover">
-          <thead style="width:{$kho.tblWidth}px;">
+          <thead style="width:{$kho.tblWidth}px;" bind:clientHeight={caotieude}>
             <tr>
               <th scope="col">STT</th>
               <th scope="col">Mã hồ sơ</th>
@@ -215,9 +292,9 @@
               <th scope="col">Ghi chú</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody style="max-height:{caonoidung}px;">
             {#each dsLoc as khach, id}
-              <Khach {...khach} , id />
+              <Khach {...khach} id />
             {/each}
           </tbody>
         </table>
@@ -229,7 +306,7 @@
     <div class="row">
       <div class="col-auto">Tổng số hồ sơ: {$kho.dskh.length}</div>
       <div class="col">
-        rongbang = {rongbang} - $kho.tblWidth={$kho.tblWidth}
+        $kho.hosocapnhat = {JSON.stringify($kho.hosocapnhat)}
       </div>
       <div class="col-auto">
         bạn đang xem hồ sơ thứ {curHoso} trong {dsLoc.length} hồ sơ chọn lọc
