@@ -1,18 +1,18 @@
 <script>
   import { kho } from "./stores.js";
-  import Khach from "./Khach.svelte";
-  import { filterListObj } from "./utils.js";
-
-  const API_URL = "http://localhost:8888/api1108/";
-  const socket_url = "ws://localhost:8888/hoso/api1108";
-
-  let dsnam = [2020, 2019, 2018, 2017, 2016];
-  let namhoso = 2019;
-  $kho.tblWidth = 20000;
+  import Hoso from "./Hoso.svelte";
+  import HosoMoi from "./HosoMoi.svelte";
+  import { tamdskh } from "./tamdskh.js";
+  $kho.dskh = tamdskh;
   $kho.progress = 0;
   $kho.showProgress = true;
-  $kho.dskh = [];
+  //api
+  const API_URL = "http://localhost:8888/api1108/";
 
+  let curComp = Hoso;
+  let dsnam = [2020, 2019, 2018, 2017, 2016];
+  let namhoso = 2019;
+  //ham
   function xemHoso() {
     let apiurl = API_URL + "hoso/";
     axios({
@@ -37,167 +37,17 @@
       }
     });
   }
-  // socket
-  function nhantinServer() {
-    var ws = new WebSocket(socket_url);
-    ws.onmessage = function(event) {
-      let objjson = JSON.parse(event.data);
-      console.log("tin tu server: " + objjson);
-      return objjson;
-    };
-  }
-
-  function guitinServer(sjson) {
-    var ws = new WebSocket(socket_url);
-    ws.send(JSON.stringify(sjson));
-  }
-  $: tincapnhat = JSON.stringify($kho.tinserver);
-  //tam dskh
-  let dskh = [
-    {
-      mahoso: "2019hs001",
-      khachhang: "Nguyen Van A",
-      sohoso: "GM01200/19",
-      diachi: "123 Tran Van Thoi, Q10",
-      maq:'01',
-      maqp:'0102',
-      mota:'',
-      ngaygan: '2019/10/20',
-      sodhn: '1232',
-      chisodhn:0.00,
-      madma:'xxx',
-      malotrinh:'112',
-      trongai:'',
-      tainhap:'',
-      taithicong:'',
-      hoantien:'',
-      lienhe:'',
-      hieudhn:'kent'
-    },
-    {
-      mahoso: "2019hs002",
-      khachhang: "Pham Van Tuan",
-      diachi: "625 Tran Van Thoi, Q11",
-      maq:'01',
-      maqp:'0102',
-      mota:'',
-      ngaygan: '2019/10/20',
-      sodhn: '1232',
-      chisodhn:0.00,
-      madma:'xxx',
-      malotrinh:'112',
-      trongai:'',
-      tainhap:'',
-      taithicong:'',
-      hoantien:'',
-      lienhe:'',
-      hieudhn:'kent',
-      sohoso:''
-    },
-    {
-      mahoso: "2019hs003",
-      khachhang: "Tran Van Ty",
-      diachi: "1243 Tran Van Thoi, Q12",
-      maq:'01',
-      maqp:'0102',
-      mota:'',
-      ngaygan: '2019/10/20',
-      sodhn: '1232',
-      chisodhn:0.00,
-      madma:'xxx',
-      malotrinh:'112',
-      trongai:'',
-      tainhap:'',
-      taithicong:'',
-      hoantien:'',
-      lienhe:'',
-      hieudhn:'kent',
-      sohoso:''
-    },
-    {
-      mahoso: "2019hs004",
-      khachhang: "Nguyen Thi Nhanh",
-      diachi: "125 Tran Van Thoi, Q12",
-      maq:'01',
-      maqp:'0102',
-      mota:'',
-      ngaygan: '2019/10/20',
-      sodhn: '1232',
-      chisodhn:0.00,
-      madma:'xxx',
-      malotrinh:'112',
-      trongai:'',
-      tainhap:'',
-      taithicong:'',
-      hoantien:'',
-      lienhe:'',
-      hieudhn:'kent',
-      sohoso:''
-    }
-  ];
-  // tim kiem
-  $kho.dskh = dskh;
-  let stim = "";
-  let dstim = [];
-  let curdstim = 0;
-  function addDsTim(event) {
-    if (event.key === "Enter" && stim.length > 0) {
-      stim = stim.trim();
-      let dai = dstim.length;
-      let data = [stim];
-      for (let i = 0; i < dai; i++) {
-        if (dstim[i] !== stim) {
-          data.push(dstim[i]);
-        }
-      }
-      dstim = data;
-      stim = "";
-    }
-  }
-  function xoaDstim() {
-    let dai = dstim.length;
-    let data = [];
-    for (let i = 0; i < dai; i++) {
-      if (i !== curdstim) {
-        data.push(dstim[i]);
-      }
-    }
-    dstim = data;
-  }
-  function locNhom(nhom) {
-    let l = nhom.length || 0;
-    let data = $kho.dskh;
-    if (l > 0) {
-      for (let i = 0; i < l; i++) {
-        let s = nhom[i];
-        data = filterListObj(data, s);
-      }
-    }
-    return data;
-  }
-  $: dsLocNhom = locNhom(dstim);
-  $: dsLoc = filterListObj(dsLocNhom, stim);
-  let curHoso = 0;
-  // phan trang
-  // tao scroll y
-  let rongbang = 2000;
-  let caobang = 500;
-  let caotieude = 16;
-  $: caonoidung = caobang - caotieude;
-  $: $kho.tblWidth = rongbang - 10;
 </script>
 
 <style>
-  h3 {
-    color: purple;
+  section {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-between;
+    height: 100vh;
   }
-  tbody {
-    display: block;
-    overflow-y: auto;
-  }
-  thead {
-    display: table;
-    table-layout: fixed;
+  main {
+    flex: 1 1 auto;
   }
 </style>
 
@@ -243,73 +93,25 @@
         </div>
       </div>
     {/if}
-    <div>&nbsp;</div>
-    <div class="row">
-      <div class="col border border-primary">
-        <div class="row">
-          <div class="col">
-            {#each dstim as item, id}
-              <button
-                type="button"
-                class="btn btn-outline-info"
-                on:mouseover={() => (curdstim = id)}
-                on:click|preventDefault={xoaDstim}>
-                {item} - id={id} - cur={curdstim}
-              </button>
-            {/each}
-          </div>
-          <div class="col-auto">
-            <button class="btn" on:click={() => (dstim = [])}>
-              <i class="fa fa-trash fa-lg" />
-              Xóa hết
-            </button>
-          </div>
-        </div>
-      </div>
-      <div class="col-3">
-        <input
-          class="col"
-          type="search"
-          bind:value={stim}
-          on:keydown={addDsTim}
-          placeholder="Tìm ... (không phân biệt chữ hoa hay thường)" />
-      </div>
-    </div>
-    <hr />
   </header>
   <main>
-    <div class="container-fluid" bind:clientHeight={caobang}>
-      <div class="table-responsive" bind:clientWidth={rongbang}>
-        <table class="table table-hover">
-          <thead style="width:{$kho.tblWidth}px;" bind:clientHeight={caotieude}>
-            <tr>
-              <th scope="col">STT</th>
-              <th scope="col">Mã hồ sơ</th>
-              <th scope="col">Số hồ sơ</th>
-              <th scope="col">Khách hàng</th>
-              <th scope="col">Địa chỉ</th>
-              <th scope="col">Liên hệ</th>
-              <th scope="col">Ghi chú</th>
-            </tr>
-          </thead>
-          <tbody style="max-height:{caonoidung}px;">
-            {#each dsLoc as khach, id}
-              <Khach {...khach} id />
-            {/each}
-          </tbody>
-        </table>
-      </div>
-    </div>
+    <svelte:component this={curComp} />
   </main>
   <footer>
-    <br />
-    <div class="row">
-      <div class="col-auto">Tổng số hồ sơ: {$kho.dskh.length}</div>
-      <div class="col">
-        $kho.hosocapnhat = {JSON.stringify($kho.hosocapnhat)}
-      </div>
-      <div class="col-auto">
-        bạn đang xem hồ sơ thứ {curHoso} trong {dsLoc.length} hồ sơ chọn lọc
+    <div class="container">
+      <div class="row justify-content-between">
+        <div class="col-auto">Tổng số hồ sơ:</div>
+        <div class="col-auto">
+          <button
+            class="btn btn-outline-secondary"
+            type="button"
+            on:click={() => {
+              curComp = HosoMoi;
+              $kho.dskh = [];
+            }}>
+            <i class="fa fa-plus" />
+          </button>
+        </div>
       </div>
     </div>
   </footer>
