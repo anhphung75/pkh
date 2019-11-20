@@ -6,6 +6,7 @@
   let cur_id = 0;
   let edit_id = -1;
   let curmahoso = "";
+  let hososua = [];
   let hosomoi = {
     mahoso: "2019hs001",
     khachhang: "Nguyen Van A",

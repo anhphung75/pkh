@@ -3,6 +3,7 @@
   import Hoso from "./Hoso.svelte";
   import HosoMoi from "./HosoMoi.svelte";
   import { tamdskh } from "./tamdskh.js";
+  $kho.namhoso = 2019;
   $kho.dskh = tamdskh;
   $kho.progress = 0;
   $kho.showProgress = true;

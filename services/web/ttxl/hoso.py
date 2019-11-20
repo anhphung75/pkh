@@ -25,7 +25,7 @@ def get_mahoso_tiep(mahoso=None):
     return _mahoso
 
 
-def tao(mahoso=None, data={}):
+def moi(mahoso=None, data={}):
     r = db.query(Hoso).filter(Hoso.mahoso == mahoso).first()
     if r != None:
         return
@@ -97,10 +97,10 @@ def xem(mahoso=None):
     return raw2listjson(data)
 
 
-def xemds(nam=None):
+def gom(nam=None):
     bdl = Hoso
     if nam==None:
-        data = db.query(bdl).filter(bdl.sohoso != None).all()
+        data = db.query(bdl).filter(bdl.mahoso != None).all()
     else:
         sdk='{}%'.format(nam)
         data = db.query(bdl).filter(bdl.mahoso.like(sdk)).all()
