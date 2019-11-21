@@ -1,7 +1,24 @@
 <script>
   import { kho } from "./stores.js";
   import Timhoso from "./Timhoso.svelte";
-
+  // phan trang
+  $kho.hs_trang = 3;
+  $kho.curtrang = 0;
+  function tinhTongTrang() {
+    let a = $kho.dsloc !== undefined? $kho.dsloc.length : 0;
+    let l = a % $kho.hs_trang > 0 ? 1 : 0;
+    console.log('sotrang le =' + l);
+    let c = parseInt(a / $kho.hs_trang);
+    console.log('dsloc =' + JSON.stringify($kho.dsloc));
+    console.log('sotrang chan =' + c);
+    return c + l;
+  }
+  $: $kho.tongtrang = tinhTongTrang();
+  $: $kho.curtrang =
+    $kho.curtrang > $kho.tongtrang ? $kho.tongtrang : $kho.curtrang;
+  $: $kho.hs_start = $kho.curtrang * $kho.hs_trang;
+  $: $kho.hs_stop = $kho.hs_start + $kho.hs_trang - 1;
+  //sua hoso
   let isEdit = false;
   let cur_id = 0;
   let edit_id = -1;
@@ -37,27 +54,15 @@
     let tincangui = { tin: "capnhat", goi: h };
     //guitinServer(tincangui);
   }
-  // tao scroll y
-  let rongbang;
-  let caobang;
-  let caotieude;
-  $: caonoidung = caobang - caotieude;
-  $: scrollWidth = rongbang - 10;
 </script>
 
 <style>
   session {
     height: 100%;
   }
-  .box{
-    display: block;
-    width: 100%;
-    overflow-y: scroll;
-    max-height: 200px;
-  }
-  thead{
-    top:0;
-
+  
+  thead {
+    top: 0;
   }
 </style>
 
@@ -65,28 +70,27 @@
   <div class="container-fluid">
     <Timhoso />
   </div>
-  <div>curid ={cur_id}</div>
   <div class="container-fluid">
-    <div class="box">
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">STT</th>
-              <th scope="col">Mã hồ sơ</th>
-              <th scope="col">Số hồ sơ</th>
-              <th scope="col">Khách hàng</th>
-              <th scope="col">Địa chỉ</th>
-              <th scope="col">Liên hệ</th>
-              <th scope="col">Mô tả</th>
-              <th scope="col">Trở ngại</th>
-              <th scope="col">Tái nhập</th>
-              <th scope="col">Tái thi công</th>
-              <th scope="col">Hoàn tiền</th>
-            </tr>
-          </thead>
-          <tbody>
-            {#each $kho.dsloc as hs, stt}
+    <div class="table-responsive">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">STT</th>
+            <th scope="col">Mã hồ sơ</th>
+            <th scope="col">Số hồ sơ</th>
+            <th scope="col">Khách hàng</th>
+            <th scope="col">Địa chỉ</th>
+            <th scope="col">Liên hệ</th>
+            <th scope="col">Mô tả</th>
+            <th scope="col">Trở ngại</th>
+            <th scope="col">Tái nhập</th>
+            <th scope="col">Tái thi công</th>
+            <th scope="col">Hoàn tiền</th>
+          </tr>
+        </thead>
+        <tbody>
+          {#each $kho.dsloc as hs, stt}
+            {#if stt >= $kho.hs_start && stt <= $kho.hs_stop}
               <tr on:mouseover={() => (cur_id = stt)}>
                 {#if isEdit && cur_id === stt && edit_id === stt}
                   <th scope="row">
@@ -155,10 +159,10 @@
                   <td>{hs.hoantien}</td>
                 {/if}
               </tr>
-            {/each}
-          </tbody>
-        </table>
-      </div>
+            {/if}
+          {/each}
+        </tbody>
+      </table>
     </div>
   </div>
 </session>

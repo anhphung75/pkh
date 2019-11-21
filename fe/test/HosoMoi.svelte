@@ -1,16 +1,12 @@
 <script>
   import { kho } from "./stores.js";
   import Timhoso from "./Timhoso.svelte";
-  //init data
+  //hoso sua
   $kho.hososua = {};
-  $kho.tblH = 200;
-  $kho.cuontrai=0;
-
   let editGroup = false;
   let rowCur = 0;
   let rowEdit = -1;
   let hosocu = {};
-  // ham
   function btnSave() {
     editGroup = false;
     rowEdit = -1;
