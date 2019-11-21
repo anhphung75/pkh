@@ -44,7 +44,7 @@ class Api1108_Hoso_All(ApiBase):
     def get(self, mahoso):
         res = {'info': '', 'hoso': []}
         nam = -1
-        try
+        try:
             nam = int(mahoso)
         except:
             pass

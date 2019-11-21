@@ -45,6 +45,7 @@
     display: flex;
     flex-flow: column nowrap;
     justify-content: space-between;
+    width: 100%;
     height: 100vh;
   }
   main {
@@ -94,9 +95,12 @@
         </div>
       </div>
     {/if}
+    <div>cuon trai = {$kho.cuontrai}</div>
   </header>
   <main>
-    <svelte:component this={curComp} />
+    <div class="container-fluid">
+      <svelte:component this={curComp} />
+    </div>
   </main>
   <footer>
     <div class="container">
