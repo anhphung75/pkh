@@ -1,7 +1,7 @@
 <script>
   import { kho } from "./stores.js";
   import { filterListObj } from "./utils.js";
-  
+
   // tim kiem
   $kho.dsloc = [];
   let stim = "";
@@ -44,6 +44,22 @@
   }
   $: dsLocNhom = locNhom(dstim);
   $: $kho.dsloc = filterListObj(dsLocNhom, stim);
+  // phan trang
+  $kho.hs_trang = 7;
+  $kho.tongtrang = 0;
+  $kho.curtrang = 0;
+  function tongTrang(danhsach) {
+    let a = danhsach ? danhsach.length : 0;
+    let l = a % $kho.hs_trang > 0 ? 1 : 0;
+    let c = parseInt(a / $kho.hs_trang);
+    let t = c > 0 ? c + l : 0;
+    return t;
+  }
+  $: $kho.tongtrang = tongTrang($kho.dsloc);
+  $: $kho.curtrang =
+    $kho.curtrang > $kho.tongtrang ? $kho.tongtrang : $kho.curtrang;
+  $: $kho.hs_start = $kho.curtrang * $kho.hs_trang;
+  $: $kho.hs_stop = $kho.hs_start + $kho.hs_trang - 1;
 </script>
 
 <div class="container-fluid">
@@ -64,7 +80,7 @@
         <div class="col-auto">
           <button class="btn" on:click={() => (dstim = [])}>
             <i class="fa fa-trash fa-lg" />
-            Xóa hết
+            Xóa lọc
           </button>
         </div>
       </div>

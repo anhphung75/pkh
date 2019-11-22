@@ -1,6 +1,6 @@
-import App from './App.svelte';
+import Base from './Base.svelte';
 
-const app = new App({
+const app = new Base({
   target: document.getElementById("pna")
 });
 

@@ -33,11 +33,10 @@ class MainHandler(WebBase):
         #self.render("home.html", webapp_title='PKH')
         self.write("Hello World")
 
-
 class Hoso_Handler(WebBase):
     def get(self):
-        #self.render("home.html", webapp_title='PKH')
-        self.write("Hello World")
+        self.render("hoso.html", webapp_title='PKH')
+        # self.write("Hello World")
 
 
 class Api1108_Hoso_All(ApiBase):
@@ -48,6 +47,7 @@ class Api1108_Hoso_All(ApiBase):
             nam = int(mahoso)
         except:
             pass
+        print('nam={}'.format(nam))
         if nam>0:
             try:
                 data = hoso.gom(nam)

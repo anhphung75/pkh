@@ -1,8 +1,10 @@
-// web
+import { kho } from "./stores.js";
+
 // import axios from 'axios';
+// web
 const API_URL = "http://localhost:8888/api1108/hoso/";
-function nhanWeb() {
-  let apiurl = API_URL + $kho.namhoso;
+function nhanWeb(nam) {
+  let apiurl = nam ? API_URL + nam : API_URL;
   axios({
     method: "get",
     url: apiurl,
@@ -27,12 +29,13 @@ function nhanWeb() {
 }
 
 function guiWeb(datajson) {
-  let apiurl = "http://localhost:8888/api1108/hoso/" + curmahoso;
+  let apiurl = API_URL;
   axios({
     method: "post",
     url: apiurl,
     // headers: { "X-Requested-With": "XMLHttpRequest" },
     data: datajson,
+    xsrfCookieName: '_xsrf',
     onUploadProgress: progressEvent => {
       let percentCompleted = parseInt(
         Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -72,3 +75,6 @@ function guiSocket(datajson) {
   }
   ws.send(JSON.stringify(datajson));
 }
+
+
+export { nhanWeb, guiWeb, nhanSocket, guiSocket };

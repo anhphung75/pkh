@@ -1,27 +1,25 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>{{ escape(handler.settings["blog_title"]) }}</title>
-    <link rel="stylesheet" href="{{ static_url("blog.css") }}" type="text/css">
-    <link rel="alternate" href="/feed" type="application/atom+xml" title="{{ escape(handler.settings["blog_title"]) }}">
-    {% block head %}{% end %}
-  </head>
-  <body>
-    <div id="body">
-      <div id="header">
-        <div style="float:right">
-          {% if current_user %}
-            <a href="/compose">{{ _("New post") }}</a> -
-            <a href="/auth/logout?next={{ url_escape(request.uri) }}">{{ _("Sign out") }}</a>
-          {% else %}
-            {% raw _('<a href="%(url)s">Sign in</a> to compose/edit') % {"url": "/auth/login?next=" + url_escape(request.uri)} %}
-          {% end %}
-        </div>
-        <h1><a href="/">{{ escape(handler.settings["blog_title"]) }}</a></h1>
-      </div>
-      <div id="content">{% block body %}{% end %}</div>
-    </div>
-    {% block bottom %}{% end %}
-  </body>
+<html lang='vi'>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>{{ escape(handler.settings["webapp_title"]) }}</title>
+  <link rel="stylesheet" href="{{ static_url("base.css") }}" type="text/css">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+    integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
+  {% block cdn %}{% end %}
+  <link rel='icon' type='image/png' href="{{ static_url("favicon.png") }}">
+  {% block css %}{% end %}
+</head>
+
+<body>
+  <div id="pna" class="container"></div>
+  {% block body %}{% end %}
+  <!-- script  -->
+  {% block js %}{% end %}
+</body>
+
 </html>
