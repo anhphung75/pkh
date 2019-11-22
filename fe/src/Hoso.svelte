@@ -2,18 +2,11 @@
   import { kho } from "./stores.js";
   import { guiWeb } from "./crud_rest.js";
   import Timhoso from "./Timhoso.svelte";
-  //init data
-  $kho.curbang = 0;
-  $kho.tongbang = 4;
   //hoso sua
-  let editGroup = false;
   let rowCur = 0;
-  let rowEdit = -1;
   let hsgoc = {};
   let hssua = {};
   function btnSave() {
-    editGroup = false;
-    rowEdit = -1;
     //kiem tra hososua so voi hosơ cũ
     let tam = { mahoso: hssua["mahoso"] };
     for (let k in hssua) {
@@ -36,6 +29,8 @@
           }
         }
       }
+      $kho.dstim = [...$kho.dstim,'h'];
+      let r = $kho.dstim.pop();
       // update server
       guiWeb(hssua);
     }
@@ -45,7 +40,15 @@
   //thong tin tong
   $: tonghoso = $kho.dskh ? $kho.dskh.length : 0;
   $: tongloc = $kho.dsloc ? $kho.dsloc.length : 0;
-  $: danhsach = $kho.dsloc? $kho.dsloc: [];
+  $: danhsach = $kho.dsloc
+    ? $kho.dsloc.map(x => ({ ...x, isEdit: false }))
+    : [];
+  // thanh cuon
+  let hs_start = 0;
+  let hs_per = 7;
+  $: hs_stop = tongloc ? hs_start + hs_per : tongloc;
+  let curbang = 0;
+  let tongbang = 4;
 </script>
 
 <style>
@@ -60,6 +63,19 @@
     flex: 1 1 auto;
     min-height: 2cm;
   }
+  #bang {
+    max-height: 12cm;
+  }
+  #cuonhoso {
+    -webkit-appearance: slider-vertical;
+    transform: rotate(180deg);
+    outline: none;
+    width: 100%;
+    height: 100%;
+  }
+  .noidung {
+    width: 100%;
+  }
 </style>
 
 <section>
@@ -71,30 +87,54 @@
 
   <main>
     <div class="container-fluid">
-      <div class="table-responsive">
-        <table class="table table-hover">
-          <thead>
-            <tr>
-              <th scope="col">STT</th>
-              <th scope="col">Mã hồ sơ</th>
-              <th scope="col">Mã đợt</th>
-              <th scope="col">Số hồ sơ</th>
-              <th scope="col">Khách hàng</th>
-              <th scope="col">Địa chỉ</th>
-              <th scope="col">Liên hệ</th>
-              <th scope="col">Mô tả</th>
-              <th scope="col">Trở ngại</th>
-              <th scope="col">Tái nhập</th>
-              <th scope="col">Tái thi công</th>
-              <th scope="col">Hoàn tiền</th>
-            </tr>
-          </thead>
-          <tbody>
+      <div class="row">
+        <div id="bang" class="col">
+          <div class="container-fluid">
+            <div class="row tieude">
+              <div class="col-auto">STT</div>
+              {#if curbang === 0}
+                <div class="col">Mã hồ sơ</div>
+                <div class="col">Mã đợt</div>
+                <div class="col">Số hồ sơ</div>
+              {/if}
+              <div class="col-4">Khách hàng</div>
+              {#if curbang === 0}
+                <div class="col">Địa chỉ</div>
+              {:else if curbang === 1}
+                <div class="col">Liên hệ1</div>
+                <div class="col">Mô tả</div>
+                <div class="col">Trở ngại</div>
+                <div class="col">Tái nhập</div>
+                <div class="col">Tái thi công</div>
+                <div class="col">Hoàn tiền</div>
+              {:else if curbang === 2}
+                <div class="col">Liên hệ2</div>
+                <div class="col">Mô tả2</div>
+                <div class="col">Trở ngại</div>
+                <div class="col">Tái nhập</div>
+                <div class="col">Tái thi công</div>
+                <div class="col">Hoàn tiền</div>
+              {:else if curbang === 3}
+                <div class="col">Liên hệ3</div>
+                <div class="col">Mô tả3</div>
+                <div class="col">Trở ngại</div>
+                <div class="col">Tái nhập</div>
+                <div class="col">Tái thi công</div>
+                <div class="col">Hoàn tiền</div>
+              {:else}
+                <div class="col">Liên hệ4</div>
+                <div class="col">Mô tả4</div>
+                <div class="col">Trở ngại</div>
+                <div class="col">Tái nhập</div>
+                <div class="col">Tái thi công</div>
+                <div class="col">Hoàn tiền</div>
+              {/if}
+            </div>
             {#each danhsach as hs, stt}
-              {#if stt >= $kho.hs_start && stt <= $kho.hs_stop}
-                <tr on:mouseover={() => (rowCur = stt)}>
-                  {#if editGroup && rowCur === stt && rowEdit === stt}
-                    <th scope="row">
+              {#if stt >= hs_start && stt <= hs_stop}
+                <div class="row noidung" on:mouseover={() => (rowCur = stt)}>
+                  {#if hs.isEdit}
+                    <div class="col-auto">
                       <button
                         class="btn btn-outline-secondary"
                         type="button"
@@ -102,68 +142,163 @@
                         <i class="fa fa-save" />
                         {stt + 1}
                       </button>
-                    </th>
-                    <td>{hssua.mahoso}</td>
-                    <td>{hssua.madot}</td>
-                    <td>
-                      <input bind:value={hssua.sohoso} />
-                    </td>
-                    <td>
+                    </div>
+                    {#if curbang === 0}
+                      <div class="col">{hssua.mahoso}</div>
+                      <div class="col">{hssua.madot}</div>
+                      <div class="col">
+                        <input bind:value={hssua.sohoso} />
+                      </div>
+                    {/if}
+                    <div class="col-4">
                       <input bind:value={hssua.khachhang} />
-                    </td>
-                    <td>
-                      <input bind:value={hssua.diachi} />
-                    </td>
-                    <td>
-                      <input bind:value={hssua.lienhe} />
-                    </td>
-                    <td>
-                      <input bind:value={hssua.mota} />
-                    </td>
-                    <td>
-                      <input bind:value={hssua.trongai} />
-                    </td>
-                    <td>
-                      <input bind:value={hssua.tainhap} />
-                    </td>
-                    <td>
-                      <input bind:value={hssua.taithicong} />
-                    </td>
-                    <td>
-                      <input bind:value={hssua.hoantien} />
-                    </td>
+                    </div>
+                    {#if curbang === 0}
+                      <div class="col">
+                        <input bind:value={hssua.diachi} />
+                      </div>
+                    {:else if curbang === 1}
+                      <div class="col">
+                        <input bind:value={hssua.lienhe} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.mota} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.trongai} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.tainhap} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.taithicong} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.hoantien} />
+                      </div>
+                    {:else if curbang === 2}
+                      <div class="col">
+                        <input bind:value={hssua.lienhe} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.mota} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.trongai} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.tainhap} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.taithicong} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.hoantien} />
+                      </div>
+                    {:else if curbang === 3}
+                      <div class="col">
+                        <input bind:value={hssua.lienhe} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.mota} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.trongai} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.tainhap} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.taithicong} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.hoantien} />
+                      </div>
+                    {:else}
+                      <div class="col">
+                        <input bind:value={hssua.lienhe} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.mota} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.trongai} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.tainhap} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.taithicong} />
+                      </div>
+                      <div class="col">
+                        <input bind:value={hssua.hoantien} />
+                      </div>
+                    {/if}
                   {:else}
-                    <th scope="row">
+                    <div class="col-auto">
                       <button
                         class="btn btn-outline-secondary"
                         type="button"
                         on:click={() => {
-                          editGroup = true;
-                          rowEdit = stt;
+                          hs.isEdit = true;
                           hsgoc = JSON.parse(JSON.stringify(hs));
                           hssua = JSON.parse(JSON.stringify(hs));
                         }}>
                         <i class="fa fa-edit" />
                         {stt + 1}
                       </button>
-                    </th>
-                    <td>{hs.mahoso}</td>
-                    <td>{hs.madot}</td>
-                    <td>{hs.sohoso}</td>
-                    <td>{hs.khachhang}</td>
-                    <td>{hs.diachi}</td>
-                    <td>{hs.lienhe}</td>
-                    <td>{hs.mota}</td>
-                    <td>{hs.trongai}</td>
-                    <td>{hs.tainhap}</td>
-                    <td>{hs.taithicong}</td>
-                    <td>{hs.hoantien}</td>
+                    </div>
+                    {#if curbang === 0}
+                      <div class="col">{hs.mahoso}</div>
+                      <div class="col">{hs.madot}</div>
+                      <div class="col">{hs.sohoso}</div>
+                    {/if}
+                    <div class="col-4">{hs.khachhang}</div>
+                    {#if curbang === 0}
+                      <div class="col">{hs.diachi}</div>
+                    {:else if curbang === 1}
+                      <div class="col">{hs.lienhe}</div>
+                      <div class="col">{hs.mota}</div>
+                      <div class="col">{hs.trongai}</div>
+                      <div class="col">{hs.tainhap}</div>
+                      <div class="col">{hs.taithicong}</div>
+                      <div class="col">{hs.hoantien}</div>
+                    {:else if curbang === 2}
+                      <div class="col">{hs.lienhe}</div>
+                      <div class="col">{hs.mota}</div>
+                      <div class="col">{hs.trongai}</div>
+                      <div class="col">{hs.tainhap}</div>
+                      <div class="col">{hs.taithicong}</div>
+                      <div class="col">{hs.hoantien}</div>
+                    {:else if curbang === 3}
+                      <div class="col">{hs.lienhe}</div>
+                      <div class="col">{hs.mota}</div>
+                      <div class="col">{hs.trongai}</div>
+                      <div class="col">{hs.tainhap}</div>
+                      <div class="col">{hs.taithicong}</div>
+                      <div class="col">{hs.hoantien}</div>
+                    {:else}
+                      <div class="col">{hs.lienhe}</div>
+                      <div class="col">{hs.mota}</div>
+                      <div class="col">{hs.trongai}</div>
+                      <div class="col">{hs.tainhap}</div>
+                      <div class="col">{hs.taithicong}</div>
+                      <div class="col">{hs.hoantien}</div>
+                    {/if}
                   {/if}
-                </tr>
+                </div>
               {/if}
             {/each}
-          </tbody>
-        </table>
+          </div>
+        </div>
+        <div class="cuonhoso" style="width:2%;">
+          <input
+            id="cuonhoso"
+            type="range"
+            bind:value={hs_start}
+            min="0"
+            max={tongloc - hs_per - 1} />
+        </div>
       </div>
     </div>
   </main>
@@ -173,92 +308,17 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-3">
-          <div class="row">
-            <div class="col">Hiện có {tongloc}/{tonghoso} hồ sơ</div>
-          </div>
-          <div class="row">
-            <div class="col">
-              <div class="input-group mb-3">
-                <div class="input-group-prepend">
-                  <span class="input-group-text">Xem</span>
-                </div>
-                <input
-                  class="form-control col"
-                  type="number"
-                  bind:value={$kho.hs_trang} />
-                <div class="input-group-append">
-                  <span class="input-group-text">hồ sơ/trang</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <div class="col">Hiện có {tongloc}/{tonghoso} hồ sơ</div>
         </div>
 
-        {#if $kho.tongtrang > 0}
-          <div class="col-4 mb-3 chontrang">
-            <div class="row">
-              <input
-                class="col"
-                type="range"
-                bind:value={$kho.curtrang}
-                min="0"
-                max={$kho.tongtrang - 1} />
-            </div>
-            <div class="row">
-              <div class="col-2">Trang</div>
-              <div class="col-2">
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  on:click={() => ($kho.curtrang > 0 ? $kho.curtrang-- : 0)}>
-                  <i class="fa fa-caret-square-left" />
-                </button>
-              </div>
-              <input class="col-4" type="number" bind:value={$kho.curtrang} />
-              <div class="col-2">
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  on:click={() => ($kho.curtrang < $kho.tongtrang - 1 ? $kho.curtrang++ : $kho.tongtrang - 1)}>
-                  <i class="fa fa-caret-square-right" />
-                </button>
-              </div>
-              <div class="col-2">/{$kho.tongtrang}</div>
-            </div>
-          </div>
-        {/if}
-
-        {#if $kho.tongbang > 0}
+        {#if tongbang > 0}
           <div class="col-4 mb-12 chonbang">
-            <div class="row">
-              <input
-                class="col"
-                type="range"
-                bind:value={$kho.curbang}
-                min="0"
-                max={$kho.tongbang - 1} />
-            </div>
-            <div class="row">
-              <div class="col-2">Bang</div>
-              <div class="col-2">
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  on:click={() => ($kho.curbang > 0 ? $kho.curbang-- : 0)}>
-                  <i class="fa fa-caret-square-left" />
-                </button>
-              </div>
-              <input class="col-4" type="number" bind:value={$kho.curbang} />
-              <div class="col-2">
-                <button
-                  class="btn btn-outline-secondary"
-                  type="button"
-                  on:click={() => ($kho.curbang < $kho.tongbang - 1 ? $kho.curbang++ : $kho.tongbang - 1)}>
-                  <i class="fa fa-caret-square-right" />
-                </button>
-              </div>
-              <div class="col-2">/{$kho.tongbang}</div>
-            </div>
+            <input
+              class="col"
+              type="range"
+              bind:value={curbang}
+              min="0"
+              max={tongbang} />
           </div>
         {/if}
 
