@@ -1,3 +1,5 @@
 import { writable } from 'svelte/store';
+var kho = writable({});
+var chu = writable({});
 
-export let kho = writable({});
+export {kho, chu}

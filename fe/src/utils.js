@@ -34,6 +34,17 @@ function formatDate(odate) {
   return [year, month, day].join("-");
 };
 
+function getdsNam(sonam) {
+  sonam = sonam > 0 ? sonam : 10;
+  var d = new Date(), year = d.getFullYear() + 1;
+  let dsnam = [year,];
+  for (let i = 0; i < sonam; i++) {
+    year = year - 1;
+    dsnam.push(year);
+  }
+  return dsnam;
+};
+
 function tachHang(t) {
   if (Number(t) == NaN) return "";
   return new Intl.NumberFormat("vi-VI", {
@@ -42,4 +53,4 @@ function tachHang(t) {
   }).format(t);
 };
 
-export { sarrayObj2objObj, filterListObj, getDateDelta, formatDate, tachHang };
+export { sarrayObj2objObj, filterListObj, getDateDelta, formatDate, getdsNam, tachHang };

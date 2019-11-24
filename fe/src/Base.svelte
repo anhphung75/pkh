@@ -5,9 +5,6 @@
 </script>
 
 <style>
-  body {
-    margin: 0;
-  }
   .webapp {
     display: grid;
     grid-template-rows: 1fr 5fr 1fr;

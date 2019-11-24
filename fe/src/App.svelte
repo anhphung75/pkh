@@ -1,37 +1,17 @@
 <script>
   import { kho } from "./stores.js";
+  import { getdsNam } from "./utils.js";
   import Progress from "./Progress.svelte";
-  import Hoso from "./Hoso.svelte";
+  import Hoso from "./Banghoso.svelte";
   //import HosoMoi from "./HosoMoi.svelte";
+
   import { tamdskh } from "./tamdskh.js";
   $kho.dskh = tamdskh;
   //$kho.dskh = [];
   $kho.progress = 0;
-  // web
-  const API_URL = "http://localhost:8888/api1108/hoso/";
-  function nhanWeb() {
-    let apiurl = namhoso ? API_URL + namhoso : API_URL;
-    axios({
-      method: "get",
-      url: apiurl,
-      responseType: "json",
-      responseEncoding: "utf8",
-      onDownloadProgress: progressEvent => {
-        let percentCompleted = parseInt(
-          Math.round((progressEvent.loaded * 100) / progressEvent.total)
-        );
-        $kho.progress = percentCompleted;
-        console.log("$kho.progress=" + $kho.progress);
-      }
-    }).then(response => {
-      let dulieu = response.data;
-      $kho.dskh = dulieu? dulieu.hoso:[];
-    });
-  }
-
   let curComp = Hoso;
-  let dsnam = [2020, 2019, 2018, 2017, 2016, 2015, 2014];
-  let namhoso = 2019;
+  let dsnam = getdsNam(10);
+  let namhoso = dsnam? dsnam[1]:0;
 </script>
 
 <style>

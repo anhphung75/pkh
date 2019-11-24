@@ -22,7 +22,7 @@ class Hoso(Base):
     autoid = Column(Integer, primary_key=True)
     mahoso = Column(Unicode(13), unique=True)  # yyyyhsxxxxxx
     qrcode = Column(VARBINARY)
-    sodanhbo = Column(Unicode(50)) #barcode
+    sodanhbo = Column(Unicode(50))  # barcode
     madot = Column(Unicode(50))
     sohoso = Column(Unicode(50))
     khachhang = Column(Unicode(255))
@@ -41,10 +41,12 @@ class Hoso(Base):
     hoantien = Column(Unicode(50))
     # hoan cong
     maqt = Column(Unicode(50))
+    ngaylendot = Column(DateTime(timezone=True))
     ngaygan = Column(DateTime(timezone=True))
     sodhn = Column(Unicode(50))
     hieudhn = Column(Unicode(50))
-    chisodhn = Column(DECIMAL(19, 5), default=0) #tong cong 19 so, co 5 so thap phan
+    # tong cong 19 so, co 5 so thap phan
+    chisodhn = Column(DECIMAL(19, 5), default=0)
     madma = Column(Unicode(50))
     malotrinh = Column(Unicode(50))
     # ref old data
@@ -55,23 +57,18 @@ class Hoso(Base):
                         onupdate=datetime.datetime.now)
 
 
-
-
-
 #engine = create_engine('sqlite:///ttlt/quyettoan.db', echo=True)
-#Base.metadata.create_all(engine)
+# Base.metadata.create_all(engine)
 #Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
-
-
 #engine = create_engine('sqlite:///quyettoan/quyettoan.db', echo=True)
 #engine = create_engine('sqlite:///:memory:', echo=True)
 cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
     'pkh.web', 'w3b@pkh2019', '192.168.24.4:1433', 'PKHData')
-#cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
+# cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
 #    'pkh', 'Ph0ngK3H0@ch', '192.168.24.4:1433', 'PKHData')
 engine = create_engine(cnnstr)
 
 Base.metadata.create_all(engine)
 Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
 
-db =Session()
+db = Session()
