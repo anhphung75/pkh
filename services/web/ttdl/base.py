@@ -57,10 +57,6 @@ class Hoso(Base):
                         onupdate=datetime.datetime.now)
 
 
-#engine = create_engine('sqlite:///ttlt/quyettoan.db', echo=True)
-# Base.metadata.create_all(engine)
-#Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
-#engine = create_engine('sqlite:///quyettoan/quyettoan.db', echo=True)
 #engine = create_engine('sqlite:///:memory:', echo=True)
 cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
     'pkh.web', 'w3b@pkh2019', '192.168.24.4:1433', 'PKHData')

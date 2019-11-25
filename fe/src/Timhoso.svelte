@@ -33,7 +33,7 @@
   }
   function locNhom(nhom) {
     let l = nhom.length || 0;
-    let data = $kho.dskh;
+    let data = $kho.hoso;
     if (l > 0) {
       for (let i = 0; i < l; i++) {
         let s = nhom[i];

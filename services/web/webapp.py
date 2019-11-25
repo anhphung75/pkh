@@ -84,14 +84,18 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
     waiters = set()
     cache = []
     cache_size = 200
+    conggiaotiep = manguoidung = ''
 
     def get_compression_options(self):
         # Non-None enables compression with default options.
         return {}
 
-    def open(self):
-        print("WebSocket opened is {}".format(Api1108_ws.selected_subprotocol))
+    def open(self, groupid, clientid):
+        conggiaotiep = groupid
+        manguoidung = clientid
         Api1108_ws.waiters.add(self)
+        print("WebSocket opened is {}".format(str(self)))
+        print('conggiaotiep={}, manguoidung={}'.format(conggiaotiep, manguoidung))
 
     def on_close(self):
         Api1108_ws.waiters.remove(self)
@@ -105,6 +109,7 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
     @classmethod
     def send_updates(cls, chat):
         logging.info("sending message to %d waiters", len(cls.waiters))
+        print("sending message to waiters {}".format(cls.waiters))
         for waiter in cls.waiters:
             try:
                 waiter.write_message(chat)
@@ -118,7 +123,20 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         logging.info("got message %r", message)
         print('tin tu client {}'.format(message))
         parsed = tornado.escape.json_decode(message)
-        chat = {"tin": parsed['tin'], "goi": parsed['goi']}
+        chat = {"uuid": parsed['uuid'], "data": parsed['data']}
+        # check conggiaotiep magiaotiep manguoidung
+        chat['data']['tin']['magiaotiep'] = 'boss{}'.format(
+                datetime.datetime.now())
+        if chat['data']['tin']['nhan'] == 'gom':
+            namhoso = chat['data']['goi']['hoso']['namhoso']
+            data = hoso.gom(namhoso)
+            # chuẩn bị data gửi lại
+            chat['data']['tin']['nhan'] = 'moi'
+            chat['data']['goi']['hoso'] = data
+        #elif chat['data']['tin']['nhan'] == 'sua':
+            #chuyen thang client, cap nhật server
+            #hsr = chat['data']['goi']['hoso']
+            #data = hoso.sua(hsr)
 
         Api1108_ws.update_cache(chat)
         Api1108_ws.send_updates(chat)
@@ -129,7 +147,7 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
-            (r"/hoso/api1108", Api1108_ws),
+            (r"/api1108/([^/]+)/hoso/([^/]+)", Api1108_ws),
             (r"/api1108/hoso/([^/]+)?", Api1108_Hoso_All),
             (r"/api1108/hoso/([^/]+)/([^/]+)?", Api1108_Hoso_Crud),
         ]
@@ -138,7 +156,7 @@ class WebApp(web.Application):
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             #ui_modules={"Entry": EntryModule},
-            xsrf_cookies=True,
+            xsrf_cookies=False,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
             # login_url="/auth/login",
             debug=True,

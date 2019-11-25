@@ -1,3 +1,15 @@
+function getCookie(name) {
+  var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+  return r ? r[1] : undefined;
+}
+
+function setCookie(cname, cvalue, exdays) {
+  var d = new Date();
+  d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
+  var expires = "expires=" + d.toUTCString();
+  document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+}
+
 function sarrayObj2objObj(sdata) {
   let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
   data = data.replace(/'/g, '"');
@@ -53,4 +65,5 @@ function tachHang(t) {
   }).format(t);
 };
 
+export { getCookie }
 export { sarrayObj2objObj, filterListObj, getDateDelta, formatDate, getdsNam, tachHang };

@@ -1,6 +1,81 @@
 <script>
-  import { kho, guiWeb } from "./stores.js";
+  import { kho, chu } from "./stores.js";
+  import { guiSocket } from "./rest.js";
   import Timhoso from "./Timhoso.svelte";
+  // init data
+  $chu.conggiaotiep = $chu.conggiaotiep ? $chu.conggiaotiep : "pkh";
+  $chu.manguoidung = $chu.manguoidung ? $chu.manguoidung : "pkh002";
+  $chu.magiaotiep = $chu.magiaotiep ? $chu.magiaotiep : "1pkh2Pkh3pKh4pkH";
+  $kho.hoso = $kho.hoso ? $kho.hoso : [];
+  $kho.progress = $kho.progress ? $kho.progress : 100;
+  $kho.dstim = $kho.dstim ? $kho.dstim : [];
+  //crud
+  function refreshHoso() {
+    $kho.dstim = [...$kho.dstim, "h"];
+    let r = $kho.dstim.pop();
+    r = null;
+  }
+  function moiHoso(listhoso) {
+    listhoso = listhoso ? JSON.parse(JSON.stringify(listhoso)) : [];
+    if (listhoso.length === 0) {
+      return;
+    }
+    $kho.hoso = [...$kho.hoso, listhoso];
+    refreshHoso();
+  }
+  function suaHoso(listhoso) {
+    listhoso = listhoso ? JSON.parse(JSON.stringify(listhoso)) : [];
+    if (listhoso.length === 0) {
+      return;
+    }
+    if ($kho.hoso.length === 0) {
+      $kho.hoso = listhoso;
+      return;
+    }
+    let l1 = listhoso.length;
+    for (let i1 = 0; i1 < l1; i1++) {
+      let hsr = listhoso[i1];
+      let l = $kho.hoso.length;
+      for (let i = 0; i < l; i++) {
+        let hss = $kho.hoso[i];
+        if (hsr.mahoso === hss.mahoso) {
+          for (let k in hsr) {
+            if (hss.hasOwnProperty(k)) {
+              hss[k] = hsr[k];
+            }
+          }
+        }
+      }
+    }
+    refreshHoso();
+  }
+  function xoaHoso(listhoso) {
+    listhoso = listhoso ? JSON.parse(JSON.stringify(listhoso)) : [];
+    if (listhoso.length === 0 || $kho.hoso.length === 0) {
+      return;
+    }
+    let l1 = listhoso.length;
+    for (let i1 = 0; i1 < l1; i1++) {
+      let hsr = listhoso[i1];
+      let l = $kho.hoso.length;
+      for (let i = 0; i < l; i++) {
+        let hss = $kho.hoso[i];
+        if (hsr.mahoso === hss.mahoso) {
+          $kho.hoso.splice(i, 1);
+          break;
+        }
+      }
+    }
+    $kho.hoso = $kho.hoso;
+    refreshHoso();
+  }
+  // gui server
+  function guiServer(listhoso) {
+    var chat={uuid: [$chu.manguoidung, Date.now()].join("."), data:{tin:{},goi:{}}};
+    chat.data.tin = {nhan:'sua', magiaotiep: $chu.magiaotiep};
+    chat.data.goi = {hoso: listhoso};
+    guiSocket(chat, $chu.conggiaotiep, $chu.manguoidung);
+  }
   //hoso sua
   let rowCur = 0;
   let hsgoc = {};
@@ -15,24 +90,12 @@
       }
     }
     if (Object.keys(tam).length > 1) {
-      hssua = JSON.parse(JSON.stringify(tam));
+      listhoso = [JSON.parse(JSON.stringify(tam))];
       // update client dskh
-      let dai = $kho.dskh.length;
-      for (let i = 0; i < dai; i++) {
-        let a = $kho.dskh[i];
-        if (a.mahoso === hssua.mahoso) {
-          for (let k in hssua) {
-            if (a.hasOwnProperty(k)) {
-              a[k] = hssua[k];
-            }
-          }
-        }
-      }
-      $kho.dstim = [...$kho.dstim, "h"];
-      let r = $kho.dstim.pop();
-      r = null;
+      suaHoso(listhoso);
+      refreshHoso();
       // update server
-      guiWeb(hssua);
+      guiServer(listhoso);
     } else {
       let dai = danhsach.length;
       for (let i = 0; i < dai; i++) {
@@ -46,7 +109,7 @@
     hssua = {};
   }
   //thong tin tong
-  $: tonghoso = $kho.dskh ? $kho.dskh.length : 0;
+  $: tonghoso = $kho.hoso ? $kho.hoso.length : 0;
   $: tongloc = $kho.dsloc ? $kho.dsloc.length : 0;
   $: danhsach = $kho.dsloc
     ? $kho.dsloc.map(x => ({ ...x, isEdit: false }))
@@ -71,7 +134,7 @@
     flex: 1 1 auto;
     min-height: 2cm;
   }
-  input{
+  input {
     width: 100%;
     height: 100%;
   }
@@ -490,10 +553,9 @@
           <button
             class="btn btn-outline-secondary"
             type="button"
-            on:click={() => {
-              $kho.dskh = [];
-            }}>
+            >
             <i class="fa fa-plus" />
+            Thêm mới
           </button>
         </div>
       </div>

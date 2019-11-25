@@ -2,6 +2,7 @@
   import { kho } from "./stores.js";
   import { guiWeb } from "./crud_rest.js";
   import Timhoso from "./Timhoso.svelte";
+
   //hoso sua
   let rowCur = 0;
   let hsgoc = {};
@@ -29,7 +30,7 @@
           }
         }
       }
-      $kho.dstim = [...$kho.dstim,'h'];
+      $kho.dstim = [...$kho.dstim, "h"];
       let r = $kho.dstim.pop();
       // update server
       guiWeb(hssua);

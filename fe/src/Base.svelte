@@ -5,40 +5,41 @@
 </script>
 
 <style>
-  .webapp {
+  #webapp {
     display: grid;
     grid-template-rows: 1fr 5fr 1fr;
-    grid-template-columns: 1px 5fr 1px;
+    grid-template-columns: 0px 5fr 0px;
     grid-template-areas:
       "header header header"
       "nav main aside"
       "footer footer footer";
     grid-gap: 0.75em;
-    height: 100vh;
-    width: calc(100vw-10px);
+    height: 100%;
+    width: 100%;
   }
-  header {
+  #webapp > header {
     grid-area: header;
-    background-color: teal;
+    background-color: lightgreen;
   }
-  nav {
+  #webapp > nav {
     grid-area: nav;
     background-color: tomato;
   }
-  main {
+  #webapp > main {
     grid-area: main;
+    background-color: transparent;
   }
-  aside {
+  #webapp > aside {
     grid-area: aside;
     background-color: orange;
   }
-  footer {
+  #webapp > footer {
     grid-area: footer;
-    background-color: lightgreen;
+    background-color: teal;
   }
 </style>
 
-<div class="webapp">
+<div id="webapp">
   <header>
     <svelte:component this={Header} />
   </header>
