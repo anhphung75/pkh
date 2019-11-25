@@ -1,12 +1,11 @@
 <script>
   import { kho, chu } from "./stores.js";
-  import { guiSocket } from "./rest.js";
   import Timhoso from "./Timhoso.svelte";
   // init data
   $chu.conggiaotiep = $chu.conggiaotiep ? $chu.conggiaotiep : "pkh";
   $chu.manguoidung = $chu.manguoidung ? $chu.manguoidung : "pkh002";
   $chu.magiaotiep = $chu.magiaotiep ? $chu.magiaotiep : "1pkh2Pkh3pKh4pkH";
-  $kho.hoso = $kho.hoso ? $kho.hoso : [];
+  //$kho.hoso = $kho.hoso ? $kho.hoso : [];
   $kho.progress = $kho.progress ? $kho.progress : 100;
   $kho.dstim = $kho.dstim ? $kho.dstim : [];
   //crud
@@ -71,10 +70,13 @@
   }
   // gui server
   function guiServer(listhoso) {
-    var chat={uuid: [$chu.manguoidung, Date.now()].join("."), data:{tin:{},goi:{}}};
-    chat.data.tin = {nhan:'sua', magiaotiep: $chu.magiaotiep};
-    chat.data.goi = {hoso: listhoso};
-    guiSocket(chat, $chu.conggiaotiep, $chu.manguoidung);
+    var chat = {
+      uuid: [$chu.manguoidung, Date.now()].join("."),
+      data: { tin: {}, goi: {} }
+    };
+    chat.data.tin = { nhan: "sua", magiaotiep: $chu.magiaotiep };
+    chat.data.goi = { hoso: listhoso };
+    //guiSocket(chat, $chu.conggiaotiep, $chu.manguoidung);
   }
   //hoso sua
   let rowCur = 0;
@@ -90,7 +92,7 @@
       }
     }
     if (Object.keys(tam).length > 1) {
-      listhoso = [JSON.parse(JSON.stringify(tam))];
+      let listhoso = [JSON.parse(JSON.stringify(tam))];
       // update client dskh
       suaHoso(listhoso);
       refreshHoso();
@@ -548,12 +550,8 @@
               max={tongbang} />
           </div>
         {/if}
-
         <div class="col-1 mb-3">
-          <button
-            class="btn btn-outline-secondary"
-            type="button"
-            >
+          <button class="btn btn-outline-secondary" type="button">
             <i class="fa fa-plus" />
             Thêm mới
           </button>

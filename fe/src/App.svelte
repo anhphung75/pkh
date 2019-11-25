@@ -5,14 +5,12 @@
   import Hoso from "./Banghoso.svelte";
   //import HosoMoi from "./HosoMoi.svelte";
   // init data
-  $chu.conggiaotiep = $chu.conggiaotiep ? $chu.conggiaotiep : "pkh";
-  $chu.manguoidung = $chu.manguoidung ? $chu.manguoidung : "pkh002";
-  $chu.magiaotiep = $chu.magiaotiep ? $chu.magiaotiep : "1pkh2Pkh3pKh4pkH";
-  $kho.hoso = $kho.hoso ? $kho.hoso : [];
-  $kho.progress = $kho.progress ? $kho.progress : 100;
-
+  $kho.hoso = [];
+  $kho.progress = 100;
+  //tam
   import { tamdskh } from "./tamdskh.js";
-  $kho.hoso = $kho.hoso ? $kho.hoso : tamdskh;
+  $kho.hoso = tamdskh;
+  //het tam
   let curComp = Hoso;
   let dsnam = getdsNam(10);
   let namhoso = dsnam ? dsnam[1] : 0;
@@ -200,7 +198,7 @@
     </div>
     {#if isOpen}
       <div class="row">
-        <div class="col">Vui lòng lựa chọn hồ sơ của năm&nbsp;</div>
+        <div class="col-auto">Vui lòng lựa chọn hồ sơ của năm&nbsp;</div>
         <div class="col-auto">
           <select class="custom-select" id="selectnam" bind:value={namhoso}>
             {#each dsnam as item}
@@ -208,7 +206,7 @@
             {/each}
           </select>
         </div>
-        <div class="col-auto">
+        <div class="col">
           <button
             class="btn btn-outline-primary btn-rounded"
             type="button"

@@ -1,7 +1,7 @@
 <script>
   import { kho } from "./stores.js";
   import { filterListObj } from "./utils.js";
-
+  
   // tim kiem
   $kho.dsloc = [];
   $kho.dstim = [];

@@ -7,8 +7,8 @@
 <style>
   #webapp {
     display: grid;
-    grid-template-rows: 1fr 5fr 1fr;
-    grid-template-columns: 0px 5fr 0px;
+    grid-template-rows: min-width 5fr 1px;
+    grid-template-columns: 1px 5fr 1px;
     grid-template-areas:
       "header header header"
       "nav main aside"

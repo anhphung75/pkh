@@ -94,7 +94,8 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         conggiaotiep = groupid
         manguoidung = clientid
         Api1108_ws.waiters.add(self)
-        print("WebSocket opened is {}".format(str(self)))
+        for k in self:
+        print("Waiter key={} val={}".format(str(k), str(self[k])))
         print('conggiaotiep={}, manguoidung={}'.format(conggiaotiep, manguoidung))
 
     def on_close(self):
@@ -133,7 +134,18 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
             # chuẩn bị data gửi lại
             chat['data']['tin']['nhan'] = 'moi'
             chat['data']['goi']['hoso'] = data
-        #elif chat['data']['tin']['nhan'] == 'sua':
+        elif chat['data']['tin']['nhan'] == 'moi':
+            pass
+            #chuyen thang client, cap nhật server
+            #hsr = chat['data']['goi']['hoso']
+            #data = hoso.sua(hsr)
+        elif chat['data']['tin']['nhan'] == 'sua':
+            pass
+            #chuyen thang client, cap nhật server
+            #hsr = chat['data']['goi']['hoso']
+            #data = hoso.sua(hsr)
+        elif chat['data']['tin']['nhan'] == 'xoa':
+            pass
             #chuyen thang client, cap nhật server
             #hsr = chat['data']['goi']['hoso']
             #data = hoso.sua(hsr)
