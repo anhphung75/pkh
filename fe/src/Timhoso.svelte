@@ -1,8 +1,10 @@
 <script>
   import { kho } from "./stores.js";
   import { filterListObj } from "./utils.js";
-  
+
   // tim kiem
+  export let hoso;
+  console.log("hoso= " + $kho.hoso.length)
   $kho.dsloc = [];
   $kho.dstim = [];
   let stim = "";
@@ -33,7 +35,7 @@
   }
   function locNhom(nhom) {
     let l = nhom.length || 0;
-    let data = $kho.hoso;
+    let data = hoso;
     if (l > 0) {
       for (let i = 0; i < l; i++) {
         let s = nhom[i];

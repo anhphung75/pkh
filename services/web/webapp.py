@@ -33,6 +33,7 @@ class MainHandler(WebBase):
         #self.render("home.html", webapp_title='PKH')
         self.write("Hello World")
 
+
 class Hoso_Handler(WebBase):
     def get(self):
         self.render("hoso.html", webapp_title='PKH')
@@ -48,25 +49,23 @@ class Api1108_Hoso_All(ApiBase):
         except:
             pass
         print('nam={}'.format(nam))
-        if nam>0:
+        if nam > 0:
             try:
                 data = hoso.gom(nam)
                 print('hoso={}'.format(data))
-                res['hoso'] = data
-                res['info'] = 'OK'
+                res['kho'] = {"hoso": data}
+                res['tin'] = {'nhan': 'OK'}
             except:
-                res['info'] = 'Không có dữ liệu'
+                res['tin'] = 'Không có dữ liệu'
         else:
             try:
                 data = hoso.xem(mahoso)
                 print('hoso={}'.format(data))
-                res['hoso'] = data
-                res['info'] = 'OK'
+                res['kho'] = {"hoso": data}
+                res['tin'] = {'nhan': 'OK'}
             except:
-                res['info'] = 'Không có dữ liệu'
+                res['tin'] = 'Không có dữ liệu'
         self.send_response(res)
-
-
 
 
 class Api1108_Hoso_Crud(ApiBase):
@@ -84,19 +83,17 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
     waiters = set()
     cache = []
     cache_size = 200
-    conggiaotiep = manguoidung = ''
+    toa = khach = ''
 
     def get_compression_options(self):
         # Non-None enables compression with default options.
         return {}
 
     def open(self, groupid, clientid):
-        conggiaotiep = groupid
-        manguoidung = clientid
+        toa = groupid
+        khach = clientid
         Api1108_ws.waiters.add(self)
-        for k in self:
-        print("Waiter key={} val={}".format(str(k), str(self[k])))
-        print('conggiaotiep={}, manguoidung={}'.format(conggiaotiep, manguoidung))
+        print('toa={}, khach={}'.format(toa, khach))
 
     def on_close(self):
         Api1108_ws.waiters.remove(self)
@@ -124,29 +121,29 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         logging.info("got message %r", message)
         print('tin tu client {}'.format(message))
         parsed = tornado.escape.json_decode(message)
-        chat = {"uuid": parsed['uuid'], "data": parsed['data']}
-        # check conggiaotiep magiaotiep manguoidung
-        chat['data']['tin']['magiaotiep'] = 'boss{}'.format(
-                datetime.datetime.now())
-        if chat['data']['tin']['nhan'] == 'gom':
-            namhoso = chat['data']['goi']['hoso']['namhoso']
+        chat = {"tin": parsed['tin'], "kho": parsed['kho']}
+        # check toa magiaotiep khach
+        chat['tin']['ve'] = 'boss{}'.format(
+            datetime.datetime.now())
+        if chat['tin']['nhan'] == 'gom':
+            namhoso = chat['kho']['hoso']['namhoso']
             data = hoso.gom(namhoso)
             # chuẩn bị data gửi lại
-            chat['data']['tin']['nhan'] = 'moi'
-            chat['data']['goi']['hoso'] = data
-        elif chat['data']['tin']['nhan'] == 'moi':
+            chat['tin']['nhan'] = 'moi'
+            chat['kho']['hoso'] = data
+        elif chat['tin']['nhan'] == 'moi':
             pass
-            #chuyen thang client, cap nhật server
+            # chuyen thang client, cap nhật server
             #hsr = chat['data']['goi']['hoso']
             #data = hoso.sua(hsr)
-        elif chat['data']['tin']['nhan'] == 'sua':
+        elif chat['tin']['nhan'] == 'sua':
             pass
-            #chuyen thang client, cap nhật server
+            # chuyen thang client, cap nhật server
             #hsr = chat['data']['goi']['hoso']
             #data = hoso.sua(hsr)
-        elif chat['data']['tin']['nhan'] == 'xoa':
+        elif chat['tin']['nhan'] == 'xoa':
             pass
-            #chuyen thang client, cap nhật server
+            # chuyen thang client, cap nhật server
             #hsr = chat['data']['goi']['hoso']
             #data = hoso.sua(hsr)
 

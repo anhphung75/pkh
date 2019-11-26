@@ -1,10 +1,11 @@
 <script>
-  import { kho, chu } from "./stores.js";
+  import { kho, ga } from "./stores.js";
   import Timhoso from "./Timhoso.svelte";
+  export let hoso;
   // init data
-  $chu.conggiaotiep = $chu.conggiaotiep ? $chu.conggiaotiep : "pkh";
-  $chu.manguoidung = $chu.manguoidung ? $chu.manguoidung : "pkh002";
-  $chu.magiaotiep = $chu.magiaotiep ? $chu.magiaotiep : "1pkh2Pkh3pKh4pkH";
+  $ga.conggiaotiep = $ga.conggiaotiep ? $ga.conggiaotiep : "pkh";
+  $ga.manguoidung = $ga.manguoidung ? $ga.manguoidung : "pkh002";
+  $ga.magiaotiep = $ga.magiaotiep ? $ga.magiaotiep : "1pkh2Pkh3pKh4pkH";
   //$kho.hoso = $kho.hoso ? $kho.hoso : [];
   $kho.progress = $kho.progress ? $kho.progress : 100;
   $kho.dstim = $kho.dstim ? $kho.dstim : [];
@@ -71,12 +72,12 @@
   // gui server
   function guiServer(listhoso) {
     var chat = {
-      uuid: [$chu.manguoidung, Date.now()].join("."),
+      uuid: [$ga.manguoidung, Date.now()].join("."),
       data: { tin: {}, goi: {} }
     };
-    chat.data.tin = { nhan: "sua", magiaotiep: $chu.magiaotiep };
+    chat.data.tin = { nhan: "sua", magiaotiep: $ga.magiaotiep };
     chat.data.goi = { hoso: listhoso };
-    //guiSocket(chat, $chu.conggiaotiep, $chu.manguoidung);
+    //guiSocket(chat, $ga.conggiaotiep, $ga.manguoidung);
   }
   //hoso sua
   let rowCur = 0;
@@ -321,7 +322,7 @@
 
 <section>
   <header>
-    <Timhoso />
+    <Timhoso hoso={$kho.hoso}/>
   </header>
 
   <main>

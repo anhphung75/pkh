@@ -1,55 +1,23 @@
 <script>
   import { kho, ga } from "./stores.js";
-  import { getdsNam, getCookie } from "./utils.js";
-  import Progress from "./Progress.svelte";
-  import Hoso from "./Banghoso.svelte";
-  //import HosoMoi from "./HosoMoi.svelte";
-  // init data
-  $kho.hoso = [];
-  $kho.progress = 100;
+  //init data
+  let toa = $ga.toa || "pkh";
+  let khach = $ga.khach || ["pkh002", Date.now()].join(".");
+  let ve = $ga.ve || "1pkh2Pkh3pKh4pkH";
+  let _xsrf = $ga._xsrf || "1pkH2pKh3Pkh4pkh";
+  let namhoso = $kho.namhoso || 2019;
+  let hoso = $kho.hoso || [];
+  let hososua = $kho.hososua || [];
+  let hosomoi = $kho.hosomoi || [];
+  let lenhgui = $kho.lenhgui || "";
+  let isOpen = true;
   //tam
   //import { tamdskh } from "./tamdskh.js";
-  $kho.hoso = [];
+  //$kho.hoso = tamdskh;
   //het tam
-  let curComp = Hoso;
-  let dsnam = getdsNam(10);
-  let namhoso = dsnam ? dsnam[1] : 0;
-  let isOpen = false;
 
-  //init data
-  $ga.toa = getCookie("toa") || "pkh";
-  $ga.khach = getCookie("khach") || ["pkh002", Date.now()].join(".");
-  $ga.ve = getCookie("ve") || "1pkh2Pkh3pKh4pkH";
-
-  //web
-  const API_URL = "http://localhost:8888/api1108/hoso/";
-  function nhanWeb() {
-  let apiurl = namhoso ? API_URL + namhoso : API_URL;
-  axios({
-    method: "get",
-    url: apiurl,
-    responseType: "json",
-    responseEncoding: "utf8",
-    onDownloadProgress: progressEvent => {
-      let percentCompleted = parseInt(
-        Math.round((progressEvent.loaded * 100) / progressEvent.total)
-      );
-      $kho.progress = percentCompleted;
-      console.log("$kho.progress=" + $kho.progress);
-    }
-  }).then(response => {
-    let chat = response.data || {};
-    console.log("response.data=" + chat);
-    if (Object.keys(chat).length > 1) {
-      $kho.hoso = chat.kho.hoso;
-      console.log("$dulieu.hoso=" + chat.hoso);
-      console.log("$dulieu.info=" + chat.info);
-    }
-  });
-}
   //const tuyen = "tau://" + location.host + "/api1108/" + toa + "/hoso/" + khach;
-  const tuyen =
-    "ws://localhost:8888" + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
+  const tuyen = "ws://localhost:8888" + "/api1108/" + toa + "/hoso/" + khach;
   $ga.tau = new WebSocket(tuyen) || null;
 
   function nhanTau() {
@@ -58,7 +26,7 @@
     try {
       $ga.tau.onmessage = function(event) {
         let chat = JSON.parse(event.data);
-        console.log("nhanSocket chat=" + JSON.stringify(chat));
+        //console.log("nhanSocket tin tu server: nhan=" + nhan + " tin=" + JSON.stringify(chat));
         if (dsnhan.indexOf(chat["tin"]["nhan"]) !== -1) {
           $ga.ve = chat["tin"]["ve"];
           autoNhan(chat);
@@ -81,10 +49,10 @@
       }
     }
   }
-  function guiTau() {
+  function guiTau(nhan, hang) {
     let chat = {
-      tin: { uuid: [$ga.khach, Date.now()].join("."), nhan: "gom", ve: $ga.ve },
-      kho: { hoso: { namhoso: namhoso } }
+      tin: { uuid: [khach, Date.now()].join("."), nhan: nhan, ve: ve },
+      kho: hang
     };
     try {
       $ga.tau.send(JSON.stringify(chat));
@@ -107,13 +75,7 @@
     }
     let hsnam = listhoso.filter(i => i.mahoso.startsWith(namhoso));
     listhoso = JSON.parse(JSON.stringify(hsnam));
-    let hosonew = $kho.hoso
-    let l =listhoso.length;
-    for (let i = 0; i < l; i++) {
-      hosonew.push(listhoso[i])
-    }
-    //let hosonew = [...$kho.hoso, listhoso];
-    $kho.hoso = JSON.parse(JSON.stringify(hosonew));
+    $kho.hoso = [...$kho.hoso, listhoso];
     refreshHoso();
   }
   function suaHoso(listhoso) {
@@ -161,10 +123,7 @@
   }
 
   function autoNhan(chat) {
-    chat = JSON.parse(JSON.stringify(chat));
     let listhoso = chat.kho.hoso || [];
-    console.log("autoNhan listhoso=" + typeof(listhoso));
-    console.log("autoNhan listhoso[0]=" +JSON.stringify(listhoso[0]));
     if (listhoso.length === 0) {
       return;
     }
@@ -178,57 +137,39 @@
       xoaHoso(listhoso);
     }
   }
+  $: lenhgui = $kho.lenhgui || "";
+  console.log("Cang lenhgui= " + lenhgui);
+  function autoGui() {
+    console.log("autoGui lenhgui= " + lenhgui);
+    if (lenhgui === "gom") {
+      let nhan = "gom";
+      let hang = { hoso: { namhoso: namhoso } };
+      guiTau(nhan, hang);
+    }
+    if (lenhgui === "moi") {
+      let nhan = "moi";
+      moiHoso(hosomoi);
+      guiTau(nhan, hosomoi);
+    }
+    if (lenhgui === "sua") {
+      let nhan = "sua";
+      suaHoso(hososua);
+      guiTau(nhan, hososua);
+    }
+    if (lenhgui === "xoa") {
+      let nhan = "xoa";
+      xoaHoso(hososua);
+    }
+  }
+  $: autogui: autoGui();
   $: autonhan: nhanTau();
+  console.log("Cang $kho.hoso=" + JSON.stringify($kho.hoso));
 </script>
 
 <style>
-  section {
-    display: flex;
-    flex-flow: column nowrap;
-    justify-content: space-between;
-    width: 100%;
-    height: 100vh;
-  }
-  main {
-    flex: 1 1 auto;
-  }
+
 </style>
 
-<section>
-  <header class="container-fluid">
-    <div class="row justify-content-center text-primary">
-      <div class="col-auto" on:click={() => (isOpen = !isOpen)}>
-        <h3>DANH SÁCH KHÁCH HÀNG - NHẬN ĐƠN NĂM {namhoso}</h3>
-      </div>
-    </div>
-    {#if isOpen}
-      <div class="row">
-        <div class="col-auto">Vui lòng lựa chọn hồ sơ của năm&nbsp;</div>
-        <div class="col-auto">
-          <select class="custom-select" id="selectnam" bind:value={namhoso}>
-            {#each dsnam as item}
-              <option value={item}>{item}</option>
-            {/each}
-          </select>
-        </div>
-        <div class="col">
-          <button
-            class="btn btn-outline-primary btn-rounded"
-            type="button"
-            on:click={guiTau}>
-            <i class="fa fa-sync-alt" />
-          </button>
-        </div>
-      </div>
-    {/if}
-    <Progress />
-  </header>
-
-  <main>
-    <Hoso hoso={$kho.hoso}/>
-  </main>
-
-  <footer>
-  hoso {$kho.hoso}
-  </footer>
-</section>
+{#if isOpen}
+  <div>{hoso}</div>
+{/if}
