@@ -1,10 +1,7 @@
 <script>
   import { kho } from "./stores.js";
   import { filterListObj } from "./utils.js";
-
-  // tim kiem
-  export let hoso;
-  console.log("hoso= " + $kho.hoso.length)
+  // init data
   $kho.dsloc = [];
   $kho.dstim = [];
   let stim = "";
@@ -24,18 +21,18 @@
     }
   }
   function xoaDstim() {
-    let dai = dstim.length;
+    let dai = $kho.dstim.length;
     let data = [];
     for (let i = 0; i < dai; i++) {
       if (i !== curdstim) {
         data.push($kho.dstim[i]);
       }
     }
-    dstim = data;
+    $kho.dstim = JSON.parse(JSON.stringify(data));
   }
   function locNhom(nhom) {
     let l = nhom.length || 0;
-    let data = hoso;
+    let data = $kho.hoso || [];
     if (l > 0) {
       for (let i = 0; i < l; i++) {
         let s = nhom[i];
@@ -44,7 +41,10 @@
     }
     return data;
   }
-  $: $kho.dsloc = filterListObj(locNhom($kho.dstim), stim);
+
+  $: $kho.dsloc = filterListObj(locNhom($kho.dstim), stim).sort((a, b) =>
+    a.mahoso < b.mahoso ? -1 : 1
+  );
   // phan trang
   $kho.hs_trang = 7;
   $kho.tongtrang = 0;

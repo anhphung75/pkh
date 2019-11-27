@@ -30,8 +30,8 @@ class ApiBase(web.RequestHandler):
 
 class MainHandler(WebBase):
     def get(self):
-        #self.render("home.html", webapp_title='PKH')
-        self.write("Hello World")
+        self.render("hoso.html", webapp_title='PKH')
+        #self.write("Hello World")
 
 
 class Hoso_Handler(WebBase):
@@ -124,12 +124,12 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         chat = {"tin": parsed['tin'], "kho": parsed['kho']}
         # check toa magiaotiep khach
         chat['tin']['ve'] = 'boss{}'.format(
-            datetime.datetime.now())
+            str(datetime.datetime.now()))
         if chat['tin']['nhan'] == 'gom':
             namhoso = chat['kho']['hoso']['namhoso']
             data = hoso.gom(namhoso)
             # chuẩn bị data gửi lại
-            chat['tin']['nhan'] = 'moi'
+            chat['tin']['nhan'] = 'gom'
             chat['kho']['hoso'] = data
         elif chat['tin']['nhan'] == 'moi':
             pass
@@ -165,7 +165,7 @@ class WebApp(web.Application):
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             #ui_modules={"Entry": EntryModule},
-            xsrf_cookies=False,
+            xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
             # login_url="/auth/login",
             debug=True,

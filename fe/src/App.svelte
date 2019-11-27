@@ -2,15 +2,12 @@
   import { kho, ga } from "./stores.js";
   import { getdsNam, getCookie } from "./utils.js";
   import Progress from "./Progress.svelte";
-  import Hoso from "./Banghoso.svelte";
+  import Hoso from "./Hoso.svelte";
   //import HosoMoi from "./HosoMoi.svelte";
   // init data
   $kho.hoso = [];
   $kho.progress = 100;
-  //tam
-  //import { tamdskh } from "./tamdskh.js";
-  $kho.hoso = [];
-  //het tam
+
   let curComp = Hoso;
   let dsnam = getdsNam(10);
   let namhoso = dsnam ? dsnam[1] : 0;
@@ -20,36 +17,11 @@
   $ga.toa = getCookie("toa") || "pkh";
   $ga.khach = getCookie("khach") || ["pkh002", Date.now()].join(".");
   $ga.ve = getCookie("ve") || "1pkh2Pkh3pKh4pkH";
+  $ga.uuid = getCookie("uuid") || "1khacH2khaCh3khAch4kHach5Khach";
 
-  //web
-  const API_URL = "http://localhost:8888/api1108/hoso/";
-  function nhanWeb() {
-  let apiurl = namhoso ? API_URL + namhoso : API_URL;
-  axios({
-    method: "get",
-    url: apiurl,
-    responseType: "json",
-    responseEncoding: "utf8",
-    onDownloadProgress: progressEvent => {
-      let percentCompleted = parseInt(
-        Math.round((progressEvent.loaded * 100) / progressEvent.total)
-      );
-      $kho.progress = percentCompleted;
-      console.log("$kho.progress=" + $kho.progress);
-    }
-  }).then(response => {
-    let chat = response.data || {};
-    console.log("response.data=" + chat);
-    if (Object.keys(chat).length > 1) {
-      $kho.hoso = chat.kho.hoso;
-      console.log("$dulieu.hoso=" + chat.hoso);
-      console.log("$dulieu.info=" + chat.info);
-    }
-  });
-}
-  //const tuyen = "tau://" + location.host + "/api1108/" + toa + "/hoso/" + khach;
   const tuyen =
-    "ws://localhost:8888" + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
+    "ws://" + location.host + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
+  //const tuyen = "ws://localhost:8888" + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
   $ga.tau = new WebSocket(tuyen) || null;
 
   function nhanTau() {
@@ -58,10 +30,12 @@
     try {
       $ga.tau.onmessage = function(event) {
         let chat = JSON.parse(event.data);
-        console.log("nhanSocket chat=" + JSON.stringify(chat));
         if (dsnhan.indexOf(chat["tin"]["nhan"]) !== -1) {
-          $ga.ve = chat["tin"]["ve"];
-          autoNhan(chat);
+          let vetest = chat["tin"]["uuid"] || "";
+          if ($ga.uuid === vetest) {
+            $ga.ve = chat["tin"]["ve"];
+            autoNhan(chat);
+          }
         }
       };
     } catch (err) {
@@ -72,25 +46,29 @@
         $ga.tau = new WebSocket(tuyen);
         $ga.tau.onmessage = function(event) {
           let chat = JSON.parse(event.data);
-          //console.log("nhanSocket tin tu server: nhan=" + nhan + " tin=" + JSON.stringify(chat));
           if (dsnhan.indexOf(chat["tin"]["nhan"]) !== -1) {
-            $ga.ve = chat["tin"]["ve"];
-            autoNhan(chat);
+            let vetest = chat["tin"]["uuid"] || "";
+            if ($ga.uuid === vetest) {
+              $ga.ve = chat["tin"]["ve"];
+              autoNhan(chat);
+            }
           }
         };
       }
     }
   }
   function guiTau() {
+    $kho.hoso = [];
+    refreshHoso();
     let chat = {
       tin: { uuid: [$ga.khach, Date.now()].join("."), nhan: "gom", ve: $ga.ve },
       kho: { hoso: { namhoso: namhoso } }
     };
+    $ga.uuid = chat.tin.uuid;
     try {
       $ga.tau.send(JSON.stringify(chat));
-      console.log("rest try guiSocket=" + JSON.stringify(chat));
     } catch (err) {
-      console.log("error " + err);
+      //console.log("error " + err);
     }
   }
 
@@ -100,6 +78,21 @@
     let r = $kho.dstim.pop();
     r = null;
   }
+  function gomHoso(listhoso) {
+    listhoso = listhoso ? JSON.parse(JSON.stringify(listhoso)) : [];
+    if (listhoso.length === 0) {
+      return;
+    }
+    let hsnam = listhoso.filter(i => i.mahoso.startsWith(namhoso));
+    listhoso = JSON.parse(JSON.stringify(hsnam));
+    let hosonew = [];
+    let l = listhoso.length;
+    for (let i = 0; i < l; i++) {
+      hosonew.push(listhoso[i]);
+    }
+    $kho.hoso = JSON.parse(JSON.stringify(hosonew));
+    refreshHoso();
+  }
   function moiHoso(listhoso) {
     listhoso = listhoso ? JSON.parse(JSON.stringify(listhoso)) : [];
     if (listhoso.length === 0) {
@@ -107,17 +100,24 @@
     }
     let hsnam = listhoso.filter(i => i.mahoso.startsWith(namhoso));
     listhoso = JSON.parse(JSON.stringify(hsnam));
-    let hosonew = $kho.hoso
-    let l =listhoso.length;
+    let dsmahoso = [];
+    let l = $kho.hoso.length || 0;
     for (let i = 0; i < l; i++) {
-      hosonew.push(listhoso[i])
+      dsmahoso.push($kho.hoso[i]["mahoso"]);
     }
-    //let hosonew = [...$kho.hoso, listhoso];
+    let hosonew = listhoso.filter(i => dsmahoso.indexOf(i.mahoso) === -1);
+    listhoso = JSON.parse(JSON.stringify(hosonew));
+    hosonew = JSON.parse(JSON.stringify($kho.hoso)) || [];
+    l = listhoso.length || 0;
+    for (let i = 0; i < l; i++) {
+      hosonew.push(listhoso[i]);
+    }
     $kho.hoso = JSON.parse(JSON.stringify(hosonew));
     refreshHoso();
   }
   function suaHoso(listhoso) {
     listhoso = listhoso ? JSON.parse(JSON.stringify(listhoso)) : [];
+    let hoso = JSON.parse(JSON.stringify($kho.hoso)) || [];
     let l = hoso.length;
     if (listhoso.length === 0 || l === 0) {
       return;
@@ -141,7 +141,8 @@
   }
   function xoaHoso(listhoso) {
     listhoso = listhoso ? JSON.parse(JSON.stringify(listhoso)) : [];
-    let l = hoso.length || 0;
+    let hoso = JSON.parse(JSON.stringify($kho.hoso)) || [];
+    let l = hoso.length;
     if (listhoso.length === 0 || l === 0) {
       return;
     }
@@ -149,22 +150,22 @@
     for (let i1 = 0; i1 < l1; i1++) {
       let hsr = listhoso[i1];
       for (let i = 0; i < l; i++) {
-        let hss = $kho.hoso[i];
+        let hss = hoso[i];
         if (hsr.mahoso === hss.mahoso) {
-          $kho.hoso.splice(i, 1);
+          hoso.splice(i, 1);
           break;
         }
       }
     }
-    $kho.hoso = hoso;
+    $kho.hoso = JSON.parse(JSON.stringify(hoso));
     refreshHoso();
   }
 
   function autoNhan(chat) {
     chat = JSON.parse(JSON.stringify(chat));
     let listhoso = chat.kho.hoso || [];
-    console.log("autoNhan listhoso=" + typeof(listhoso));
-    console.log("autoNhan listhoso[0]=" +JSON.stringify(listhoso[0]));
+    console.log("autoNhan listhoso=" + typeof listhoso);
+    console.log("autoNhan listhoso[0]=" + JSON.stringify(listhoso[0]));
     if (listhoso.length === 0) {
       return;
     }
@@ -187,7 +188,7 @@
     flex-flow: column nowrap;
     justify-content: space-between;
     width: 100%;
-    height: 100vh;
+    height: 100%;
   }
   main {
     flex: 1 1 auto;
@@ -225,10 +226,8 @@
   </header>
 
   <main>
-    <Hoso hoso={$kho.hoso}/>
+    <svelte:component this={Hoso} />
   </main>
 
-  <footer>
-  hoso {$kho.hoso}
-  </footer>
+  <footer />
 </section>

@@ -7,7 +7,7 @@
 <style>
   #webapp {
     display: grid;
-    grid-template-rows: min-width 5fr 1px;
+    grid-template-rows: auto 5fr 1px;
     grid-template-columns: 1px 5fr 1px;
     grid-template-areas:
       "header header header"

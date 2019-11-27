@@ -1,7 +1,7 @@
-// web
+//web
 const API_URL = "http://localhost:8888/api1108/hoso/";
-function nhanWeb(nam) {
-  let apiurl = nam ? API_URL + nam : API_URL;
+function nhanWeb() {
+  let apiurl = namhoso ? API_URL + namhoso : API_URL;
   axios({
     method: "get",
     url: apiurl,
@@ -15,12 +15,12 @@ function nhanWeb(nam) {
       console.log("$kho.progress=" + $kho.progress);
     }
   }).then(response => {
-    let dulieu = response.data || {};
-    console.log("response.data=" + dulieu);
-    if (Object.keys(dulieu).length > 1) {
-      $kho.hoso = dulieu.goi.hoso;
-      console.log("$dulieu.hoso=" + dulieu.hoso);
-      console.log("$dulieu.info=" + dulieu.info);
+    let chat = response.data || {};
+    console.log("response.data=" + chat);
+    if (Object.keys(chat).length > 1) {
+      $kho.hoso = chat.kho.hoso;
+      console.log("$dulieu.hoso=" + chat.hoso);
+      console.log("$dulieu.info=" + chat.info);
     }
   });
 }
