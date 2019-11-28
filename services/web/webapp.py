@@ -1,8 +1,9 @@
 import os
 import json
-import datetime
+import arrow
 import tornado.ioloop
 import tornado.web as web
+import tornado.httpserver as httpserver
 import logging
 import tornado.escape
 import tornado.options
@@ -107,9 +108,10 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
     @classmethod
     def send_updates(cls, chat):
         logging.info("sending message to %d waiters", len(cls.waiters))
-        print("sending message to waiters {}".format(cls.waiters))
         for waiter in cls.waiters:
             try:
+                print("sending message to waiters {}".format(waiter))
+                print("sending {}".format(str(chat["tin"])))
                 waiter.write_message(chat)
             except:
                 logging.error("Error sending message", exc_info=True)
@@ -123,8 +125,8 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         parsed = tornado.escape.json_decode(message)
         chat = {"tin": parsed['tin'], "kho": parsed['kho']}
         # check toa magiaotiep khach
-        chat['tin']['ve'] = 'boss{}'.format(
-            str(datetime.datetime.now()))
+        tgdi = int(arrow.utcnow().float_timestamp * 1000)
+        chat['tin']['ve'] = 'boss.{}'.format(str(tgdi))
         if chat['tin']['nhan'] == 'gom':
             namhoso = chat['kho']['hoso']['namhoso']
             data = hoso.gom(namhoso)
@@ -182,6 +184,11 @@ def make_app():
 def main():
     # tornado.options.parse_command_line()
     app = make_app()
+    #ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    #ssl_ctx.load_cert_chain(os.path.join(data_dir, "mydomain.crt"),
+    #                        os.path.join(data_dir, "mydomain.key"))
+    #server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
+    #server.listen(8888)
     app.listen(8888)
     tornado.ioloop.IOLoop.current().start()
 

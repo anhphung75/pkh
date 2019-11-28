@@ -6,10 +6,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>{{ escape(handler.settings["webapp_title"]) }}</title>
-  <link rel="stylesheet" href="{{ static_url("base.css") }}" type="text/css">
+  <link rel="stylesheet" href="{{ static_url("css/base.css") }}" type="text/css">
+  <link rel="stylesheet" href="{{ static_url("css/fontawesome.5.11.2.all.css") }}" type="text/css">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
     integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css">
   {% block cdn %}{% end %}
   <link rel='icon' type='image/png' href="{{ static_url("favicon.png") }}">
   {% block css %}{% end %}

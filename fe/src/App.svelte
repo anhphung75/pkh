@@ -14,13 +14,12 @@
   let isOpen = false;
 
   //init data
-  $ga.toa = getCookie("toa") || "pkh";
-  $ga.khach = getCookie("khach") || ["pkh002", Date.now()].join(".");
+  $ga.toa = getCookie("toa") || "cntd";
+  $ga.khach = getCookie("khach") || ["khach", new Date().getTime()].join(".");
   $ga.ve = getCookie("ve") || "1pkh2Pkh3pKh4pkH";
   $ga.uuid = getCookie("uuid") || "1khacH2khaCh3khAch4kHach5Khach";
 
-  const tuyen =
-    "ws://" + location.host + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
+  const tuyen = "ws://" + location.host + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
   //const tuyen = "ws://localhost:8888" + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
   $ga.tau = new WebSocket(tuyen) || null;
 
@@ -31,26 +30,39 @@
       $ga.tau.onmessage = function(event) {
         let chat = JSON.parse(event.data);
         if (dsnhan.indexOf(chat["tin"]["nhan"]) !== -1) {
-          let vetest = chat["tin"]["uuid"] || "";
-          if ($ga.uuid === vetest) {
-            $ga.ve = chat["tin"]["ve"];
-            autoNhan(chat);
+          let vedi = chat["tin"]["uuid"] || "";
+          let veve = chat["tin"]["ve"] || "";
+          if ($ga.uuid === vedi || $ga.ve !== veve) {
+            //check time
+            let tgdi = parseInt(vedi.split(".").pop());
+            let tgve = parseInt(veve.split(".").pop()) || 0;
+            let chenhlech = tgve - tgdi;
+            if (tgve - tgdi >= 0) {
+              $ga.ve = veve;
+              autoNhan(chat);
+            }
           }
         }
       };
     } catch (err) {
-      let noOK = true;
+      noOK = true;
       console.log("error " + err);
     } finally {
       if (noOK) {
-        $ga.tau = new WebSocket(tuyen);
         $ga.tau.onmessage = function(event) {
           let chat = JSON.parse(event.data);
           if (dsnhan.indexOf(chat["tin"]["nhan"]) !== -1) {
-            let vetest = chat["tin"]["uuid"] || "";
-            if ($ga.uuid === vetest) {
-              $ga.ve = chat["tin"]["ve"];
-              autoNhan(chat);
+            let vedi = chat["tin"]["uuid"] || "";
+            let veve = chat["tin"]["ve"] || "";
+            if ($ga.uuid === vedi || $ga.ve !== veve) {
+              //check time
+              let tgdi = parseInt(vedi.split(".").pop());
+              let tgve = parseInt(veve.split(".").pop()) || 0;
+              let chenhlech = tgve - tgdi;
+              if (tgve - tgdi >= 0) {
+                $ga.ve = veve;
+                autoNhan(chat);
+              }
             }
           }
         };
@@ -60,8 +72,9 @@
   function guiTau() {
     $kho.hoso = [];
     refreshHoso();
+    let tgdi = new Date().getTime();
     let chat = {
-      tin: { uuid: [$ga.khach, Date.now()].join("."), nhan: "gom", ve: $ga.ve },
+      tin: { uuid: [$ga.khach, tgdi].join("."), nhan: "gom", ve: $ga.ve },
       kho: { hoso: { namhoso: namhoso } }
     };
     $ga.uuid = chat.tin.uuid;
@@ -164,8 +177,6 @@
   function autoNhan(chat) {
     chat = JSON.parse(JSON.stringify(chat));
     let listhoso = chat.kho.hoso || [];
-    console.log("autoNhan listhoso=" + typeof listhoso);
-    console.log("autoNhan listhoso[0]=" + JSON.stringify(listhoso[0]));
     if (listhoso.length === 0) {
       return;
     }

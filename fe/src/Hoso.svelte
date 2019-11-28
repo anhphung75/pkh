@@ -16,8 +16,9 @@
 
   //rest
   function guiTau(nhan, hang) {
+    let tgdi = new Date().getTime();
     let chat = {
-      tin: { uuid: [$ga.khach, Date.now()].join("."), nhan: nhan, ve: $ga.ve },
+      tin: { uuid: [$ga.khach, tgdi].join("."), nhan: nhan, ve: $ga.ve },
       kho: hang
     };
     $ga.uuid = chat.tin.uuid;
@@ -97,6 +98,7 @@
     justify-content: space-between;
     width: 100%;
     height: 100%;
+    max-height: 95vh;
   }
   main {
     flex: 1 1 auto;
