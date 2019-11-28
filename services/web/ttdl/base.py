@@ -18,7 +18,7 @@ Base = declarative_base()
 
 class Hoso(Base):
     __tablename__ = 'hoso'
-    __table_args__ = {"schema": "web"}
+#    __table_args__ = {"schema": "web"}
     autoid = Column(Integer, primary_key=True)
     mahoso = Column(Unicode(13), unique=True)  # yyyyhsxxxxxx
     qrcode = Column(VARBINARY)
@@ -57,12 +57,10 @@ class Hoso(Base):
                         onupdate=datetime.datetime.now)
 
 
-#engine = create_engine('sqlite:///:memory:', echo=True)
-cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
-    'pkh.web', 'w3b@pkh2019', '192.168.24.4:1433', 'PKHData')
-# cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
-#    'pkh', 'Ph0ngK3H0@ch', '192.168.24.4:1433', 'PKHData')
-engine = create_engine(cnnstr)
+#cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
+#    'pkh.web', 'w3b@pkh2019', '192.168.24.4:1433', 'PKHData')
+#engine = create_engine(cnnstr)
+engine = create_engine('sqlite:///:memory:', echo=True)
 
 Base.metadata.create_all(engine)
 Session = scoped_session(sessionmaker(bind=engine, autoflush=True))

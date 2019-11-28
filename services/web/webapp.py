@@ -1,6 +1,7 @@
 import os
 import json
 import arrow
+import ssl
 import tornado.ioloop
 import tornado.web as web
 import tornado.httpserver as httpserver
@@ -184,13 +185,20 @@ def make_app():
 def main():
     # tornado.options.parse_command_line()
     app = make_app()
-    #ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    #ssl_ctx.load_cert_chain(os.path.join(data_dir, "mydomain.crt"),
-    #                        os.path.join(data_dir, "mydomain.key"))
-    #server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
-    #server.listen(8888)
-    app.listen(8888)
-    tornado.ioloop.IOLoop.current().start()
+    ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_file_crt = os.getcwd() + "/ssl_cert/pkh.crt"
+    ssl_file_key = os.getcwd() + "/ssl_cert/pkh.key"
+    ssl_ctx.load_cert_chain(ssl_file_crt, ssl_file_key)
+    server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
+
+    # app.listen(8888)
+    # tornado.ioloop.IOLoop.current().start()
+    #server = httpserver.HTTPServer(app, ssl_options={
+    #    'certfile': '/home/pkh/services/web/ssl_cert/pkh.pem',
+    #    'keyfile': '/home/pkh/services/web/ssl_cert/pkh.key',
+    #})
+    server.listen(8888)
+    tornado.ioloop.IOLoop.instance().start()
 
 
 if __name__ == "__main__":
