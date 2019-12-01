@@ -12,10 +12,31 @@ import tornado.websocket
 
 
 from ttxl import hoso
+from ttxl_sse import hoso as sse_hoso
+dssse_hoso = []
+test1 = sse_hoso.test()
+dssse_hoso.append(test1)
+test2 = sse_hoso.test()
+dssse_hoso.append(test2)
+test3 = sse_hoso.test()
+dssse_hoso.append(test3)
 
 
 class WebBase(web.RequestHandler):
     pass
+
+
+class SseBase(web.RequestHandler):
+    def set_default_headers(self):
+        """Set the default response header to be JSON."""
+        self.set_header("Content-Type", "text/event-stream")
+        self.set_header("Cache-Control", "no-cache")
+        self.set_header("Access-Control-Allow-Origin", "*")
+
+    def send_response(self, utf8data, status=200):
+        """Construct and send a JSON response with appropriate status code."""
+        self.set_status(status)
+        self.write(utf8data)
 
 
 class ApiBase(web.RequestHandler):
@@ -39,6 +60,16 @@ class MainHandler(WebBase):
 class Hoso_Handler(WebBase):
     def get(self):
         self.render("hoso.html", webapp_title='PKH')
+        # self.write("Hello World")
+
+
+class HosoSSE_Handler(SseBase):
+    def get(self):
+        for res in dssse_hoso:
+            try:
+                self.send_response(res)
+            except:
+                pass
         # self.write("Hello World")
 
 
@@ -159,6 +190,7 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
+            (r"/hoso/sse", HosoSSE_Handler),
             (r"/api1108/([^/]+)/hoso/([^/]+)", Api1108_ws),
             (r"/api1108/hoso/([^/]+)?", Api1108_Hoso_All),
             (r"/api1108/hoso/([^/]+)/([^/]+)?", Api1108_Hoso_Crud),
@@ -183,20 +215,14 @@ def make_app():
 
 
 def main():
-    # tornado.options.parse_command_line()
+    tornado.options.parse_command_line()
     app = make_app()
-    ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    ssl_file_crt = os.getcwd() + "/ssl_cert/pkh.crt"
-    ssl_file_key = os.getcwd() + "/ssl_cert/pkh.key"
-    ssl_ctx.load_cert_chain(ssl_file_crt, ssl_file_key)
-    server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
+    #ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    #ssl_ctx.load_cert_chain(os.path.join("services/web/ssl_cert", "RootCA.crt"),
+    #                        os.path.join("services/web/ssl_cert", "RootCA.key"))
+    #server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
 
-    # app.listen(8888)
-    # tornado.ioloop.IOLoop.current().start()
-    #server = httpserver.HTTPServer(app, ssl_options={
-    #    'certfile': '/home/pkh/services/web/ssl_cert/pkh.pem',
-    #    'keyfile': '/home/pkh/services/web/ssl_cert/pkh.key',
-    #})
+    server = httpserver.HTTPServer(app)
     server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
 

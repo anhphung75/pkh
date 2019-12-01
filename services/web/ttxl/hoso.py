@@ -1,4 +1,6 @@
 import datetime
+import json
+import arrow
 
 from sqlalchemy import func, desc
 from ttdl.base import db
@@ -56,7 +58,7 @@ def sua(mahoso=None, data={}):
     bdl = db.query(Hoso).filter(Hoso.mahoso == mahoso).first()
     if bdl == None:
         return
-    #db.add(bdl)
+    # db.add(bdl)
     if 'sohoso' in data:
         bdl.sohoso = data['sohoso']
     if 'khachhang' in data:
@@ -90,21 +92,19 @@ def xoa(db, mahoso=None, data={}):
 def xem(mahoso=None):
     bdl = Hoso
     data = db.query(bdl).filter(bdl.sohoso == mahoso).all()
-    #db.close()
+    # db.close()
     if len(data) == 0:
         return ['loi len_data = 0']
     print('result = {}'.format(data))
-    return raw2listjson(data)
+    return json.dumps(raw2listjson(data))
 
 
-def gom(nam=None):
+def gom(nam=None, donggoi=None):
     bdl = Hoso
-    if nam==None:
+    if nam == None:
         data = db.query(bdl).filter(bdl.mahoso != None).all()
     else:
-        sdk='{}%'.format(nam)
+        sdk = '{}%'.format(nam)
         data = db.query(bdl).filter(bdl.mahoso.like(sdk)).all()
     db.close()
-    if len(data) == 0:
-        return []
-    return raw2listjson(data)
+    return json.dumps(raw2listjson(data))
