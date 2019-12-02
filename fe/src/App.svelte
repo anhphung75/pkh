@@ -19,8 +19,8 @@
   $ga.ve = getCookie("ve") || "1pkh2Pkh3pKh4pkH";
   $ga.uuid = getCookie("uuid") || "1khacH2khaCh3khAch4kHach5Khach";
 
-  const tuyen = "ws://" + location.host + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
-  //const tuyen = "ws://localhost:8888" + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
+  const tuyen = "wss://" + location.host + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
+  //const tuyen = "wss://localhost:8888" + "/api1108/" + $ga.toa + "/hoso/" + $ga.khach;
   $ga.tau = new WebSocket(tuyen) || null;
 
   function nhanTau() {
@@ -176,7 +176,16 @@
 
   function autoNhan(chat) {
     chat = JSON.parse(JSON.stringify(chat));
-    let listhoso = chat.kho.hoso || [];
+    let listhoso = JSON.parse(chat.kho.hoso) || [];
+    console.log("listhoso type of=" + typeof(listhoso));
+    //listhoso = JSON.parse(JSON.stringify(listhoso));
+    let hosonew = [];
+    let l = listhoso.length;
+    for (let i = 0; i < l; i++) {
+      hosonew.push(listhoso[i]);
+    }
+    listhoso =hosonew;
+    console.log("listhoso=" + JSON.stringify(listhoso));
     if (listhoso.length === 0) {
       return;
     }

@@ -143,7 +143,7 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         for waiter in cls.waiters:
             try:
                 print("sending message to waiters {}".format(waiter))
-                print("sending {}".format(str(chat["tin"])))
+                print("sending {}".format(str(chat['tin'])))
                 waiter.write_message(chat)
             except:
                 logging.error("Error sending message", exc_info=True)
@@ -217,12 +217,11 @@ def make_app():
 def main():
     tornado.options.parse_command_line()
     app = make_app()
-    #ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    #ssl_ctx.load_cert_chain(os.path.join("services/web/ssl_cert", "RootCA.crt"),
-    #                        os.path.join("services/web/ssl_cert", "RootCA.key"))
-    #server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
-
-    server = httpserver.HTTPServer(app)
+    ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_ctx.load_cert_chain(os.path.join("services/web/ssl_cert", "pkh.crt"),
+                            os.path.join("services/web/ssl_cert", "pkh.key"))
+    server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
+    #server = httpserver.HTTPServer(app)
     server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
 
