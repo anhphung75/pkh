@@ -10,7 +10,16 @@ function setCookie(cname, cvalue, exdays) {
   document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
 }
 
-function sarrayObj2objObj(sdata) {
+function deepCopy(obj) {
+  if (typeof (obj) === 'string') {
+    return JSON.parse(obj); 
+  } else {
+    return obj;
+    //return JSON.parse(JSON.stringify(obj));
+  }
+}
+
+function str2ListObj(sdata) {
   let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
   data = data.replace(/'/g, '"');
   return JSON.parse(data);
@@ -19,7 +28,7 @@ function sarrayObj2objObj(sdata) {
 function filterListObj(listobj, stim) {
   let s = stim.toLowerCase() || '';
   let data = listobj.filter(v => JSON.stringify(v).toLowerCase().indexOf(s) > -1);
-  return JSON.parse(JSON.stringify(data));
+  return data;
 };
 
 function getDateDelta(strdate1, strdate2) {
@@ -65,5 +74,5 @@ function tachHang(t) {
   }).format(t);
 };
 
-export { getCookie }
-export { sarrayObj2objObj, filterListObj, getDateDelta, formatDate, getdsNam, tachHang };
+export { getCookie, setCookie, deepCopy }
+export { str2ListObj, filterListObj, getDateDelta, formatDate, getdsNam, tachHang };

@@ -75,7 +75,7 @@ class HosoSSE_Handler(SseBase):
 
 class Api1108_Hoso_All(ApiBase):
     def get(self, mahoso):
-        res = {'info': '', 'hoso': []}
+        res = {'event': '', 'data': []}
         nam = -1
         try:
             nam = int(mahoso)
@@ -86,18 +86,18 @@ class Api1108_Hoso_All(ApiBase):
             try:
                 data = hoso.gom(nam)
                 print('hoso={}'.format(data))
-                res['kho'] = {"hoso": data}
-                res['tin'] = {'nhan': 'OK'}
+                res['data'] = data
+                res['event'] = "gom"
             except:
-                res['tin'] = 'Không có dữ liệu'
+                res['event'] = 'Không có dữ liệu'
         else:
             try:
                 data = hoso.xem(mahoso)
                 print('hoso={}'.format(data))
-                res['kho'] = {"hoso": data}
-                res['tin'] = {'nhan': 'OK'}
+                res['data'] = data
+                res['event'] = "gom"
             except:
-                res['tin'] = 'Không có dữ liệu'
+                res['event'] = 'Không có dữ liệu'
         self.send_response(res)
 
 
