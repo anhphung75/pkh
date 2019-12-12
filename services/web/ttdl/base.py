@@ -2,6 +2,7 @@ import os
 import sys
 import sqlite3
 import datetime
+import urllib
 
 from utils.thoigian import stodate, datetos
 
@@ -57,9 +58,15 @@ class Hoso(Base):
                         onupdate=datetime.datetime.now)
 
 
-cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
-    'pkh.web', 'w3b@pkh2019', '192.168.24.4:1433', 'PKHData')
-engine = create_engine(cnnstr)
+#cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
+#    'pkh.web', 'w3b@pkh2019', '192.168.24.4:1433', 'PKHData')
+#engine = create_engine(cnnstr)
+
+
+params = urllib.parse.quote_plus(
+    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
+engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
+
 #engine = create_engine('sqlite:///:memory:', echo=True)
 
 Base.metadata.create_all(engine)
