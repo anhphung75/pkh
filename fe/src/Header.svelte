@@ -1,6 +1,4 @@
 <script>
-  //import { kho } from "./stores.js";
-
   let isLogin = false;
 </script>
 

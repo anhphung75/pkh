@@ -1,5 +1,5 @@
 <script>
-  import { kho } from "./stores.js";
+  import { kho } from "./db/stores.js";
   //init data
   let p = $kho.progress || 0;
   $: isOpen = p < 100 ? true : false;

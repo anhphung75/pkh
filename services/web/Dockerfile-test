@@ -1,15 +1,11 @@
-FROM fedora:latest
+FROM python:3.8.0
 
-RUN dnf -y update && dnf -y install python3-pip python3-devel python3-pyodbc \
-  && curl https://packages.microsoft.com/config/rhel/8/prod.repo > /etc/yum.repos.d/mssql-release.repo \
-  && dnf remove unixODBC-utf16 unixODBC-utf16-devel \
-  && ACCEPT_EULA=Y dnf -y install msodbcsql17 \
-  && ACCEPT_EULA=Y dnf -y install mssql-tools \
-  && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bash_profile \
-  && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc \
-  && source ~/.bashrc \
-  && dnf -y install unixODBC-devel \
-  && dnf clean all
+RUN curl https://packages.microsoft.com/config/rhel/8/prod.repo > /etc/yum.repos.d/mssql-release.repo
+RUN dnf -y update && dnf -y install python-pip python-devel python-pyodbc
+RUN dnf remove unixODBC-utf16 unixODBC-utf16-devel
+RUN dnf -y install unixODBC-devel
+RUN ACCEPT_EULA=Y dnf -y install msodbcsql17
+RUN dnf clean all
 
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -17,11 +13,9 @@ ENV PYTHONUNBUFFERED 1
 
 # install dependencies python
 RUN pip install --upgrade pip
-WORKDIR /app
-COPY ./requirements.txt /app/requirements.txt
+WORKDIR /usr/src/app
+COPY ./requirements.txt /usr/src/app/requirements.txt
 RUN pip install -r requirements.txt
 
 # copy project
-COPY . /app
-
-CMD ["/usr/bin/python", "-i",  "hello.py"]
+COPY . /usr/src/app

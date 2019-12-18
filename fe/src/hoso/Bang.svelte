@@ -1,6 +1,6 @@
 <script>
-  import { kho, ga } from "./stores.js";
-  import Timhoso from "./Timhoso.svelte";
+  import { kho, ga } from "../db/stores.js";
+  import Timhoso from "./Tim.svelte";
   // init data
   $: tonghoso = $kho.hoso.length;
   $: tongloc = $kho.dsloc ? $kho.dsloc.length : 0;

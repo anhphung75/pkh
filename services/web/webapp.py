@@ -111,6 +111,13 @@ class Api1108_Hoso_Crud(ApiBase):
             res['info'] = 'Không có dữ liệu'
         self.send_response(res)
 
+    #@tornado.web.authenticated
+    def post(self):
+        id = self.get_argument("id", None)
+        event = self.get_argument("event")
+        data = self.get_argument("data")
+        print('data from client id={} event={} data={}'.format(id, event, data))
+
 
 class Api1108_ws(tornado.websocket.WebSocketHandler):
     waiters = set()
@@ -218,7 +225,7 @@ def main():
     tornado.options.parse_command_line()
     app = make_app()
     ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    ssl_path = "ssl_cert"
+    ssl_path = "/pkh/services/web/ssl_cert"
     ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
                             os.path.join(ssl_path, "pkh.key"))
     #print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
