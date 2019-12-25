@@ -12,7 +12,7 @@ function setCookie(cname, cvalue, exdays) {
 
 function deepCopy(obj) {
   if (typeof (obj) === 'string') {
-    return JSON.parse(obj); 
+    return JSON.parse(obj);
   } else {
     return obj;
     //return JSON.parse(JSON.stringify(obj));
@@ -20,9 +20,26 @@ function deepCopy(obj) {
 }
 
 function str2ListObj(sdata) {
-  let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-  data = data.replace(/'/g, '"');
-  return JSON.parse(data);
+  try {
+    let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+    sdata = data.replace(/'/g, '"');
+    return JSON.parse(sdata);
+  }
+  catch (error) {
+    console.log('str2ListObj error = ' + error);
+    return sdata;
+  }
+};
+
+function ListObj2Obj(listobj, key_uuid) {
+  let l = listobj.length || 0;
+  let data = {};
+  for (let i = 0; i < l; i++) {
+    let rec = listobj[i];
+    let key = rec[key_uuid];
+    data[key] = rec;
+  }
+  return data;
 };
 
 function filterListObj(listobj, stim) {
@@ -75,4 +92,5 @@ function tachHang(t) {
 };
 
 export { getCookie, setCookie, deepCopy }
-export { str2ListObj, filterListObj, getDateDelta, formatDate, getdsNam, tachHang };
+export { getDateDelta, formatDate, getdsNam, tachHang };
+export { str2ListObj, filterListObj, ListObj2Obj }

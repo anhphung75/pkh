@@ -26,19 +26,6 @@ class WebBase(web.RequestHandler):
     pass
 
 
-class SseBase(web.RequestHandler):
-    def set_default_headers(self):
-        """Set the default response header to be JSON."""
-        self.set_header("Content-Type", "text/event-stream")
-        self.set_header("Cache-Control", "no-cache")
-        self.set_header("Access-Control-Allow-Origin", "*")
-
-    def send_response(self, utf8data, status=200):
-        """Construct and send a JSON response with appropriate status code."""
-        self.set_status(status)
-        self.write(utf8data)
-
-
 class ApiBase(web.RequestHandler):
     def set_default_headers(self):
         """Set the default response header to be JSON."""
@@ -49,6 +36,19 @@ class ApiBase(web.RequestHandler):
         """Construct and send a JSON response with appropriate status code."""
         self.set_status(status)
         self.write(json.dumps(data))
+
+
+class SseBase(web.RequestHandler):
+    def set_default_headers(self):
+        """Set the default response header to be JSON."""
+        self.set_header("Content-Type", "text/event-stream")
+        self.set_header("Cache-Control", "no-cache")
+        self.set_header("Access-Control-Allow-Origin", "*")
+
+    def send_response(self, utf8data, status=200):
+        """Construct and send a JSON response with appropriate status code."""
+        self.set_status(status)
+        self.write('data:{}\n\n'.format(utf8data))
 
 
 class MainHandler(WebBase):
@@ -63,41 +63,17 @@ class Hoso_Handler(WebBase):
         # self.write("Hello World")
 
 
-class HosoSSE_Handler(SseBase):
-    def get(self):
-        for res in dssse_hoso:
-            try:
-                self.send_response(res)
-            except:
-                pass
-        # self.write("Hello World")
-
-
-class Api1108_Hoso_All(ApiBase):
-    def get(self, mahoso):
-        res = {'event': '', 'data': []}
-        nam = -1
-        try:
-            nam = int(mahoso)
-        except:
-            pass
-        print('nam={}'.format(nam))
-        if nam > 0:
-            try:
-                data = hoso.gom(nam)
-                print('hoso={}'.format(data))
-                res['data'] = data
-                res['event'] = "gom"
-            except:
-                res['event'] = 'Không có dữ liệu'
-        else:
-            try:
-                data = hoso.xem(mahoso)
-                print('hoso={}'.format(data))
-                res['data'] = data
-                res['event'] = "gom"
-            except:
-                res['event'] = 'Không có dữ liệu'
+class Api1108_Hoso_Rest(ApiBase):
+    def get(self, namhoso):
+        uuid = 'boss{}'.format(int(arrow.utcnow().float_timestamp * 1000))
+        res = {'id': uuid, 'event': '', 'data': []}
+        # try:
+        data = hoso.gom(namhoso)
+        print('hoso gom ={}'.format(str(data)))
+        res['data'] = data
+        res['event'] = "gom"
+        # except:
+        #    res['event'] = 'Không có dữ liệu'
         self.send_response(res)
 
 
@@ -111,12 +87,23 @@ class Api1108_Hoso_Crud(ApiBase):
             res['info'] = 'Không có dữ liệu'
         self.send_response(res)
 
-    #@tornado.web.authenticated
+    # @tornado.web.authenticated
     def post(self):
         id = self.get_argument("id", None)
         event = self.get_argument("event")
         data = self.get_argument("data")
         print('data from client id={} event={} data={}'.format(id, event, data))
+
+
+class Api1108_Hoso_Sse(SseBase):
+    def get(self):
+        for res in dssse_hoso:
+            try:
+                print('try send res={}'.format(str(res)))
+                self.send_response(res)
+            except:
+                pass
+        # self.write("Hello World")
 
 
 class Api1108_ws(tornado.websocket.WebSocketHandler):
@@ -197,10 +184,11 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
-            (r"/hoso/sse", HosoSSE_Handler),
+            (r"/api1108/hoso/sse", Api1108_Hoso_Sse),
+            (r"/api1108/hoso/([^/]+)", Api1108_Hoso_Rest),
+            (r"/api1108/hoso/([^/]+)/([^/]+)", Api1108_Hoso_Crud),
+            # socket
             (r"/api1108/([^/]+)/hoso/([^/]+)", Api1108_ws),
-            (r"/api1108/hoso/([^/]+)?", Api1108_Hoso_All),
-            (r"/api1108/hoso/([^/]+)/([^/]+)?", Api1108_Hoso_Crud),
         ]
         settings = dict(
             webapp_title=u"PKH",
@@ -224,13 +212,15 @@ def make_app():
 def main():
     tornado.options.parse_command_line()
     app = make_app()
-    ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    ssl_path = "/pkh/services/web/ssl_cert"
-    ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
-                            os.path.join(ssl_path, "pkh.key"))
+    server = httpserver.HTTPServer(app)
+
+    #ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    #ssl_path = "/pkh/services/web/ssl_cert"
+    # ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
+    #                        os.path.join(ssl_path, "pkh.key"))
     #print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
-    server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
-    #server = httpserver.HTTPServer(app)
+    #server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
+
     server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()
 

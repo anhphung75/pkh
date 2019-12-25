@@ -99,12 +99,12 @@ def xem(mahoso=None):
     return json.dumps(raw2listjson(data))
 
 
-def gom(nam=None, donggoi=None):
+def gom(nam=None):
     bdl = Hoso
     if nam == None:
         data = db.query(bdl).filter(bdl.mahoso != None).all()
     else:
-        sdk = '{}%'.format(nam)
-        data = db.query(bdl).filter(bdl.mahoso.like(sdk)).all()
+        stim = '{}%'.format(nam)
+        data = db.query(bdl).filter(bdl.mahoso.like(stim)).limit(2).all()
     db.close()
     return json.dumps(raw2listjson(data))

@@ -16,16 +16,17 @@ def gom(nam=None):
         sdk = '{}%'.format(nam)
         data = db.query(bdl).filter(bdl.mahoso.like(sdk)).all()
     db.close()
-    
+
     tgdi = int(arrow.utcnow().float_timestamp * 1000)
     _id = tgdi
     _event = 'message'
     _data = json.dumps(raw2listjson(data))
     return 'id:{}\\nenvent:{}\\ndata:{}\\n\\n'.format(_id, _event, _data)
 
+
 def test():
     tgdi = int(arrow.utcnow().float_timestamp * 1000)
     _id = tgdi
     _event = 'message'
     _data = json.dumps(tamdskh)
-    return 'id:{}\\nenvent:{}\\ndata:{}\\n\\n'.format(_id, _event, _data)
+    return _data
