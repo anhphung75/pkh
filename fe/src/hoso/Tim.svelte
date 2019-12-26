@@ -1,6 +1,6 @@
 <script>
   import { kho } from "../db/stores.js";
-  import { filterListObj } from "../utils.js";
+  import { filterListObj } from "../utils/api.js";
   // init data
   $kho.dsloc = [];
   $kho.dstim = [];

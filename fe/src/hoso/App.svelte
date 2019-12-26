@@ -1,12 +1,7 @@
 <script>
   import { kho, ga } from "../db/stores.js";
-  import {
-    getdsNam,
-    getCookie,
-    str2ListObj,
-    ListObj2Obj,
-    deepCopy
-  } from "../utils.js";
+  import { getdsNam } from "../utils/thoigian.js";
+  import { getCookie, listObj2Obj } from "../utils/api.js";
   import Progress from "../Progress.svelte";
   import Hoso from "./Bang.svelte";
   //import HosoMoi from "./HosoMoi.svelte";
@@ -26,104 +21,71 @@
     let r = $kho.dstim.pop();
     r = null;
   }
-  function hosoNam(listdict) {
-    console.log("type hosoNam = " + typeof listdict);
-    console.log("hosoNam = " + JSON.stringify(listdict));
-    listdict = str2ListObj(listdict) || [];
-    if (listdict.length === 0) {
-      return [];
+  function capnhatHoso(listdict) {
+    let hosomoi, hosocu, hsr, uuid, l, i, k;
+    if (Array.isArray(listdict)) {
+      hosomoi = listdict;
+    } else {
+      hosomoi = [listdict];
     }
-    let listhoso = listdict.filter(i => i.mahoso.startsWith(namhoso));
-    return listhoso;
-  }
-  function gomHoso(listdict) {
-    let listhoso = hosoNam(listdict);
-    let l = listhoso.length;
+    l = hosomoi.length || 0;
     if (l === 0) {
       return;
     }
-    $kho.hoso = [];
-    refreshHoso();
-    listdict = [];
-    for (let i = 0; i < l; i++) {
-      listdict.push(listhoso[i]);
-    }
-    $kho.hoso = listdict;
-    refreshHoso();
-  }
-  function moiHoso(listdict) {
-    let listhoso = hosoNam(listdict);
-    if (listhoso.length === 0) {
-      return;
-    }
-    let dsmahoso = [];
-    let l = $kho.hoso.length || 0;
-    for (let i = 0; i < l; i++) {
-      dsmahoso.push($kho.hoso[i]["mahoso"]);
-    }
-    listdict = listhoso.filter(i => dsmahoso.indexOf(i.mahoso) === -1);
-    hosonew = deepCopy($kho.hoso) || [];
-    l = listdict.length || 0;
+    hosocu = listObj2Obj($kho.hoso, "mahoso") || {};
     for (i = 0; i < l; i++) {
-      hosonew.push(listdict[i]);
-    }
-    $kho.hoso = hosonew;
-    refreshHoso();
-  }
-  function suaHoso(listdict) {
-    let listhoso = hosoNam(listdict);
-    console.log("suaHoso = " + JSON.stringify(listdict));
-    let l = listhoso.length;
-    if (l === 0) {
-      return;
-    }
-    let hoso = $kho.hoso || [];
-    let l1 = hoso.length;
-    if (l1 === 0) {
-      return;
-    }
-    for (let i = 0; i < l; i++) {
-      let hsr = listhoso[i];
-      for (let i1 = 0; i1 < l1; i1++) {
-        let hss = hoso[i1];
-        if (hsr.mahoso === hss.mahoso) {
-          for (let k in hsr) {
-            if (hss.hasOwnProperty(k)) {
-              hss[k] = hsr[k];
-            }
-          }
-          break;
+      hsr = hosomoi[i];
+      uuid = hsr["mahoso"];
+      if (uuid.startsWith(namhoso)) {
+        hosocu[uuid] = {};
+        for (k in hsr) {
+          hosocu[uuid][k] = hsr[k];
         }
       }
     }
-    $kho.hoso = hoso;
+    //convert to list
+    hosomoi = [];
+    for (k in hosocu) {
+      if (k.startsWith(namhoso)) {
+        hosomoi.push(hosocu[k]);
+      }
+    }
+    $kho.hoso = hosomoi;
     refreshHoso();
   }
   function xoaHoso(listdict) {
-    let listhoso = hosoNam(listdict);
-    let l = listhoso.length;
+    let hosomoi, hosocu, hsr, uuid, l, i, k;
+    l = $kho.hoso.length || 0;
     if (l === 0) {
       return;
     }
-    let hoso = $kho.hoso || [];
-    let l1 = hoso.length;
-    if (l1 === 0) {
+    if (Array.isArray(listdict)) {
+      hosomoi = listdict;
+    } else {
+      hosomoi = [listdict];
+    }
+    l = hosomoi.length || 0;
+    if (l === 0) {
       return;
     }
-    for (let i = 0; i < l; i++) {
-      let hsr = listhoso[i];
-      for (let i1 = 0; i1 < l1; i1++) {
-        let hss = hoso[i1];
-        if (hsr.mahoso === hss.mahoso) {
-          hoso.splice(i1, 1);
-          break;
-        }
-      }
+    hosocu = listObj2Obj($kho.hoso, "mahoso") || {};
+    for (i = 0; i < l; i++) {
+      hsr = hosomoi[i];
+      uuid = hsr["mahoso"];
+      delete hosocu[uuid];
     }
-    $kho.hoso = hoso;
+    //convert to list
+    hosomoi = [];
+    for (k in hosocu) {
+      hosomoi.push(hosocu[k]);
+    }
+    $kho.hoso = hosomoi;
     refreshHoso();
   }
-
+  function gomHoso(listdict) {
+    $kho.hoso = [];
+    capnhatHoso(listdict);
+  }
   //const tuyen_https = "https://" + location.host + "/api1108/hoso/";
   const tuyen_https = "http://localhost:8888/api1108/hoso/";
   function gomHttps() {
@@ -144,7 +106,6 @@
       gomHoso(JSON.parse(chat));
     });
   }
-
   function capnhatHttps() {
     axios({
       method: "get",
@@ -153,11 +114,8 @@
       responseEncoding: "utf8"
     }).then(response => {
       let chat = response.data || "{}";
-      if (chat.event === "moi") {
-        moiHoso(JSON.parse(chat.data));
-      }
-      if (chat.event === "sua") {
-        suaHoso(JSON.parse(chat.data));
+      if (chat.event === "moi" || chat.event === "sua") {
+        capnhatHoso(JSON.parse(chat.data));
       }
       if (chat.event === "xoa") {
         xoaHoso(JSON.parse(chat.data));
