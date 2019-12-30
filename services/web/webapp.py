@@ -76,6 +76,13 @@ class Api1108_Hoso_Rest(ApiBase):
         #    res['event'] = 'Không có dữ liệu'
         self.send_response(res)
 
+    def post(self, namhoso):
+        id = 1
+        event = self.get_argument("event")
+        data = self.get_argument("data")
+        print('data from client namhoso={} id={} event={} data={}'.format(
+            namhoso, id, event, data))
+
 
 class Api1108_Hoso_Crud(ApiBase):
     def get(self, nam, mahoso):
@@ -184,11 +191,11 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
-            (r"/api1108/hoso/sse", Api1108_Hoso_Sse),
+            #(r"/api1108/hoso/sse", Api1108_Hoso_Sse),
             (r"/api1108/hoso/([^/]+)", Api1108_Hoso_Rest),
-            (r"/api1108/hoso/([^/]+)/([^/]+)", Api1108_Hoso_Crud),
+            #(r"/api1108/hoso/([^/]+)/([^/]+)", Api1108_Hoso_Crud),
             # socket
-            (r"/api1108/([^/]+)/hoso/([^/]+)", Api1108_ws),
+            #(r"/api1108/([^/]+)/hoso/([^/]+)", Api1108_ws),
         ]
         settings = dict(
             webapp_title=u"PKH",
@@ -212,14 +219,14 @@ def make_app():
 def main():
     tornado.options.parse_command_line()
     app = make_app()
-    server = httpserver.HTTPServer(app)
+    #server = httpserver.HTTPServer(app)
 
-    #ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    #ssl_path = "/pkh/services/web/ssl_cert"
-    # ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
-    #                        os.path.join(ssl_path, "pkh.key"))
+    ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+    ssl_path = "/pkh/services/web/ssl_cert"
+    ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
+                            os.path.join(ssl_path, "pkh.key"))
     #print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
-    #server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
+    server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
 
     server.listen(8888)
     tornado.ioloop.IOLoop.instance().start()

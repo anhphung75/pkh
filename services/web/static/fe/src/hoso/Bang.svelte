@@ -2,7 +2,7 @@
   import { kho, ga } from "../db/stores.js";
   import Timhoso from "./Tim.svelte";
   // init data
-  $: tonghoso = $kho.hoso.length;
+  $: tonghoso = $kho.hoso.length || 0;
   $: tongloc = $kho.dsloc ? $kho.dsloc.length : 0;
   $: danhsach = $kho.dsloc
     ? $kho.dsloc.map(x => ({ ...x, isEdit: false }))
@@ -10,77 +10,90 @@
   // thanh cuon
   let hs_start = 0;
   let hs_per = 18;
-  $: hs_stop = tongloc ? hs_start + hs_per : tongloc;
+  $: hs_stop = hs_start + hs_per || tongloc;
   let curbang = 0;
   let tongbang = 4;
 
-  //rest
-  function guiTau(nhan, hang) {
-    let tgdi = new Date().getTime();
-    let chat = {
-      tin: { uuid: [$ga.khach, tgdi].join("."), nhan: nhan, ve: $ga.ve },
-      kho: hang
-    };
-    $ga.uuid = chat.tin.uuid;
-    try {
-      $ga.tau.send(JSON.stringify(chat));
-    } catch (err) {
-      //console.log("error " + err);
-    }
-  }
   //crud
   function refreshHoso() {
     $kho.dstim = [...$kho.dstim, "h"];
     let r = $kho.dstim.pop();
     r = null;
   }
-  function suaHoso(listhoso) {
-    listhoso = listhoso ? JSON.parse(JSON.stringify(listhoso)) : [];
-    let hoso = JSON.parse(JSON.stringify($kho.hoso)) || [];
-    let l = hoso.length || 0;
-    if (listhoso.length === 0 || l === 0) {
+  function suaClient(dict_hoso) {
+    let i,
+      hss,
+      hsr = dict_hoso || {};
+    let hs = $kho.hoso || [];
+    let k,
+      l = hs.length || 0;
+    if (l === 0) {
       return;
     }
-    let l1 = listhoso.length;
-    for (let i1 = 0; i1 < l1; i1++) {
-      let hsr = listhoso[i1];
-      for (let i = 0; i < l; i++) {
-        let hss = hoso[i];
+    try {
+      for (i = 0; i < l; i++) {
+        hss = hs[i];
         if (hsr.mahoso === hss.mahoso) {
-          for (let k in hsr) {
+          for (k in hsr) {
             if (hss.hasOwnProperty(k)) {
               hss[k] = hsr[k];
             }
           }
         }
       }
+      $kho.hoso = hs;
+      refreshHoso();
+    } catch (error) {
+      console.log("suaHoso error " + error);
     }
-    $kho.hoso = JSON.parse(JSON.stringify(hoso));
-    refreshHoso();
-    guiTau("sua", { hoso: listhoso });
   }
+  //rest
 
+  function suaServer(datajson) {
+    axios({
+      method: "post",
+      url: $ga.tuyen_https,
+      //headers: { "X-Requested-With": "XMLHttpRequest" },
+      data: datajson,
+      //headers: {"Content-Type": "application/json"},
+      //xsrfCookieName: "_xsrf",
+      onUploadProgress: progressEvent => {
+        let percentCompleted = parseInt(
+          Math.round((progressEvent.loaded * 100) / progressEvent.total)
+        );
+        $kho.progress = percentCompleted;
+        console.log("$kho.progress=" + $kho.progress);
+      }
+    }).then(response => {
+      let dulieu = response.data;
+      console.log("response.data=" + dulieu);
+      //cap nhat hososua
+    });
+  }
   //hoso sua
-  let rowCur = 0;
-  let hsgoc = {};
-  let hssua = {};
+  let rowCur = 0,
+    hsgoc = {},
+    hssua = {};
   function btnSave() {
     //kiem tra hososua so voi hosơ cũ
-    let tam = { mahoso: hssua["mahoso"] };
-    for (let k in hssua) {
-      let a = hssua[k] || "";
+    let a,
+      k,
+      i,
+      dai,
+      tam = { mahoso: hssua["mahoso"] };
+    for (k in hssua) {
+      a = hssua[k] || "";
       if (a.length > 0 && a !== hsgoc[k]) {
         tam[k] = typeof a === "string" ? a.trim() : a;
       }
     }
     if (Object.keys(tam).length > 1) {
-      let listhoso = [JSON.parse(JSON.stringify(tam))];
-      // update client dskh
-      suaHoso(listhoso);
+      suaClient(tam);
+      suaServer({ event: "sua", data: JSON.stringify(tam) });
     } else {
-      let dai = danhsach.length;
-      for (let i = 0; i < dai; i++) {
-        let a = danhsach[i];
+      dai = danhsach.length || 0;
+      for (i = 0; i < dai; i++) {
+        a = danhsach[i];
         if (a.mahoso === tam.mahoso) {
           a["isEdit"] = false;
         }

@@ -86,12 +86,12 @@
     $kho.hoso = [];
     capnhatHoso(listdict);
   }
-  //const tuyen_https = "https://" + location.host + "/api1108/hoso/";
-  const tuyen_https = "http://localhost:8888/api1108/hoso/";
+  $ga.tuyen_https = "https://" + location.host + "/api1108/hoso/" + namhoso;
+  //$ga.tuyen_https = "http://localhost:8888/api1108/hoso/" + namhoso;
   function gomHttps() {
     axios({
       method: "get",
-      url: tuyen_https + namhoso,
+      url: $ga.tuyen_https,
       responseType: "json",
       responseEncoding: "utf8",
       onDownloadProgress: progressEvent => {
@@ -109,7 +109,7 @@
   function capnhatHttps() {
     axios({
       method: "get",
-      url: tuyen_https + "sse",
+      url: $ga.tuyen_https + "sse",
       responseType: "json",
       responseEncoding: "utf8"
     }).then(response => {
