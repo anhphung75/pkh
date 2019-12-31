@@ -1,5 +1,5 @@
 <script>
-  import { kho } from "./stores.js";
+  import { kho } from "../db/stores.js";
 </script>
 
 <style>

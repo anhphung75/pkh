@@ -56,7 +56,8 @@
       //headers: { "X-Requested-With": "XMLHttpRequest" },
       data: datajson,
       //headers: {"Content-Type": "application/json"},
-      //xsrfCookieName: "_xsrf",
+      xsrfHeaderName: "X-XSRFToken",
+      xsrfCookieName: "_xsrf",
       onUploadProgress: progressEvent => {
         let percentCompleted = parseInt(
           Math.round((progressEvent.loaded * 100) / progressEvent.total)
@@ -89,7 +90,8 @@
     }
     if (Object.keys(tam).length > 1) {
       suaClient(tam);
-      suaServer({ event: "sua", data: JSON.stringify(tam) });
+      let datajson = { event: "sua", data: tam };
+      suaServer(datajson);
     } else {
       dai = danhsach.length || 0;
       for (i = 0; i < dai; i++) {

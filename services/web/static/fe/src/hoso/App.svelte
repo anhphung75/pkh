@@ -122,7 +122,7 @@
       }
     });
   }
-  $: autoUpdateHoso = setInterval(capnhatHttps, capnhattheoms);
+  //$: autoUpdateHoso = setInterval(capnhatHttps, capnhattheoms);
 </script>
 
 <style>

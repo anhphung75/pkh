@@ -23,7 +23,15 @@ dssse_hoso.append(test3)
 
 
 class WebBase(web.RequestHandler):
-    pass
+    def prepare(self):
+        # get_current_user cannot be a coroutine, so set
+        # self.current_user in prepare instead.
+        user_id = self.get_secure_cookie("web_user")
+        if user_id:
+            self.current_user = 'Khach'
+        #    self.current_user = await self.queryone(
+        #        "SELECT * FROM authors WHERE id = %s", int(user_id)
+        #    )
 
 
 class ApiBase(web.RequestHandler):
@@ -54,7 +62,7 @@ class SseBase(web.RequestHandler):
 class MainHandler(WebBase):
     def get(self):
         self.render("hoso.html", webapp_title='PKH')
-        #self.write("Hello World")
+        # self.write("Hello World")
 
 
 class Hoso_Handler(WebBase):
@@ -69,7 +77,7 @@ class Api1108_Hoso_Rest(ApiBase):
         res = {'id': uuid, 'event': '', 'data': []}
         # try:
         data = hoso.gom(namhoso)
-        print('hoso gom ={}'.format(str(data)))
+        print('ApiRest get hoso gom ={}'.format(str(data)))
         res['data'] = data
         res['event'] = "gom"
         # except:
@@ -77,11 +85,15 @@ class Api1108_Hoso_Rest(ApiBase):
         self.send_response(res)
 
     def post(self, namhoso):
-        id = 1
-        event = self.get_argument("event")
-        data = self.get_argument("data")
-        print('data from client namhoso={} id={} event={} data={}'.format(
-            namhoso, id, event, data))
+        message = self.request.body
+        parsed = tornado.escape.json_decode(message)
+        event = parsed['event']
+        data = parsed['data']
+        print('ApiRest post data from client body={}'.format(str(data)))
+        #data = self.get_argument("data")
+
+        # print('ApiRest post data from client namhoso={} id={} event={} data={}'.format(
+        #    namhoso, id, event, str(data)))
 
 
 class Api1108_Hoso_Crud(ApiBase):
@@ -169,18 +181,18 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         elif chat['tin']['nhan'] == 'moi':
             pass
             # chuyen thang client, cap nhật server
-            #hsr = chat['data']['goi']['hoso']
-            #data = hoso.sua(hsr)
+            # hsr = chat['data']['goi']['hoso']
+            # data = hoso.sua(hsr)
         elif chat['tin']['nhan'] == 'sua':
             pass
             # chuyen thang client, cap nhật server
-            #hsr = chat['data']['goi']['hoso']
-            #data = hoso.sua(hsr)
+            # hsr = chat['data']['goi']['hoso']
+            # data = hoso.sua(hsr)
         elif chat['tin']['nhan'] == 'xoa':
             pass
             # chuyen thang client, cap nhật server
-            #hsr = chat['data']['goi']['hoso']
-            #data = hoso.sua(hsr)
+            # hsr = chat['data']['goi']['hoso']
+            # data = hoso.sua(hsr)
 
         Api1108_ws.update_cache(chat)
         Api1108_ws.send_updates(chat)
@@ -191,17 +203,17 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
-            #(r"/api1108/hoso/sse", Api1108_Hoso_Sse),
+            # (r"/api1108/hoso/sse", Api1108_Hoso_Sse),
             (r"/api1108/hoso/([^/]+)", Api1108_Hoso_Rest),
-            #(r"/api1108/hoso/([^/]+)/([^/]+)", Api1108_Hoso_Crud),
+            # (r"/api1108/hoso/([^/]+)/([^/]+)", Api1108_Hoso_Crud),
             # socket
-            #(r"/api1108/([^/]+)/hoso/([^/]+)", Api1108_ws),
+            # (r"/api1108/([^/]+)/hoso/([^/]+)", Api1108_ws),
         ]
         settings = dict(
             webapp_title=u"PKH",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            #ui_modules={"Entry": EntryModule},
+            # ui_modules={"Entry": EntryModule},
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
             # login_url="/auth/login",
@@ -219,13 +231,13 @@ def make_app():
 def main():
     tornado.options.parse_command_line()
     app = make_app()
-    #server = httpserver.HTTPServer(app)
+    # server = httpserver.HTTPServer(app)
 
     ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
     ssl_path = "/pkh/services/web/ssl_cert"
     ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
                             os.path.join(ssl_path, "pkh.key"))
-    #print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
+    # print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
     server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
 
     server.listen(8888)
