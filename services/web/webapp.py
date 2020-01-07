@@ -232,12 +232,11 @@ def main():
     tornado.options.parse_command_line()
     app = make_app()
     # server = httpserver.HTTPServer(app)
-
     ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    ssl_path = "/pkh/services/web/ssl_cert"
+    ssl_path = "/home/pna/pkh/services/web/ssl_cert"
+    print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
     ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
                             os.path.join(ssl_path, "pkh.key"))
-    # print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
     server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
 
     server.listen(8888)

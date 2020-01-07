@@ -86,7 +86,7 @@
     $kho.hoso = [];
     capnhatHoso(listdict);
   }
-  $ga.tuyen_https = "https://" + location.host + "/api1108/hoso/" + namhoso;
+  $: $ga.tuyen_https = "https://" + location.host + "/api1108/hoso/" + namhoso;
   //$ga.tuyen_https = "http://localhost:8888/api1108/hoso/" + namhoso;
   function gomHttps() {
     axios({
