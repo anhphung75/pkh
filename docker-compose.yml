@@ -5,30 +5,10 @@ services:
     build:
       context: ./services/web
       dockerfile: Dockerfile
-    image: anhphung75/web_hoso:nov08
+    image: anhphung75/web_hoso:fe02
     command: python webapp.py
     volumes:
       - ./services/web/:/usr/src/app/
       - ./fe/public/:/usr/src/app/static/js
     ports:
       - 8888:8888
-    env_file:
-      - ./.env.web
-    depends_on:
-      - mssql
-
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2019-latest
-    ports:
-      - "1433:1433"
-    environment:
-      SA_PASSWORD: "w3b@pkh2019"
-      ACCEPT_EULA: "Y"
-
-networks:
-  default:
-    driver: bridge
-    ipam:
-      driver: default
-      config:
-        - subnet: 192.168.24.0/16
