@@ -1,49 +1,84 @@
-FROM ubuntu:18.04
+###########
+# BUILDER #
+###########
+# pull official base image
+FROM python:3.8.1-buster as builder
 
-# install dependencies os
+# set work directory
+WORKDIR /usr/src/app
+
+# install system utilities
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
-RUN apt-get update && apt-get -y install \
-  g++ unixodbc-dev curl apt-utils\
-  make build-essential libssl-dev zlib1g-dev libbz2-dev \
-  libreadline-dev libsqlite3-dev libncurses5-dev libncursesw5-dev \
-  xz-utils tk-dev libffi-dev liblzma-dev python-openssl git
+RUN apt-get update && apt-get install -y \
+  curl apt-utils apt-transport-https debconf-utils \
+  gcc build-essential libffi-dev g++-5 \
+  unixodbc-dev g++
 
-# add ODBC repo
+# install SQL Server drivers
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
-# pyodbc
+RUN curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
 
+# install libssl
+RUN apt-get update && apt-get install -y libssl1.0.0 libssl-dev
 
-RUN apt-get update
-RUN ACCEPT_EULA=Y apt-get -y install msodbcsql17
-RUN apt-get -y install locales \
+# install necessary locales
+RUN apt-get update && apt-get install -y locales \
   && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-  && locale-gen \
-  && rm -rf /var/lib/apt/lists/*
+  && locale-gen
 
-# pyenv enviroment
-ENV LANG en_US.utf8
-ENV PYENV_ROOT /home/.pyenv
-ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
-RUN git clone https://github.com/pyenv/pyenv.git $PYENV_ROOT
-RUN pyenv install 3.8.1
-RUN pyenv global 3.8.1
+# clear apt-get cache
+RUN rm -rf /var/lib/apt/lists/*
 
-# python environment
+# lint
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-RUN pip install --upgrade pip wheel setuptools
-COPY ./requirements.txt /usr/src/app/requirements.txt
+RUN pip install --upgrade pip
+RUN pip install flake8
+COPY . /usr/src/app/
+RUN flake8 --ignore=E501,F401 .
 
-WORKDIR /usr/src/app
-RUN pip install -r requirements.txt
+# install dependencies
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+
+
+#########
+# FINAL #
+#########
+# pull official base image
+FROM python:3.8.1-buster
+
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# create the app user
+RUN addgroup -S app && adduser -S app -G app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+# install system dependencies
+#RUN apk update && apk add libpq
+
+# install python app
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
 
 # copy project
-COPY . /usr/src/app/
+COPY . $APP_HOME
+
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
 
 EXPOSE 8888 443
-
-# run entrypoint.sh
-# ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
-#ENTRYPOINT [ "python", "webapp.py" ] 
