@@ -7,8 +7,8 @@ import tornado.web as web
 import tornado.httpserver as httpserver
 import logging
 import tornado.escape
-import tornado.options
 import tornado.websocket
+from tornado.options import define, options
 
 
 from ttxl import hoso
@@ -21,6 +21,7 @@ dssse_hoso.append(test2)
 test3 = sse_hoso.test()
 dssse_hoso.append(test3)
 
+define("port", default=8888, help="port to listen on")
 
 class WebBase(web.RequestHandler):
     def prepare(self):
@@ -239,7 +240,7 @@ def main():
     ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
                             os.path.join(ssl_path, "pkh.key"))
     server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
-    server.listen(8888)
+    server.listen(options.port)
     tornado.ioloop.IOLoop.instance().start()
 
 

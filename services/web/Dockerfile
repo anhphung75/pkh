@@ -35,9 +35,10 @@ RUN rm -rf /var/lib/apt/lists/*
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 RUN pip install --upgrade pip
-RUN pip install flake8
+RUN pip install flake8 black
 COPY . /usr/src/app/
 RUN flake8 --ignore=E501,F401 .
+RUN black --check .
 
 # install dependencies
 COPY ./requirements.txt .

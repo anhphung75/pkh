@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     image: anhphung75/web_hoso:fe02
     working_dir: /home/app/web
-    command: python webapp.py
+    command: python webapp.py --port=8888
     volumes:
       - ./services/web/:/home/app/web/
       - ./fe/public/:/home/app/web/static/js
