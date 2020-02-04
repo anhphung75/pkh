@@ -1,36 +1,84 @@
+###########
+# BUILDER #
+###########
 # pull official base image
-FROM python:3.8.0
+FROM python:3.8.1-buster as builder
 
+# set work directory
+WORKDIR /usr/src/app
 
-ENV DEBIAN_FRONTEND=noninteractive
-# adding custom MS repository
+# install system utilities
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANG C.UTF-8
+RUN apt-get update && apt-get install -y \
+  curl apt-utils apt-transport-https debconf-utils \
+  gcc build-essential libffi-dev g++-5 \
+  unixodbc-dev g++
+
+# install SQL Server drivers
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/19.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
-# install dependencies os
-RUN apt-get update && apt-get -y install \
-  g++ unixodbc-dev
+RUN curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
 
-RUN ACCEPT_EULA=Y apt-get -y install msodbcsql17
-RUN apt-get -y install locales \
+# install libssl
+RUN apt-get update && apt-get install -y libssl1.0.0 libssl-dev
+
+# install necessary locales
+RUN apt-get update && apt-get install -y locales \
   && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-  && locale-gen \
-  && rm -rf /var/lib/apt/lists/*
+  && locale-gen
 
-# set environment variables
+# clear apt-get cache
+RUN rm -rf /var/lib/apt/lists/*
+
+# lint
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-
-# install dependencies python
 RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
+RUN pip install flake8
+COPY . /usr/src/app/
+RUN flake8 --ignore=E501,F401 .
 
-WORKDIR /usr/src/app
-RUN pip install -r requirements.txt
+# install dependencies
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+
+
+#########
+# FINAL #
+#########
+# pull official base image
+FROM python:3.8.1-buster
+
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# create the app user
+RUN addgroup -S app && adduser -S app -G app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+# install system dependencies
+#RUN apk update && apk add libpq
+
+# install python app
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --upgrade pip
+RUN pip install --no-cache /wheels/*
 
 # copy project
-COPY . /usr/src/app/
+COPY . $APP_HOME
 
-EXPOSE 8888
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
 
-# run entrypoint.sh
-# ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
+# change to the app user
+USER app
+
+EXPOSE 8888 443
