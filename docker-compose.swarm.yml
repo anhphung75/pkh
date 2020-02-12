@@ -1,10 +1,10 @@
 version: '3.7'
 
 services:
-  webapp:
+  webapp1:
     image: anhphung75/web_hoso:fe02
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
       placement:
@@ -12,20 +12,28 @@ services:
     expose:
       - 8888
     working_dir: /home/app/web
-    command: python webapp.py
+    command: python webapp.py --port:8888
     volumes:
-      - ./services/web/:/home/app/web/
-      - ./fe/public/:/home/app/web/static/js
+      - certs_data:/home/app/web/ssl_cert
+      - static_data:/home/app/web/static
   
-  proxy:
+  server:
     image: anhphung75/nginx_hoso:fe02
     deploy:
-      replicas: 1
+      replicas: 2
       restart_policy:
         condition: on-failure
       placement:
         constraints: [node.role == worker]
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - webapp
+    volumes:
+      - certs_data:/home/app/web/ssl_cert
+      - static_data:/home/app/web/static
+
+volumes:
+  certs_data:
+  static_data:
