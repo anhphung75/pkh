@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  webapp1:
+  web_app_1:
     image: anhphung75/web_hoso:fe02
     deploy:
       replicas: 2
@@ -17,7 +17,7 @@ services:
       - certs_data:/home/app/web/ssl_cert
       - static_data:/home/app/web/static
   
-  server:
+  can_bang_tai_1:
     image: anhphung75/nginx_hoso:fe02
     deploy:
       replicas: 2
@@ -29,7 +29,7 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      - webapp
+      - web_app_1
     volumes:
       - certs_data:/home/app/web/ssl_cert
       - static_data:/home/app/web/static
