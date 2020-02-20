@@ -12,7 +12,7 @@ ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
 RUN apt-get update && apt-get install -y \
   curl apt-utils apt-transport-https debconf-utils \
-  gcc build-essential libffi-dev g++-5 \
+  gcc build-essential libffi-dev \
   unixodbc-dev g++
 
 # install SQL Server drivers
@@ -21,7 +21,7 @@ RUN curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/so
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
 
 # install libssl
-RUN apt-get update && apt-get install -y libssl1.0.0 libssl-dev
+RUN apt-get update && apt-get install -y libssl-dev
 
 # install necessary locales
 RUN apt-get update && apt-get install -y locales \
@@ -55,9 +55,6 @@ FROM python:3.8.1-buster
 # create directory for the app user
 RUN mkdir -p /home/app
 
-# create the app user
-RUN addgroup -S app && adduser -S app -G app
-
 # create the appropriate directories
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
@@ -76,10 +73,15 @@ RUN pip install --no-cache /wheels/*
 # copy project
 COPY . $APP_HOME
 
+# create the app user
+RUN addgroup -S app && adduser -S app -G app
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
-
 # change to the app user
 USER app
 
-EXPOSE 8888 443
+
+# run server
+ENV APP_PORT=8000
+EXPOSE 443 $APP_PORT
+ENTRYPOINT ["python", "webapp.py", "--port:$APP_PORT"]

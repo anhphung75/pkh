@@ -10,12 +10,13 @@ services:
       placement:
         constraints: [node.role == manager]
     expose:
-      - 8888
+      - 8001
     working_dir: /home/app/web
-    command: python webapp.py --port:8888
+    command: python webapp.py --port:8001
     volumes:
       - certs_data:/home/app/web/ssl_cert
-      - static_data:/home/app/web/static
+      - static_volume:/home/app/web/static
+      - media_volume:/home/app/web/media
   
   can_bang_tai_1:
     image: anhphung75/nginx_hoso:fe02
@@ -30,10 +31,12 @@ services:
       - 443:443
     depends_on:
       - web_app_1
-    volumes:
-      - certs_data:/home/app/web/ssl_cert
-      - static_data:/home/app/web/static
+      volumes:
+        - certs_data:/home/app/web/ssl_cert
+        - static_volume:/home/app/web/static
+        - media_volume:/home/app/web/media
 
 volumes:
   certs_data:
-  static_data:
+  static_volume:
+  media_volume:
