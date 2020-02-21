@@ -55,6 +55,9 @@ FROM python:3.8.1-buster
 # create directory for the app user
 RUN mkdir -p /home/app
 
+# create the app user
+RUN addgroup -S app && adduser -S app -G app
+
 # create the appropriate directories
 ENV HOME=/home/app
 ENV APP_HOME=/home/app/web
@@ -73,12 +76,14 @@ RUN pip install --no-cache /wheels/*
 # copy project
 COPY . $APP_HOME
 
-# create the app user
-RUN addgroup -S app && adduser -S app -G app
 # chown all the files to the app user
 RUN chown -R app:app $APP_HOME
+
 # change to the app user
 USER app
+
+# run entrypoint.prod.sh
+ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
 
 
 # run server
