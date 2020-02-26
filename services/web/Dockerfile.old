@@ -1,0 +1,118 @@
+###########
+# BUILDER #
+###########
+# pull official base image
+FROM ubuntu:18.04 as builder
+
+# set work directory
+WORKDIR /usr/src/app
+
+# install system utilities
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANG C.UTF-8
+RUN apt-get update && apt-get install -y \
+  curl apt-utils apt-transport-https debconf-utils \
+  gcc build-essential libffi-dev \
+  g++ unixodbc-dev
+
+# install SQL Server drivers
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
+
+# install necessary locales
+RUN apt-get update && apt-get install -y locales \
+  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+  && locale-gen
+
+# install libssl for pyodbc
+RUN apt-get update && apt-get install -y libssl1.0-dev
+#RUN curl http://security-cdn.debian.org/debian-security/pool/updates/main/o/openssl1.0/libssl1.0.2_1.0.2t-1~deb9u1_amd64.deb \
+#  && dpkg -i libssl1.0.2_1.0.2t-1~deb9u1_amd64.deb
+#COPY ./odbcinst.ini /etc/odbcinst.ini
+#RUN odbcinst -i -s -f /etc/odbcinst.ini -h
+
+# python
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+# Python package management and basic dependencies
+RUN apt-get install -y python3.8 python3.8-dev python3.8-distutils
+# Register the version in alternatives
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
+# Set python 3 as the default python
+RUN update-alternatives --set python /usr/bin/python3.8
+# Upgrade pip to latest version
+RUN curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+  python get-pip.py --force-reinstall && \
+  rm get-pip.py
+
+# lint
+#RUN pip install flake8 black
+#copy project
+COPY . /usr/src/app/
+#RUN flake8 --ignore=E501,F401 .
+#RUN black --check .
+
+# install dependencies
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+
+# clear apt-get cache
+RUN rm -rf /var/lib/apt/lists/*
+
+
+
+#########
+# FINAL #
+#########
+# pull official base image
+FROM ubuntu:18.04
+
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# create in system the app user
+RUN addgroup --system app && adduser --system --ingroup app app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+# install system dependencies
+#RUN apk update && apk add libpq
+
+#set python3 default 
+# Python package management and basic dependencies
+RUN apt-get install -y python3.8 python3.8-dev python3.8-distutils
+# Register the version in alternatives
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3.8 1
+# Set python 3 as the default python
+RUN update-alternatives --set python /usr/bin/python3.8
+# Upgrade pip to latest version
+RUN curl -s https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+  python get-pip.py --force-reinstall && \
+  rm get-pip.py
+
+# install python app
+COPY --from=builder /usr/src/app/wheels /wheels
+COPY --from=builder /usr/src/app/requirements.txt .
+RUN pip install --no-cache /wheels/*
+
+# copy project
+COPY . $APP_HOME
+
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
+
+# run entrypoint.prod.sh
+#ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
+
+# run server
+ENV APP_PORT=8888
+EXPOSE 443 $APP_PORT
+ENTRYPOINT ["python", "webapp.py", "--port:$APP_PORT"]

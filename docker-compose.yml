@@ -6,26 +6,26 @@ services:
       context: ./services/web
       dockerfile: Dockerfile
     image: anhphung75/web_hoso:fe02
+    container_name: webapp
     working_dir: /home/app/web
     command: python webapp.py --port=8888
     volumes:
       - certs_data:/home/app/web/ssl_cert
       - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
       - ./services/web/:/home/app/web/
       - ./fe/public/:/home/app/web/static/js
     ports:
-      - 8888:8888
+      - 8000:8000
 
   nginx:
     build:
       context: ./services/nginx
       dockerfile: Dockerfile
     image: anhphung75/nginx_hoso:fe02
+    container_name: nginx
     volumes:
       - certs_data:/home/app/web/ssl_cert
       - static_volume:/home/app/web/static
-      - media_volume:/home/app/web/media
     ports:
       - 80:80
       - 443:443
@@ -35,4 +35,3 @@ services:
 volumes:
   certs_data:
   static_volume:
-  media_volume:

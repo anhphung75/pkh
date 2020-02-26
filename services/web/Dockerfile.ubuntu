@@ -1,0 +1,93 @@
+###########
+# BUILDER #
+###########
+# pull official base image
+FROM ubuntu:18.04 as builder
+
+
+# install system utilities
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANG="C.UTF-8"
+ENV LC_ALL="C.UTF-8"
+ENV PYENV_ROOT=/home/.pyenv
+ENV PATH=$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+ENV PYENV_SHELL="bash"
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# install system depencies
+RUN apt-get update && apt-get install -y --fix-missing --no-install-recommends \
+  curl make git ca-certificates \
+  apt-utils apt-transport-https debconf-utils build-essential \
+  # pyenv
+  libffi-dev libncurses5-dev libncursesw5-dev libreadline-dev \
+  libbz2-dev liblzma-dev zlib1g-dev\
+  netbase pkg-config tk-dev xz-utils llvm \
+  python3-openssl libssl1.0-dev \
+  # libssl-dev \
+  # pyodbc
+  gnupg python3-pyodbc gcc g++ g++-7\
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# install SQL Server drivers
+RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
+RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17
+# install necessary locales
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  locales \
+  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
+  && locale-gen
+
+# install python 3.8.1 env
+RUN curl -L https://github.com/pyenv/pyenv-installer/raw/master/bin/pyenv-installer | bash
+
+RUN pyenv update \
+  && pyenv install 3.8.1 \
+  && pyenv global 3.8.1 \
+  && pip install --upgrade pip wheel
+
+# clear apt-get cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
+
+
+#########
+# FINAL #
+#########
+
+# create directory for the app user
+RUN mkdir -p /home/app
+
+# create in system the app user
+RUN addgroup --system app && adduser --system --ingroup app app
+
+# create the appropriate directories
+ENV HOME=/home/app
+ENV APP_HOME=/home/app/web
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+# install dependencies
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+# clear apt-get cache
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# copy project
+COPY . $APP_HOME
+
+# chown all the files to the app user
+RUN chown -R app:app $APP_HOME
+
+# change to the app user
+USER app
+
+# run entrypoint.prod.sh
+#ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
+
+# run server
+ENV APP_PORT=8888
+EXPOSE 443 $APP_PORT
+ENTRYPOINT ["python", "webapp.py", "--port:$APP_PORT"]

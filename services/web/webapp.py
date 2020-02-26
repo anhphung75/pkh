@@ -21,7 +21,8 @@ dssse_hoso.append(test2)
 test3 = sse_hoso.test()
 dssse_hoso.append(test3)
 
-define("port", default=8888, help="port to listen on")
+define("port", default=8000, help="port to listen on")
+
 
 class WebBase(web.RequestHandler):
     def prepare(self):
