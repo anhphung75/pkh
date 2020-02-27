@@ -46,8 +46,8 @@ COPY . $APP_HOME
 
 # chown all the files to the app user
 # create in system the webapp group user
-RUN addgroup --system webapp 
-RUN adduser --system --ingroup webapp pkh
+RUN addgroup -r webapp 
+RUN adduser -r -l -M -s /bin/false --ingroup webapp pkh
 RUN chown -R pkh:webapp $APP_HOME
 
 # change to the app user
