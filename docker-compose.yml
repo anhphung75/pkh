@@ -4,7 +4,7 @@ services:
   webapp:
     build:
       context: ./services/web
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.ubuntu
     image: anhphung75/web_hoso:fe02
     container_name: webapp
     working_dir: /home/app/web
@@ -16,6 +16,8 @@ services:
       - ./fe/public/:/home/app/web/static/js
     ports:
       - 8000:8000
+    hostname: hoso
+    domainname: pkh.cntd
 
   nginx:
     build:
@@ -35,3 +37,4 @@ services:
 volumes:
   certs_data:
   static_volume:
+
