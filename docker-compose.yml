@@ -7,13 +7,13 @@ services:
       dockerfile: Dockerfile.ubuntu
     image: anhphung75/web_hoso:fe02
     container_name: webapp
-    working_dir: /home/app/web
-    command: python webapp.py --port=8888
+    working_dir: /home/web
+    command: python webapp.py --port=8000
     volumes:
-      - certs_data:/home/app/web/ssl_cert
-      - static_volume:/home/app/web/static
-      - ./services/web/:/home/app/web/
-      - ./fe/public/:/home/app/web/static/js
+      - certs_data:/home/web/ssl_cert
+      - static_volume:/home/web/static
+      - ./services/web/:/home/web/
+      - ./fe/public/:/home/web/static/js
     ports:
       - 8000:8000
     hostname: hoso
@@ -26,8 +26,8 @@ services:
     image: anhphung75/nginx_hoso:fe02
     container_name: nginx
     volumes:
-      - certs_data:/home/app/web/ssl_cert
-      - static_volume:/home/app/web/static
+      - certs_data:/home/web/ssl_cert
+      - static_volume:/home/web/static
     ports:
       - 80:80
       - 443:443

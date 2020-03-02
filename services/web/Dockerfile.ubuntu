@@ -68,7 +68,6 @@ RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 locales \
 
 # create system user=pkh, group_user=webapp
 ENV APP_HOME=/home/web
-#RUN mkdir -p $APP_HOME
 RUN addgroup --system webapp \
   && adduser --system --home $APP_HOME --shell /bin/false --ingroup webapp --disabled-password --disabled-login pkh
 
