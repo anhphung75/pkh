@@ -1,9 +1,9 @@
-#################################################
-# BUILDER  PYTHON 3.8.2 ON MACHINE UBUNTU 18.04 #---------------------------------------------------
-#################################################
+###########
+# BUILDER #-------------------------------------------------------------------------------
+###########
 
 # pull official base image
-FROM ubuntu:18.04 as builder
+FROM python:3.8.2 as builder
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
@@ -16,22 +16,17 @@ RUN apt-get update && apt-get install -y --fix-missing \
   curl make git ca-certificates openssl libssl-dev \
   apt-utils apt-transport-https build-essential debconf-utils \
   gnupg gcc libffi-dev g++ unixodbc-dev \
-  python3-dev python3-pip python3-wheel \
-  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-  && apt-get autoremove -y\
-  && apt-get clean
+  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-
-RUN python3 -m pip install --upgrade pip wheel
+RUN pip install --upgrade pip wheel
 # lint
-# RUN python3 -m pip install --upgrade flake8 black
+# RUN pip install --upgrade flake8 black
 
 # install dependencies
 WORKDIR /complier
 COPY ./requirements.txt .
-#RUN python3 -m pip wheel --no-cache-dir --no-deps --wheel-dir /complier/wheels -r requirements.txt
-RUN python3 -m pip wheel --wheel-dir /complier/wheels -r requirements.txt
-
+#RUN pip wheel --no-cache-dir --no-deps --wheel-dir /complier/wheels -r requirements.txt
+RUN pip wheel --wheel-dir /complier/wheels -r requirements.txt
 
 # check lint
 # COPY . .
@@ -43,7 +38,7 @@ RUN python3 -m pip wheel --wheel-dir /complier/wheels -r requirements.txt
 #########
 
 # pull official base image
-FROM ubuntu:18.04
+FROM python:3.8.2
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
@@ -54,8 +49,7 @@ ENV PYTHONUNBUFFERED 1
 # install system utilities
 RUN apt-get update && apt-get install -y --fix-missing --no-install-recommends \
   apt-utils apt-transport-https build-essential debconf-utils \
-  curl gnupg unixodbc-dev ca-certificates openssl libssl-dev \
-  python3-dev python3-pip python3-wheel
+  curl gnupg unixodbc-dev ca-certificates openssl libssl-dev
 
 # install SQL Server drivers
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
@@ -67,7 +61,8 @@ RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 locales \
   # update openssl to ssl1.1 for pyodbc
   && chmod +rwx /etc/ssl/openssl.cnf \
   && sed -i 's/TLSv1.2/TLSv1/g' /etc/ssl/openssl.cnf \
-  && sed -i 's/SECLEVEL=2/SECLEVEL=1/g' /etc/ssl/openssl.cnf 
+  && sed -i 's/SECLEVEL=2/SECLEVEL=1/g' /etc/ssl/openssl.cnf \
+  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # create system user=pkh, group_user=webapp
 ENV APP_HOME=/home/web
@@ -80,13 +75,12 @@ COPY --from=builder /complier/wheels /wheels
 COPY --from=builder /complier/requirements.txt .
 RUN python3 -m pip install --upgrade pip wheel \
   && python3 -m pip install --no-cache /wheels/* \
-  # clean all no need
   && rm -rf /wheels \
   && rm -rf /root/.cache/pip/* \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /tmp/* \
   && rm -rf /var/tmp/* \
-  && apt-get purge python3-pip python3-wheel -y\
+  && apt-get purge apt-utils apt-transport-https build-essential debconf-utils curl gnupg -y\
   && apt-get autoremove -y\
   && apt-get clean
 

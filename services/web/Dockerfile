@@ -1,102 +1,56 @@
-###########
-# BUILDER #-------------------------------------------------------------------------------
-###########
+#################################################
+# BUILDER  PYTHON 3.8.2 ON MACHINE UBUNTU 18.04 #-----------------------------------------------------------------------
+#################################################
 
 # pull official base image
-FROM python:3.8.1-buster as builder
+FROM ubuntu:18.04 as builder
 
+
+# install python 3.8.2
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
 ENV LC_ALL C.UTF-8
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHON_VERSION 3.8
+RUN apt-get update && apt-get install -y software-properties-common wget
+RUN add-apt-repository ppa:deadsnakes/ppa
+RUN apt-get update && apt-get install -y --no-install-recommends --fix-missing \
+  "python$PYTHON_VERSION-dev" "python$PYTHON_VERSION-distutils" \
+  # clean apt-get cache
+  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+  && apt-get autoremove -y\
+  && apt-get clean \
+  # check version
+  && cd /usr/bin/ \
+  && ln -s "/usr/bin/python$PYTHON_VERSION" python \
+  && python --version
 
-# install python dependencies
-RUN apt-get update && apt-get install -y --fix-missing \
-  curl make git ca-certificates openssl libssl-dev \
-  apt-utils apt-transport-https build-essential debconf-utils \
-  gnupg gcc libffi-dev g++ \
-  unixodbc-dev \
-  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN pip install --upgrade pip
-# lint
-# RUN pip install flake8 black
-
-# install dependencies
-WORKDIR /complier
-COPY ./requirements.txt .
-#RUN pip wheel --no-cache-dir --no-deps --wheel-dir /complier/wheels -r requirements.txt
-RUN pip wheel --wheel-dir /complier/wheels -r requirements.txt
-
-# check lint
-# COPY . .
-# RUN flake8 --ignore=E501,F401 . && black --check .
+# install latest pip
+ENV PYTHON_PIP_VERSION 20.0.2
+ENV PYTHON_GET_PIP_URL https://github.com/pypa/get-pip/raw/d59197a3c169cef378a22428a3fa99d33e080a5d/get-pip.py
+ENV PYTHON_GET_PIP_SHA256 421ac1d44c0cf9730a088e337867d974b91bdce4ea2636099275071878cc189e
+RUN set -ex; \
+  wget -O get-pip.py "$PYTHON_GET_PIP_URL"; \
+  echo "$PYTHON_GET_PIP_SHA256 *get-pip.py" | sha256sum --check --strict -; \
+  python get-pip.py --disable-pip-version-check --no-cache-dir "pip==$PYTHON_PIP_VERSION"; \
+  # clear file no need
+  find /usr/local -depth \
+  \( \
+  \( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
+  -o \
+  \( -type f -a \( -name '*.pyc' -o -name '*.pyo' \) \) \
+  \) -exec rm -rf '{}' +; \
+  rm -f get-pip.py; \
+  # check version
+  pip --version;
 
 
-#########
-# FINAL #----------------------------------------------------------------------------------
-#########
+RUN python -m pip install -U pip wheel \
+  && python --version \
+  && pip --version
 
-# pull official base image
-FROM python:3.8.1-buster
 
-ENV DEBIAN_FRONTEND noninteractive
-ENV LANG C.UTF-8
-ENV LC_ALL C.UTF-8
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+WORKDIR /usr/local/bin/
+RUN ls -lrth * 
 
-# install system utilities
-RUN apt-get update && apt-get install -y --fix-missing --no-install-recommends \
-  curl gnupg unixodbc-dev \
-  ca-certificates openssl libssl-dev
-
-# install SQL Server drivers
-RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/debian/10/prod.list > /etc/apt/sources.list.d/mssql-release.list
-RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 locales \
-  # update locale-gen for mssql
-  && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
-  && locale-gen \
-  # update openssl to ssl1.1 for pyodbc
-  && chmod +rwx /etc/ssl/openssl.cnf \
-  && sed -i 's/TLSv1.2/TLSv1/g' /etc/ssl/openssl.cnf \
-  && sed -i 's/SECLEVEL=2/SECLEVEL=1/g' /etc/ssl/openssl.cnf \
-  && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-# create system user=pkh, group_user=webapp
-ENV APP_HOME=/home/web
-#RUN mkdir -p $APP_HOME
-RUN addgroup --system webapp \
-  && adduser --system --home $APP_HOME --shell /bin/false --ingroup webapp --disabled-password --disabled-login pkh
-
-# install webapp
-WORKDIR $APP_HOME
-COPY --from=builder /complier/wheels /wheels
-COPY --from=builder /complier/requirements.txt .
-RUN pip install --upgrade pip \
-  && pip install --no-cache /wheels/* \
-  && rm -rf /wheels \
-  && rm -rf /root/.cache/pip/* \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /tmp/* \
-  && rm -rf /var/tmp/* \
-  && apt-get clean
-
-# copy project
-COPY . $APP_HOME
-
-# chown all the files to the app user
-RUN chown -R pkh:webapp $APP_HOME
-
-# change to the app user
-USER pkh
-
-# run entrypoint.prod.sh
-# ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
-
-# run server
-ENV APP_PORT=8000
-EXPOSE 443 $APP_PORT
-ENTRYPOINT python webapp.py --port=$APP_PORT
+WORKDIR /usr/local/lib/
+RUN ls -lrth * 

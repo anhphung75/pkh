@@ -4,7 +4,7 @@ services:
   webapp:
     build:
       context: ./services/web
-      dockerfile: Dockerfile.ubuntu
+      dockerfile: Dockerfile
     image: anhphung75/web_hoso:fe02
     container_name: webapp
     working_dir: /home/web
