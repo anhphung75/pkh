@@ -11,11 +11,11 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # install python dependencies
-RUN dnf -y upgrade && dnf -y --allowerasing --best install \
-  python3-devel python3-pip python3-wheel python3-setuptools \
+RUN yum -y upgrade && yum -y --allowerasing --best install \
+  python3 python3-devel \
   epel-release gcc gcc-c++ libffi-devel
 
-RUN dnf -y --enablerepo=epel install pyodbc
+RUN yum -y --enablerepo=epel install pyodbc
 
 RUN python3 -m pip install --upgrade pip wheel
 # lint
@@ -45,14 +45,14 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
 # install system utilities
-RUN dnf -y upgrade && dnf -y --allowerasing --best install \
+RUN yum -y upgrade && yum -y --allowerasing --best install \
   python3-pip python3-wheel \
   # curl gnupg \
   unixODBC-devel ca-certificates openssl-devel
 
 # install SQL Server drivers
 RUN curl https://packages.microsoft.com/config/rhel/8/prod.repo > /etc/yum.repos.d/mssql-release.repo
-RUN dnf remove unixODBC-utf16 unixODBC-utf16-devel \
+RUN yum remove unixODBC-utf16 unixODBC-utf16-devel \
   && ACCEPT_EULA=Y yum install -y msodbcsql17 \
   # update locale-gen for mssql
   # && rm -f /usr/lib/locale/locale-archive \
@@ -62,7 +62,7 @@ RUN dnf remove unixODBC-utf16 unixODBC-utf16-devel \
   && sed -i 's/TLSv1.2/TLSv1/g' /etc/ssl/openssl.cnf \
   && sed -i 's/SECLEVEL=2/SECLEVEL=1/g' /etc/ssl/openssl.cnf 
 
-RUN dnf -y --enablerepo=epel install pyodbc
+RUN yum -y --enablerepo=epel install pyodbc
 
 # create system user=pkh, group_user=webapp
 ENV APP_HOME=/home/web
@@ -81,9 +81,9 @@ RUN python3 -m pip install --upgrade pip wheel \
   && rm -rf /var/lib/apt/lists/* \
   && rm -rf /tmp/* \
   && rm -rf /var/tmp/* \
-  && dnf -y remove python3-pip python3-wheel \
-  && dnf autoremove -y\
-  && dnf clean
+  && yum -y remove python3-pip python3-wheel \
+  && yum autoremove -y\
+  && yum clean
 
 # copy project
 COPY . $APP_HOME

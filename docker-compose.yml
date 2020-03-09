@@ -1,29 +1,47 @@
 version: '3.7'
 
 services:
-  webapp:
+  svfedora:
     build:
-      context: ./services/web
-      dockerfile: Dockerfile
-    image: anhphung75/web_hoso:fe02
-    container_name: webapp
+      context: ./services/webapp
+      dockerfile: Dockerfile.fedora
+    image: anhphung75/hoso1:mar09
+    container_name: webapp1
     working_dir: /home/web
-    command: python webapp.py --port=8000
+    command: python webapp.py --port=8002
     volumes:
       - certs_data:/home/web/ssl_cert
       - static_volume:/home/web/static
-      - ./services/web/:/home/web/
+      - ./services/webapp/:/home/web/
       - ./fe/public/:/home/web/static/js
     ports:
-      - 8000:8000
+      - 8002:8002
     hostname: hoso
     domainname: pkh.cntd
 
+  svubuntu:
+    build:
+      context: ./services/webapp
+      dockerfile: Dockerfile.ubuntu
+    image: anhphung75/hoso2:mar09
+    container_name: webapp2
+    working_dir: /home/web
+    command: python webapp.py --port=8001
+    volumes:
+      - certs_data:/home/web/ssl_cert
+      - static_volume:/home/web/static
+      - ./services/webapp/:/home/web/
+      - ./fe/public/:/home/web/static/js
+    ports:
+      - 8001:8001
+    hostname: hoso
+    domainname: pkh.cntd
+    
   nginx:
     build:
       context: ./services/nginx
       dockerfile: Dockerfile
-    image: anhphung75/nginx_hoso:fe02
+    image: anhphung75/nginx_hoso:mar09
     container_name: nginx
     volumes:
       - certs_data:/home/web/ssl_cert
@@ -32,7 +50,8 @@ services:
       - 80:80
       - 443:443
     depends_on:
-      - webapp
+      - svfedora
+      - svubuntu
 
 volumes:
   certs_data:

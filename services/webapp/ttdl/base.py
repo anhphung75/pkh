@@ -3,15 +3,15 @@ import sys
 import sqlite3
 import datetime
 import urllib
-
+from tornado.options import define, options
 from utils.thoigian import stodate, datetos
-
 from sqlalchemy import create_engine, Column, Sequence, func, desc
 from sqlalchemy import Boolean, Integer, DECIMAL, Unicode, Date, DateTime, VARBINARY
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+import runserver
 
 
 Base = declarative_base()
@@ -59,11 +59,11 @@ class Hoso(Base):
 
 
 cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
-    'pkh.web', 'w3b@pkh2019', '192.168.24.4:1433', 'PKHData')
+    runserver.thamso.db_user, runserver.thamso.db_pwd, runserver.thamso.db_host, runserver.thamso.db_name)
 engine = create_engine(cnnstr)
 
 
-#params = urllib.parse.quote_plus(
+# params = urllib.parse.quote_plus(
 #    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
 #engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
 

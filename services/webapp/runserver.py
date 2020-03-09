@@ -1,5 +1,6 @@
 import os
 import json
+import argparse
 import arrow
 import ssl
 import tornado.ioloop
@@ -10,9 +11,9 @@ import tornado.escape
 import tornado.websocket
 from tornado.options import define, options
 
-
 from ttxl import hoso
 from ttxl_sse import hoso as sse_hoso
+
 dssse_hoso = []
 test1 = sse_hoso.test()
 dssse_hoso.append(test1)
@@ -20,8 +21,6 @@ test2 = sse_hoso.test()
 dssse_hoso.append(test2)
 test3 = sse_hoso.test()
 dssse_hoso.append(test3)
-
-define("port", default=8000, help="port to listen on")
 
 
 class WebBase(web.RequestHandler):
@@ -231,17 +230,34 @@ def make_app():
     return WebApp()
 
 
+thamso = None
+
+
 def main():
-    tornado.options.parse_command_line()
+    #tornado.options.options.logging = None
+    # tornado.options.parse_command_line()
+    # read args to run
+    parser = argparse.ArgumentParser(allow_abbrev=False)
+    parser.add_argument('-p', '--port', type=int, default=8000)
+    parser.add_argument('-dbuser', '--db_user', type=str, default='pkh.web')
+    parser.add_argument('-dbpwd', '--db_pwd', type=str, default='pkh.web')
+    parser.add_argument('-dbhost', '--db_host', type=str, default='pkh.web')
+    parser.add_argument('-dbname', '--db_name', type=str, default='pkh.web')
+    thamso = parser.parse_args()
+
     app = make_app()
-    #server = httpserver.HTTPServer(app)
-    ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-    ssl_path = "ssl_cert"
-    print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
-    ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
-                            os.path.join(ssl_path, "pkh.key"))
-    server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
-    server.listen(options.port)
+    sercurity_socket = True
+    if sercurity_socket:
+        ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
+        ssl_path = "ssl_cert"
+        print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
+        ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
+                                os.path.join(ssl_path, "pkh.key"))
+        server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
+    else:
+        server = httpserver.HTTPServer(app)
+
+    server.listen(thamso.port)
     tornado.ioloop.IOLoop.instance().start()
 
 
