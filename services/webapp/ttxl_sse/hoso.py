@@ -2,13 +2,12 @@ import json
 import arrow
 
 from sqlalchemy import func, desc
-from ttdl.base import db
-from ttdl.base import Hoso
+from ttdl.bangbieu import Hoso
 from utils.api import raw2listjson
 from ttdl.test import tamdskh
 
 
-def gom(nam=None):
+def gom(db, nam=None):
     bdl = Hoso
     if nam == None:
         data = db.query(bdl).filter(bdl.mahoso != None).all()

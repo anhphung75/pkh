@@ -45,8 +45,6 @@ ENV LC_ALL C.UTF-8
 RUN curl https://packages.microsoft.com/config/rhel/8/prod.repo > /etc/yum.repos.d/mssql-release.repo \
   && dnf remove unixODBC-utf16 unixODBC-utf16-devel \
   && dnf -y upgrade && ACCEPT_EULA=Y dnf install --nodocs -y msodbcsql17 \
-  # set locale for mssql
-  # && localectl set-locale LANG=en_US.UTF-8 \
   && dnf install --nodocs -y python3-devel python3-pyodbc \
   && dnf clean all -y
 
@@ -59,8 +57,8 @@ RUN groupadd -r webapp \
 WORKDIR $APP_HOME
 COPY --from=builder /complier/wheels /wheels
 COPY --from=builder /complier/reqs.txt .
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# ENV PYTHONDONTWRITEBYTECODE 1
+# ENV PYTHONUNBUFFERED 1
 RUN python -m pip install --upgrade pip wheel \
   && python -m pip install --no-cache /wheels/* \
   # clean all no need
@@ -84,10 +82,12 @@ USER pkh
 # ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
 
 # run one server
-EXPOSE 443 8000
+EXPOSE 8000
+
+
 ENTRYPOINT python runserver.py \
-  --port 8000 \
   --db_user 'pkh.web' \
   --db_pwd 'w3b@pkh2019' \
   --db_host '192.168.24.4:1433' \
-  --db_name 'PKHData'
+  --db_name 'PKHData' \
+  --port 8000

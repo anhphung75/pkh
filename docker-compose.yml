@@ -7,15 +7,13 @@ services:
       dockerfile: Dockerfile.fedora
     image: anhphung75/hoso1:mar09
     container_name: webapp1
-    working_dir: /home/web
-    command: python webapp.py --port=8002
     volumes:
       - certs_data:/home/web/ssl_cert
       - static_volume:/home/web/static
       - ./services/webapp/:/home/web/
       - ./fe/public/:/home/web/static/js
     ports:
-      - 8002:8002
+      - 8000:8000
     hostname: hoso
     domainname: pkh.cntd
 
@@ -25,8 +23,6 @@ services:
       dockerfile: Dockerfile.ubuntu
     image: anhphung75/hoso2:mar09
     container_name: webapp2
-    working_dir: /home/web
-    command: python webapp.py --port=8001
     volumes:
       - certs_data:/home/web/ssl_cert
       - static_volume:/home/web/static

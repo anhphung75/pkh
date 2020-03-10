@@ -3,15 +3,12 @@ import sys
 import sqlite3
 import datetime
 import urllib
-from tornado.options import define, options
 from utils.thoigian import stodate, datetos
-from sqlalchemy import create_engine, Column, Sequence, func, desc
+from sqlalchemy import Column, Sequence, func, desc
 from sqlalchemy import Boolean, Integer, DECIMAL, Unicode, Date, DateTime, VARBINARY
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
-import runserver
 
 
 Base = declarative_base()
@@ -56,20 +53,3 @@ class Hoso(Base):
     id_old = Column(Integer)
     lastupdate = Column(DateTime(timezone=True), default=func.now(),
                         onupdate=datetime.datetime.now)
-
-
-cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
-    runserver.thamso.db_user, runserver.thamso.db_pwd, runserver.thamso.db_host, runserver.thamso.db_name)
-engine = create_engine(cnnstr)
-
-
-# params = urllib.parse.quote_plus(
-#    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
-#engine = create_engine("mssql+pyodbc:///?odbc_connect=%s" % params)
-
-#engine = create_engine('sqlite:///:memory:', echo=True)
-
-Base.metadata.create_all(engine)
-Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
-
-db = Session()

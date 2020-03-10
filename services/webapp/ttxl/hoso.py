@@ -3,12 +3,11 @@ import json
 import arrow
 
 from sqlalchemy import func, desc
-from ttdl.base import db
-from ttdl.base import Hoso
+from ttdl.bangbieu import Hoso
 from utils.api import raw2listjson
 
 
-def get_mahoso_tiep(mahoso=None):
+def get_mahoso_tiep(db, mahoso=None):
     bdl = Hoso
     if mahoso == None:
         nam = datetime.date.today().year
@@ -27,7 +26,7 @@ def get_mahoso_tiep(mahoso=None):
     return _mahoso
 
 
-def moi(mahoso=None, data={}):
+def moi(db, mahoso=None, data={}):
     r = db.query(Hoso).filter(Hoso.mahoso == mahoso).first()
     if r != None:
         return
@@ -54,7 +53,7 @@ def moi(mahoso=None, data={}):
     return
 
 
-def sua(mahoso=None, data={}):
+def sua(db, mahoso=None, data={}):
     bdl = db.query(Hoso).filter(Hoso.mahoso == mahoso).first()
     if bdl == None:
         return
@@ -89,7 +88,7 @@ def xoa(db, mahoso=None, data={}):
     return
 
 
-def xem(mahoso=None):
+def xem(db, mahoso=None):
     bdl = Hoso
     data = db.query(bdl).filter(bdl.sohoso == mahoso).all()
     # db.close()
@@ -99,7 +98,7 @@ def xem(mahoso=None):
     return json.dumps(raw2listjson(data))
 
 
-def gom(nam=None):
+def gom(db, nam=None):
     bdl = Hoso
     if nam == None:
         data = db.query(bdl).filter(bdl.mahoso != None).all()

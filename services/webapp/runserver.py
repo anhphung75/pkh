@@ -11,6 +11,7 @@ import tornado.escape
 import tornado.websocket
 from tornado.options import define, options
 
+from ttdl.maychu import tao_maychu_api
 from ttxl import hoso
 from ttxl_sse import hoso as sse_hoso
 
@@ -78,7 +79,7 @@ class Api1108_Hoso_Rest(ApiBase):
         res = {'id': uuid, 'event': '', 'data': []}
         # try:
         namhoso = 2019
-        data = hoso.gom(namhoso)
+        data = hoso.gom(db, namhoso)
         print('ApiRest get hoso gom ={}'.format(str(data)))
         res['data'] = data
         res['event'] = "gom"
@@ -102,7 +103,7 @@ class Api1108_Hoso_Crud(ApiBase):
     def get(self, nam, mahoso):
         res = {'info': '', 'hoso': []}
         try:
-            res['hoso'] = hoso.xem(mahoso)
+            res['hoso'] = hoso.xem(db, mahoso)
             res['info'] = 'OK'
         except:
             res['info'] = 'Không có dữ liệu'
@@ -176,7 +177,7 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         chat['tin']['ve'] = 'boss.{}'.format(str(tgdi))
         if chat['tin']['nhan'] == 'gom':
             namhoso = chat['kho']['hoso']['namhoso']
-            data = hoso.gom(namhoso)
+            data = hoso.gom(db, namhoso)
             # chuẩn bị data gửi lại
             chat['tin']['nhan'] = 'gom'
             chat['kho']['hoso'] = data
@@ -184,17 +185,17 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
             pass
             # chuyen thang client, cap nhật server
             # hsr = chat['data']['goi']['hoso']
-            # data = hoso.sua(hsr)
+            # data = hoso.sua(db, hsr)
         elif chat['tin']['nhan'] == 'sua':
             pass
             # chuyen thang client, cap nhật server
             # hsr = chat['data']['goi']['hoso']
-            # data = hoso.sua(hsr)
+            # data = hoso.sua(db, hsr)
         elif chat['tin']['nhan'] == 'xoa':
             pass
             # chuyen thang client, cap nhật server
             # hsr = chat['data']['goi']['hoso']
-            # data = hoso.sua(hsr)
+            # data = hoso.sua(db, hsr)
 
         Api1108_ws.update_cache(chat)
         Api1108_ws.send_updates(chat)
@@ -230,7 +231,7 @@ def make_app():
     return WebApp()
 
 
-thamso = None
+db = None
 
 
 def main():
@@ -238,13 +239,19 @@ def main():
     # tornado.options.parse_command_line()
     # read args to run
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    parser.add_argument('-p', '--port', type=int, default=8000)
     parser.add_argument('-dbuser', '--db_user', type=str, default='pkh.web')
     parser.add_argument('-dbpwd', '--db_pwd', type=str, default='pkh.web')
     parser.add_argument('-dbhost', '--db_host', type=str, default='pkh.web')
     parser.add_argument('-dbname', '--db_name', type=str, default='pkh.web')
+    parser.add_argument('-p', '--port', type=int, default=8000)
     thamso = parser.parse_args()
 
+    # creat db
+    global db
+    db = tao_maychu_api(thamso.db_user, thamso.db_pwd,
+                        thamso.db_host, thamso.db_name)
+
+    # creat webapp
     app = make_app()
     sercurity_socket = True
     if sercurity_socket:
