@@ -5,8 +5,9 @@ COPY nginx.conf /etc/nginx/conf.d
 
 ENV APP_HOME=/home/web
 WORKDIR $APP_HOME
+#RUN mkdir -p /home/web/ssl_cert
+#RUN mkdir -p /home/web/static
 
-# run server
 EXPOSE 443 80
 
 # run entrypoint.prod.sh

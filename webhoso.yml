@@ -13,8 +13,8 @@ services:
       placement:
         constraints: [node.role == worker]
     volumes:
-      - certs_data:/home/app/web/ssl_cert
-      - static_volume:/home/app/web/static
+      - certs_data:/home/web/ssl_cert
+      - static_volume:/home/web/static
     hostname: hoso
     domainname: pkh.cntd
 
@@ -31,8 +31,44 @@ services:
       placement:
         constraints: [node.role == worker]
     volumes:
-      - certs_data:/home/app/web/ssl_cert
-      - static_volume:/home/app/web/static
+      - certs_data:/home/web/ssl_cert
+      - static_volume:/home/web/static
+    hostname: hoso
+    domainname: pkh.cntd
+
+
+  may8002:
+    image: anhphung75/hoso1:mar09
+    container_name: webapp8002
+    environment:
+      - APP_PORT=8002
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+    volumes:
+      - certs_data:/home/web/ssl_cert
+      - static_volume:/home/web/static
+    hostname: hoso
+    domainname: pkh.cntd
+
+
+  may8003:
+    image: anhphung75/hoso1:mar09
+    container_name: webapp8003
+    environment:
+      - APP_PORT=8003
+    deploy:
+      replicas: 2
+      restart_policy:
+        condition: on-failure
+      placement:
+        constraints: [node.role == worker]
+    volumes:
+      - certs_data:/home/web/ssl_cert
+      - static_volume:/home/web/static
     hostname: hoso
     domainname: pkh.cntd
 
@@ -53,8 +89,8 @@ services:
       - may8000
       - may8001
     volumes:
-      - certs_data:/home/app/web/ssl_cert
-      - static_volume:/home/app/web/static
+      - certs_data:/home/web/ssl_cert
+      - static_volume:/home/web/static
     hostname: hoso
     domainname: pkh.cntd
 

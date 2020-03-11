@@ -4,52 +4,52 @@ services:
   svfedora:
     build:
       context: ./services/webapp
-      dockerfile: Dockerfile.fedora
+      dockerfile: Fedora.dockerfile
     image: anhphung75/hoso1:mar09
-    container_name: webapp1
-    volumes:
-      - certs_data:/home/web/ssl_cert
-      - static_volume:/home/web/static
-      - ./services/webapp/:/home/web/
-      - ./fe/public/:/home/web/static/js
+    container_name: server1
     ports:
       - 8000:8000
-    hostname: hoso
-    domainname: pkh.cntd
+      - 8888:8888
+      - 7777:7777
+  
 
+  may8002:
+    image: anhphung75/hoso1:mar09
+    container_name: webapp8002
+    environment:
+      - APP_PORT=8002
+    ports:
+      - 8002:8002
+      - 8888:8888
+
+
+  may8003:
+    image: anhphung75/hoso2:mar09
+    container_name: webapp8003
+    environment:
+      - APP_PORT=8003
+    ports:
+      - 8003:8003
+      - 8888:8888
+  
+  
   svubuntu:
     build:
       context: ./services/webapp
-      dockerfile: Dockerfile.ubuntu
+      dockerfile: Ubuntu.dockerfile
+      args:
+        - APP_PORT=8888
     image: anhphung75/hoso2:mar09
-    container_name: webapp2
-    volumes:
-      - certs_data:/home/web/ssl_cert
-      - static_volume:/home/web/static
-      - ./services/webapp/:/home/web/
-      - ./fe/public/:/home/web/static/js
+    container_name: server2
     ports:
-      - 8001:8001
-    hostname: hoso
-    domainname: pkh.cntd
-    
-  nginx:
+      - 8000:8000
+      - 8888:8888
+
+
+  canbangtai:
     build:
       context: ./services/nginx
       dockerfile: Dockerfile
-    image: anhphung75/nginx_hoso:mar09
-    container_name: nginx
-    volumes:
-      - certs_data:/home/web/ssl_cert
-      - static_volume:/home/web/static
-    ports:
-      - 80:80
-      - 443:443
-    depends_on:
-      - svfedora
-      - svubuntu
-
-volumes:
-  certs_data:
-  static_volume:
+    image: anhphung75/canbangtai:mar09
+    container_name: canbangtai
 

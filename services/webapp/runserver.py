@@ -239,11 +239,11 @@ def main():
     # tornado.options.parse_command_line()
     # read args to run
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    parser.add_argument('-dbuser', '--db_user', type=str, default='pkh.web')
-    parser.add_argument('-dbpwd', '--db_pwd', type=str, default='pkh.web')
-    parser.add_argument('-dbhost', '--db_host', type=str, default='pkh.web')
-    parser.add_argument('-dbname', '--db_name', type=str, default='pkh.web')
-    parser.add_argument('-p', '--port', type=int, default=8000)
+    parser.add_argument('--db_user', '-dbuser',  type=str, default='pkh.web')
+    parser.add_argument('--db_pwd', '-dbpwd',  type=str, default='pkh.web')
+    parser.add_argument('--db_host', '-dbhost',  type=str, default='pkh.web')
+    parser.add_argument('--db_name', '-dbname',  type=str, default='pkh.web')
+    parser.add_argument('--port', '-p',  type=int, default=8000)
     thamso = parser.parse_args()
 
     # creat db

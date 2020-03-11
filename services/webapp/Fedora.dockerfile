@@ -21,7 +21,7 @@ RUN python -m pip install --upgrade pip wheel \
 
 # build python app
 WORKDIR /complier
-COPY ./reqs_fedora.txt ./reqs.txt
+COPY ./Fedora_reqs.txt ./reqs.txt
 RUN python -m pip wheel --no-cache-dir --no-deps --wheel-dir /complier/wheels -r reqs.txt
 #RUN python3 -m pip wheel --wheel-dir /complier/wheels -r reqs.txt
 
@@ -82,12 +82,12 @@ USER pkh
 # ENTRYPOINT ["/home/app/web/entrypoint.prod.sh"]
 
 # run one server
-EXPOSE 8000
-
-
+ARG APP_PORT=8888
+ENV APP_PORT $APP_PORT
+EXPOSE $APP_PORT
 ENTRYPOINT python runserver.py \
   --db_user 'pkh.web' \
   --db_pwd 'w3b@pkh2019' \
   --db_host '192.168.24.4:1433' \
   --db_name 'PKHData' \
-  --port 8000
+  --port $APP_PORT
