@@ -3,7 +3,6 @@ version: '3.7'
 services:
   may8000:
     image: anhphung75/hoso1:mar09
-    container_name: webapp8000
     environment:
       - APP_PORT=8000
     deploy:
@@ -16,12 +15,12 @@ services:
       - certs_data:/home/web/ssl_cert
       - static_volume:/home/web/static
     hostname: hoso
-    domainname: pkh.cntd
+    networks:
+      - webhoso
 
 
   may8001:
     image: anhphung75/hoso1:mar09
-    container_name: webapp8001
     environment:
       - APP_PORT=8001
     deploy:
@@ -34,48 +33,12 @@ services:
       - certs_data:/home/web/ssl_cert
       - static_volume:/home/web/static
     hostname: hoso
-    domainname: pkh.cntd
-
-
-  may8002:
-    image: anhphung75/hoso1:mar09
-    container_name: webapp8002
-    environment:
-      - APP_PORT=8002
-    deploy:
-      replicas: 2
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints: [node.role == worker]
-    volumes:
-      - certs_data:/home/web/ssl_cert
-      - static_volume:/home/web/static
-    hostname: hoso
-    domainname: pkh.cntd
-
-
-  may8003:
-    image: anhphung75/hoso1:mar09
-    container_name: webapp8003
-    environment:
-      - APP_PORT=8003
-    deploy:
-      replicas: 2
-      restart_policy:
-        condition: on-failure
-      placement:
-        constraints: [node.role == worker]
-    volumes:
-      - certs_data:/home/web/ssl_cert
-      - static_volume:/home/web/static
-    hostname: hoso
-    domainname: pkh.cntd
+    networks:
+      - webhoso
 
 
   canbangtai:
     image: anhphung75/canbangtai:mar09
-    container_name: canbangtai01
     deploy:
       replicas: 2
       restart_policy:
@@ -92,9 +55,17 @@ services:
       - certs_data:/home/web/ssl_cert
       - static_volume:/home/web/static
     hostname: hoso
-    domainname: pkh.cntd
+    networks:
+      - webhoso
 
 
 volumes:
   certs_data:
   static_volume:
+
+
+networks:
+  webhoso:
+    #driver: overlay
+    #attachable: true
+
