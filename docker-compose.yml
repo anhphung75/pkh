@@ -11,40 +11,15 @@ services:
       - 8000:8000
       - 8888:8888
       - 7777:7777
-  
 
-  may8002:
-    image: anhphung75/hoso1:mar09
-    container_name: webapp8002
-    environment:
-      - APP_PORT=8002
-    ports:
-      - 8002:8002
-      - 8888:8888
-
-
-  may8003:
-    image: anhphung75/hoso2:mar09
-    container_name: webapp8003
-    environment:
-      - APP_PORT=8003
-    ports:
-      - 8003:8003
-      - 8888:8888
-  
-  
-  svubuntu:
+  svfe:
     build:
-      context: ./services/webapp
-      dockerfile: Ubuntu.dockerfile
-      args:
-        - APP_PORT=8888
-    image: anhphung75/hoso2:mar09
-    container_name: server2
+      context: ./services/fe
+      dockerfile: Svelte.dockerfile
+    image: anhphung75/fehoso1:mar09
+    container_name: svfe1
     ports:
-      - 8000:8000
-      - 8888:8888
-
+      - 5000:5000
 
   canbangtai:
     build:

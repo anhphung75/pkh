@@ -18,7 +18,7 @@ class Hoso(Base):
     __tablename__ = 'hoso'
 #    __table_args__ = {"schema": "web"}
     autoid = Column(Integer, primary_key=True)
-    mahoso = Column(Unicode(13), unique=True)  # yyyyhsxxxxxx
+    mahoso = Column(Unicode(13), unique=True)  # yyyy.hs.xxxxxx
     qrcode = Column(VARBINARY)
     sodanhbo = Column(Unicode(50))  # barcode
     madot = Column(Unicode(50))

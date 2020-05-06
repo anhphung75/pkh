@@ -5,21 +5,37 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>{{ escape(handler.settings["webapp_title"]) }}</title>
+  <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
   <link rel="stylesheet" href="{{ static_url("css/base.css") }}" type="text/css">
   <link rel="stylesheet" href="{{ static_url("css/fontawesome.5.11.2.all.css") }}" type="text/css">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
-    integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" type="text/css">
   {% block cdn %}{% end %}
   <link rel='icon' type='image/png' href="{{ static_url("favicon.png") }}">
   {% block css %}{% end %}
 </head>
 
 <body>
-  <div id="pna"></div>
-  {% block body %}{% end %}
-  {% module xsrf_form_html() %}
+  <section class="flex h-screen w-screen">
+    <nav class="sm:flex-auto md:flex-none">
+      {% if current_user %}
+      <a href="/auth/logout?next={{ url_escape(request.uri) }}">{{ _("Sign out") }}</a>
+      {% else %}
+      {% raw _('<a href="%(url)s">Sign in</a> to compose/edit') % {"url": "/auth/login %}
+      {% end %}
+      {% block menu %}{% end %}
+    </nav>
+    <main class="md:flex-auto bg-gray-200">
+      {% block app %}{% end %}
+    </main>
+  </section>
+  <footer class="flex bg-blue-200">
+    {% module xsrf_form_html() %}
+    Footer
+    {% block footer %}{% end %}
+  </footer>
   <!-- script  -->
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://unpkg.com/vue"></script>
   {% block js %}{% end %}
 </body>
 

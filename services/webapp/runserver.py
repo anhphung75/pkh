@@ -3,6 +3,7 @@ import json
 import argparse
 import arrow
 import ssl
+import asyncio
 import tornado.ioloop
 import tornado.web as web
 import tornado.httpserver as httpserver
@@ -219,7 +220,7 @@ class WebApp(web.Application):
             # ui_modules={"Entry": EntryModule},
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
-            # login_url="/auth/login",
+            login_url="/auth/login",
             debug=True,
             autoreload=True,
         )
@@ -235,6 +236,9 @@ db = None
 
 
 def main():
+    # for win10
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+
     #tornado.options.options.logging = None
     # tornado.options.parse_command_line()
     # read args to run
@@ -253,10 +257,10 @@ def main():
 
     # creat webapp
     app = make_app()
-    sercurity_socket = True
+    sercurity_socket = False
     if sercurity_socket:
         ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
-        ssl_path = "ssl_cert"
+        ssl_path = "services/webapp/ssl_cert"
         print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
         ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
                                 os.path.join(ssl_path, "pkh.key"))
