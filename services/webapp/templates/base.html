@@ -15,24 +15,30 @@
 </head>
 
 <body>
-  <section class="flex h-screen w-screen">
-    <nav class="sm:flex-auto md:flex-none">
-      {% if current_user %}
-      <a href="/auth/logout?next={{ url_escape(request.uri) }}">{{ _("Sign out") }}</a>
-      {% else %}
-      {% raw _('<a href="%(url)s">Sign in</a> to compose/edit') % {"url": "/auth/login %}
-      {% end %}
-      {% block menu %}{% end %}
-    </nav>
-    <main class="md:flex-auto bg-gray-200">
-      {% block app %}{% end %}
-    </main>
-  </section>
-  <footer class="flex bg-blue-200">
-    {% module xsrf_form_html() %}
-    Footer
-    {% block footer %}{% end %}
-  </footer>
+  <div id="trangxem" class="flex flex-col h-screen w-screen">
+    <div class="flex-grow w-full border-black">
+      <div class="flex flex-row w-full h-full">
+        <nav class="sm:flex-auto md:flex-none border-red">
+          {% if current_user %}
+          <a href="/auth/logout?next={{ url_escape(request.uri) }}">{{ _("Sign out") }}</a>
+          {% else %}
+          <a href="/auth/login">{{ _("Sign in") }}</a>
+          {% end %}
+          Menu
+          {% block menu %}{% end %}
+        </nav>
+        <main class="md:flex-auto bg-gray-200 border-red">
+          App main
+          {% block app %}{% end %}
+        </main>
+      </div>
+    </div>
+    <div class="flex-none w-full bg-blue-200">
+      {% module xsrf_form_html() %}
+      Footer
+      {% block footer %}{% end %}
+    </div>
+  </div>
   <!-- script  -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <script src="https://unpkg.com/vue"></script>
