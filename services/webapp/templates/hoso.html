@@ -1,11 +1,78 @@
 {% extends "base.html" %}
 
-{% block css %}
-<link rel="stylesheet" href="{{ static_url("fe/public/build/bundle.css") }}" type="text/css">
+{% block js %}
+<script src="{{ static_url("js/hoso/menu.js") }}"></script>
+<script src="{{ static_url("js/hoso/app.js") }}"></script>
 {% end %}
 
+{% block menu %}
+<div id="menu" class="container h-100 m-0 p-1 col-auto">
+  <div class="menu d-flex flex-column w-100 h-100 m-0 p-0">
+    <div class="logo flex-grow-0 w-100 m-0 p-0">
+      <nav class="navbar navbar-dark bg-dark m-0 p-0">
+        <a class="navbar-brand" href="#">
+          Phòng kế hoạch
+        </a>
+      </nav>
+    </div>
+    <div class="menu-form flex-grow-0 w-100 m-0 p-0">
+      <div class="bg-light text-primary">
+        <b>Báo biểu</b>
+      </div>
+      <nav class="navbar navbar-dark bg-secondary m-0 p-1">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fa fa-sign-in-alt mr-1"></i>Biểu 1</a>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fa fa-sign-in-alt mr-1"></i>Biểu 2</a>
+            </a>
+          </li>
+      </nav>
+    </div>
+    <div class="menu-report flex-grow-1 w-100 m-0 p-0">
+      <div class="bg-light text-primary">
+        <b>In ấn</b>
+      </div>
+      <nav class="navbar navbar-dark bg-secondary m-0 p-1">
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fa fa-sign-in-alt mr-1"></i>Biểu 1</a>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#">
+              <i class="fa fa-sign-in-alt mr-1"></i>Biểu 2</a>
+            </a>
+          </li>
+      </nav>
+    </div>
+    <div class="flex-grow-0 w-100 m-0 p-0">
+      <nav class="navbar navbar-dark bg-dark m-0 p-1">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+            {% if current_user %}
+            <a class="nav-link" href="#">
+              <i class="fa fa-sign-in-alt mr-1"></i>{{ _("Sign in") }}</a>
+            </a>
+            {% else %}
+            <a class="nav-link" href="#">
+              <i class="fa fa-sign-out-alt mr-1"></i>{{ _("Sign out") }}</a>
+            {% end %}
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
+</div>
+{% end %}
 
-{% block js %}
-<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-<script src="{{ static_url("fe/public/build/bundle.js") }}"></script>
+{% block app %}
+<main class="m-0 p-0 bg-info h-100 w-100">
+  Main
+</main>
 {% end %}

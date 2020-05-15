@@ -1,12 +1,27 @@
 {% extends "base.html" %}
 
 {% block menu %}
-{% if error %}
-<span style="color: red">Error: {{ error }}</span>
+<div id="menu" class="container h-100 m-0 p-1 col-auto">
+  {% if error %}
+  <span style="color: red">Error: {{ error }}</span>
+  {% end %}
+  <form action="/auth/login" method="POST">
+    Email: <input name="email" type="text"><br>
+    Password: <input name="password" type="password"><br>
+    <input type="submit">
+  </form>
+</div>
 {% end %}
-<form action="/auth/login" method="POST">
-  Email: <input name="email" type="text"><br>
-  Password: <input name="password" type="password"><br>
-  <input type="submit">
-</form>
+
+{% block webapp %}
+<main class="m-0 p-0 bg-info h-100 w-100">
+  <h1>Main app</h1>
+  Main
+</main>
+{% end %}
+
+
+{% block js %}
+<script src="{{ static_url("js/nguoisai/menu.js") }}"></script>
+<script src="{{ static_url("js/nguoisai/app.js") }}"></script>
 {% end %}
