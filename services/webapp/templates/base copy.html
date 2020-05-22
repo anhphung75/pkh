@@ -14,22 +14,22 @@
 </head>
 
 <body>
-  <div id="trangxem" class="d-flex flex-column align-items-stretch vw-100 vh-100 m-0 p-0 bg-transparent d-print-none">
-    <div class="flex-grow-0 w-100 m-0 p-0 bg-warning">
-      panel
-    </div>
-    <div class="flex-grow-1 w-100 m-0 p-0">
-      <div class="row w-100 h-100 m-0 p-0">
-        <div class="col-auto bg-info h-100 m-0 pl-1">
-          menu
-        </div>
-        <div class="col h-100 m-0 p-0 bg-primary">
-          app
-        </div>
+  <div id="trangxem" class="container-fluid bg-transparent m-0 p-0 d-print-none">
+    <div class="row h-100 m-0 p-0">
+      <div id="logo" class="container h-100 m-0 p-0 col-auto bg-dark">
+        <nav class="navbar navbar-expand navbar-dark bg-dark m-0 p-0">
+          <a class="navbar-brand" href="#">
+            <img src="{{ static_url("favicon.png") }}" height="30" alt="logo">
+          </a>
+          {% module xsrf_form_html() %}
+        </nav>
+        {% block logo %}{% end %}
+      </div>
+      {% block menu %}{% end %}
+      <div id="app" class="container h-100 m-0 p-1 col bg-transparent">
+        {% block webapp %}{% end %}
       </div>
     </div>
-
-
   </div>
   <!-- script  -->
   <script src="{{ static_url("js/refs/axios.min.js") }}"></script>
