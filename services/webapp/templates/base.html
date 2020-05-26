@@ -15,16 +15,19 @@
 
 <body>
   <div id="trangxem" class="d-flex flex-column align-items-stretch vw-100 vh-100 m-0 p-0 bg-transparent d-print-none">
-    <div class="flex-grow-0 w-100 m-0 p-0 bg-warning">
+    <div id="panel" class="flex-grow-0 w-100 m-0 p-0 bg-warning">
       panel
+      {% block panel %}{% end %}
     </div>
     <div class="flex-grow-1 w-100 m-0 p-0">
       <div class="row w-100 h-100 m-0 p-0">
-        <div class="col-auto bg-info h-100 m-0 pl-1">
+        <div id="menu" class="col-auto bg-info h-100 m-0 pl-1">
           menu
+          {% block menu %}{% end %}
         </div>
-        <div class="col h-100 m-0 p-0 bg-primary">
+        <div id="app" class="col h-100 m-0 p-0 bg-primary">
           app
+          {% block app %}{% end %}
         </div>
       </div>
     </div>
@@ -34,10 +37,6 @@
   <!-- script  -->
   <script src="{{ static_url("js/refs/axios.min.js") }}"></script>
   <script src="{{ static_url("js/refs/vue.min.js") }}"></script>
-  <script src="{{ static_url("js/ttlt/jsstore.min.js") }}"></script>
-  <script src="{{ static_url("js/ttlt/jsstore.worker.min.js") }}"></script>
-  <script src="{{ static_url("js/ttlt/database.js") }}" type="module"></script>
-
   {% block js %}{% end %}
 </body>
 

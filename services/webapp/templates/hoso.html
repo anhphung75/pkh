@@ -1,8 +1,10 @@
 {% extends "base.html" %}
 
 {% block js %}
+<script src="{{ static_url("js/refs/jsstore.min.js") }}"></script>
+<script src="{{ static_url("js/refs/jsstore.worker.min.js") }}"></script>
 <script src="{{ static_url("js/hoso/menu.js") }}"></script>
-<script src="{{ static_url("js/hoso/app.js") }}"></script>
+<script src="{{ static_url("js/hoso/app.js") }}" type="module"></script>
 {% end %}
 
 {% block menu %}
@@ -72,7 +74,8 @@
 {% end %}
 
 {% block app %}
-<main class="m-0 p-0 bg-info h-100 w-100">
-  Main
+<main id="app" class="m-0 p-0 bg-info h-100 w-100">
+  <div>{`namlv`} </div>
+  <div>{`userid`} </div>
 </main>
 {% end %}
