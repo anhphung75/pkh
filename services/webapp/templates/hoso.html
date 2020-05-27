@@ -77,5 +77,9 @@
 <main id="app" class="m-0 p-0 bg-info h-100 w-100">
   <div>{`namlv`} </div>
   <div>{`userid`} </div>
+  <div class="input-group mb-5">
+    <input type="text" class="form-control" type="text" v-model="userid" @keyup.enter="loaddb">
+    <span class="input-group-addon bg-primary text-white" @click="loaddb">Add</span>
+  </div>
 </main>
 {% end %}
