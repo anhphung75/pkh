@@ -76,10 +76,15 @@
 {% block app %}
 <main id="app" class="m-0 p-0 bg-info h-100 w-100">
   <div>{`namlv`} </div>
-  <div>{`userid`} </div>
+  <div>{`dbName`} </div>
+  <div>db= {`db`} </div>
+  <div>odbHoso = {`odbHoso`} </div>
   <div class="input-group mb-5">
-    <input type="text" class="form-control" type="text" v-model="userid" @keyup.enter="loaddb">
-    <span class="input-group-addon bg-primary text-white" @click="loaddb">Add</span>
+    <input type="text" class="form-control" v-model="dbName" @keyup.enter="loadDb">
+    <span class="input-group-addon bg-primary text-white m-2 p-2" @click="loadDb">Add</span>
+    <span class="input-group-addon bg-primary text-white" @click="dropDb">Delete</span>
   </div>
+  <div class=" bg-primary text-white" @click="suaHoso">Up hoso</div>
+  <div class=" bg-primary text-white" @click="odbHoso">Gom hoso</div>
 </main>
 {% end %}
