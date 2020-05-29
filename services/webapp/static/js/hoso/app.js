@@ -95,7 +95,10 @@ var app = new Vue({
       db: null,
       namlv: 2020,
       showMenu: false,
-      oHsKh: {
+      showotim: false,
+      stim: '',
+      otim: {},
+      oHoso: {
         '2020.hs.001': {
           mahoso: '2020.hs.001',
           makhachhang: '2020.kh.001',
@@ -141,78 +144,110 @@ var app = new Vue({
       };
       request.onupgradeneeded = e => {
         this.db = e.target.result;
-        this.db.createObjectStore('khachhang', { autoIncrement: false, keyPath: 'makhachhang' });
-        this.db.createObjectStore('hoso', { autoIncrement: false, keyPath: 'mahoso' });
+        this.db.createObjectStore('hoso', { keyPath: "mahoso" });
       };
     },
     async dropDb() {
       let check = this.dbName.length || 0;
       if (check == 0) { return false; };
       let request = await window.indexedDB.deleteDatabase(this.dbName);
-      request.onerror = e => {
-        console.log('Error opening db', e);
+      request.onerror = err => {
+        console.log('Error opening db', err);
       };
       await window.location.reload();
     },
-    odbHoso() {
-      let oRecs = {};
-      let storename = 'hoso';
-      let trans = this.db.transaction([storename,], 'readonly');
-      let store = trans.objectStore(storename);
-      let request = store.openCursor();
-      request.onsuccess = e => {
-        let cursor = e.target.result;
-        if (cursor) {
-          console.log('odbHoso cursor.key=', cursor.key);
-          console.log('odbHoso cursor.value=', cursor.value);
-          let k = cursor.key.toString();
-          oRecs[k] = cursor.value;
-          cursor.continue();
-        };
-      };
-      console.log('odbHoso oRec=', 'toi day ne', JSON.stringify(oRecs));
-      return oRecs;
-    },
-    async suaHoso() {
-      let oRecs = this.oHoso;
-      let storename = 'hoso';
-      console.log('suaHoso oRec=', oRecs);
-      let trans = this.db.transaction([storename,], 'readwrite');
-      let store = trans.objectStore(storename);
+    async clearDbStore(storename = 'hoso') {
       try {
-        for (const k in oRecs) {
-          let v = oRecs[k];
-          console.log('suaHoso oRec.k=', k);
-          console.log('suaHoso oRec.v=', v);
-          await store.put(v);
-        }
-        // await trans.complete;
-        await this.odbHoso();
+        let trans = this.db.transaction([storename,], 'readwrite');
+        let store = trans.objectStore(storename);
+        let request = await store.clear();
       } catch (err) {
-        console.log('error', err.message);
+        console.log('Error deleteObjectStore ', err);
       };
-
-
+      //await window.location.reload();
     },
-  },
-  computed: {
-    async odbKhachhang() {
+    async odbHoso() {
       let oRecs = {};
-      let storename = 'khachhang';
+      let storename = 'hoso';
       let trans = this.db.transaction([storename,], 'readonly');
       let store = trans.objectStore(storename);
       let request = await store.openCursor();
       request.onsuccess = e => {
         let cursor = e.target.result;
         if (cursor) {
+          //filter dk
+
           oRecs[cursor.key] = cursor.value;
           cursor.continue();
         };
+        return oRecs;
       };
-      return oRecs;
     },
-    oHoso() {
-      return this.oHsKh;
-    }
+    async suaHoso() {
+      let oRecs = this.oHoso;
+      let storename = 'hoso';
+      console.log('suaHoso ', storename, ' oRec=', oRecs);
+      let trans = this.db.transaction([storename,], 'readwrite');
+      let store = trans.objectStore(storename);
+      try {
+        for (const k in oRecs) {
+          let v = oRecs[k];
+          v['lastupdate'] = Date.now();
+          console.log('suaHoso ', storename, ' oRec.k=', k);
+          console.log('suaHoso ', storename, ' oRec.v=', v);
+          await store.put(v);
+        }
+        // await trans.complete;
+        //await this.odbHoso();
+      } catch (err) {
+        console.log('error', err.message);
+      };
+    },
+    add_otim() {
+      if (this.stim.length > 0) {
+        this.otim[this.stim] = true;
+        this.showotim = true;
+        this.stim = '';
+      };
+    },
+    clear_otim() {
+      this.showotim = false;
+      this.otim = {};
+    },
+  },
+  computed: {
+    async odbHoso_filter() {
+      let oRecs = {};
+      let storename = 'hoso';
+      try {
+        let trans = this.db.transaction([storename,], 'readonly');
+        let store = trans.objectStore(storename);
+        let request = await store.openCursor();
+        request.onsuccess = e => {
+          let cursor = e.target.result;
+          if (cursor) {
+            let isok = true;
+            //loc theo otim va namlv
+            let s = this.namlv + '.';
+            let _otim = JSON.parse(JSON.stringify(this.otim));
+            _otim[s] = true;
+            for (let k in _otim) {
+              let s = k.toLowerCase();
+              if (JSON.stringify(cursor.value).toLowerCase().indexOf(s) === -1) {
+                isok = false;
+                break;
+              }
+            };
+            if (isok) { oRecs[cursor.key] = cursor.value; };
+            cursor.continue();
+          };
+          console.log('odbHoso_filter oRec=', 'toi day ne', JSON.stringify(oRecs));
+          return oRecs;
+        };
+      } catch (err) {
+        console.log('odbHoso_filter error=', err.message);
+      };
+
+    },
   },
 });
