@@ -43,48 +43,6 @@ var oDb = {
   }
 };
 
-var oHoso = {
-  gom: async (nam = 2020) => {
-    return await db.select({
-      from: tblHoso,
-      where: {
-        namhoso: nam
-      }
-    })
-  },
-  doc: async (mahoso = '') => {
-    return await this.db.select({
-      from: tblHoso,
-      where: {
-        mahoso: mahoso
-      }
-    })
-  },
-  xoa: async (mahoso = '') => {
-    return await this.db.remove({
-      from: tblHoso,
-      where: {
-        mahoso: mahoso
-      }
-    })
-  },
-  sua: async (mahoso = '', oHosomoi = {}) => {
-    return await this.db.select({
-      in: tblHoso,
-      where: {
-        mahoso: mahoso
-      },
-      set: oHosomoi
-    })
-  },
-  moi: (oHosomoi = {}) => {
-    return this.db.insert({
-      into: tblHoso,
-      values: [oHosomoi]
-    })
-  },
-}
-
 var app = new Vue({
   el: '#trangxem',
   delimiters: ["{`", "`}"],
@@ -96,6 +54,9 @@ var app = new Vue({
       namlv: 2020,
       showMenu: false,
       showotim: false,
+      dHoso: '',
+      ldHoso: '',
+      dbHoso_filter: {},
       stim: '',
       otim: {},
       oHoso: {
@@ -145,6 +106,8 @@ var app = new Vue({
       request.onupgradeneeded = e => {
         this.db = e.target.result;
         this.db.createObjectStore('hoso', { keyPath: "mahoso" });
+        this.db.createObjectStore('khachhang', { keyPath: "makhachhang" });
+        this.db.createObjectStore('dot', { keyPath: "madot" });
       };
     },
     async dropDb() {
@@ -216,38 +179,57 @@ var app = new Vue({
     },
   },
   computed: {
-    async odbHoso_filter() {
-      let oRecs = {};
-      let storename = 'hoso';
+    async pro_dbHoso_filter() {
+      let listStore = ['hoso', 'khachhang', 'dot',];
       try {
-        let trans = this.db.transaction([storename,], 'readonly');
-        let store = trans.objectStore(storename);
-        let request = await store.openCursor();
+        this.ldHoso = [];
+        let _cursor = null;
+        let trans = this.db.transaction(listStore, 'readonly');
+        let request = await trans.objectStore('hoso').openCursor();
         request.onsuccess = e => {
           let cursor = e.target.result;
           if (cursor) {
-            let isok = true;
-            //loc theo otim va namlv
+            //let _mahoso = _rHoso.value.mahoso;
+            let _makhachhang = cursor.value.makhachhang;
+            let _madot = cursor.value.madot;
+            let dtam = {};
+            //dtam bao gom ca blob 1 scanimage
+            dtam['hoso'] = cursor.value;
+            //mo cac rec khac de kiem
+            let req1 = await trans.objectStore('khachhang')
+              .openCursor(IDBKeyRange.only(_makhachhang));
+            req1.onsuccess = e => {
+              _cursor = e.target.result;
+              dtam['khachhang'] = _cursor ? _cursor.value : {};
+            };
+            let req2 = await trans.objectStore('dot')
+              .openCursor(IDBKeyRange.only(_madot));
+            req2.onsuccess = e => {
+              _cursor = e.target.result;
+              dtam['dot'] = _cursor ? _cursor.value : {};
+            };
+            //loc theo otim + namlv + stim
             let s = this.namlv + '.';
             let _otim = JSON.parse(JSON.stringify(this.otim));
             _otim[s] = true;
+            s = this.stim;
+            _otim[s] = true;
+            let isok = true;
+            sdtam = JSON.stringify(dtam).toLowerCase();
             for (let k in _otim) {
-              let s = k.toLowerCase();
-              if (JSON.stringify(cursor.value).toLowerCase().indexOf(s) === -1) {
+              s = k.toLowerCase();
+              if (sdtam.indexOf(s) === -1) {
                 isok = false;
                 break;
-              }
+              };
             };
-            if (isok) { oRecs[cursor.key] = cursor.value; };
-            cursor.continue();
           };
-          console.log('odbHoso_filter oRec=', 'toi day ne', JSON.stringify(oRecs));
-          return oRecs;
+          if (isok) { this.ldHoso.push(dtam); };
+          cursor.continue();
         };
       } catch (err) {
         console.log('odbHoso_filter error=', err.message);
       };
-
     },
   },
 });
