@@ -91,15 +91,26 @@
     </div>
   </div>
 
+  <hr class="border border-dark">
   <div class="container-fluid">
-    <hr class="border border-dark">
-    <div>
-      odbHoso_filter {`odbHoso_filter`}
+    <div>mahoso {`mahoso`} </div>
+    <div>madot {`dbDot.madot`} </div>
+    <div> oDot = {`JSON.stringify(oDot)`}</div>
+  </div>
+  <hr class="border border-dark">
+  <div class="container-fluid">
+    <div class="col-auto">
+      <button class="btn btn-primary" @click="saveDot(oHoso_test)">
+        <i class="fa fa-add"></i>
+        Add noi dung test to saveKhachhang
+      </button>
     </div>
-    <div>
-      odbHoso_filter {`JSON.stringify(odbHoso_filter)`}
+    <div class="col-auto">
+      <button class="btn btn-primary" @click="doc_oDot">
+        <i class="fa fa-add"></i>
+        Add noi dung oDot
+      </button>
     </div>
-    <hr class="border border-dark">
   </div>
 </main>
 {% end %}

@@ -1,46 +1,30 @@
-var oDb = {
-  load: async (dbName = '', dbVersion = 1) => {
-    let check = dbName.length || 0;
-    if (check == 0) { return };
-    return new Promise((resolve, reject) => {
-      let request = window.indexedDB.open(dbName, dbVersion);
-      request.onerror = e => {
-        console.log('Error opening db', e);
-        reject('Error');
-      };
-      request.onsuccess = e => {
-        resolve(e.target.result);
-      };
-      //tao bang neu chua co
-      request.onupgradeneeded = e => {
-        console.log('onupgradeneeded');
-        let db = e.target.result;
-        db.createObjectStore('khachhang', { autoIncrement: false, keyPath: 'makhachhang' });
-        db.createObjectStore('hoso', { autoIncrement: false, keyPath: 'mahoso' });
-        resolve(db);
-      };
-    });
+var oHoso_test = {
+  '2020.hs.001': {
+    mahoso: '2020.hs.001',
+    makhachhang: '2020.kh.001',
+    hoten: 'Tran Van Anh 1',
+    diachi: '123- To Ngoc Van- Q.Td',
+    madot: '2020GMMP001',
   },
-  drop: async (dbName = '') => {
-    let check = dbName.length || 0;
-    if (check == 0) { return };
-    return new Promise((resolve, reject) => {
-      let request = window.indexedDB.deleteDatabase(dbName);
-      request.onerror = e => {
-        console.log('Error opening db', e);
-        reject('Error');
-      };
-      request.onsuccess = e => {
-        resolve(null);
-      };
-      //tao bang neu chua co
-      request.onupgradeneeded = e => {
-        console.log('onupgradeneeded');
-        window.indexedDB.deleteDatabase(dbName);
-        resolve(null);
-      };
-    });
-  }
+  '2020.hs.002': {
+    mahoso: '2020.hs.002',
+    makhachhang: '2020.kh.002',
+    hoten: 'Tran Van Anh 2',
+    diachi: '124- To Ngoc Van- Q.Td',
+    madot: '2020GMMP001',
+  },
+  '2020.hs.003': {
+    mahoso: '2020.hs.003',
+    makhachhang: '2020.kh.003',
+    hoten: 'Tran Van Anh 3',
+    diachi: '125- To Ngoc Van- Q.Td',
+    madot: '2020GMMP002',
+  },
+};
+
+function getCookie(name) {
+  var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+  return r ? r[1] : undefined;
 };
 
 var app = new Vue({
@@ -48,40 +32,22 @@ var app = new Vue({
   delimiters: ["{`", "`}"],
   data() {
     return {
-      dbName: 'Khach',
       dbVersion: 1,
       db: null,
       namlv: 2020,
       showMenu: false,
       showotim: false,
-      dHoso: '',
       ldHoso: '',
-      dbHoso_filter: {},
+      ldHoso_filter: {},
+      oHoso: {},
+      oKhachhang: {},
+      oDot: {},
+      mahoso: '2020.hs.002',
+      madot: '2020GMMP001',
+      makhachhang: '2020.kh.003',
       stim: '',
       otim: {},
-      oHoso: {
-        '2020.hs.001': {
-          mahoso: '2020.hs.001',
-          makhachhang: '2020.kh.001',
-          hoten: 'Tran Van Anh 1',
-          diachi: '123- To Ngoc Van- Q.Td',
-          madot: '2020GMMP001',
-        },
-        '2020.hs.002': {
-          mahoso: '2020.hs.002',
-          makhachhang: '2020.kh.002',
-          hoten: 'Tran Van Anh 2',
-          diachi: '124- To Ngoc Van- Q.Td',
-          madot: '2020GMMP001',
-        },
-        '2020.hs.003': {
-          mahoso: '2020.hs.003',
-          makhachhang: '2020.kh.003',
-          hoten: 'Tran Van Anh 3',
-          diachi: '125- To Ngoc Van- Q.Td',
-          madot: '2020GMMP001',
-        },
-      },
+      oHoso_test: oHoso_test,
     }
   },
   async created() {
@@ -94,8 +60,6 @@ var app = new Vue({
   },
   methods: {
     async loadDb() {
-      let check = this.dbName.length || 0;
-      if (check == 0) { return false; };
       let request = await window.indexedDB.open(this.dbName, this.dbVersion);
       request.onerror = e => {
         console.log('Error opening db', e);
@@ -111,8 +75,6 @@ var app = new Vue({
       };
     },
     async dropDb() {
-      let check = this.dbName.length || 0;
-      if (check == 0) { return false; };
       let request = await window.indexedDB.deleteDatabase(this.dbName);
       request.onerror = err => {
         console.log('Error opening db', err);
@@ -129,41 +91,83 @@ var app = new Vue({
       };
       //await window.location.reload();
     },
-    async odbHoso() {
-      let oRecs = {};
-      let storename = 'hoso';
-      let trans = this.db.transaction([storename,], 'readonly');
-      let store = trans.objectStore(storename);
-      let request = await store.openCursor();
+    async doc_oKhachhang() {
+      let bang = 'khachhang';
+      let uuid = this.makhachhang || '';
+      let request = await this.db
+        .transaction(bang, 'readonly')
+        .objectStore(bang)
+        .get(uuid);
+      request.onerror = e => {
+        console.log('Error get_oDot', e);
+      };
       request.onsuccess = e => {
-        let cursor = e.target.result;
-        if (cursor) {
-          //filter dk
-
-          oRecs[cursor.key] = cursor.value;
-          cursor.continue();
-        };
-        return oRecs;
+        this.oDot = e.target.result;
       };
     },
-    async suaHoso() {
-      let oRecs = this.oHoso;
-      let storename = 'hoso';
-      console.log('suaHoso ', storename, ' oRec=', oRecs);
-      let trans = this.db.transaction([storename,], 'readwrite');
-      let store = trans.objectStore(storename);
+    async doc_oDot() {
+      let bang = 'dot';
+      let uuid = this.madot || '';
+      let request = await this.db
+        .transaction(bang, 'readonly')
+        .objectStore(bang)
+        .get(uuid);
+      request.onerror = e => {
+        console.log('Error get_oDot', e);
+      };
+      request.onsuccess = e => {
+        this.oDot = e.target.result;
+      };
+    },
+    async saveHoso(oRecs) {
+      let bang = 'hoso';
+      let store = this.db
+        .transaction(bang, 'readwrite')
+        .objectStore(bang);
       try {
         for (const k in oRecs) {
           let v = oRecs[k];
           v['lastupdate'] = Date.now();
-          console.log('suaHoso ', storename, ' oRec.k=', k);
-          console.log('suaHoso ', storename, ' oRec.v=', v);
           await store.put(v);
         }
         // await trans.complete;
         //await this.odbHoso();
       } catch (err) {
-        console.log('error', err.message);
+        console.log('Error saveHoso', err.message);
+      };
+    },
+    async saveKhachhang(oRecs) {
+      let bang = 'khachhang';
+      let store = this.db
+        .transaction(bang, 'readwrite')
+        .objectStore(bang);
+      try {
+        for (const k in oRecs) {
+          let v = oRecs[k];
+          v['lastupdate'] = Date.now();
+          await store.put(v);
+        }
+        // await trans.complete;
+        //await this.odbHoso();
+      } catch (err) {
+        console.log('Error saveKhachhang', err.message);
+      };
+    },
+    async saveDot(oRecs) {
+      let bang = 'dot';
+      let store = this.db
+        .transaction(bang, 'readwrite')
+        .objectStore(bang);
+      try {
+        for (const k in oRecs) {
+          let v = oRecs[k];
+          v['lastupdate'] = Date.now();
+          await store.put(v);
+        }
+        // await trans.complete;
+        //await this.odbHoso();
+      } catch (err) {
+        console.log('Error saveDot', err.message);
       };
     },
     add_otim() {
@@ -179,57 +183,26 @@ var app = new Vue({
     },
   },
   computed: {
-    async pro_dbHoso_filter() {
-      let listStore = ['hoso', 'khachhang', 'dot',];
-      try {
-        this.ldHoso = [];
-        let _cursor = null;
-        let trans = this.db.transaction(listStore, 'readonly');
-        let request = await trans.objectStore('hoso').openCursor();
-        request.onsuccess = e => {
-          let cursor = e.target.result;
-          if (cursor) {
-            //let _mahoso = _rHoso.value.mahoso;
-            let _makhachhang = cursor.value.makhachhang;
-            let _madot = cursor.value.madot;
-            let dtam = {};
-            //dtam bao gom ca blob 1 scanimage
-            dtam['hoso'] = cursor.value;
-            //mo cac rec khac de kiem
-            let req1 = await trans.objectStore('khachhang')
-              .openCursor(IDBKeyRange.only(_makhachhang));
-            req1.onsuccess = e => {
-              _cursor = e.target.result;
-              dtam['khachhang'] = _cursor ? _cursor.value : {};
-            };
-            let req2 = await trans.objectStore('dot')
-              .openCursor(IDBKeyRange.only(_madot));
-            req2.onsuccess = e => {
-              _cursor = e.target.result;
-              dtam['dot'] = _cursor ? _cursor.value : {};
-            };
-            //loc theo otim + namlv + stim
-            let s = this.namlv + '.';
-            let _otim = JSON.parse(JSON.stringify(this.otim));
-            _otim[s] = true;
-            s = this.stim;
-            _otim[s] = true;
-            let isok = true;
-            sdtam = JSON.stringify(dtam).toLowerCase();
-            for (let k in _otim) {
-              s = k.toLowerCase();
-              if (sdtam.indexOf(s) === -1) {
-                isok = false;
-                break;
-              };
-            };
-          };
-          if (isok) { this.ldHoso.push(dtam); };
-          cursor.continue();
-        };
-      } catch (err) {
-        console.log('odbHoso_filter error=', err.message);
-      };
+    dbName() {
+      let a = getCookie('workgroup') || 'Cntđ';
+      return a;
     },
+    dbDot() {
+      let kq;
+      let a = this.doc_oDot(this.madot);
+      a.then((kq1) => kq = kq1)
+      return kq;
+    },
+    otim_ext() {
+      //loc theo otim + namlv + stim
+      let s = this.namlv + 'hs';
+      let _otim = JSON.parse(JSON.stringify(this.otim));
+      _otim[s] = true;
+      s = this.stim;
+      _otim[s] = true;
+      return _otim;
+    },
+
+
   },
 });
