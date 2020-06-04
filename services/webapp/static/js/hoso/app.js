@@ -38,7 +38,7 @@ var app = new Vue({
       showMenu: false,
       showotim: false,
       ldHoso: '',
-      ldHoso_filter: {},
+      ttdl: {},
       oHoso: {},
       oKhachhang: {},
       oDot: {},
@@ -91,32 +91,125 @@ var app = new Vue({
       };
       //await window.location.reload();
     },
-    async doc_oKhachhang() {
+    async get_oKhachhang(makhachhang) {
       let bang = 'khachhang';
-      let uuid = this.makhachhang || '';
+      let uuid = makhachhang || '';
       let request = await this.db
         .transaction(bang, 'readonly')
         .objectStore(bang)
         .get(uuid);
       request.onerror = e => {
         console.log('Error get_oDot', e);
+        this.oKhachhang = {};
+      };
+      request.onsuccess = e => {
+        this.oKhachhang = e.target.result;
+      };
+    },
+    async get_oDot(madot) {
+      let bang = 'dot';
+      let uuid = madot || '';
+      let request = await this.db
+        .transaction(bang, 'readonly')
+        .objectStore(bang)
+        .get(uuid);
+      request.onerror = e => {
+        console.log('Error get_oDot', e);
+        this.oDot = {};
       };
       request.onsuccess = e => {
         this.oDot = e.target.result;
       };
     },
-    async doc_oDot() {
-      let bang = 'dot';
-      let uuid = this.madot || '';
-      let request = await this.db
-        .transaction(bang, 'readonly')
-        .objectStore(bang)
-        .get(uuid);
-      request.onerror = e => {
-        console.log('Error get_oDot', e);
-      };
-      request.onsuccess = e => {
-        this.oDot = e.target.result;
+    async get_ttdl() {
+      try {
+        let tam = {};
+        let bang = 'hoso';
+        let request = await this.db
+          .transaction(bang, 'readonly')
+          .objectStore(bang)
+          .openCursor();
+        request.onerror = e => {
+          console.log('Error get_ttdl', e);
+          this.ttdl = {};
+        };
+        request.onsuccess = e => {
+          let cursor = e.target.result;
+          if (cursor) {
+            //load oKhachhang, oDot
+            this.oHoso = cursor.value;
+            let mahoso = cursor.value.mahoso;
+            let makhachhang = cursor.value.makhachhang;
+            let madot = cursor.value.madot;
+
+            Promise.all([
+              this.get_oKhachhang(makhachhang),
+              this.get_oDot(madot)])
+              .then(result => {
+                console.log(result)
+              })
+              .catch(error => console.log(`Error in promises ${error}`));
+            //dtam bao gom ca blob 1 scanimage
+            let s = '';
+            let keybo = ['lastupdate', 'scan',];
+            let dtam = JSON.parse(JSON.stringify(this.oHoso));
+            for (let k in dtam) {
+              s = k.toLowerCase();
+              if (keybo.indexOf(s) > -1) {
+                delete dtam[k];
+              };
+            };
+            let lsearch = Object.values(dtam);
+            //khachhang
+            dtam = JSON.parse(JSON.stringify(this.oKhachhang));
+            for (let k in dtam) {
+              s = k.toLowerCase();
+              if (keybo.indexOf(s) > -1) {
+                delete dtam[k];
+              };
+            };
+            lsearch = [...lsearch, ...Object.values(dtam)];
+            //dot
+            dtam = JSON.parse(JSON.stringify(this.oDot));
+            for (let k in dtam) {
+              s = k.toLowerCase();
+              if (keybo.indexOf(s) > -1) {
+                delete dtam[k];
+              };
+            };
+            lsearch = [...lsearch, ...Object.values(dtam)];
+            // loc 
+            let isok = true;
+            sdtam = JSON.stringify(dtam).toLowerCase();
+            for (let k in this.otim_ext) {
+              s = k.toLowerCase();
+              if (lsearch.indexOf(s) === -1) {
+                isok = false;
+                break;
+              };
+            };
+
+            if (isok) {
+              tam[mahoso] = {
+                'hoso': this.oHoso,
+                'khachhang': this.oKhachhang,
+                'dot': this.oDot
+              }
+            };
+            cursor.continue();
+          };
+          //convert to list
+          s = [];
+          for (let k in tam) {
+            //s.push(tam[k]);
+            s = [...s, tam[k]];
+          };
+
+          this.ttdl = [...s];
+        };
+
+      } catch (err) {
+        console.log('odbHoso_filter error=', err.message);
       };
     },
     async saveHoso(oRecs) {
@@ -186,12 +279,6 @@ var app = new Vue({
     dbName() {
       let a = getCookie('workgroup') || 'Cntđ';
       return a;
-    },
-    dbDot() {
-      let kq;
-      let a = this.doc_oDot(this.madot);
-      a.then((kq1) => kq = kq1)
-      return kq;
     },
     otim_ext() {
       //loc theo otim + namlv + stim
