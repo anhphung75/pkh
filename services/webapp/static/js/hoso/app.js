@@ -1,30 +1,135 @@
-var oHoso_test = {
-  '2020.hs.001': {
-    mahoso: '2020.hs.001',
+var oHoso_test = [
+  {
+    mahoso: '2020hs001',
+    sohoso: '2020.hs.001',
     makhachhang: '2020.kh.001',
     hoten: 'Tran Van Anh 1',
     diachi: '123- To Ngoc Van- Q.Td',
     madot: '2020GMMP001',
+    ngaygan: '2020-04-05',
+    ngayhoancong: '2020-04-10',
+    thongbao: '',
+    ghichu: '',
+    madvtc: '2020dv001',
   },
-  '2020.hs.002': {
-    mahoso: '2020.hs.002',
+  {
+    mahoso: '2020hs002',
+    sohoso: '2020.hs.002',
     makhachhang: '2020.kh.002',
     hoten: 'Tran Van Anh 2',
     diachi: '124- To Ngoc Van- Q.Td',
     madot: '2020GMMP001',
+    ngaygan: '2020-04-05',
+    ngayhoancong: '2020-04-10',
+    thongbao: '',
+    ghichu: '',
+    madvtc: '2020dv001',
   },
-  '2020.hs.003': {
-    mahoso: '2020.hs.003',
+  {
+    mahoso: '2020hs003',
+    sohoso: '2020.hs.003',
     makhachhang: '2020.kh.003',
     hoten: 'Tran Van Anh 3',
     diachi: '125- To Ngoc Van- Q.Td',
     madot: '2020GMMP002',
+    ngaygan: '2020-04-05',
+    ngayhoancong: '2020-04-10',
+    thongbao: '',
+    ghichu: '',
+    madvtc: '2020dv001',
   },
-};
+];
+var oKhachhang_test = [
+  {
+    mahoso: '2020.hs.001',
+    sohoso: '2020.hs.001',
+    makhachhang: '2020.kh.001',
+    hoten: 'Tran Van Anh 1',
+    diachi: '123- To Ngoc Van- Q.Td',
+    madot: '2020GMMP001',
+    ngaygan: '2020-04-05',
+    ngayhoancong: '2020-04-10',
+    thongbao: '',
+    ghichu: '',
+    madvtc: '2020dv001',
+  },
+  {
+    mahoso: '2020.hs.002',
+    sohoso: '2020.hs.002',
+    makhachhang: '2020.kh.002',
+    hoten: 'Tran Van Anh 2',
+    diachi: '124- To Ngoc Van- Q.Td',
+    madot: '2020GMMP001',
+    ngaygan: '2020-04-05',
+    ngayhoancong: '2020-04-10',
+    thongbao: '',
+    ghichu: '',
+    madvtc: '2020dv001',
+  },
+  {
+    mahoso: '2020.hs.003',
+    sohoso: '2020.hs.003',
+    makhachhang: '2020.kh.003',
+    hoten: 'Tran Van Anh 3',
+    diachi: '125- To Ngoc Van- Q.Td',
+    madot: '2020GMMP002',
+    ngaygan: '2020-04-05',
+    ngayhoancong: '2020-04-10',
+    thongbao: '',
+    ghichu: '',
+    madvtc: '2020dv001',
+  },
+];
+var oDot_test = [
+  {
+    madot: '2020GMMP001',
+    sodot: 'GMMP 001/20',
+    ngaylendot: '2020-04-05',
+    thongbao: '',
+    ghichu: '',
+    scan: 'anh 01',
+  },
+  {
+    madot: '2020GMMP003',
+    sodot: 'GMMP 003/20',
+    ngaylendot: '2020-04-05',
+    thongbao: '',
+    ghichu: '',
+    scan: 'anh 03',
+  },
+  {
+    madot: '2020GMMP002',
+    sodot: 'GMMP 002/20',
+    ngaylendot: '2020-05-05',
+    thongbao: '',
+    ghichu: '',
+    scan: 'anh 02',
+  },
+];
 
 function getCookie(name) {
   var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
   return r ? r[1] : undefined;
+};
+
+function ld2dd(recs) {
+  let orecs = {};
+  if (Array.isArray(recs)) {
+    try {
+      let dai = recs.length || 0;
+      for (let i = 0; i < dai; i++) {
+        orecs[i] = recs[i];
+      };
+      return orecs;
+    } catch (err) {
+      console.log('Error ld2dd ', err.message);
+    };
+  };
+  if (typeof recs === 'object') {
+    return recs;
+  } else {
+    return orecs;
+  };
 };
 
 var app = new Vue({
@@ -38,7 +143,9 @@ var app = new Vue({
       showMenu: false,
       showotim: false,
       ldHoso: '',
+      ttdl0: {},
       ttdl: {},
+      info: { tin1trang: 0, curtin: 0, curtrang: 1 },
       oHoso: {},
       oKhachhang: {},
       oDot: {},
@@ -180,15 +287,16 @@ var app = new Vue({
             lsearch = [...lsearch, ...Object.values(dtam)];
             // loc 
             let isok = true;
-            sdtam = JSON.stringify(dtam).toLowerCase();
+            let ssearch = lsearch.toString().toLowerCase();
             for (let k in this.otim_ext) {
               s = k.toLowerCase();
-              if (lsearch.indexOf(s) === -1) {
+              if (ssearch.indexOf(s) === -1) {
                 isok = false;
                 break;
               };
+              console.log('key=', k);
+              console.log('ssearch=', ssearch, ' isok= ', isok);
             };
-
             if (isok) {
               tam[mahoso] = {
                 'hoso': this.oHoso,
@@ -199,27 +307,52 @@ var app = new Vue({
             cursor.continue();
           };
           //convert to list
-          s = [];
+          let s = [];
           for (let k in tam) {
             //s.push(tam[k]);
             s = [...s, tam[k]];
           };
+          this.ttdl0 = s;
+          //phan trang
+          this.info.tongtin = s.length || 0;
+          if (this.info.tin1trang > 0) {
+            this.info.tongtrang = Math.floor(this.info.tongtin / this.info.tin1trang);
+            if (this.info.tongtin % this.info.tin1trang > 0) { this.info.tongtrang++; };
+            if (this.info.curtrang > this.info.tongtrang) { this.info.curtrang = this.info.tongtrang; };
+            this.info.tindau = this.info.tin1trang * this.info.curtrang;
+            this.info.tincuoi = this.info.tindau + this.info.tin1trang;
+            if (this.info.tincuoi > this.info.tongtin) { this.info.tincuoi = this.info.tongtin };
+          } else {
+            this.info.tongtrang = 1;
+            this.info.curtrang = 1;
+            this.info.tindau = 0;
+            this.info.tincuoi = this.info.tongtin;
+          };
+          // tinh lai du lieu
+          this.ttdl = [];
+          try {
+            for (let i = this.info.tindau; i <= this.info.tincuoi; i++) {
+              this.ttdl.push(this.ttdl0[i]);
+            };
+          } catch (err) {
+            console.log('Error ttdl ', err.message);
+          };
 
-          this.ttdl = [...s];
         };
-
       } catch (err) {
-        console.log('odbHoso_filter error=', err.message);
+        console.log('get_ttdl error=', err.message);
       };
     },
-    async saveHoso(oRecs) {
+    async saveHoso(recs) {
       let bang = 'hoso';
       let store = this.db
         .transaction(bang, 'readwrite')
         .objectStore(bang);
       try {
+        let oRecs = ld2dd(recs);
         for (const k in oRecs) {
           let v = oRecs[k];
+          v['isedit'] = false;
           v['lastupdate'] = Date.now();
           await store.put(v);
         }
@@ -229,12 +362,13 @@ var app = new Vue({
         console.log('Error saveHoso', err.message);
       };
     },
-    async saveKhachhang(oRecs) {
+    async saveKhachhang(recs) {
       let bang = 'khachhang';
       let store = this.db
         .transaction(bang, 'readwrite')
         .objectStore(bang);
       try {
+        let oRecs = ld2dd(recs);
         for (const k in oRecs) {
           let v = oRecs[k];
           v['lastupdate'] = Date.now();
@@ -246,12 +380,13 @@ var app = new Vue({
         console.log('Error saveKhachhang', err.message);
       };
     },
-    async saveDot(oRecs) {
+    async saveDot(recs) {
       let bang = 'dot';
       let store = this.db
         .transaction(bang, 'readwrite')
         .objectStore(bang);
       try {
+        let oRecs = ld2dd(recs);
         for (const k in oRecs) {
           let v = oRecs[k];
           v['lastupdate'] = Date.now();
@@ -274,6 +409,18 @@ var app = new Vue({
       this.showotim = false;
       this.otim = {};
     },
+    tim_keyup(e) {
+      console.log("event.key=", e.key);
+      console.log("event.keyCode=", e.keyCode);
+      //if (e.key = 'Insert') { this.get_ttdl(); }
+
+    },
+    save_data_test() {
+      this.saveHoso(oHoso_test);
+      this.saveKhachhang(oKhachhang_test);
+      this.saveDot(oDot_test);
+    },
+
   },
   computed: {
     dbName() {
@@ -282,14 +429,17 @@ var app = new Vue({
     },
     otim_ext() {
       //loc theo otim + namlv + stim
-      let s = this.namlv + 'hs';
       let _otim = JSON.parse(JSON.stringify(this.otim));
-      _otim[s] = true;
+      let s = '';
+      if (['all', 'tất cả', 'toàn bộ',].indexOf(this.namlv) === -1) {
+        s = this.namlv + 'hs';
+        _otim[s] = true;
+      }
       s = this.stim;
-      _otim[s] = true;
+      if (s.length > 0) {
+        _otim[s] = true;
+      }
       return _otim;
     },
-
-
   },
 });

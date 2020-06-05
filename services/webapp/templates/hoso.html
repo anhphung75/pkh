@@ -75,7 +75,7 @@
 
 {% block app %}
 <main class="m-0 p-0 h-100 w-100">
-  <input class="col" type="search" v-model="stim" @keyup.Insert="add_otim"
+  <input class="col" type="search" v-model="stim" @keyup="tim_keyup"
     placeholder="Tìm ... (không phân biệt chữ hoa hay thường)" />
   <div class="container-fluid" v-if="showotim">
     <div class="row">
@@ -92,23 +92,80 @@
   </div>
 
   <hr class="border border-dark">
+  <div class="thanhtruot">thanh trượt ngang</div>
+  <div class="row tieude">
+    <div class="col- crud">Act</div>
+    <div class="col- mahoso"><b>Mã hồ sơ</b></div>
+    <div class="col- sohoso"><b>Số hồ sơ</b></div>
+    <div class="col- khachhang"><b>Khách hàng</b></div>
+    <div class="col- diachi"><b>Địa chỉ lắp đặt</b></div>
+
+    <div class="col- ngaygan"><b>Ngày gắn</b></div>
+    <div class="col- ngayhoancong"><b>Ngày hoàn công</b></div>
+    <div class="col- madot"><b>Mã đợt</b></div>
+    <div class="col- sodot"><b>Số đợt</b></div>
+
+    <div class="col- thongbao"><b>Thông báo</b></div>
+    <div class="col- ghichu"><b>Ghi chú</b></div>
+  </div>
+  <div class="row noidung" v-for="(item, stt) in ttdl" :key="stt">
+    <div v-if="item.hoso.isedit">
+      <div class="col- crud">
+        <i class="fa fa-save" @click="saveHoso">{`stt + 1`}</i>
+        <i class="fa fa-stop-circle" @click="item.hoso.isedit = false">Bỏ</i>
+      </div>
+      <div class="col- mahoso">{`item.hoso.mahoso`}</div>
+      <div class="col- sohoso">{`item.hoso.sohoso`}</div>
+      <div class="col- khachhang">{`item.khachhang.khachhang`}</div>
+      <div class="col- diachi">{`item.khachhang.diachi`}</div>
+      <div class="col- ngaygan">{`item.hoso.ngaygan`}</div>
+      <div class="col- ngayhoancong">{`item.hoso.ngayhoancong`}</div>
+      <div class="col- madot">{`item.dot.madot`}</div>
+      <div class="col- sodot">{`item.dot.sodot`}</div>
+      <div class="col- thongbao">{`item.hoso.thongbao`}</div>
+      <div class="col- ghichu">{`item.hoso.ghichu`}</div>
+    </div>
+    <div v-else>
+      <div class="col- crud">
+        <i class="fa fa-edit" @click=" ">{`stt + 1`}</i>
+      </div>
+      <div class="col- mahoso">{`item.hoso.mahoso`}</div>
+      <div class="col- sohoso">{`item.hoso.sohoso`}</div>
+      <div class="col- khachhang">{`item.khachhang.khachhang`}</div>
+      <div class="col- diachi">{`item.khachhang.diachi`}</div>
+      <div class="col- ngaygan">{`item.hoso.ngaygan`}</div>
+      <div class="col- ngayhoancong">{`item.hoso.ngayhoancong`}</div>
+      <div class="col- madot">{`item.dot.madot`}</div>
+      <div class="col- sodot">{`item.dot.sodot`}</div>
+      <div class="col- thongbao">{`item.hoso.thongbao`}</div>
+      <div class="col- ghichu">{`item.hoso.ghichu`}</div>
+    </div>
+
+  </div>
+
+
+
+  <hr class="border border-dark">
   <div class="container-fluid">
-    <div>mahoso {`mahoso`} </div>
-    <div>madot {`oDot.madot`} </div>
+    <div> oHoso = {`JSON.stringify(oHoso)`}</div>
+    <div> oKhachhang = {`JSON.stringify(oKhachhang)`}</div>
     <div> oDot = {`JSON.stringify(oDot)`}</div>
+    <div> ttdl0 = {`JSON.stringify(ttdl0)`}</div>
+    <div> info = {`JSON.stringify(info)`}</div>
+    <div> ttdl = {`JSON.stringify(ttdl)`}</div>
   </div>
   <hr class="border border-dark">
   <div class="container-fluid">
     <div class="col-auto">
-      <button class="btn btn-primary" @click="saveDot(oHoso_test)">
+      <button class="btn btn-primary" @click="save_data_test">
         <i class="fa fa-add"></i>
-        Add noi dung test to saveDot
+        Add noi dung test
       </button>
     </div>
     <div class="col-auto">
-      <button class="btn btn-primary" @click="get_oDot">
+      <button class="btn btn-primary" @click="get_ttdl">
         <i class="fa fa-add"></i>
-        Add noi dung oDot
+        Add noi dung get_ttdl
       </button>
     </div>
   </div>
