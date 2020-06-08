@@ -107,12 +107,53 @@ var oDot_test = [
   },
 ];
 
-function getCookie(name) {
+//khai bao bien global
+const db = {
+  name: 'Cntđ',
+  version: 1,
+  engine: null,
+  drop: async () => {
+    let request = await window.indexedDB.deleteDatabase(this.name);
+    request.onerror = err => {
+      console.log('Error drop db', err);
+    };
+    await window.location.reload();
+  },
+  clearstore: async (storename = 'hoso') => {
+    try {
+      let store = this.engine
+        .transaction([storename,], 'readwrite')
+        .objectStore(storename);
+      await store.clear();
+    } catch (err) {
+      console.log('Error clearstore ', err);
+    };
+    //await window.location.reload();
+  }
+};
+
+var loaddb = async () => {
+  let request = await window.indexedDB.open(db.name, db.version);
+  request.onerror = e => {
+    console.log('Error opening db', e);
+  };
+  request.onsuccess = e => {
+    db.engine = e.target.result;
+  };
+  request.onupgradeneeded = e => {
+    db.engine = e.target.result;
+    db.engine.createObjectStore('hoso', { keyPath: "mahoso" });
+    db.engine.createObjectStore('khachhang', { keyPath: "makhachhang" });
+    db.engine.createObjectStore('dot', { keyPath: "madot" });
+  };
+};
+
+var getCookie = (name) => {
   var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
   return r ? r[1] : undefined;
 };
 
-function ld2dd(recs) {
+var ld2dd = (recs) => {
   let orecs = {};
   if (Array.isArray(recs)) {
     try {
@@ -137,28 +178,31 @@ var app = new Vue({
   delimiters: ["{`", "`}"],
   data() {
     return {
-      dbVersion: 1,
-      db: null,
       namlv: 2020,
       showMenu: false,
       showotim: false,
-      ldHoso: '',
-      ttdl0: {},
       ttdl: {},
-      info: { tin1trang: 0, curtin: 0, curtrang: 1 },
       oHoso: {},
       oKhachhang: {},
       oDot: {},
       mahoso: '2020.hs.002',
       madot: '2020GMMP001',
       makhachhang: '2020.kh.003',
+      //search
       stim: '',
       otim: {},
+      //phan trang
+      tin1trang: 0,
+      curtin: 0,
+      curtrang: 1,
       oHoso_test: oHoso_test,
     }
   },
-  async created() {
-    await this.loadDb();
+  async setup() {
+    let a = getCookie('workgroup');
+    if (a) { db.name = a; }
+    await loaddb();
+    //await this.loadDb();
     //this.cats = await this.getCatsFromDb();
     //this.ready = true;
   },
@@ -166,78 +210,54 @@ var app = new Vue({
     // await this.odbHoso();
   },
   methods: {
-    async loadDb() {
-      let request = await window.indexedDB.open(this.dbName, this.dbVersion);
-      request.onerror = e => {
-        console.log('Error opening db', e);
-      };
-      request.onsuccess = e => {
-        this.db = e.target.result;
-      };
-      request.onupgradeneeded = e => {
-        this.db = e.target.result;
-        this.db.createObjectStore('hoso', { keyPath: "mahoso" });
-        this.db.createObjectStore('khachhang', { keyPath: "makhachhang" });
-        this.db.createObjectStore('dot', { keyPath: "madot" });
-      };
-    },
-    async dropDb() {
-      let request = await window.indexedDB.deleteDatabase(this.dbName);
-      request.onerror = err => {
-        console.log('Error opening db', err);
-      };
-      await window.location.reload();
-    },
-    async clearDbStore(storename = 'hoso') {
-      try {
-        let trans = this.db.transaction([storename,], 'readwrite');
-        let store = trans.objectStore(storename);
-        let request = await store.clear();
-      } catch (err) {
-        console.log('Error deleteObjectStore ', err);
-      };
-      //await window.location.reload();
-    },
-    async get_oKhachhang(makhachhang) {
+    readKhachhang: async (uuid) => {
       let bang = 'khachhang';
-      let uuid = makhachhang || '';
-      let request = await this.db
+      let store = db.engine
         .transaction(bang, 'readonly')
-        .objectStore(bang)
-        .get(uuid);
+        .objectStore(bang);
+      uuid = uuid || '';
+      if (uuid.length > 0) {
+        let request = await store.get(uuid);
+      } else {
+        let request = await store.getAll();
+      };
       request.onerror = e => {
-        console.log('Error get_oDot', e);
+        console.log('Error readKhachhang: ', e);
         this.oKhachhang = {};
       };
       request.onsuccess = e => {
         this.oKhachhang = e.target.result;
       };
     },
-    async get_oDot(madot) {
+    readDot: async (uuid) => {
       let bang = 'dot';
-      let uuid = madot || '';
-      let request = await this.db
+      let store = db.engine
         .transaction(bang, 'readonly')
-        .objectStore(bang)
-        .get(uuid);
+        .objectStore(bang);
+      uuid = uuid || '';
+      if (uuid.length > 0) {
+        let request = await store.get(uuid);
+      } else {
+        let request = await store.getAll();
+      };
       request.onerror = e => {
-        console.log('Error get_oDot', e);
+        console.log('Error readDot: ', e);
         this.oDot = {};
       };
       request.onsuccess = e => {
         this.oDot = e.target.result;
       };
     },
-    async get_ttdl() {
+    readHoso: async () => {
       try {
         let tam = {};
         let bang = 'hoso';
-        let request = await this.db
+        let request = await db.engine
           .transaction(bang, 'readonly')
           .objectStore(bang)
           .openCursor();
         request.onerror = e => {
-          console.log('Error get_ttdl', e);
+          console.log('Error readHoso: ', e);
           this.ttdl = {};
         };
         request.onsuccess = e => {
@@ -250,15 +270,15 @@ var app = new Vue({
             let madot = cursor.value.madot;
 
             Promise.all([
-              this.get_oKhachhang(makhachhang),
-              this.get_oDot(madot)])
+              this.readKhachhang(makhachhang),
+              this.readDot(madot)])
               .then(result => {
                 console.log(result)
               })
               .catch(error => console.log(`Error in promises ${error}`));
             //dtam bao gom ca blob 1 scanimage
             let s = '';
-            let keybo = ['lastupdate', 'scan',];
+            let keybo = ['lastupdate', 'scan', 'blob',];
             let dtam = JSON.parse(JSON.stringify(this.oHoso));
             for (let k in dtam) {
               s = k.toLowerCase();
@@ -306,37 +326,19 @@ var app = new Vue({
             };
             cursor.continue();
           };
-          //convert to list
+          //convert to list sort
           let s = [];
           for (let k in tam) {
             //s.push(tam[k]);
             s = [...s, tam[k]];
           };
-          this.ttdl0 = s;
-          //phan trang
-          this.info.tongtin = s.length || 0;
-          if (this.info.tin1trang > 0) {
-            this.info.tongtrang = Math.floor(this.info.tongtin / this.info.tin1trang);
-            if (this.info.tongtin % this.info.tin1trang > 0) { this.info.tongtrang++; };
-            if (this.info.curtrang > this.info.tongtrang) { this.info.curtrang = this.info.tongtrang; };
-            this.info.tindau = this.info.tin1trang * this.info.curtrang;
-            this.info.tincuoi = this.info.tindau + this.info.tin1trang;
-            if (this.info.tincuoi > this.info.tongtin) { this.info.tincuoi = this.info.tongtin };
-          } else {
-            this.info.tongtrang = 1;
-            this.info.curtrang = 1;
-            this.info.tindau = 0;
-            this.info.tincuoi = this.info.tongtin;
+          tam = s.sort((a, b) => (a.mahoso > b.mahoso) ? 1 : ((b.mahoso > a.mahoso) ? -1 : 0));
+          dtam = {};
+          k = tam.length;
+          for (let i = 0; i <= k; i++) {
+            dtam[i] = tam[i];
           };
-          // tinh lai du lieu
-          this.ttdl = [];
-          try {
-            for (let i = this.info.tindau; i <= this.info.tincuoi; i++) {
-              this.ttdl.push(this.ttdl0[i]);
-            };
-          } catch (err) {
-            console.log('Error ttdl ', err.message);
-          };
+          this.ttdl = dtam;
 
         };
       } catch (err) {
@@ -412,8 +414,19 @@ var app = new Vue({
     tim_keyup(e) {
       console.log("event.key=", e.key);
       console.log("event.keyCode=", e.keyCode);
-      //if (e.key = 'Insert') { this.get_ttdl(); }
-
+      lcode = ['KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI', 'KeyJ',
+        'KeyK', 'KeyL', 'KeyM', 'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR', 'KeyS', 'KeyT',
+        'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
+        ' Equal', 'Comma', 'Minus', 'Period', 'Quote', 'Semicolon', 'BracketLeft', 'BracketRight',
+        'Digit0', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9',
+        'Numpad0', 'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4', 'Numpad5', 'Numpad6', 'Numpad7', 'Numpad8', 'Numpad9',
+        'NumpadAdd', 'NumpadDecimal', 'NumpadComma', 'NumpadDevide', 'NumpadMultiply', 'NumpadStar', 'NumpadSubtract']
+      if (lcode.indexOf(e.code) > -1) { this.readHoso(); }
+      if (e.code === 'Insert' && this.stim.length > 0) {
+        this.otim[this.stim] = true;
+        this.showotim = true;
+        this.stim = '';
+      };
     },
     save_data_test() {
       this.saveHoso(oHoso_test);
@@ -423,10 +436,6 @@ var app = new Vue({
 
   },
   computed: {
-    dbName() {
-      let a = getCookie('workgroup') || 'Cntđ';
-      return a;
-    },
     otim_ext() {
       //loc theo otim + namlv + stim
       let _otim = JSON.parse(JSON.stringify(this.otim));
@@ -440,6 +449,36 @@ var app = new Vue({
         _otim[s] = true;
       }
       return _otim;
+    },
+    //phan trang
+    tongtin() {
+      let a = Object.keys(this.ttdl).length || 0;
+      return a;
+    },
+    tongtrang() {
+      if (this.tin1trang < 1) { this.tin1trang = 1; };
+      let a = Math.floor(this.tongtin / this.tin1trang);
+      a = this.tongtin % this.tin1trang > 0 ? a++ : a;
+      a = a < 1 ? 1 : a;
+      return a;
+    },
+    tindau() {
+      if (this.tin1trang < 1) { this.tin1trang = 1; };
+      if (this.curtrang < 1) { this.curtrang = 1; };
+      let a = (this.curtrang - 1) * this.tin1trang;
+      return a;
+    },
+    tincuoi() {
+      let a = this.tindau + this.tin1trang - 1;
+      a = a > (this.tongtin - 1) ? this.tongtin-- : a;
+      return a;
+    },
+    luid() {
+      let a = [];
+      for (let i = this.tindau; i <= this.tincuoi; i++) {
+        a.push(i);
+      };
+      return a;
     },
   },
 });
