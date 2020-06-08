@@ -139,14 +139,12 @@ var loaddb = async () => {
   };
   request.onsuccess = e => {
     db.engine = e.target.result;
-    console.log('opening db');
   };
   request.onupgradeneeded = e => {
     db.engine = e.target.result;
     db.engine.createObjectStore('hoso', { keyPath: "mahoso" });
     db.engine.createObjectStore('khachhang', { keyPath: "makhachhang" });
     db.engine.createObjectStore('dot', { keyPath: "madot" });
-    console.log('upgrade db');
   };
 };
 
@@ -183,7 +181,7 @@ var app = new Vue({
       namlv: 2020,
       showMenu: false,
       showotim: false,
-      ttdl: { 0: { hoso: {}, dot: {}, khachhang: {} } },
+      ttdl: {},
       oHoso: {},
       oKhachhang: {},
       oDot: {},
@@ -200,7 +198,7 @@ var app = new Vue({
       oHoso_test: oHoso_test,
     }
   },
-  async created() {
+  async setup() {
     let a = getCookie('workgroup');
     if (a) { db.name = a; }
     await loaddb();
@@ -212,109 +210,105 @@ var app = new Vue({
     // await this.odbHoso();
   },
   methods: {
-    async loadKhachhang(uuid = null) {
-      //uuid = this.makhachhang || '';
-      this.oKhachhang = {};
+    readKhachhang: async (uuid) => {
       let bang = 'khachhang';
       let store = db.engine
         .transaction(bang, 'readonly')
         .objectStore(bang);
-      let request;
+      uuid = uuid || '';
       if (uuid.length > 0) {
-        request = await store.get(uuid);
+        let request = await store.get(uuid);
       } else {
-        request = await store.getAll();
+        let request = await store.getAll();
       };
       request.onerror = e => {
-        console.log('Error loadKhachhang: ', e);
+        console.log('Error readKhachhang: ', e);
+        this.oKhachhang = {};
       };
       request.onsuccess = e => {
         this.oKhachhang = e.target.result;
       };
     },
-    async loadDot(uuid = null) {
-      //uuid = this.madot || '';
-      console.log('uuid loadDot: ', uuid);
-      this.oDot = {};
+    readDot: async (uuid) => {
       let bang = 'dot';
       let store = db.engine
         .transaction(bang, 'readonly')
         .objectStore(bang);
-      let request;
+      uuid = uuid || '';
       if (uuid.length > 0) {
-        request = await store.get(uuid);
+        let request = await store.get(uuid);
       } else {
-        request = await store.getAll();
+        let request = await store.getAll();
       };
       request.onerror = e => {
-        console.log('Error loadDot: ', e);
+        console.log('Error readDot: ', e);
+        this.oDot = {};
       };
       request.onsuccess = e => {
         this.oDot = e.target.result;
-        console.log('loadDot oDot: ', this.oDot);
       };
     },
-    async loadHoso() {
-      var request, cursor, ltam, ssearch, mahoso, madot, makhachhang, s, k, isok;
-      var keybo = ['lastupdate', 'scan', 'blob',], data = {}, dtam = {};
-      var bang = 'hoso';
+    readHoso: async () => {
       try {
-        request = await db.engine
+        let tam = {};
+        let bang = 'hoso';
+        let request = await db.engine
           .transaction(bang, 'readonly')
           .objectStore(bang)
           .openCursor();
         request.onerror = e => {
-          console.log('Error loadHoso: ', e);
-          this.ttdl = { 0: { hoso: {}, dot: {}, khachhang: {} } };
+          console.log('Error readHoso: ', e);
+          this.ttdl = {};
         };
         request.onsuccess = e => {
-          cursor = e.target.result;
+          let cursor = e.target.result;
           if (cursor) {
             //load oKhachhang, oDot
             this.oHoso = cursor.value;
-            mahoso = cursor.value.mahoso;
-            makhachhang = cursor.value.makhachhang;
-            madot = cursor.value.madot;
-            console.log("mahoso: ", mahoso, " makh: ", makhachhang, " madot: ",madot)
+            let mahoso = cursor.value.mahoso;
+            let makhachhang = cursor.value.makhachhang;
+            let madot = cursor.value.madot;
+
             Promise.all([
-              this.loadKhachhang(makhachhang),
-              this.loadDot(madot)])
-              .then()
-              .catch(err => { console.log("Error in promises ", err) });
-            //view test
-            console.log("mahoso: ", mahoso, " oHoso: ", this.oHoso)
-            console.log("madot: ", madot, " oDot: ", this.oDot)
-            console.log("makh: ", makhachhang, " oKhach: ", this.oKhachhang)
-            dtam = JSON.parse(JSON.stringify(this.oHoso));
-            for (k in dtam) {
+              this.readKhachhang(makhachhang),
+              this.readDot(madot)])
+              .then(result => {
+                console.log(result)
+              })
+              .catch(error => console.log(`Error in promises ${error}`));
+            //dtam bao gom ca blob 1 scanimage
+            let s = '';
+            let keybo = ['lastupdate', 'scan', 'blob',];
+            let dtam = JSON.parse(JSON.stringify(this.oHoso));
+            for (let k in dtam) {
               s = k.toLowerCase();
               if (keybo.indexOf(s) > -1) {
                 delete dtam[k];
               };
             };
-            ltam = Object.values(dtam);
+            let lsearch = Object.values(dtam);
             //khachhang
             dtam = JSON.parse(JSON.stringify(this.oKhachhang));
-            for (k in dtam) {
+            for (let k in dtam) {
               s = k.toLowerCase();
               if (keybo.indexOf(s) > -1) {
                 delete dtam[k];
               };
             };
-            ltam = [...ltam, ...Object.values(dtam)];
+            lsearch = [...lsearch, ...Object.values(dtam)];
             //dot
             dtam = JSON.parse(JSON.stringify(this.oDot));
-            for (k in dtam) {
+            for (let k in dtam) {
               s = k.toLowerCase();
               if (keybo.indexOf(s) > -1) {
                 delete dtam[k];
               };
             };
-            ltam = [...ltam, ...Object.values(dtam)];
+            lsearch = [...lsearch, ...Object.values(dtam)];
             // loc 
-            isok = true;
-            ssearch = ltam.toString().toLowerCase();
-            for (k in this.otim_ext) {
+            let isok = true;
+            let ssearch = lsearch.toString().toLowerCase();
+            for (let k in this.otim_ext) {
               s = k.toLowerCase();
               if (ssearch.indexOf(s) === -1) {
                 isok = false;
@@ -324,7 +318,7 @@ var app = new Vue({
               console.log('ssearch=', ssearch, ' isok= ', isok);
             };
             if (isok) {
-              data[mahoso] = {
+              tam[mahoso] = {
                 'hoso': this.oHoso,
                 'khachhang': this.oKhachhang,
                 'dot': this.oDot
@@ -333,16 +327,16 @@ var app = new Vue({
             cursor.continue();
           };
           //convert to list sort
-          ltam = [];
-          for (k in data) {
+          let s = [];
+          for (let k in tam) {
             //s.push(tam[k]);
-            ltam = [...ltam, data[k]];
+            s = [...s, tam[k]];
           };
-          data = ltam.sort((a, b) => (a.mahoso > b.mahoso) ? 1 : ((b.mahoso > a.mahoso) ? -1 : 0));
+          tam = s.sort((a, b) => (a.mahoso > b.mahoso) ? 1 : ((b.mahoso > a.mahoso) ? -1 : 0));
           dtam = {};
-          k = data.length;
+          k = tam.length;
           for (let i = 0; i <= k; i++) {
-            dtam[i] = data[i];
+            dtam[i] = tam[i];
           };
           this.ttdl = dtam;
 
@@ -420,14 +414,14 @@ var app = new Vue({
     tim_keyup(e) {
       console.log("event.key=", e.key);
       console.log("event.keyCode=", e.keyCode);
-      var lcode = ['KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI', 'KeyJ',
+      lcode = ['KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI', 'KeyJ',
         'KeyK', 'KeyL', 'KeyM', 'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR', 'KeyS', 'KeyT',
         'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
         ' Equal', 'Comma', 'Minus', 'Period', 'Quote', 'Semicolon', 'BracketLeft', 'BracketRight',
         'Digit0', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9',
         'Numpad0', 'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4', 'Numpad5', 'Numpad6', 'Numpad7', 'Numpad8', 'Numpad9',
         'NumpadAdd', 'NumpadDecimal', 'NumpadComma', 'NumpadDevide', 'NumpadMultiply', 'NumpadStar', 'NumpadSubtract']
-      if (lcode.indexOf(e.code) > -1) { this.loadHoso(); }
+      if (lcode.indexOf(e.code) > -1) { this.readHoso(); }
       if (e.code === 'Insert' && this.stim.length > 0) {
         this.otim[this.stim] = true;
         this.showotim = true;

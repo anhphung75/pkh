@@ -108,7 +108,7 @@
     <div class="col- thongbao"><b>Thông báo</b></div>
     <div class="col- ghichu"><b>Ghi chú</b></div>
   </div>
-  <div class="row noidung" v-for="(id, index) in luid" :key="index">
+  <div class="row noidung" v-for="(id, stt) in luid" :key="stt">
     <div v-if="ttdl[id].hoso.isedit">
       <div class="col- crud">
         <i class="fa fa-save" @click="saveHoso">{`stt + 1`}</i>
@@ -162,7 +162,7 @@
       </button>
     </div>
     <div class="col-auto">
-      <button class="btn btn-primary" @click="readDot">
+      <button class="btn btn-primary" @click="loadHoso">
         <i class="fa fa-add"></i>
         Add noi dung readDot
       </button>
