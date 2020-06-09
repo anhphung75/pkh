@@ -92,77 +92,109 @@
   </div>
 
   <hr class="border border-dark">
-  <div class="thanhtruot">thanh trượt ngang</div>
-  <div class="row tieude">
-    <div class="col- crud">Act</div>
-    <div class="col- mahoso"><b>Mã hồ sơ</b></div>
-    <div class="col- sohoso"><b>Số hồ sơ</b></div>
-    <div class="col- khachhang"><b>Khách hàng</b></div>
-    <div class="col- diachi"><b>Địa chỉ lắp đặt</b></div>
+  <div class="container-fluid phantieude">
+    <div class="row">
+      <div class="col">
+        <input class="truot-ngang col" type="range" min="0" :max="tongbang" step="1" v-model="curbang">
+        <div class="row tieude bg-primary">
+          <div class="col-md-1 crud">Act</div>
+          <div class="col-md-1 mahoso"><b>Mã hồ sơ</b></div>
+          <div class="col-md-1 sohoso"><b>Số hồ sơ</b></div>
+          <div class="col-md-1 khachhang"><b>Khách hàng</b></div>
+          <div class="col-md-2 diachi"><b>Địa chỉ lắp đặt</b></div>
 
-    <div class="col- ngaygan"><b>Ngày gắn</b></div>
-    <div class="col- ngayhoancong"><b>Ngày hoàn công</b></div>
-    <div class="col- madot"><b>Mã đợt</b></div>
-    <div class="col- sodot"><b>Số đợt</b></div>
+          <div class="col-md-1 ngaygan"><b>Ngày gắn</b></div>
+          <div class="col-md-1 ngayhoancong"><b>Ngày hoàn công</b></div>
+          <div class="col-md-1 madot"><b>Mã đợt</b></div>
+          <div class="col-md-1 sodot"><b>Số đợt</b></div>
 
-    <div class="col- thongbao"><b>Thông báo</b></div>
-    <div class="col- ghichu"><b>Ghi chú</b></div>
-  </div>
-  <div class="row noidung" v-for="(id, stt) in luid" :key="stt">
-    <div v-if="ttdl[id].hoso.isedit">
-      <div class="col- crud">
-        <i class="fa fa-save" @click="saveHoso">{`stt + 1`}</i>
-        <i class="fa fa-stop-circle" @click="ttdl[id].hoso.isedit = false">Bỏ</i>
+          <div class="col-md-1 thongbao"><b>Thông báo</b></div>
+          <div class="col-md-1 ghichu"><b>Ghi chú</b></div>
+        </div>
       </div>
-      <div class="col- mahoso">{`ttdl[id].hoso.mahoso`}</div>
-      <div class="col- sohoso">{`ttdl[id].hoso.sohoso`}</div>
-      <div class="col- khachhang">{`ttdl[id].khachhang.khachhang`}</div>
-      <div class="col- diachi">{`ttdl[id].khachhang.diachi`}</div>
-      <div class="col- ngaygan">{`ttdl[id].hoso.ngaygan`}</div>
-      <div class="col- ngayhoancong">{`ttdl[id].hoso.ngayhoancong`}</div>
-      <div class="col- madot">{`ttdl[id].dot.madot`}</div>
-      <div class="col- sodot">{`ttdl[id].dot.sodot`}</div>
-      <div class="col- thongbao">{`ttdl[id].hoso.thongbao`}</div>
-      <div class="col- ghichu">{`ttdl[id].hoso.ghichu`}</div>
-    </div>
-    <div v-else>
-      <div class="col- crud">
-        <i class="fa fa-edit" @click=" ">{`stt + 1`}</i>
+      <div class='truot-dung d-flex flex-column justify-content-between' style="width: 10px;">
+        <div>
+          <i class="fa fa-angle-up" @click=""></i>
+        </div>
+        <div>
+          {`tin1trang`}
+        </div>
+        <div>
+          <i class="fa fa-angle-down" @click=""></i>
+        </div>
       </div>
-      <div class="col- mahoso">{`ttdl[id].hoso.mahoso`}</div>
-      <div class="col- sohoso">{`ttdl[id].hoso.sohoso`}</div>
-      <div class="col- khachhang">{`ttdl[id].khachhang.khachhang`}</div>
-      <div class="col- diachi">{`ttdl[id].khachhang.diachi`}</div>
-      <div class="col- ngaygan">{`ttdl[id].hoso.ngaygan`}</div>
-      <div class="col- ngayhoancong">{`ttdl[id].hoso.ngayhoancong`}</div>
-      <div class="col- madot">{`ttdl[id].dot.madot`}</div>
-      <div class="col- sodot">{`ttdl[id].dot.sodot`}</div>
-      <div class="col- thongbao">{`ttdl[id].hoso.thongbao`}</div>
-      <div class="col- ghichu">{`ttdl[id].hoso.ghichu`}</div>
     </div>
-
   </div>
+  <div class="container-fluid phannoidung">
+    <div class="row">
+      <div class="col">
+        <div class="row noidung" v-for="(id, stt) in luid" :key="stt">
+          <div v-if="ttdl[id].isedit">
+            <div class="col-md-1 crud">
+              <i class="fa fa-save" @click="saveHoso">{`stt + 1`}</i>
+              <i class="fa fa-stop-circle" @click="ttdl[id].hoso.isedit = false">Bỏ</i>
+            </div>
+            <div class="col-md-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
+            <div class="col-md-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
+            <div class="col-md-2 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
+            <div class="col-md-1 diachi">{`ttdl[id].khachhang.diachi`}</div>
+            <div class="col-md-1 ngaygan">{`ttdl[id].hoso.ngaygan`}</div>
+            <div class="col-md-1 ngayhoancong">{`ttdl[id].hoso.ngayhoancong`}</div>
+            <div class="col-md-1 madot">{`ttdl[id].dot.madot`}</div>
+            <div class="col-md-1 sodot">{`ttdl[id].dot.sodot`}</div>
+            <div class="col-md-1 thongbao">{`ttdl[id].hoso.thongbao`}</div>
+            <div class="col-md-1 ghichu">{`ttdl[id].hoso.ghichu`}</div>
+          </div>
+          <div v-else>
+            <div class="col-md-1 crud">
+              <i class="fa fa-edit" @click=" ">{`stt + 1`}</i>
+            </div>
+            <div class="col-md-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
+            <div class="col-md-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
+            <div class="col-md-2 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
+            <div class="col-md-1 diachi">{`ttdl[id].khachhang.diachi`}</div>
+            <div class="col-md-1 ngaygan">{`ttdl[id].hoso.ngaygan`}</div>
+            <div class="col-md-1 ngayhoancong">{`ttdl[id].hoso.ngayhoancong`}</div>
+            <div class="col-md-1 madot">{`ttdl[id].dot.madot`}</div>
+            <div class="col-md-1 sodot">{`ttdl[id].dot.sodot`}</div>
+            <div class="col-md-1 thongbao">{`ttdl[id].hoso.thongbao`}</div>
+            <div class="col-md-1 ghichu">{`ttdl[id].hoso.ghichu`}</div>
+          </div>
+
+        </div>
+      </div>
+      <div class='truot-dung d-flex flex-column justify-content-between' style="width: 10px;">
+        <div class="truot-dung flex-grow-1">
+          <input class="h-100 w-100" type="range" min="0" :max="tongtin" step="1" v-model="curtin" style="-webkit-appearance: slider-vertical;
+        transform: rotate(180deg);
+        outline: none;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 
 
 
   <hr class="border border-dark">
   <div class="container-fluid">
-    <div> oHoso = {`JSON.stringify(oHoso)`}</div>
-    <div> oKhach = {`JSON.stringify(oKhach)`}</div>
-    <div> oDot = {`JSON.stringify(oDot)`}</div>
-    <div> dbDot = {`JSON.stringify(dbDot)`}</div>
-    <div> ttdl = {`JSON.stringify(ttdl)`}</div>
+    <div> mahoso= {`mahoso`} oHoso= {`JSON.stringify(oHoso)`}</div>
+    <div> makhachhang= {`makhachhang`} oKhach= {`JSON.stringify(oKhach)`}</div>
+    <div> madot= {`madot`} oDot= {`JSON.stringify(oDot)`}</div>
+    <div> ottdl= {`Object.keys(ottdl)`}</div>
+    <div> ttdl= {`JSON.stringify(ttdl)`}</div>
   </div>
   <hr class="border border-dark">
   <div class="container-fluid">
     <div class="col-auto">
-      <button class="btn btn-primary" @click="loadDot(madot)">
+      <button class="btn btn-primary" @click="loadDot()">
         <i class="fa fa-add"></i>
         Add oDot
       </button>
     </div>
     <div class="col-auto">
-      <button class="btn btn-primary" @click="loadKhachhang(makhachhang)">
+      <button class="btn btn-primary" @click="loadKhach()">
         <i class="fa fa-add"></i>
         Add oKhach
       </button>

@@ -134,7 +134,8 @@ const db = {
 };
 
 var loaddb = async () => {
-  let request = await window.indexedDB.open(db.name, db.version);
+  var map;
+  var request = await window.indexedDB.open(db.name, db.version);
   request.onerror = e => {
     console.log('Error opening db', e);
   };
@@ -144,9 +145,22 @@ var loaddb = async () => {
   };
   request.onupgradeneeded = e => {
     db.engine = e.target.result;
-    db.engine.createObjectStore('hoso', { keyPath: "mahoso" });
-    db.engine.createObjectStore('khachhang', { keyPath: "makhachhang" });
-    db.engine.createObjectStore('dot', { keyPath: "madot" });
+    if (event.oldVersion < 1) {
+      map = db.engine.createObjectStore('map', { keyPath: "mahoso" });
+      //map.createIndex("madot", "madot", { unique: false });
+      //map.createIndex("makhachhang", "makhachhang", { unique: false });
+      //map.createIndex("madshc", "madshc", { unique: false });
+      //map.createIndex("maqtgt", "maqtgt", { unique: false });
+      //map.createIndex("maquan", "maquan", { unique: false });
+      //map.createIndex("maphuong", "maphuong", { unique: false });
+      map = db.engine.createObjectStore('hoso', { keyPath: "mahoso" });
+      //map.createIndex("mahoso0", "mahoso0", { unique: false });
+      map = db.engine.createObjectStore('khachhang', { keyPath: "makhachhang" });
+      //map.createIndex("makhachhang0", "makhachhang0", { unique: false });
+      map = db.engine.createObjectStore('dot', { keyPath: "madot" });
+      //map.createIndex("madot0", "madot0", { unique: false });
+    };
+
     console.log('upgrade db');
   };
 };
@@ -207,9 +221,12 @@ var app = new Vue({
       stim: '',
       otim: {},
       //phan trang
-      tin1trang: 0,
+      tin1trang: 3,
       curtin: 0,
       curtrang: 1,
+      //bang hien thi
+      curbang: 0,
+      tongbang: 3,
       oHoso_test: oHoso_test,
     }
   },
@@ -283,21 +300,54 @@ var app = new Vue({
             this.mahoso = cursor.value.mahoso || '';
             this.makhachhang = cursor.value.makhachhang || '';
             this.madot = cursor.value.madot || '';
-            //get oDot, oKhach
-            this.loadKhach();
-            this.loadDot();
-            //Promise.all([
-            //  this.loadKhachhang(),
-            //  this.loadDot()])
-            //  .then(() => {
-            //    console.log('loadHoso ok on ', this.mahoso);
-            //  })
-            //  .catch(err => { console.log("Error in promises ", err) });
+            Promise.all([
+              this.loadKhach(),
+              this.loadDot()])
+              .then(() => {
+                console.log('load ttdl ok on {mahoso: ', this.mahoso, ', makhachhang: ', this.makhachhang, 'madot: ', this.madot, '}');
+              })
+              .catch(err => { console.log("Error in Promise.all ", err) });
             //view test
             delay(100);
             cursor.continue();
           };
 
+        };
+      } catch (err) {
+        console.log('loadHoso error=', err.message);
+      };
+    },
+    async loadMap() {
+      var request, cursor, bang = 'map';
+      this.ottdl = {};
+      try {
+        //this.oHoso = {};
+        request = db.engine
+          .transaction(bang, 'readonly')
+          .objectStore(bang)
+          .openCursor();
+        request.onerror = e => {
+          console.log('Error loadHoso: ', e);
+        };
+        request.onsuccess = e => {
+          cursor = e.target.result;
+          if (cursor) {
+            //load oKhach, oDot
+            this.mahoso = cursor.value.mahoso || '';
+            this.makhachhang = cursor.value.makhachhang || '';
+            this.madot = cursor.value.madot || '';
+            Promise.all([
+              this.loadHoso(),
+              this.loadKhach(),
+              this.loadDot()])
+              .then(() => {
+                console.log('load ttdl ok on {mahoso: ', this.mahoso, ', makhachhang: ', this.makhachhang, 'madot: ', this.madot, '}');
+              })
+              .catch(err => { console.log("Error in Promise.all ", err) });
+            //view test
+            delay(100);
+            cursor.continue();
+          };
         };
       } catch (err) {
         console.log('loadHoso error=', err.message);
@@ -468,12 +518,14 @@ var app = new Vue({
       return _otim;
     },
     ttdl() {
-      var i, s, k, dl, ltam, ssearch, isok;
+      var i, s, k, o, dl, ltam, ssearch, isok;
       var dtam = {
         0: {
-          hoso: { mahoso: '', sohoso: '' },
+          hoso: { mahoso: '', sohoso: '', isedit: false },
           dot: { madot: '', sodot: '' },
-          khachhang: { makhachhang: '', hoten: '', diachi: '' }
+          khachhang: { makhachhang: '', hoten: '', diachi: '' },
+          isedit: false,
+          isselect: false,
         }
       };
       try {
@@ -505,7 +557,10 @@ var app = new Vue({
         //dtam = {};
         k = dl.length;
         for (i = 0; i <= k; i++) {
-          dtam[i] = dl[i];
+          o = JSON.parse(JSON.stringify(dl[i]));
+          o.isedit = false;
+          o.isselect = false;
+          dtam[i] = o;
         };
       } catch (err) {
         console.log('Error ttdl', err.message);
@@ -532,12 +587,12 @@ var app = new Vue({
     },
     tincuoi() {
       let a = this.tindau + this.tin1trang - 1;
-      a = a > (this.tongtin - 1) ? this.tongtin-- : a;
+      a = a > (this.tongtin - 1) ? this.tongtin - 1 : a;
       return a;
     },
     luid() {
-      let a = [];
-      for (let i = this.tindau; i <= this.tincuoi; i++) {
+      let i, a = [];
+      for (i = this.tindau; i <= this.tincuoi; i++) {
         a.push(i);
       };
       return a;
