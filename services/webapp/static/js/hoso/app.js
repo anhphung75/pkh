@@ -39,7 +39,7 @@ var oHoso_test = [
     madvtc: '2020dv001',
   },
 ];
-var oKhachhang_test = [
+var oKhach_test = [
   {
     mahoso: '2020.hs.001',
     sohoso: '2020.hs.001',
@@ -112,6 +112,7 @@ const db = {
   name: 'Cntđ',
   version: 1,
   engine: null,
+  trans: null,
   drop: async () => {
     let request = await window.indexedDB.deleteDatabase(this.name);
     request.onerror = err => {
@@ -155,6 +156,14 @@ var getCookie = (name) => {
   return r ? r[1] : undefined;
 };
 
+var setupdb = async () => {
+  let a = getCookie('workgroup');
+  if (a) { db.name = a; }
+  await loaddb();
+};
+
+setupdb();
+
 var ld2dd = (recs) => {
   let orecs = {};
   if (Array.isArray(recs)) {
@@ -175,6 +184,9 @@ var ld2dd = (recs) => {
   };
 };
 
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+
 var app = new Vue({
   el: '#trangxem',
   delimiters: ["{`", "`}"],
@@ -183,13 +195,14 @@ var app = new Vue({
       namlv: 2020,
       showMenu: false,
       showotim: false,
-      ttdl: { 0: { hoso: {}, dot: {}, khachhang: {} } },
+      ottdl: {},
       oHoso: {},
-      oKhachhang: {},
+      oKhach: {},
       oDot: {},
       mahoso: '2020.hs.002',
       madot: '2020GMMP001',
       makhachhang: '2020.kh.003',
+      keybo: ['lastupdate', 'scan', 'blob', 'isedit'],
       //search
       stim: '',
       otim: {},
@@ -201,9 +214,7 @@ var app = new Vue({
     }
   },
   async created() {
-    let a = getCookie('workgroup');
-    if (a) { db.name = a; }
-    await loaddb();
+
     //await this.loadDb();
     //this.cats = await this.getCatsFromDb();
     //this.ready = true;
@@ -212,143 +223,84 @@ var app = new Vue({
     // await this.odbHoso();
   },
   methods: {
-    async loadKhachhang(uuid = null) {
-      //uuid = this.makhachhang || '';
-      this.oKhachhang = {};
-      let bang = 'khachhang';
-      let store = db.engine
+    async loadKhach() {
+      console.log('uuid loadKhachhang: ', this.makhachhang);
+      //this.oKhach = {};
+      var cursor, bang = 'khachhang';
+      var request = await db.engine
         .transaction(bang, 'readonly')
-        .objectStore(bang);
-      let request;
-      if (uuid.length > 0) {
-        request = await store.get(uuid);
-      } else {
-        request = await store.getAll();
-      };
+        .objectStore(bang)
+        .openCursor(IDBKeyRange.only(this.makhachhang));
       request.onerror = e => {
-        console.log('Error loadKhachhang: ', e);
+        console.log('Error loadKhach: ', e);
       };
       request.onsuccess = e => {
-        this.oKhachhang = e.target.result;
+        cursor = e.target.result;
+        if (cursor) {
+          this.oKhach = cursor.value;
+          delay(1);
+          cursor.continue();
+        };
       };
     },
-    async loadDot(uuid = null) {
-      //uuid = this.madot || '';
-      console.log('uuid loadDot: ', uuid);
-      this.oDot = {};
-      let bang = 'dot';
-      let store = db.engine
+    async loadDot() {
+      console.log('uuid loadDot: ', this.madot);
+      //this.oDot = {};
+      var cursor, bang = 'dot';
+      var request = await db.engine
         .transaction(bang, 'readonly')
-        .objectStore(bang);
-      let request;
-      if (uuid.length > 0) {
-        request = await store.get(uuid);
-      } else {
-        request = await store.getAll();
-      };
+        .objectStore(bang)
+        .openCursor(IDBKeyRange.only(this.madot));
       request.onerror = e => {
         console.log('Error loadDot: ', e);
       };
       request.onsuccess = e => {
-        this.oDot = e.target.result;
-        console.log('loadDot oDot: ', this.oDot);
+        cursor = e.target.result;
+        if (cursor) {
+          this.oDot = cursor.value;
+          delay(1);
+          cursor.continue();
+        };
       };
     },
     async loadHoso() {
-      var request, cursor, ltam, ssearch, mahoso, madot, makhachhang, s, k, isok;
-      var keybo = ['lastupdate', 'scan', 'blob',], data = {}, dtam = {};
-      var bang = 'hoso';
+      var request, cursor, bang = 'hoso';
+      this.ottdl = {};
       try {
-        request = await db.engine
+        //this.oHoso = {};
+        request = db.engine
           .transaction(bang, 'readonly')
           .objectStore(bang)
           .openCursor();
         request.onerror = e => {
           console.log('Error loadHoso: ', e);
-          this.ttdl = { 0: { hoso: {}, dot: {}, khachhang: {} } };
         };
         request.onsuccess = e => {
           cursor = e.target.result;
           if (cursor) {
-            //load oKhachhang, oDot
-            this.oHoso = cursor.value;
-            mahoso = cursor.value.mahoso;
-            makhachhang = cursor.value.makhachhang;
-            madot = cursor.value.madot;
-            console.log("mahoso: ", mahoso, " makh: ", makhachhang, " madot: ",madot)
-            Promise.all([
-              this.loadKhachhang(makhachhang),
-              this.loadDot(madot)])
-              .then()
-              .catch(err => { console.log("Error in promises ", err) });
+            //load oKhach, oDot
+            this.oHoso = cursor.value || {};
+            this.mahoso = cursor.value.mahoso || '';
+            this.makhachhang = cursor.value.makhachhang || '';
+            this.madot = cursor.value.madot || '';
+            //get oDot, oKhach
+            this.loadKhach();
+            this.loadDot();
+            //Promise.all([
+            //  this.loadKhachhang(),
+            //  this.loadDot()])
+            //  .then(() => {
+            //    console.log('loadHoso ok on ', this.mahoso);
+            //  })
+            //  .catch(err => { console.log("Error in promises ", err) });
             //view test
-            console.log("mahoso: ", mahoso, " oHoso: ", this.oHoso)
-            console.log("madot: ", madot, " oDot: ", this.oDot)
-            console.log("makh: ", makhachhang, " oKhach: ", this.oKhachhang)
-            dtam = JSON.parse(JSON.stringify(this.oHoso));
-            for (k in dtam) {
-              s = k.toLowerCase();
-              if (keybo.indexOf(s) > -1) {
-                delete dtam[k];
-              };
-            };
-            ltam = Object.values(dtam);
-            //khachhang
-            dtam = JSON.parse(JSON.stringify(this.oKhachhang));
-            for (k in dtam) {
-              s = k.toLowerCase();
-              if (keybo.indexOf(s) > -1) {
-                delete dtam[k];
-              };
-            };
-            ltam = [...ltam, ...Object.values(dtam)];
-            //dot
-            dtam = JSON.parse(JSON.stringify(this.oDot));
-            for (k in dtam) {
-              s = k.toLowerCase();
-              if (keybo.indexOf(s) > -1) {
-                delete dtam[k];
-              };
-            };
-            ltam = [...ltam, ...Object.values(dtam)];
-            // loc 
-            isok = true;
-            ssearch = ltam.toString().toLowerCase();
-            for (k in this.otim_ext) {
-              s = k.toLowerCase();
-              if (ssearch.indexOf(s) === -1) {
-                isok = false;
-                break;
-              };
-              console.log('key=', k);
-              console.log('ssearch=', ssearch, ' isok= ', isok);
-            };
-            if (isok) {
-              data[mahoso] = {
-                'hoso': this.oHoso,
-                'khachhang': this.oKhachhang,
-                'dot': this.oDot
-              }
-            };
+            delay(100);
             cursor.continue();
           };
-          //convert to list sort
-          ltam = [];
-          for (k in data) {
-            //s.push(tam[k]);
-            ltam = [...ltam, data[k]];
-          };
-          data = ltam.sort((a, b) => (a.mahoso > b.mahoso) ? 1 : ((b.mahoso > a.mahoso) ? -1 : 0));
-          dtam = {};
-          k = data.length;
-          for (let i = 0; i <= k; i++) {
-            dtam[i] = data[i];
-          };
-          this.ttdl = dtam;
 
         };
       } catch (err) {
-        console.log('get_ttdl error=', err.message);
+        console.log('loadHoso error=', err.message);
       };
     },
     async saveHoso(recs) {
@@ -416,6 +368,7 @@ var app = new Vue({
     clear_otim() {
       this.showotim = false;
       this.otim = {};
+      this.loadHoso();
     },
     tim_keyup(e) {
       console.log("event.key=", e.key);
@@ -436,12 +389,70 @@ var app = new Vue({
     },
     save_data_test() {
       this.saveHoso(oHoso_test);
-      this.saveKhachhang(oKhachhang_test);
+      this.saveKhachhang(oKhach_test);
       this.saveDot(oDot_test);
     },
 
   },
   computed: {
+    //loc
+    lHoso() {
+      var dtam, s, k;
+      var ltam = ['',];
+      try {
+        dtam = JSON.parse(JSON.stringify(this.oHoso));
+        if (dtam.mahoso !== this.mahoso) { return ltam; };
+        for (k in dtam) {
+          s = k.toLowerCase();
+          if (this.keybo.indexOf(s) > -1) {
+            delete dtam[k];
+          };
+        };
+        ltam = Object.values(dtam);
+      } catch (err) {
+        console.log('Error lHoso', err.message);
+      };
+      console.log('mahoso=', this.mahoso, ' lHoso=', ltam);
+      return ltam;
+    },
+    lDot() {
+      var dtam, s, k;
+      var ltam = ['',];
+      try {
+        dtam = JSON.parse(JSON.stringify(this.oDot));
+        if (dtam.madot !== this.madot) { return ltam; };
+        for (k in dtam) {
+          s = k.toLowerCase();
+          if (this.keybo.indexOf(s) > -1) {
+            delete dtam[k];
+          };
+        };
+        ltam = Object.values(dtam);
+      } catch (err) {
+        console.log('Error lHoso', err.message);
+      };
+      console.log('madot=', this.madot, ' lDot=', ltam);
+      return ltam;
+    },
+    lKhach() {
+      var dtam, s, k;
+      var ltam = ['',];
+      try {
+        dtam = JSON.parse(JSON.stringify(this.oKhach));
+        if (dtam.makhachhang !== this.makhachhang) { return ltam; };
+        for (k in dtam) {
+          s = k.toLowerCase();
+          if (this.keybo.indexOf(s) > -1) {
+            delete dtam[k];
+          };
+        };
+        ltam = Object.values(dtam);
+      } catch (err) {
+        console.log('Error lKhach', err.message);
+      };
+      console.log('makhachhang=', this.makhachhang, ' lKhach=', ltam);
+      return ltam;
+    },
     otim_ext() {
       //loc theo otim + namlv + stim
       let _otim = JSON.parse(JSON.stringify(this.otim));
@@ -455,6 +466,51 @@ var app = new Vue({
         _otim[s] = true;
       }
       return _otim;
+    },
+    ttdl() {
+      var i, s, k, dl, ltam, ssearch, isok;
+      var dtam = {
+        0: {
+          hoso: { mahoso: '', sohoso: '' },
+          dot: { madot: '', sodot: '' },
+          khachhang: { makhachhang: '', hoten: '', diachi: '' }
+        }
+      };
+      try {
+        ltam = [...this.lHoso, ...this.lDot, ...this.lKhach];
+        ssearch = ltam.toString().toLowerCase();
+        console.log('ssearch=', ssearch);
+        isok = true;
+        for (k in this.otim_ext) {
+          s = k.toLowerCase();
+          if (ssearch.indexOf(s) === -1) {
+            isok = false;
+            break;
+          };
+          console.log('key=', k);
+          console.log('ssearch=', ssearch, ' isok= ', isok);
+        };
+        if (isok) {
+          console.log('add ottdl =');
+          this.ottdl[this.mahoso] = { hoso: this.oHoso, dot: this.oDot, khach: this.oKhach };
+        };
+        //convert to list sort
+        dl = this.ottdl;
+        ltam = [];
+        for (k in dl) {
+          //s.push(tam[k]);
+          ltam = [...ltam, dl[k]];
+        };
+        dl = ltam.sort((a, b) => (a.mahoso > b.mahoso) ? 1 : ((b.mahoso > a.mahoso) ? -1 : 0));
+        //dtam = {};
+        k = dl.length;
+        for (i = 0; i <= k; i++) {
+          dtam[i] = dl[i];
+        };
+      } catch (err) {
+        console.log('Error ttdl', err.message);
+      };
+      return dtam;
     },
     //phan trang
     tongtin() {

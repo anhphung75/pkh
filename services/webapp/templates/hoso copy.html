@@ -108,28 +108,61 @@
     <div class="col- thongbao"><b>Thông báo</b></div>
     <div class="col- ghichu"><b>Ghi chú</b></div>
   </div>
+  <div class="row noidung" v-for="(id, stt) in luid" :key="stt">
+    <div v-if="ttdl[id].hoso.isedit">
+      <div class="col- crud">
+        <i class="fa fa-save" @click="saveHoso">{`stt + 1`}</i>
+        <i class="fa fa-stop-circle" @click="ttdl[id].hoso.isedit = false">Bỏ</i>
+      </div>
+      <div class="col- mahoso">{`ttdl[id].hoso.mahoso`}</div>
+      <div class="col- sohoso">{`ttdl[id].hoso.sohoso`}</div>
+      <div class="col- khachhang">{`ttdl[id].khachhang.khachhang`}</div>
+      <div class="col- diachi">{`ttdl[id].khachhang.diachi`}</div>
+      <div class="col- ngaygan">{`ttdl[id].hoso.ngaygan`}</div>
+      <div class="col- ngayhoancong">{`ttdl[id].hoso.ngayhoancong`}</div>
+      <div class="col- madot">{`ttdl[id].dot.madot`}</div>
+      <div class="col- sodot">{`ttdl[id].dot.sodot`}</div>
+      <div class="col- thongbao">{`ttdl[id].hoso.thongbao`}</div>
+      <div class="col- ghichu">{`ttdl[id].hoso.ghichu`}</div>
+    </div>
+    <div v-else>
+      <div class="col- crud">
+        <i class="fa fa-edit" @click=" ">{`stt + 1`}</i>
+      </div>
+      <div class="col- mahoso">{`ttdl[id].hoso.mahoso`}</div>
+      <div class="col- sohoso">{`ttdl[id].hoso.sohoso`}</div>
+      <div class="col- khachhang">{`ttdl[id].khachhang.khachhang`}</div>
+      <div class="col- diachi">{`ttdl[id].khachhang.diachi`}</div>
+      <div class="col- ngaygan">{`ttdl[id].hoso.ngaygan`}</div>
+      <div class="col- ngayhoancong">{`ttdl[id].hoso.ngayhoancong`}</div>
+      <div class="col- madot">{`ttdl[id].dot.madot`}</div>
+      <div class="col- sodot">{`ttdl[id].dot.sodot`}</div>
+      <div class="col- thongbao">{`ttdl[id].hoso.thongbao`}</div>
+      <div class="col- ghichu">{`ttdl[id].hoso.ghichu`}</div>
+    </div>
 
+  </div>
 
 
 
   <hr class="border border-dark">
   <div class="container-fluid">
-    <div> mahoso= {`mahoso`} oHoso= {`JSON.stringify(oHoso)`}</div>
-    <div> makhachhang= {`makhachhang`} oKhach= {`JSON.stringify(oKhach)`}</div>
-    <div> madot= {`madot`} oDot= {`JSON.stringify(oDot)`}</div>
-    <div> ottdl= {`Object.keys(ottdl)`}</div>
-    <div> ttdl= {`JSON.stringify(ttdl)`}</div>
+    <div> oHoso = {`JSON.stringify(oHoso)`}</div>
+    <div> oKhach = {`JSON.stringify(oKhach)`}</div>
+    <div> oDot = {`JSON.stringify(oDot)`}</div>
+    <div> dbDot = {`JSON.stringify(dbDot)`}</div>
+    <div> ttdl = {`JSON.stringify(ttdl)`}</div>
   </div>
   <hr class="border border-dark">
   <div class="container-fluid">
     <div class="col-auto">
-      <button class="btn btn-primary" @click="loadDot()">
+      <button class="btn btn-primary" @click="loadDot(madot)">
         <i class="fa fa-add"></i>
         Add oDot
       </button>
     </div>
     <div class="col-auto">
-      <button class="btn btn-primary" @click="loadKhach()">
+      <button class="btn btn-primary" @click="loadKhachhang(makhachhang)">
         <i class="fa fa-add"></i>
         Add oKhach
       </button>
