@@ -411,6 +411,7 @@ var app = new Vue({
     },
     tim_keyup(e) {
       console.log("event.key=", e.key, " event.keyCode=", e.keyCode, " event.code=", e.code);
+      var i;
       var lcode = ['KeyA', 'KeyB', 'KeyC', 'KeyD', 'KeyE', 'KeyF', 'KeyG', 'KeyH', 'KeyI', 'KeyJ',
         'KeyK', 'KeyL', 'KeyM', 'KeyN', 'KeyO', 'KeyP', 'KeyQ', 'KeyR', 'KeyS', 'KeyT',
         'KeyU', 'KeyV', 'KeyW', 'KeyX', 'KeyY', 'KeyZ',
@@ -424,6 +425,34 @@ var app = new Vue({
         this.showotim = true;
         this.stim = '';
       };
+      if (e.code === 'ArrowDown') {
+        this.curtin++;
+        if (this.curtin > this.tincuoi) { this.curtin = this.tindau };
+        for (i = this.tindau; i <= this.tincuoi; i++) {
+          if (i === this.curtin) {
+            this.ttdl[i].isok = true;
+          } else {
+            this.ttdl[i].isok = false;
+          }
+        };
+      };
+      if (e.code === 'ArrowUp') {
+        this.curtin--;
+        if (this.curtin < this.tindau) { this.curtin = this.tincuoi };
+        for (i = this.tindau; i <= this.tincuoi; i++) {
+          if (i === this.curtin) {
+            this.ttdl[i].isok = true;
+          } else {
+            this.ttdl[i].isok = false;
+          }
+        };
+      };
+    },
+    edit_ttdl() {
+      this.ttdl[this.curtin].isedit = true;
+    },
+    stop_ttdl() {
+      this.ttdl[this.curtin].isedit = false;
     },
   },
   computed: {
@@ -582,7 +611,7 @@ var app = new Vue({
     },
     tongtrang() {
       if (this.tin1trang < 1) { this.tin1trang = 1; };
-      let a = Math.floor(this.tongtin / this.tin1trang);
+      var a = Math.floor(this.tongtin / this.tin1trang);
       a = this.tongtin % this.tin1trang > 0 ? a++ : a;
       a = a < 1 ? 1 : a;
       return a;
@@ -590,16 +619,16 @@ var app = new Vue({
     tindau() {
       if (this.tin1trang < 1) { this.tin1trang = 1; };
       if (this.curtrang < 1) { this.curtrang = 1; };
-      let a = (this.curtrang - 1) * this.tin1trang;
+      var a = (this.curtrang - 1) * this.tin1trang;
       return a;
     },
     tincuoi() {
-      let a = this.tindau + this.tin1trang - 1;
+      var a = this.tindau + this.tin1trang - 1;
       a = a > (this.tongtin - 1) ? this.tongtin - 1 : a;
       return a;
     },
     luid() {
-      let i, a = [];
+      var i, a = [];
       for (i = this.tindau; i <= this.tincuoi; i++) {
         a.push(i);
       };

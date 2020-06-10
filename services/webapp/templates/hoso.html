@@ -130,10 +130,10 @@
             <div class="col-md-1 crud">
               <div class="col-md-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
               <i class="fa fa-save" @click="saveHoso">{`stt + 1`}</i>
-              <i class="fa fa-stop-circle" @click="ttdl[id].isedit = false">Bỏ</i>
+              <i class="fa fa-stop-circle" @click="stop_ttdl">Bỏ</i>
             </div>
-            <div class="col-md-1 dvtc">{`ttdl[id].donvithicong.dvtc`}</div>
-            <div class="col-md-1 sodot">{`ttdl[id].dot.sodot`}</div>
+            <div class="col-md-1 dvtc"> input {`ttdl[id].donvithicong.dvtc`}</div>
+            <div class="col-md-1 sodot">input {`ttdl[id].dot.sodot`}</div>
             <div class="col-md-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
             <div class="col-md-4 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
             <div class="col-md-4 diachi">{`ttdl[id].khachhang.diachi`}</div>
@@ -141,7 +141,11 @@
           <div v-else class="row noidung border border-dark">
             <div class="col-md-1 crud">
               <div class="col-md-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
-              <i class="fa fa-edit" @click=" ">{`stt + 1`}</i>
+              <div @click.preven="edit_ttdl">
+                <i class="fa fa-edit"></i>
+                {`stt + 1`}
+              </div>
+
             </div>
             <div class="col-md-1 dvtc">{`ttdl[id].donvithicong.dvtc`}</div>
             <div class="col-md-1 sodot">{`ttdl[id].dot.sodot`}</div>
