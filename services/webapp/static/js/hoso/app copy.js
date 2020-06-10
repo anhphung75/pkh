@@ -180,7 +180,7 @@ var app = new Vue({
     return {
       namlv: 2020,
       showMenu: false,
-      showotim: false,
+      showotim: true,
       ttdl: {},
       oHoso: {},
       oKhachhang: {},
@@ -400,15 +400,8 @@ var app = new Vue({
         console.log('Error saveDot', err.message);
       };
     },
-    add_otim() {
-      if (this.stim.length > 0) {
-        this.otim[this.stim] = true;
-        this.showotim = true;
-        this.stim = '';
-      };
-    },
     clear_otim() {
-      this.showotim = false;
+      //this.showotim = false;
       this.otim = {};
     },
     tim_keyup(e) {

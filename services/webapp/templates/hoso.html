@@ -7,195 +7,109 @@
 <script src="{{ static_url("js/hoso/app.js") }}" type="module"></script>
 {% end %}
 
-{% block menu %}
-<div id="menu" class="container h-100 m-0 p-1 col-auto">
-  <div class="menu d-flex flex-column w-100 h-100 m-0 p-0">
-    <div class="logo flex-grow-0 w-100 m-0 p-0">
-      <nav class="navbar navbar-dark bg-dark m-0 p-0">
-        <a class="navbar-brand" href="#">
-          Phòng kế hoạch
-        </a>
-      </nav>
-    </div>
-    <div class="menu-form flex-grow-0 w-100 m-0 p-0">
-      <div class="bg-light text-primary">
-        <b>Báo biểu</b>
-      </div>
-      <nav class="navbar navbar-dark bg-secondary m-0 p-1">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="fa fa-sign-in-alt mr-1"></i>Biểu 1</a>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="fa fa-sign-in-alt mr-1"></i>Biểu 2</a>
-            </a>
-          </li>
-      </nav>
-    </div>
-    <div class="menu-report flex-grow-1 w-100 m-0 p-0">
-      <div class="bg-light text-primary">
-        <b>In ấn</b>
-      </div>
-      <nav class="navbar navbar-dark bg-secondary m-0 p-1">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="fa fa-sign-in-alt mr-1"></i>Biểu 1</a>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">
-              <i class="fa fa-sign-in-alt mr-1"></i>Biểu 2</a>
-            </a>
-          </li>
-      </nav>
-    </div>
-    <div class="flex-grow-0 w-100 m-0 p-0">
-      <nav class="navbar navbar-dark bg-dark m-0 p-1">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            {% if current_user %}
-            <a class="nav-link" href="#">
-              <i class="fa fa-sign-in-alt mr-1"></i>{{ _("Sign in") }}</a>
-            </a>
-            {% else %}
-            <a class="nav-link" href="#">
-              <i class="fa fa-sign-out-alt mr-1"></i>{{ _("Sign out") }}</a>
-            {% end %}
-          </li>
-        </ul>
-      </nav>
-    </div>
-  </div>
-</div>
-{% end %}
+
 
 {% block app %}
-<main class="m-0 p-0 h-100 w-100">
-  <input class="col" type="search" v-model="stim" @keyup="tim_keyup"
-    placeholder="Tìm ... (không phân biệt chữ hoa hay thường)" />
-  <div class="container-fluid" v-if="showotim">
-    <div class="row">
+<main class="m-0 p-0 h-100 w-100 border border-primary">
+  <div class="phan-tim-kiem">
+    <div class="row m-0 p-0">
+      <input class="col" type="search" v-model="stim" @keyup="tim_keyup"
+        placeholder="Tìm ... (không phân biệt chữ hoa hay thường)" />
+    </div>
+    <div class="row m-0 p-0">
       <div class="col border border-primary">
         vung otim {`JSON.stringify(otim)`}
       </div>
-      <div class="col-auto">
-        <button class="btn" @click="clear_otim">
-          <i class="fa fa-trash"></i>
-          Xóa lọc
-        </button>
+      <div class="col-1">
+        <div class="container">
+          <button class="btn btn-danger btn-small m-0" @click="clear_otim">
+            <i class="fa fa-trash"></i>
+          </button>
+        </div>
       </div>
     </div>
   </div>
 
-  <hr class="border border-dark">
-  <div class="container-fluid phantieude">
-    <div class="row">
-      <div class="col">
+  <div class="phantieude">
+    <div class="row p-0 m-0">
+      <div class="col p-1 m-0">
         <input class="truot-ngang col" type="range" min="0" :max="tongbang" step="1" v-model="curbang">
-        <div class="row tieude bg-primary">
-          <div class="col-md-1 crud">
+        <div class="row p-0 m-0 tieude bg-secondary text-light">
+          <div class="col-1 crud">
             <b>Mã hồ sơ</b>
             <br />
             <b>TT</b>
           </div>
-          <div class="col-md-1 dvtc"><b>Đvtc</b></div>
-          <div class="col-md-1 sodot"><b>Số đợt</b></div>
-          <div class="col-md-1 sohoso"><b>Số hồ sơ</b></div>
-          <div class="col-md-4 khachhang"><b>Khách hàng</b></div>
-          <div class="col-md-4 diachi"><b>Địa chỉ lắp đặt</b></div>
+          <div class="col-1 dvtc"><b>Đvtc</b></div>
+          <div class="col-1 sodot"><b>Số đợt</b></div>
+          <div class="col-1 sohoso"><b>Số hồ sơ</b></div>
+          <div class="col-4 khachhang"><b>Khách hàng</b></div>
+          <div class="col-4 diachi"><b>Địa chỉ lắp đặt</b></div>
         </div>
       </div>
-      <div class='truot-dung d-flex flex-column justify-content-between' style="width: 10px;">
+      <div class='truot-dung d-flex flex-column justify-content-between' style="width: 20px;">
         <div>
-          <i class="fa fa-angle-up" @click=""></i>
+          <button type="button" class="m-0 p-0 btn btn-sm" @click="tin1trang--">
+            <i class="fa fa-angle-up"></i>
+          </button>
         </div>
         <div>
           {`tin1trang`}
         </div>
         <div>
-          <i class="fa fa-angle-down" @click=""></i>
+          <button type="button" class="m-0 p-0 btn btn-sm" @click="tin1trang++">
+            <i class="fa fa-angle-down"></i>
+          </button>
         </div>
       </div>
     </div>
   </div>
-  <div class="container-fluid phannoidung">
-    <div class="row">
-      <div class="col">
-        <div class="noidung" v-for="(id, stt) in luid" :key="stt">
-          <div v-if="ttdl[id].isedit" class="row noidung bg-warning">
-            <div class="col-md-1 crud">
-              <div class="col-md-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
-              <i class="fa fa-save" @click="saveHoso">{`stt + 1`}</i>
-              <i class="fa fa-stop-circle" @click="stop_ttdl">Bỏ</i>
-            </div>
-            <div class="col-md-1 dvtc"> input {`ttdl[id].donvithicong.dvtc`}</div>
-            <div class="col-md-1 sodot">input {`ttdl[id].dot.sodot`}</div>
-            <div class="col-md-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
-            <div class="col-md-4 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
-            <div class="col-md-4 diachi">{`ttdl[id].khachhang.diachi`}</div>
-          </div>
-          <div v-else class="row noidung border border-dark">
-            <div class="col-md-1 crud">
-              <div class="col-md-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
-              <div @click.preven="edit_ttdl">
-                <i class="fa fa-edit"></i>
-                {`stt + 1`}
-              </div>
+
+  <hr style="border: 1px solid black;">
+  <div class="phannoidung">
+    <div class="row p-0 m-0">
+      <div class="col p-1 m-0">
+        <div class="noidung w-100 p-0 m-0" v-for="(id, stt) in luid" :key="stt">
+          <div v-if="ttdl[id].isedit" class="row p-0 m-0 noidung bg-warning">
+            <div class="col-1 crud">
+              <div class="col-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
+              <button type="button" class="m-0 p-0 btn btn-sm btn-success" @click="save_ttdl">
+                <i class="fa fa-save">{`stt + 1`}</i>
+              </button>
+              <button type="button" class="m-0 p-0 btn btn-sm btn-danger" @click="stop_ttdl">
+                <i class="fa fa-stop-circle">Bỏ</i>
+              </button>
+
 
             </div>
-            <div class="col-md-1 dvtc">{`ttdl[id].donvithicong.dvtc`}</div>
-            <div class="col-md-1 sodot">{`ttdl[id].dot.sodot`}</div>
-            <div class="col-md-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
-            <div class="col-md-4 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
-            <div class="col-md-4 diachi">{`ttdl[id].khachhang.diachi`}</div>
+            <div class="col-1 dvtc"> input {`ttdl[id].donvithicong.dvtc`}</div>
+            <div class="col-1 sodot">input {`ttdl[id].dot.sodot`}</div>
+            <div class="col-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
+            <div class="col-4 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
+            <div class="col-4 diachi">{`ttdl[id].khachhang.diachi`}</div>
+          </div>
+          <div v-else class="row p-0 m-0 noidung border border-dark">
+            <div class="col-1 crud">
+              <div class="col-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
+              <button type="button" class="m-0 p-0 btn btn-sm btn-info" @click="edit_ttdl">
+                <i class="fa fa-edit">{`stt + 1`}</i>
+              </button>
+            </div>
+            <div class="col-1 dvtc">{`ttdl[id].donvithicong.dvtc`}</div>
+            <div class="col-1 sodot">{`ttdl[id].dot.sodot`}</div>
+            <div class="col-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
+            <div class="col-4 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
+            <div class="col-4 diachi">{`ttdl[id].khachhang.diachi`}</div>
           </div>
         </div>
       </div>
-      <div class='truot-dung d-flex flex-column justify-content-between' style="width: 10px;">
+      <div class='truot-dung col-auto d-flex flex-column justify-content-between' style="width: 20px;">
         <div class="truot-dung flex-grow-1">
-          <input class="h-100 w-100" type="range" min="0" :max="tongtin" step="1" v-model="curtin" style="-webkit-appearance: slider-vertical;
+          <input class="h-100 w-50" type="range" min="0" :max="tongtin" step="1" v-model="curtin" style="-webkit-appearance: slider-vertical;
         transform: rotate(180deg);
         outline: none;">
         </div>
       </div>
-    </div>
-  </div>
-
-
-
-
-
-  <hr class="border border-dark">
-  <div class="container-fluid">
-    <div> ottdl= {`Object.keys(ottdl)`}</div>
-    <div> ttdl= {`JSON.stringify(ttdl)`}</div>
-    <div> tongtrang= {`tongtrang`} tin1trang= {`tin1trang`} tongtin= {`tongtin`}</div>
-    <div> tindau= {`tindau`} tincuoi={`tincuoi`}</div>
-    <div> luid = {`luid`}</div>
-  </div>
-  <hr class="border border-dark">
-  <div class="container-fluid">
-    <div class="col-auto">
-      <button class="btn btn-primary" @click="saveDataTest()">
-        <i class="fa fa-add"></i>
-        Save data test
-      </button>
-    </div>
-    <div class="col-auto">
-      <button class="btn btn-primary" @click="loadKhach()">
-        <i class="fa fa-add"></i>
-        Add oKhach
-      </button>
-    </div>
-    <div class="col-auto">
-      <button class="btn btn-primary" @click="loadHoso">
-        <i class="fa fa-add"></i>
-        Add oHoso
-      </button>
     </div>
   </div>
 </main>

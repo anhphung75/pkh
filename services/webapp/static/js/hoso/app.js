@@ -450,9 +450,15 @@ var app = new Vue({
     },
     edit_ttdl() {
       this.ttdl[this.curtin].isedit = true;
+      this.ttdl = this.ttdl;
+      console.log('edit_ttdl this.ttdl[this.curtin].isedit=',
+        this.ttdl[this.curtin].isedit)
     },
     stop_ttdl() {
       this.ttdl[this.curtin].isedit = false;
+    },
+    save_ttdl() {
+
     },
   },
   computed: {
