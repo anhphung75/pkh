@@ -69,39 +69,37 @@
   <div class="phannoidung">
     <div class="row p-0 m-0">
       <div class="col p-1 m-0">
-        <div class="noidung w-100 p-0 m-0" v-for="(id, stt) in luid" :key="stt">
-          <div v-if="ttdl[id].isedit" class="row p-0 m-0 noidung bg-warning">
-            <div class="col-1 crud">
-              <div class="col-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
+        <div class="row w-100 p-0 m-0" v-for="(id, stt) in luid" :key="stt">
+          <div class="col-1 crud text-break">
+            {`ttdl[id].hoso.mahoso`}
+            <div v-if="ttdl[id].isedit" class="bg-warning">
               <button type="button" class="m-0 p-0 btn btn-sm btn-success" @click="save_ttdl">
                 <i class="fa fa-save">{`stt + 1`}</i>
               </button>
               <button type="button" class="m-0 p-0 btn btn-sm btn-danger" @click="stop_ttdl">
                 <i class="fa fa-stop-circle">Bỏ</i>
               </button>
-
-
             </div>
-            <div class="col-1 dvtc"> input {`ttdl[id].donvithicong.dvtc`}</div>
-            <div class="col-1 sodot">input {`ttdl[id].dot.sodot`}</div>
-            <div class="col-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
-            <div class="col-4 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
-            <div class="col-4 diachi">{`ttdl[id].khachhang.diachi`}</div>
-          </div>
-          <div v-else class="row p-0 m-0 noidung border border-dark">
-            <div class="col-1 crud">
-              <div class="col-1 mahoso">{`ttdl[id].hoso.mahoso`}</div>
+            <div v-else class="bg-sucess">
               <button type="button" class="m-0 p-0 btn btn-sm btn-info" @click="edit_ttdl">
                 <i class="fa fa-edit">{`stt + 1`}</i>
               </button>
             </div>
-            <div class="col-1 dvtc">{`ttdl[id].donvithicong.dvtc`}</div>
-            <div class="col-1 sodot">{`ttdl[id].dot.sodot`}</div>
-            <div class="col-1 sohoso">{`ttdl[id].hoso.sohoso`}</div>
-            <div class="col-4 khachhang">{`ttdl[id].khachhang.khachhang`}</div>
-            <div class="col-4 diachi">{`ttdl[id].khachhang.diachi`}</div>
+          </div>
+          <input class="col dvtc" type="text" v-model="ttdl[id].donvithicong.dvtc"
+            :readonly="ttdl[id].isedit != true" />
+          <input class="col sodot text-wrap" type="text" v-model="ttdl[id].dot.sodot"
+            :readonly="ttdl[id].isedit != true" />
+          <input class="col sohoso text-wrap" type="text" v-model="ttdl[id].hoso.sohoso"
+            :readonly="ttdl[id].isedit != true" />
+          <input class="col khachhang text-wrap text-break" type="text" v-model="ttdl[id].khachhang.khachhang"
+            :readonly="ttdl[id].isedit != true" />
+          <div class="col diachi text-wrap" type="text" :contenteditable="ttdl[id].isedit != true"
+            v-model="ttdl[id].khachhang.diachi">
+            {`ttdl[id].khachhang.diachi`}
           </div>
         </div>
+
       </div>
       <div class='truot-dung col-auto d-flex flex-column justify-content-between' style="width: 20px;">
         <div class="truot-dung flex-grow-1">
