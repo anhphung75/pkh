@@ -116,12 +116,13 @@ var app = new Vue({
     },
     loadOttdl() {
       this.ottdl = {};
-      var w = new Worker(this.url_worker, { type: "module" });
-      w.onerror = (e) => { console.log("err on loadOttdl ", e.message) };
+      var w = new Worker(this.url_worker);
+      w.onerror = (err) => { console.log("err on loadOttdl ", err.message) };
       w.onmessage = (e) => {
-        this.ottdl = e.data;
+        this.ottdl = JSON.parse(e.data);
+        console.log("this.ottdl= ", e.data);
       };
-      w.postMessage({ load: this.otim_ext });
+      w.postMessage(JSON.stringify({ load: this.otim_ext }));
     },
   },
   computed: {

@@ -1,19 +1,13 @@
-//import { db, loadDb } from "./db.js";
-import { delay } from "../utils/thoigian.js"
-import { suaStr } from "../utils/web.js"
-
-
 //khai bao bien global
-const db = {
+var db = {
   name: 'Cntđ',
   version: 1,
   engine: null,
   drop: async () => {
-    let request = await window.indexedDB.deleteDatabase(this.name);
+    let request = await indexedDB.deleteDatabase(this.name);
     request.onerror = err => {
       console.log('Error drop db', err);
     };
-    await window.location.reload();
   },
   clearstore: async (storename = 'hoso') => {
     try {
@@ -26,6 +20,33 @@ const db = {
     };
     //await window.location.reload();
   }
+};
+
+var delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+var oData = {
+  hoso: {},
+  khachhang: {},
+  dot: {},
+  donvithicong: {}
+};
+var otim = {};
+
+
+var suaStr = (ss = '') => {
+  try {
+    //loai bo 2 space, tabs, newlines
+    ss = ss.replace(/\s\s+/g, ' ');
+    //loai bo 2 space
+    ss = ss.replace(/  +/g, ' ');
+    //thay NumpadSubtract = Minus
+    ss = ss.replace(/-+/g, '-');
+    //loai bo 2 Minus --
+    ss = ss.replace(/--+/g, '-');
+    ss = ss.replace(/, ,/g, ',');
+    ss = ss.replace(/,,+/g, ',');
+  } catch (err) { };
+  return ss;
 };
 
 
@@ -46,7 +67,7 @@ var loadDb = async () => {
   };
   request.onupgradeneeded = e => {
     db.engine = e.target.result;
-    if (event.oldVersion < 1) {
+    if (e.oldVersion < 1) {
       map = db.engine.createObjectStore('map', { keyPath: "mahoso" });
       //map.createIndex("madot", "madot", { unique: false });
       //map.createIndex("makhachhang", "makhachhang", { unique: false });
@@ -69,13 +90,6 @@ var loadDb = async () => {
 // init database
 loadDb();
 
-var oData = {
-  hoso: {},
-  khachhang: {},
-  dot: {},
-  donvithicong: {}
-};
-
 
 var loadHoso = async (uuid) => {
   var bang = 'hoso';
@@ -85,7 +99,7 @@ var loadHoso = async (uuid) => {
     .openCursor(IDBKeyRange.only(uuid));
   request.onerror = e => {
     oData[bang] = {};
-    console.log('Error loadDot: ', e);
+    console.log('Error loadHoso: ', e);
   };
   request.onsuccess = e => {
     var cursor = e.target.result;
@@ -157,7 +171,7 @@ var loadDvtc = async (uuid) => {
 };
 
 
-var isData = (otim) => {
+var isData = () => {
   var rec, k, s;
   var keybo = {
     lastupdate: true,
@@ -194,7 +208,52 @@ var isData = (otim) => {
   } catch (err) { return false; }
 };
 
-
+var loadoData = () => {
+  var idb = indexedDB.open(db.name, db.version);
+  idb.onerror = e => {
+    console.log('Error opening db', e);
+  };
+  idb.onsuccess = e => {
+    console.log('onsuccess loadoDat idb');
+    var bang = 'map';
+    var engine = e.target.result;
+    var request = engine
+      .transaction(bang, 'readonly')
+      .objectStore(bang)
+      .openCursor();
+    request.onerror = e => {
+      console.log('Error worker loadoData: ', e);
+    };
+    request.onsuccess = e => {
+      var cursor = e.target.result;
+      console.log('onsuccess loadoDat request cursor ', cursor);
+      if (cursor) {
+        console.log('onsuccess loadoDat cursor', e);
+        var mahoso = cursor.value.mahoso || '';
+        var makhachhang = cursor.value.makhachhang || '';
+        var madot = cursor.value.madot || '';
+        var madvtc = cursor.value.madvtc || '';
+        Promise.all([
+          loadHoso(mahoso),
+          loadKhach(makhachhang),
+          loadDot(madot),
+          loadDvtc(madvtc)
+        ]).catch(err => { console.log("Error in Promise.all ", err) })
+          .then(() => {
+            console.log('worker loadOData ok on {mahoso: ', this.mahoso, ', makhachhang: ', this.makhachhang, 'madot: ', this.madot, 'madvtc: ', this.madvtc, '}');
+          });
+        //view test
+        //delay(1);
+        console.log('oData truoc filter =', oData);
+        if (isData(otim)) {
+          console.log('oData sau filter =', oData);
+          self.postMessage(JSON.stringify(oData));
+        }
+        cursor.continue();
+      };
+    };
+  };
+};
 
 
 
@@ -248,64 +307,19 @@ var save = async (recs) => {
   };
 };
 
-// rest
-var gom = () => {
-
-};
-var doc = () => {
-
-};
-var moi = () => {
-
-};
-var sua = () => {
-
-};
-var xoa = () => {
-
-};
 
 //main prog
 self.onerror = (e) => { console.log("err on worker hoso_khachhang ", e) };
-//{load:{...dstim}}
-self.onmessage = (e) => {
-  if ('load' in e.data) {
-    loadDb();
-    var otim = e.data['load'];
-    var bang = 'map';
-    var request = db.engine
-      .transaction(bang, 'readonly')
-      .objectStore(bang)
-      .openCursor();
-    request.onerror = e => {
-      console.log('Error worker loadOttdl: ', e);
-    };
-    request.onsuccess = e => {
-      var mahoso, makhachhang, madot, madvtc;
-      var cursor = e.target.result;
-      if (cursor) {
-        mahoso = cursor.value.mahoso || '';
-        makhachhang = cursor.value.makhachhang || '';
-        madot = cursor.value.madot || '';
-        madvtc = cursor.value.madvtc || '';
-        Promise.all([
-          loadHoso(mahoso),
-          loadKhach(makhachhang),
-          loadDot(madot),
-          loadDvtc(madvtc)
-        ]).catch(err => { console.log("Error in Promise.all ", err) })
-          .then(() => {
-            console.log('worker loadOttdl ok on {mahoso: ', this.mahoso, ', makhachhang: ', this.makhachhang, 'madot: ', this.madot, 'madvtc: ', this.madvtc, '}');
-          });
-        //view test
-        //delay(1);
-        if (isData(otim)) {
-          self.postMessage(oData);
-        }
-        cursor.continue();
-      };
-    };
-    //request.close();
-    //self.terminate();
+
+
+self.onmessage = async (e) => {
+  var data = e.data;
+  console.log("worker data= ", data);
+  try {
+    data = JSON.parse(data);
+  } catch (err) { };
+  if ('load' in data) {
+    otim = data['load'];
+    await loadoData();
   };
 };
