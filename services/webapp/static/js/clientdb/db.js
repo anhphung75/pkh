@@ -24,7 +24,7 @@ const db = {
 };
 
 var loadDb = async () => {
-  var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
+  //var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
   if (!indexedDB) {
     console.log('Trình duyệt không hỗ trợ IndexedDB');
     return;

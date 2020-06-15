@@ -40,6 +40,8 @@ var suaStr = (ss = '') => {
     ss = ss.replace(/-+/g, '-');
     //loai bo 2 Minus --
     ss = ss.replace(/--+/g, '-');
+    ss = ss.replace(/, ,/g, ',');
+    ss = ss.replace(/,,+/g, ',');
   } catch (err) { };
   return ss;
 };

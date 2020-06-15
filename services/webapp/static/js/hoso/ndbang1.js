@@ -1,5 +1,5 @@
 Vue.component('nd-bang1', {
-  props: ['rec'],
+  props: ['rec','stt'],
   template: `
   <div v-if="isedit" class="row m-0 p-0 bg-warning">
     <div class="col-1 crud text-break">

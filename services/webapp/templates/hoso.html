@@ -1,16 +1,15 @@
 {% extends "base.html" %}
 
 {% block js %}
-<script src="{{ static_url("js/refs/jsstore.min.js") }}"></script>
-<script src="{{ static_url("js/refs/jsstore.worker.min.js") }}"></script>
-<script src="{{ static_url("js/hoso/menu.js") }}"></script>
 <script src="{{ static_url("js/hoso/app.js") }}" type="module"></script>
+<script src="{{ static_url("js/hoso/ndbang1.js") }}" type="module"></script>
 {% end %}
 
 
 
 {% block app %}
 <main class="m-0 p-0 h-100 w-100 border border-primary">
+  <div class='d-none'>{`url_worker="{{ static_url('js/clientdb/hoso_khachhang.js') }}"`}</div>
   <div class="phan-tim-kiem">
     <div class="row m-0 p-0">
       <input class="col" type="search" v-model="stim" @keyup="tim_keyup"
@@ -20,6 +19,7 @@
       <div class="col border border-primary">
         vung otim {`JSON.stringify(otim)`}
       </div>
+
       <div class="col-1">
         <div class="container">
           <button class="btn btn-danger btn-small m-0" @click="clear_otim">
@@ -69,37 +69,9 @@
   <div class="phannoidung">
     <div class="row p-0 m-0">
       <div class="col p-1 m-0">
-        <div class="row w-100 p-0 m-0" v-for="(id, stt) in luid" :key="stt">
-          <div class="col-1 crud text-break">
-            {`ttdl[id].hoso.mahoso`}
-            <div v-if="ttdl[id].isedit" class="bg-warning">
-              <button type="button" class="m-0 p-0 btn btn-sm btn-success" @click="save_ttdl">
-                <i class="fa fa-save">{`stt + 1`}</i>
-              </button>
-              <button type="button" class="m-0 p-0 btn btn-sm btn-danger" @click="stop_ttdl">
-                <i class="fa fa-stop-circle">Bỏ</i>
-              </button>
-            </div>
-            <div v-else class="bg-sucess">
-              <button type="button" class="m-0 p-0 btn btn-sm btn-info" @click="edit_ttdl">
-                <i class="fa fa-edit">{`stt + 1`}</i>
-              </button>
-            </div>
-          </div>
-          <input class="col dvtc" type="text" v-model="ttdl[id].donvithicong.dvtc"
-            :readonly="ttdl[id].isedit != true" />
-          <input class="col sodot text-wrap" type="text" v-model="ttdl[id].dot.sodot"
-            :readonly="ttdl[id].isedit != true" />
-          <input class="col sohoso text-wrap" type="text" v-model="ttdl[id].hoso.sohoso"
-            :readonly="ttdl[id].isedit != true" />
-          <input class="col khachhang text-wrap text-break" type="text" v-model="ttdl[id].khachhang.khachhang"
-            :readonly="ttdl[id].isedit != true" />
-          <div class="col diachi text-wrap" type="text" :contenteditable="ttdl[id].isedit != true"
-            v-model="ttdl[id].khachhang.diachi">
-            {`ttdl[id].khachhang.diachi`}
-          </div>
+        <div class="w-100 p-0 m-0" v-for="(id, stt) in luid" :key="stt">
+          <nd-bang1 rec="ttdl[id]" stt="stt"></nd-bang1>
         </div>
-
       </div>
       <div class='truot-dung col-auto d-flex flex-column justify-content-between' style="width: 20px;">
         <div class="truot-dung flex-grow-1">
