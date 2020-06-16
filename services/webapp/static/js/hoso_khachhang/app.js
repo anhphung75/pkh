@@ -21,6 +21,7 @@ var app = new Vue({
       curbang: 0,
       tongbang: 3,
       url_worker: '',
+      url_wsHoso: '',
     }
   },
   async created() {
@@ -41,7 +42,7 @@ var app = new Vue({
           w = undefined;
         }
       } catch (err) { }
-      w = new Worker(this.url_worker);
+      w = new Worker(this.url_wsHoso, { type: 'module' });
       w.onerror = (err) => {
         console.log("err on saveDataTest ", err.message)
       }
@@ -49,12 +50,15 @@ var app = new Vue({
         console.log("worker say = ", e.data);
       }
       var dlgoc = { ...test.hoso };
-      var dulieu = {}
-      for (var k in dlgoc) {
-        dulieu[k] = { hoso: dlgoc[k] };
-      }
-      console.log('dulieu= ', dulieu)
-      w.postMessage({ save: dulieu })
+      var dprog = {
+        savelist: {
+          dbname: 'Cntđ',
+          dbversion: 1,
+          data: test.hoso,
+        }
+      };
+      console.log('dulieu= ', test.hoso)
+      w.postMessage(dprog)
     },
     add_otim() {
       if (this.stim.length > 0) {

@@ -10,13 +10,13 @@ var isObjEmpty = (obj) => {
   return true;
 };
 
-var any2obj = (anyobj) => {
-  try {
-    anyobj = JSON.parse(anyobj);
-  } catch (err) {
-    return anyobj;
+var any2obj = (sdata) => {
+  if (typeof sdata === 'string') {
+    let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+    sdata = data.replace(/'/g, '"');
+    return JSON.parse(sdata);
   }
-  return anyobj;
+  return sdata;
 };
 
 var ld2dd = (recs) => {
