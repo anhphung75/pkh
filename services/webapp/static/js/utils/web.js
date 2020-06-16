@@ -10,6 +10,15 @@ var isObjEmpty = (obj) => {
   return true;
 };
 
+var any2obj = (anyobj) => {
+  try {
+    anyobj = JSON.parse(anyobj);
+  } catch (err) {
+    return anyobj;
+  }
+  return anyobj;
+};
+
 var ld2dd = (recs) => {
   let orecs = {};
   if (Array.isArray(recs)) {
@@ -46,4 +55,4 @@ var suaStr = (ss = '') => {
   return ss;
 };
 
-export { getCookie, isObjEmpty, ld2dd, suaStr };
+export { getCookie, isObjEmpty, ld2dd, suaStr, any2obj };

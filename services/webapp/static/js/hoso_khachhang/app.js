@@ -1,42 +1,5 @@
-
 import { data_test as test } from "../data_test.js"
-//import { db, loadDb, getCookie } from "../clientdb.js";
-//loadDb();
-const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-var ld2dd = (recs) => {
-  let orecs = {};
-  if (Array.isArray(recs)) {
-    try {
-      let dai = recs.length || 0;
-      for (let i = 0; i < dai; i++) {
-        orecs[i] = recs[i];
-      };
-      return orecs;
-    } catch (err) {
-      console.log('Error ld2dd ', err.message);
-    };
-  };
-  if (typeof recs === 'object') {
-    return recs;
-  } else {
-    return orecs;
-  };
-};
-
-var suaStr = (ss = '') => {
-  try {
-    //loai bo 2 space, tabs, newlines
-    ss = ss.replace(/\s\s+/g, ' ');
-    //loai bo 2 space
-    ss = ss.replace(/  +/g, ' ');
-    //thay NumpadSubtract = Minus
-    ss = ss.replace(/-+/g, '-');
-    //loai bo 2 Minus --
-    ss = ss.replace(/--+/g, '-');
-  } catch (err) { };
-  return ss;
-};
 
 var app = new Vue({
   el: '#trangxem',
@@ -71,11 +34,27 @@ var app = new Vue({
   },
   methods: {
     saveDataTest() {
-      this.saveMap(test.map);
-      this.saveHoso(test.hoso);
-      this.saveKhach(test.khachhang);
-      this.saveDot(test.dot);
-      this.saveDvtc(test.donvithicong);
+      var w;
+      try {
+        if (w) {
+          w.terminate();
+          w = undefined;
+        }
+      } catch (err) { }
+      w = new Worker(this.url_worker);
+      w.onerror = (err) => {
+        console.log("err on saveDataTest ", err.message)
+      }
+      w.onmessage = (e) => {
+        console.log("worker say = ", e.data);
+      }
+      var dlgoc = { ...test.hoso };
+      var dulieu = {}
+      for (var k in dlgoc) {
+        dulieu[k] = { hoso: dlgoc[k] };
+      }
+      console.log('dulieu= ', dulieu)
+      w.postMessage({ save: dulieu })
     },
     add_otim() {
       if (this.stim.length > 0) {
@@ -115,11 +94,22 @@ var app = new Vue({
       };
     },
     loadOttdl() {
+      var w;
+      try {
+        if (w) {
+          w.terminate();
+          w = undefined;
+        }
+      } catch (err) { };
       this.ottdl = {};
-      var w = new Worker(this.url_worker);
+      w = new Worker(this.url_worker);
       w.onerror = (err) => { console.log("err on loadOttdl ", err.message) };
       w.onmessage = (e) => {
-        this.ottdl = JSON.parse(e.data);
+        if (typeof recs === 'string') {
+          this.ottdl = JSON.parse(e.data);
+        } else {
+          this.ottdl = e.data;
+        }
         console.log("this.ottdl= ", e.data);
       };
       w.postMessage(JSON.stringify({ load: this.otim_ext }));

@@ -1,15 +1,19 @@
 {% extends "base.html" %}
 
 {% block js %}
-<script src="{{ static_url("js/hoso/app.js") }}" type="module"></script>
-<script src="{{ static_url("js/hoso/ndbang1.js") }}" type="module"></script>
+<script src="{{ static_url("js/hoso_khachhang/app.js") }}" type="module"></script>
+<script src="{{ static_url("js/hoso_khachhang/ndbang1.js") }}" type="module"></script>
 {% end %}
 
-
+{% block urlmap %}
+<div>
+  {`url_worker="{{ static_url('js/hoso_khachhang/worker.js') }}"`}
+</div>
+{% end %}
 
 {% block app %}
 <main class="m-0 p-0 h-100 w-100 border border-primary">
-  <div class='d-none'>{`url_worker="{{ static_url('js/clientdb/hoso_khachhang.js') }}"`}</div>
+
   <div class="phan-tim-kiem">
     <div class="row m-0 p-0">
       <input class="col" type="search" v-model="stim" @keyup="tim_keyup"

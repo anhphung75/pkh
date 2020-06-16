@@ -30,6 +30,9 @@
         </div>
       </div>
     </div>
+    <div d-print-none d-none id="urlmap">
+      {% block urlmap %}{% end %}
+    </div>
   </div>
   <!-- script  -->
   <script src="{{ static_url("js/refs/axios.min.js") }}"></script>

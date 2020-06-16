@@ -51,7 +51,6 @@ var suaStr = (ss = '') => {
 
 
 var loadDb = async () => {
-  //var indexedDB = window.indexedDB || window.webkitIndexedDB || window.mozIndexedDB || window.OIndexedDB || window.msIndexedDB;
   if (!indexedDB) {
     console.log('Trình duyệt không hỗ trợ IndexedDB');
     return;
@@ -310,7 +309,6 @@ var save = async (recs) => {
 
 //main prog
 self.onerror = (e) => { console.log("err on worker hoso_khachhang ", e) };
-
 
 self.onmessage = async (e) => {
   var data = e.data;
