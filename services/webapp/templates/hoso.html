@@ -7,7 +7,7 @@
 
 {% block urlmap %}
 <div>
-  {`url_wsHoso="{{ static_url('js/sw/hoso.js') }}"`}
+  {`url_ws.hoso="{{ static_url('js/ttxl/hoso.js') }}"`}
   {`url_worker="{{ static_url('js/hoso_khachhang/worker.js') }}"`}
 </div>
 {% end %}
@@ -23,7 +23,7 @@
     <div class="row m-0 p-0">
       <div class="col border border-primary">
         vung otim {`JSON.stringify(otim)`}
-        url_wsHoso {`url_wsHoso`}
+        url_ws.hoso {`url_ws.hoso`}
       </div>
 
       <div class="col-1">
@@ -92,9 +92,15 @@
   <hr class="border border-dark">
   <div>
     <div class="col-auto">
-      <button class="btn btn-primary" @click="saveDataTest()">
+      <button class="btn btn-primary" @click="loadHoso()">
         <i class="fa fa-add"></i>
-        Save data test
+        Load Hoso
+      </button>
+    </div>
+    <div class="col-auto">
+      <button class="btn btn-primary" @click="saveHoso()">
+        <i class="fa fa-save"></i>
+        Save Hoso
       </button>
     </div>
 

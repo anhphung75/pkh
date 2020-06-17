@@ -6,10 +6,20 @@ var app = new Vue({
   delimiters: ["{`", "`}"],
   data() {
     return {
+      csdl: 'Cntđ',
+      sohieu: 1,
       namlv: 2020,
       showMenu: false,
       showotim: false,
       ottdl: {},
+      oHoso: {},
+      oDot: {},
+      oKhach: {},
+      oDvtc: {},
+      mahoso: '2020hs000003',
+      madot: '2020GMMP002',
+      madvtc: '2020dvtc001',
+      makhachhang: '2020kh000002',
       //search
       stim: '',
       otim: {},
@@ -21,7 +31,8 @@ var app = new Vue({
       curbang: 0,
       tongbang: 3,
       url_worker: '',
-      url_wsHoso: '',
+      url_ws: { hoso: '', dot: '', dvtc: '', khach: '' },
+
     }
   },
   async created() {
@@ -34,6 +45,49 @@ var app = new Vue({
     // await this.odbHoso();
   },
   methods: {
+    loadHoso() {
+      var w;
+      try {
+        if (w) {
+          w.terminate();
+          w = undefined;
+        }
+      } catch (err) { };
+      w = new Worker(this.url_ws.hoso, { type: 'module' });
+      w.onerror = (err) => {
+        console.log("err on loadHoso ", err.message)
+      };
+      w.onmessage = (e) => {
+        console.log("worker say loadHoso= ", e.data);
+        this.oHoso = e.data || {};
+      };
+      var dprog = {
+        nap: {
+          csdl: this.csdl,
+          sohieu: this.sohieu,
+          mahoso: this.mahoso,
+        }
+      };
+      w.postMessage(dprog)
+    },
+    saveHoso(rec) {
+      var w = new Worker(this.url_ws.hoso, { type: 'module' });
+      w.onerror = (err) => {
+        console.log("err on saveHoso ", err.message)
+      };
+      w.onmessage = (e) => {
+        console.log("worker say saveHoso= ", e.data);
+      };
+      rec = test.hoso[2];
+      var dprog = {
+        luu: {
+          csdl: this.csdl,
+          sohieu: this.sohieu,
+          dl: rec,
+        }
+      };
+      w.postMessage(dprog)
+    },
     saveDataTest() {
       var w;
       try {
@@ -41,22 +95,28 @@ var app = new Vue({
           w.terminate();
           w = undefined;
         }
-      } catch (err) { }
+      } catch (err) { };
       w = new Worker(this.url_wsHoso, { type: 'module' });
       w.onerror = (err) => {
         console.log("err on saveDataTest ", err.message)
-      }
+      };
       w.onmessage = (e) => {
         console.log("worker say = ", e.data);
-      }
-      var dlgoc = { ...test.hoso };
+      };
+      //dprog = {
+      //  save: {
+      //    csdl: '', sohieu: 1,
+      //    ttdl: [{ mahoso: '', ngaylendot: '' }] hoac mahoso='', dl={ mahoso: '', ngaylendot: '' }
+      //  }
+      //};
       var dprog = {
         savelist: {
-          dbname: 'Cntđ',
-          dbversion: 1,
-          data: test.hoso,
+          csdl: 'Cntđ',
+          sohieu: 1,
+          ttdl: test.hoso,
         }
       };
+
       console.log('dulieu= ', test.hoso)
       w.postMessage(dprog)
     },

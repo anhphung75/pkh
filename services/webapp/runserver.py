@@ -91,10 +91,10 @@ class Api1108_Hoso_Rest(ApiBase):
     def post(self, namhoso):
         message = self.request.body
         parsed = tornado.escape.json_decode(message)
-        #event = parsed['event']
+        # event = parsed['event']
         data = parsed['data']
         print('ApiRest post data from client body={}'.format(str(data)))
-        #data = self.get_argument("data")
+        # data = self.get_argument("data")
 
         # print('ApiRest post data from client namhoso={} id={} event={} data={}'.format(
         #    namhoso, id, event, str(data)))
@@ -237,16 +237,19 @@ db = None
 
 def main():
     # for win10
-    # asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-    #tornado.options.options.logging = None
+    # tornado.options.options.logging = None
     # tornado.options.parse_command_line()
     # read args to run
     parser = argparse.ArgumentParser(allow_abbrev=False)
-    parser.add_argument('--db_user', '-dbuser',  type=str, default='pkh.web')
+    parser.add_argument('--db_user', '-dbuser',
+                        type=str, default='pkh.web')
     parser.add_argument('--db_pwd', '-dbpwd',  type=str, default='pkh.web')
-    parser.add_argument('--db_host', '-dbhost',  type=str, default='pkh.web')
-    parser.add_argument('--db_name', '-dbname',  type=str, default='pkh.web')
+    parser.add_argument('--db_host', '-dbhost',
+                        type=str, default='pkh.web')
+    parser.add_argument('--db_name', '-dbname',
+                        type=str, default='pkh.web')
     parser.add_argument('--port', '-p',  type=int, default=8000)
     thamso = parser.parse_args()
 
