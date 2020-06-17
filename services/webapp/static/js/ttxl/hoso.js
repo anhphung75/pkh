@@ -97,6 +97,11 @@ var luu = async (csdl, sohieu, rec) => {
   if (sgoc === '{}') {
     return;
   }
+  if ('status' in rec) {
+    if (rec.status.toLowerCase().startsWith("fin")) {
+      return;
+    }
+  }
   var utcid = Date.now().toString();
   try {
     rec[uid] = rec[uid] != null ? rec[uid].toString() : '';
@@ -166,10 +171,6 @@ self.onmessage = (e) => {
     } else {
       if ('dl' in dl) {
         rec = dl.dl || {};
-        var kq = nap(csdl, sohieu, rec[uid]);
-        kq.then(a => { console.log("nap truoc save oData=", oData, ' kq=', a); })
-        console.log("nap truoc save sau kq.then oData=", oData, 'kq=', kq);
-        console.log("worker say prog= 'luu' dl=", dl);
         luu(csdl, sohieu, rec);
       }
       if ('ttdl' in dl) {
@@ -181,5 +182,5 @@ self.onmessage = (e) => {
       }
     }
   }
-
+  self.close();
 };
