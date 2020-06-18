@@ -77,7 +77,7 @@ var gom = async (csdl, bang) => {
 var nap = async (csdl, bang) => {
   try {
     var uuid = bang.nap != null ? bang.nap.toString() : '';
-    console.log('uuid = ', uuid);
+    ttdl.postMessage({ "test uuid": uuid });
     var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
     yc.onsuccess = e => {
       var ch = e.target.result
@@ -276,9 +276,8 @@ self.onconnect = (e) => {
         xoa(csdl, bang);
       };
       if (k in onap) {
-        bang['nap'] = bang[k];
+        bang.nap = bang[k];
         delete bang[k];
-        console.log("ttdl say nap prog");
         nap(csdl, bang);
       };
       if (k in oluu) {
