@@ -54,71 +54,84 @@ var app = new Vue({
       w = undefined;
     },
     loadHoso() {
-      if (typeof (Worker) === "undefined") {
+      if (typeof (SharedWorker) === "undefined") {
         console.log("Xin lỗi, trình duyệt không tương thích ..!")
         return;
       }
-      var w = new Worker(this.url_ws.bangbieu, { type: 'module' });
-      w.onerror = (err) => {
+      var w = new SharedWorker(this.url_ws.bangbieu, { type: 'module' });
+      w.port.start();
+      const sw = w.port;
+      sw.onerror = (err) => {
         console.log("err on loadHoso ", err.message);
       };
-      w.onmessage = (e) => {
+      sw.onmessage = (e) => {
         console.log("worker say loadHoso= ", e.data);
         this.oHoso = e.data || {};
         console.log("worker typeof= ", typeof w);
       };
       var dprog = {
-        nap: {
-          csdl: this.csdl,
+        csdl: {
+          ten: this.csdl,
           sohieu: this.sohieu,
-          bang: 'hoso',
-          //uuid: this.mahoso,
-          gom: 2020,
+        },
+        bang: {
+          ten: 'hoso',
+          nap: this.mahoso,
+          gom: 2022,
         }
       };
-      w.postMessage(dprog);
+      sw.postMessage(dprog);
     },
     saveHoso(rec) {
-      if (typeof (Worker) === "undefined") {
+      if (typeof (SharedWorker) === "undefined") {
         console.log("Xin lỗi, trình duyệt không tương thích ..!")
         return;
       }
-      var w = new Worker(this.url_ws.bangbieu, { type: 'module' });
-      w.onerror = (err) => {
+      var w = new SharedWorker(this.url_ws.bangbieu, { type: 'module' });
+      w.port.start();
+      const sw = w.port;
+      sw.onerror = (err) => {
         console.log("err on saveHoso ", err.message)
       };
-      w.onmessage = (e) => {
+      sw.onmessage = (e) => {
         console.log("worker say saveHoso= ", e.data);
       };
       rec = test.hoso;
       var dprog = {
-        luu: {
-          csdl: this.csdl,
-          sohieu: this.sohieu,
-          bang: 'hoso',
-          ttdl: rec,
+        csdl: {
+          ten: this.csdl,
+          sohieu: this.sohieu
+        },
+        bang: {
+          ten: 'hoso',
+          luunhom: rec,
+          //gom: 2020,}
         }
       };
-      w.postMessage(dprog)
+      sw.postMessage(dprog)
     },
     lastUid() {
-      if (typeof (Worker) === "undefined") {
+      if (typeof (SharedWorker) === "undefined") {
         console.log("Xin lỗi, trình duyệt không tương thích ..!")
         return;
       }
-      var w = new Worker(this.url_ws.bangbieu, { type: 'module' });
-      w.onmessage = (e) => {
+      var w = new SharedWorker(this.url_ws.bangbieu, { type: 'module' });
+      w.port.start();
+      const sw = w.port;
+      sw.onmessage = (e) => {
         console.log("worker say lastUid= ", e.data);
       };
       var dprog = {
-        info: {
-          csdl: this.csdl,
-          sohieu: this.sohieu,
-          bang: 'hoso',
-          firstuid: 2020,
+        csdl: {
+          ten: this.csdl,
+          sohieu: this.sohieu
+        },
+        bang: {
+          ten: 'hoso',
+          lastUid: 2020,
         }
       };
-      w.postMessage(dprog)
+      sw.postMessage(dprog)
     },
     saveDataTest() {
       var w;
@@ -271,7 +284,7 @@ var app = new Vue({
           }
         }
         var wOttdl = new Worker(this.url_ws.dulieu, { type: 'module' });
-        
+
       };
     },
   },
