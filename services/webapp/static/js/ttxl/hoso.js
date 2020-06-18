@@ -1,67 +1,90 @@
 import { any2obj, suaStr } from "./utils/web.js";
 import { delay } from "./utils/thoigian.js";
-const bang = 'hoso';
-const uid = 'mahoso';
-const uid0 = uid + 0;
+const lbang = {
+  hoso: ["mahoso", "mahoso0"],
+  dot: ["madot", "madot0"],
+  khachhang: ["makhachhang", "makhachhang0"],
+  donvithicong: ["madvtc", "madvtc0"],
+};
 var info, oData = {};
 
-var taodb = async (csdl, sohieu) => {
-  var db;
+var taodb = async (csdl, sohieu, bang) => {
   if (!indexedDB) {
     console.log('Trình duyệt không hỗ trợ IndexedDB');
     return;
   };
-  var yc = await indexedDB.open(csdl, sohieu);
-  yc.onerror = err => {
-    console.log('Error opening db', err);
-  };
-  yc.onsuccess = e => {
-    //db = e.target.result;
-    db = yc.result;
-    console.log('opening db');
-  };
-  yc.onupgradeneeded = e => {
-    db = e.target.result;
-    if (e.oldVersion < 1) {
-      var map = db.createObjectStore(bang, { keyPath: uid });
-      map.createIndex(uid0, uid0, { unique: false });
-    };
-    console.log('upgrade db');
-  };
-};
-
-var nap = async (csdl, sohieu, uuid) => {
   try {
     var yc = await indexedDB.open(csdl, sohieu);
     yc.onerror = err => {
-      console.log('Error opening db on nap ', uid, '=', uuid, ': ', err);
-      oData = {};
-      self.postMessage(oData);
+      console.log('Error opening db', err.mesasage);
+    };
+    yc.onsuccess = e => {
+      console.log('opening db');
+    };
+    yc.onupgradeneeded = e => {
+      var db = e.target.result;
+      if (e.oldVersion < 1) {
+        var map = db.createObjectStore(bang.ten, { keyPath: bang.uid });
+        map.createIndex(bang.uid0, bang.uid0, { unique: false });
+      };
+      console.log('upgrade db');
+    };
+  } catch (err) {
+    console.log('Error taodb', err.mesasage);
+  };
+};
+
+var nap = async (csdl, sohieu, bang) => {
+  try {
+    var yc = await indexedDB.open(csdl, sohieu);
+    yc.onerror = err => {
+      console.log('Error open nap ', bang.uid, '= ', bang.uuid, ': ', err.mesasage);
+      self.postMessage(null);
     };
     yc.onsuccess = e => {
       var ch = e.target.result
-        .transaction(bang, 'readonly')
-        .objectStore(bang)
-        .get(IDBKeyRange.only(uuid));
+        .transaction(bang.ten, 'readonly')
+        .objectStore(bang.ten)
+        .get(IDBKeyRange.only(bang.uuid));
       ch.onerror = err => {
-        console.log('Error yc on nap: ', err);
-        oData = {};
-        self.postMessage(oData);
+        console.log('Error nap getkey ', bang.uid, '= ', bang.uuid, ': ', err.mesasage);
+        self.postMessage(null);
       };
       ch.onsuccess = e => {
-        console.log('nap success hoso oData = ', oData);
-        oData = ch.result;
-        if (oData == null) {
-          oData = {};
-        }
-        self.postMessage(oData);
-        return oData;
+        console.log('Success nap ', bang.uid, '= ', bang.uuid);
+        self.postMessage(ch.result);
       };
     };
   } catch (err) {
-    console.log('Error catch on nap: ', err);
-    oData = {};
-    postMessage(oData);
+    console.log('Error prog nap ', bang.uid, '= ', bang.uuid, ': ', err.mesasage);
+    self.postMessage(null);
+  }
+};
+
+var xoa = async (csdl, sohieu, bang) => {
+  try {
+    var yc = await indexedDB.open(csdl, sohieu);
+    yc.onerror = err => {
+      console.log('Error open xoa ', bang.uid, '= ', bang.uuid, ': ', err.mesasage);
+      self.postMessage(null);
+    };
+    yc.onsuccess = e => {
+      var ch = e.target.result
+        .transaction(bang.ten, 'readwrite')
+        .objectStore(bang.ten)
+        .delete(IDBKeyRange.only(bang.uuid));
+      ch.onerror = err => {
+        console.log('Error xoa getkey ', bang.uid, '= ', bang.uuid, ': ', err.mesasage);
+        self.postMessage(null);
+      };
+      ch.onsuccess = e => {
+        console.log('Success xoa ', bang.uid, '= ', bang.uuid);
+        self.postMessage(ch.result);
+      };
+    };
+  } catch (err) {
+    console.log('Error prog xoa ', bang.uid, '= ', bang.uuid, ': ', err.mesasage);
+    self.postMessage(null);
   }
 };
 

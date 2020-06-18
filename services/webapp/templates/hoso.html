@@ -5,11 +5,9 @@
 <script src="{{ static_url("js/hoso_khachhang/ndbang1.js") }}" type="module"></script>
 {% end %}
 
-{% block urlmap %}
-<div>
-  {`url_ws.hoso="{{ static_url('js/ttxl/hoso.js') }}"`}
-  {`url_worker="{{ static_url('js/hoso_khachhang/worker.js') }}"`}
-</div>
+{% block url_ws %}
+{`url_ws.bangbieu="{{ static_url('js/ttxl/bangbieu.js') }}"`}
+{`url_ws.dulieu="{{ static_url('js/ttxl/dulieu.js') }}"`}
 {% end %}
 
 {% block app %}
@@ -23,7 +21,7 @@
     <div class="row m-0 p-0">
       <div class="col border border-primary">
         vung otim {`JSON.stringify(otim)`}
-        url_ws.hoso {`url_ws.hoso`}
+        url_ws.bangbieu {`url_ws.bangbieu`}
       </div>
 
       <div class="col-1">

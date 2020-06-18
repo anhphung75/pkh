@@ -31,7 +31,7 @@ var app = new Vue({
       curbang: 0,
       tongbang: 3,
       url_worker: '',
-      url_ws: { hoso: '', dot: '', dvtc: '', khach: '' },
+      url_ws: { bangbieu: '', dulieu: '' },
 
     }
   },
@@ -45,15 +45,20 @@ var app = new Vue({
     // await this.odbHoso();
   },
   methods: {
+    xoaUrl_ws() {
+      var element = document.getElementById("url_ws");
+      element.parentNode.removeChild(element);
+    },
+    stopWs(w) {
+      w.terminate();
+      w = undefined;
+    },
     loadHoso() {
-      var w;
-      try {
-        if (w) {
-          w.terminate();
-          w = undefined;
-        }
-      } catch (err) { };
-      w = new Worker(this.url_ws.hoso, { type: 'module' });
+      if (typeof (Worker) === "undefined") {
+        console.log("Xin lỗi, trình duyệt không tương thích ..!")
+        return;
+      }
+      var w = new Worker(this.url_ws.bangbieu, { type: 'module' });
       w.onerror = (err) => {
         console.log("err on loadHoso ", err.message)
       };
@@ -65,13 +70,19 @@ var app = new Vue({
         nap: {
           csdl: this.csdl,
           sohieu: this.sohieu,
-          mahoso: this.mahoso,
+          bang: 'hoso',
+          uuid: this.mahoso,
         }
       };
       w.postMessage(dprog)
+
     },
     saveHoso(rec) {
-      var w = new Worker(this.url_ws.hoso, { type: 'module' });
+      if (typeof (Worker) === "undefined") {
+        console.log("Xin lỗi, trình duyệt không tương thích ..!")
+        return;
+      }
+      var w = new Worker(this.url_ws.bangbieu, { type: 'module' });
       w.onerror = (err) => {
         console.log("err on saveHoso ", err.message)
       };
@@ -83,6 +94,7 @@ var app = new Vue({
         luu: {
           csdl: this.csdl,
           sohieu: this.sohieu,
+          bang: 'hoso',
           dl: rec,
         }
       };
