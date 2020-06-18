@@ -31,6 +31,51 @@ var taodb = async (csdl, sohieu, bang) => {
   };
 };
 
+var gom = async (csdl, sohieu, bang) => {
+  try {
+    var yc = await indexedDB.open(csdl, sohieu);
+    yc.onsuccess = e => {
+      var ch = e.target.result
+        .transaction(bang.ten, 'readonly')
+        .objectStore(bang.ten)
+        .openCursor();
+      ch.onsuccess = e => {
+        var cursor = e.target.result;
+        if (cursor) {
+          const gomca = { all: 0, tatca: 0, toanbo: 0, tat: 0 };
+          var k, oMap = {};
+          var lma = {
+            mamap: 0, mahoso: 0, madot: 0, makhachhang: 0, madvtc: 0,
+            mamap0: 0, mahoso0: 0, madot0: 0, makhachhang0: 0, madvtc0: 0
+          };
+          var dl = cursor.value;
+          for (k in lma) {
+            if (k in dl) {
+              oMap[k] = dl[k];
+            }
+          }
+          var namlv = bang.namlv != null ? bang.namlv.toString() : 'all';
+          if (namlv in gomca) {
+            console.log('Success gom cursor oMap= ', oMap);
+            self.postMessage(oMap);
+          } else {
+            if (oMap[bang.uid].toLowerCase().startsWith(namlv)) {
+              console.log('Success gom cursor oMap= ', oMap);
+              self.postMessage(oMap);
+            }
+          }
+          //delay(100);
+          cursor.continue();
+        }
+      };
+    };
+  } catch (err) {
+    console.log('Error prog nap ', bang.uid, '= ', bang.uuid, ': ', err.mesasage);
+    self.postMessage(null);
+    self.close();
+  }
+};
+
 var nap = async (csdl, sohieu, bang) => {
   try {
     var yc = await indexedDB.open(csdl, sohieu);
@@ -107,7 +152,6 @@ var luu = async (csdl, sohieu, bang) => {
         info = 'Success luu ' + bang.ten + 'rec= ' + rec;
         self.postMessage({ info: info });
         delay(1);
-        self.close();
       };
     };
   } catch (err) {
@@ -117,9 +161,82 @@ var luu = async (csdl, sohieu, bang) => {
   }
 };
 
+var lastUid = async (csdl, sohieu, bang) => {
+  try {
+    var yc = await indexedDB.open(csdl, sohieu);
+    yc.onsuccess = e => {
+      var ch = e.target.result
+        .transaction(bang.ten, 'readonly')
+        .objectStore(bang.ten)
+        .openCursor(null, 'prev');
+      ch.onsuccess = e => {
+        var cursor = e.target.result;
+        if (cursor) {
+          const gomca = { all: 0, tatca: 0, toanbo: 0, tat: 0 };
+          var namlv = bang.namlv != null ? bang.namlv.toString() : 'all';
+          if (namlv in gomca) {
+            console.log('Success lastUid nam= ', namlv, ' bang= ', bang.ten, ': ', cursor.key);
+            self.postMessage(cursor.key);
+            self.close();
+          } else {
+            if (cursor.key.toLowerCase().startsWith(namlv)) {
+              console.log('Success lastUid nam= ', namlv, ' bang= ', bang.ten, ': ', cursor.key);
+              self.postMessage(cursor.key);
+              self.close();
+            }
+          }
+          //delay(100);
+          cursor.continue();
+        }
+      };
+    };
+  } catch (err) {
+    console.log('Error prog lastUid nam= ', namlv, ' bang= ', bang.ten, ': ', err.mesasage);
+    self.postMessage(null);
+    self.close();
+  }
+};
+
+var firstUid = async (csdl, sohieu, bang) => {
+  try {
+    var yc = await indexedDB.open(csdl, sohieu);
+    yc.onsuccess = e => {
+      var ch = e.target.result
+        .transaction(bang.ten, 'readonly')
+        .objectStore(bang.ten)
+        .openCursor();
+      ch.onsuccess = e => {
+        var cursor = e.target.result;
+        if (cursor) {
+          const gomca = { all: 0, tatca: 0, toanbo: 0, tat: 0 };
+          var namlv = bang.namlv != null ? bang.namlv.toString() : 'all';
+          if (namlv in gomca) {
+            console.log('Success firstUid nam= ', namlv, ' bang= ', bang.ten, ': ', cursor.key);
+            self.postMessage(cursor.key);
+            self.close();
+          } else {
+            if (cursor.key.toLowerCase().startsWith(namlv)) {
+              console.log('Success firstUid nam= ', namlv, ' bang= ', bang.ten, ': ', cursor.key);
+              self.postMessage(cursor.key);
+              self.close();
+            }
+          }
+          //delay(100);
+          cursor.continue();
+        }
+      };
+    };
+  } catch (err) {
+    console.log('Error prog lastUid nam= ', namlv, ' bang= ', bang.ten, ': ', err.mesasage);
+    self.postMessage(null);
+    self.close();
+  }
+};
+
 // main worker
 self.onerror = (err) => {
-  self.postMessage("Error sw bangbieu: " + err.mesasage)
+  self.postMessage("Error sw bangbieu: " + err.mesasage);
+  self.close();
 };
 self.onmessage = (e) => {
   const lbang = {
@@ -137,7 +254,7 @@ self.onmessage = (e) => {
   //};
   const dprog = any2obj(e.data);
   console.log("Sw bangbieu say = ", e.data);
-  var k, dl, rec, id, bang = {};
+  var k, dl, id, bang = {};
   for (k in dprog) {
     dl = dprog[k];
     const csdl = dl.csdl || 'Cntđ';
@@ -168,8 +285,17 @@ self.onmessage = (e) => {
         luu(csdl, sohieu, bang);
       }
     } else if ('gom' in dl) {
+      bang.namlv = dl.gom;
       console.log("worker say prog= 'gom' namlv=", dl.gom);
-
+      gom(csdl, sohieu, bang);
+    } else if ('lastUid' in dl || 'lastuid' in dl) {
+      bang.namlv = dl.lastUid || dl.lastuid;
+      console.log("worker say prog lastUid");
+      lastUid(csdl, sohieu, bang);
+    } else if ('firstUid' in dl || 'firstuid' in dl) {
+      bang.namlv = dl.firstUid || dl.firstuid;
+      console.log("worker say prog firstUid");
+      firstUid(csdl, sohieu, bang);
     } else {
       self.close();
     }

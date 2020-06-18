@@ -10,9 +10,47 @@ var getRecsave = (ogoc, omoi) => {
     ogoc = any2obj(ogoc);
     ogoc = JSON.stringify(ogoc) || '{}';
     if (ogoc === '{}') {
-      return omoi;
+      self.postMessage(omoi);
+      self.close();
     }
     ogoc = JSON.parse(ogoc);
+    for (k in omoi) {
+      if (!(k in ogoc)) {
+        ogoc[k] = omoi[k];
+      }
+      if (k in key0test) {
+        ogoc[k] = omoi[k];
+      }
+      // du lieu thay doi phai co
+      var dl = omoi[k] != null ? omoi[k].toString() : '';
+      if (dl.length > 0) {
+        ogoc[k] = omoi[k];
+      }
+    };
+    ogoc['status'] = 'ok';
+    self.postMessage(ogoc);
+    //delay(1);
+    self.close();
+  } catch (err) {
+    console.log('Error recSave: ', err.mesasage);
+    self.close();
+  };
+};
+
+var getHsKh = (odata, otim) => {
+  const key0test = { thongbao: 0, ghichu: 0, lastupdate: 0 }
+  try {
+    odata = any2obj(odata);
+    otim = any2obj(otim);
+    otim = JSON.stringify(otim) || '{}';
+    if (otim === '{}') {
+      self.postMessage(odata);
+    }
+
+
+
+
+    otim = JSON.parse(otim);
     for (k in omoi) {
       if (!(k in ogoc)) {
         ogoc[k] = omoi[k];

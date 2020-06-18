@@ -60,22 +60,23 @@ var app = new Vue({
       }
       var w = new Worker(this.url_ws.bangbieu, { type: 'module' });
       w.onerror = (err) => {
-        console.log("err on loadHoso ", err.message)
+        console.log("err on loadHoso ", err.message);
       };
       w.onmessage = (e) => {
         console.log("worker say loadHoso= ", e.data);
         this.oHoso = e.data || {};
+        console.log("worker typeof= ", typeof w);
       };
       var dprog = {
         nap: {
           csdl: this.csdl,
           sohieu: this.sohieu,
           bang: 'hoso',
-          uuid: this.mahoso,
+          //uuid: this.mahoso,
+          gom: 2020,
         }
       };
-      w.postMessage(dprog)
-
+      w.postMessage(dprog);
     },
     saveHoso(rec) {
       if (typeof (Worker) === "undefined") {
@@ -89,13 +90,32 @@ var app = new Vue({
       w.onmessage = (e) => {
         console.log("worker say saveHoso= ", e.data);
       };
-      rec = test.hoso[2];
+      rec = test.hoso;
       var dprog = {
         luu: {
           csdl: this.csdl,
           sohieu: this.sohieu,
           bang: 'hoso',
-          dl: rec,
+          ttdl: rec,
+        }
+      };
+      w.postMessage(dprog)
+    },
+    lastUid() {
+      if (typeof (Worker) === "undefined") {
+        console.log("Xin lỗi, trình duyệt không tương thích ..!")
+        return;
+      }
+      var w = new Worker(this.url_ws.bangbieu, { type: 'module' });
+      w.onmessage = (e) => {
+        console.log("worker say lastUid= ", e.data);
+      };
+      var dprog = {
+        info: {
+          csdl: this.csdl,
+          sohieu: this.sohieu,
+          bang: 'hoso',
+          firstuid: 2020,
         }
       };
       w.postMessage(dprog)
@@ -170,25 +190,89 @@ var app = new Vue({
       };
     },
     loadOttdl() {
-      var w;
-      try {
-        if (w) {
-          w.terminate();
-          w = undefined;
-        }
-      } catch (err) { };
       this.ottdl = {};
-      w = new Worker(this.url_worker);
-      w.onerror = (err) => { console.log("err on loadOttdl ", err.message) };
-      w.onmessage = (e) => {
-        if (typeof recs === 'string') {
-          this.ottdl = JSON.parse(e.data);
-        } else {
-          this.ottdl = e.data;
+      var oMap; oData = {};
+      var dprog = {
+        nap: {
+          csdl: this.csdl,
+          sohieu: this.sohieu,
+          bang: 'hoso',
+          //uuid: this.mahoso,
+          gom: 2020,
         }
-        console.log("this.ottdl= ", e.data);
       };
-      w.postMessage(JSON.stringify({ load: this.otim_ext }));
+      var wMap = new Worker(this.url_ws.dulieu, { type: 'module' });
+      wMap.onerror = (err) => {
+        console.log("err on loadHoso ", err.message);
+      };
+      wMap.postMessage(dprog);
+      wMap.onmessage = (e) => {
+        if (e.data != null) {
+          oMap = e.data;
+        }
+        if ('mahoso' in oMap) {
+          var wHoso = new Worker(this.url_ws.bangbieu, { type: 'module' });
+          dprog.nap = {
+            csdl: this.csdl,
+            sohieu: this.sohieu,
+            bang: 'hoso',
+            uuid: oMap.mahoso,
+          }
+          wHoso.postMessage(dprog);
+          wHoso.onmessage = (e) => {
+            if (e.data != null) {
+              oData['hoso'] = e.data;
+            }
+          }
+        }
+        if ('madot' in oMap) {
+          var wDot = new Worker(this.url_ws.bangbieu, { type: 'module' });
+          dprog.nap = {
+            csdl: this.csdl,
+            sohieu: this.sohieu,
+            bang: 'dot',
+            uuid: oMap.madot,
+          }
+          wDot.postMessage(dprog);
+          wDot.onmessage = (e) => {
+            if (e.data != null) {
+              oData['dot'] = e.data;
+            }
+          }
+        }
+        if ('makhachhang' in oMap) {
+          var wKhach = new Worker(this.url_ws.bangbieu, { type: 'module' });
+          dprog.nap = {
+            csdl: this.csdl,
+            sohieu: this.sohieu,
+            bang: 'khachhang',
+            uuid: oMap.makhachhang,
+          }
+          wKhach.postMessage(dprog);
+          wKhach.onmessage = (e) => {
+            if (e.data != null) {
+              oData['khachhang'] = e.data;
+            }
+          }
+        }
+        if ('madvtc' in oMap) {
+          var wDvtc = new Worker(this.url_ws.bangbieu, { type: 'module' });
+          dprog.nap = {
+            csdl: this.csdl,
+            sohieu: this.sohieu,
+            bang: 'donvithicong',
+            uuid: oMap.madvtc,
+          }
+          wDvtc.postMessage(dprog);
+          wDvtc.onmessage = (e) => {
+            if (e.data != null) {
+              oData['donvithicong'] = e.data;
+            }
+          }
+        }
+        var wOttdl = new Worker(this.url_ws.dulieu, { type: 'module' });
+        
+      };
     },
   },
   computed: {
