@@ -5,7 +5,6 @@ var info;
 
 var taodb = async (csdl, bang) => {
   if (!indexedDB) {
-    console.log('Trình duyệt không hỗ trợ IndexedDB');
     return;
   };
   try {
@@ -13,21 +12,18 @@ var taodb = async (csdl, bang) => {
     yc.onupgradeneeded = e => {
       var db = e.target.result;
       if (e.oldVersion < 1) {
-        var map = db.createObjectStore('map', { keyPath: 'mamap' });
-        map.createIndex("map0", "map0", { unique: false });
-        map.createIndex("mahoso", "mahoso", { unique: false });
-        map.createIndex("madot", "madot", { unique: false });
-        map.createIndex("makhachhang", "makhachhang", { unique: false });
-        map.createIndex("madvtc", "madvtc", { unique: false });
+        var id = db.createObjectStore('tttt', { keyPath: 'matttt' });
+        id.createIndex("matttt0", "matttt0", { unique: false });
+        id.createIndex("mahoso", "mahoso", { unique: false });
+        id.createIndex("madot", "madot", { unique: false });
+        id.createIndex("makhachhang", "makhachhang", { unique: false });
+        id.createIndex("madvtc", "madvtc", { unique: false });
 
-        map = db.createObjectStore(bang.ten, { keyPath: bang.uid });
-        map.createIndex(bang.uid0, bang.uid0, { unique: false });
-      };
-      console.log('upgrade db');
+        id = db.createObjectStore(bang.ten, { keyPath: bang.uid });
+        id.createIndex(bang.uid0, bang.uid0, { unique: false });
+      }
     };
-  } catch (err) {
-    console.log('Error taodb ', bang.ten, ": ", err.mesasage);
-  };
+  } catch (err) { };
 };
 
 var gom = async (csdl, bang) => {
@@ -55,11 +51,9 @@ var gom = async (csdl, bang) => {
           }
           var namlv = bang.namlv != null ? bang.namlv.toString() : 'all';
           if (namlv in gomca) {
-            console.log('Success gom cursor oMap= ', oMap);
             ttdl.postMessage(oMap);
           } else {
             if (oMap[bang.uid].toLowerCase().startsWith(namlv)) {
-              console.log('Success gom cursor oMap= ', oMap);
               ttdl.postMessage(oMap);
             }
           }
@@ -69,7 +63,6 @@ var gom = async (csdl, bang) => {
       };
     };
   } catch (err) {
-    console.log('Error prog gom ', bang.ten, ' nam ', bang.namlv, ': ', err.mesasage);
     ttdl.postMessage(null);
   }
 };
@@ -77,7 +70,6 @@ var gom = async (csdl, bang) => {
 var nap = async (csdl, bang) => {
   try {
     var uuid = bang.nap != null ? bang.nap.toString() : '';
-    ttdl.postMessage({ "test uuid": uuid });
     var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
     yc.onsuccess = e => {
       var ch = e.target.result
@@ -85,12 +77,10 @@ var nap = async (csdl, bang) => {
         .objectStore(bang.ten)
         .get(IDBKeyRange.only(uuid));
       ch.onsuccess = e => {
-        console.log('Success nap ', bang.uid, '= ', uuid);
         ttdl.postMessage(ch.result);
       };
     };
   } catch (err) {
-    console.log('Error prog nap ', bang.uid, '= ', uuid, ': ', err.mesasage);
     ttdl.postMessage(null);
   }
 };
@@ -105,12 +95,10 @@ var xoa = async (csdl, bang) => {
         .objectStore(bang.ten)
         .delete(IDBKeyRange.only(uuid));
       ch.onsuccess = e => {
-        console.log('Success xoa ', bang.uid, '= ', uuid);
         ttdl.postMessage(ch.result);
       };
     };
   } catch (err) {
-    console.log('Error prog xoa ', bang.uid, '= ', uuid, ': ', err.mesasage);
     ttdl.postMessage(null);
   }
 };
@@ -120,8 +108,10 @@ var luu = async (csdl, bang) => {
     var rec = JSON.stringify(bang.luu) || '{}';
     if (rec === '{}') {
       return;
+    } else {
+      rec = suaStr(rec);
     }
-    rec = JSON.parse(rec);
+    rec = any2obj(rec);
     if ('status' in rec) {
       if (rec.status.toLowerCase().startsWith("fin")) {
         return;
@@ -157,7 +147,7 @@ var luu = async (csdl, bang) => {
   }
 };
 
-var lastUid = async (csdl, bang) => {
+var lastuid = async (csdl, bang) => {
   try {
     var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
     yc.onsuccess = e => {
@@ -191,11 +181,10 @@ var lastUid = async (csdl, bang) => {
   } catch (err) {
     console.log('Error prog lastUid nam= ', namlv, ' bang= ', bang.ten, ': ', err.mesasage);
     ttdl.postMessage(null);
-
   }
 };
 
-var firstUid = async (csdl, bang) => {
+var firstuid = async (csdl, bang) => {
   try {
     var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
     yc.onsuccess = e => {
@@ -238,7 +227,7 @@ self.onconnect = (e) => {
   };
   ttdl.onmessage = (e) => {
     const lbang = {
-      map: ["mamap", "mamap0"],
+      tttt: ["matttt", "matttt0"],
       hoso: ["mahoso", "mahoso0"],
       dot: ["madot", "madot0"],
       khachhang: ["makhachhang", "makhachhang0"],
@@ -252,8 +241,8 @@ self.onconnect = (e) => {
     //};
     console.log("ttdl say = ", e.data);
     const dprog = any2obj(e.data);
-    var csdl = dprog.csdl;
-    var bang = dprog.bang;
+    var csdl = { ...dprog.csdl };
+    var bang = { ...dprog.bang };
     var k, dl, id = {};
     //var bang = { ten: '', uid: '', uid0: '', uuid: '', rec: {} };
     if (bang.ten.toLowerCase() in lbang) {
@@ -272,22 +261,19 @@ self.onconnect = (e) => {
     for (k in bang) {
       if (k in oxoa) {
         bang['xoa'] = bang[k];
-        delete bang[k];
         xoa(csdl, bang);
       };
       if (k in onap) {
-        bang.nap = bang[k];
-        delete bang[k];
+        bang['nap'] = bang[k];
+        ttdl.postMessage({ csdlmoi: csdl, bangmoi: bang });
         nap(csdl, bang);
       };
       if (k in oluu) {
         bang['luu'] = bang[k];
-        delete bang[k];
         luu(csdl, bang);
       }
       if (k in oluunhom) {
-        dl = JSON.parse(JSON.stringify(bang[k]));
-        delete bang[k];
+        dl = { ...bang[k] };
         for (id in dl) {
           bang['luu'] = dl[id];
           luu(csdl, bang);
@@ -295,16 +281,15 @@ self.onconnect = (e) => {
       }
       if (k in ogom) {
         bang['namlv'] = bang[k];
-        delete bang[k];
         gom(csdl, bang);
       }
       if ('lastUid' === k || 'lastuid' === k) {
         bang.namlv = bang[k];
-        lastUid(csdl, bang);
+        lastuid(csdl, bang);
       }
       if ('firstUid' === k || 'firstuid' === k) {
         bang.namlv = bang[k];
-        firtsUid(csdl, bang);
+        firtsuid(csdl, bang);
       }
     }
   }

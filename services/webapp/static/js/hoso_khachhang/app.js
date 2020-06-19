@@ -77,7 +77,7 @@ var app = new Vue({
         bang: {
           ten: 'hoso',
           nap: this.mahoso,
-          gom: 2022,
+          //gom: 2022,
         }
       };
       sw.postMessage(dprog);
