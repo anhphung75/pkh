@@ -1,7 +1,7 @@
 import { any2obj, suaStr } from "./utils/web.js";
 import { delay } from "./utils/thoigian.js";
 var ttxl;
-var info;
+var ttdl;
 
 var getRecsave = (ogoc, omoi) => {
   const key0test = { thongbao: 0, ghichu: 0, lastupdate: 0 }
@@ -81,6 +81,8 @@ self.onconnect = (e) => {
     ttxl.postMessage("Error ttxl: " + err.mesasage)
   };
   ttxl.onmessage = (e) => {
+    const dprog = any2obj(e.data);
+    ttdl = { ...dprog.ttdl } || null;
     const lprog = {
       getRecsave: 0,
     };
@@ -89,12 +91,12 @@ self.onconnect = (e) => {
     //    ogoc:{}, omoi:{},
     //  }
     //};
-    const dprog = any2obj(e.data);
+
     console.log("ttxl say = ", e.data);
     var k, dl, ts1, ts2, ts3;
     for (k in dprog) {
       if (!(k() in lprog)) {
-        self.close();
+        return;
       }
       dl = dprog[k];
       switch (k) {
