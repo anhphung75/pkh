@@ -3,6 +3,49 @@ import { any2obj, suaStr } from "../utils/web.js";
 import { delay } from "../utils/thoigian.js";
 var ttxl;
 
+
+var isData = (odata, otim) => {
+  var rec, k, s;
+  var keybo = {
+    status: 0,
+    lastupdate: 0,
+    scan: 0,
+    blob: 0,
+    isedit: 0,
+    isselect: 0,
+  };
+  try {
+    otim = JSON.stringify(otim) || '{}';
+    if (otim === '{}') {
+      return true;
+    }
+    otim = any2obj(otim);
+    odata = any2obj(odata);
+    for (rec in odata) {
+      for (k in rec) {
+        s = rec[k] || '';
+        if ((k in keybo) || (s.length < 1)) {
+          delete rec[k];
+        }
+      }
+    }
+    var l1 = Object.values(odata.hoso) || [];
+    var l2 = Object.values(odata.dot) || [];
+    var l3 = Object.values(odata.khachhang) || [];
+    var ltam = [...l1, ...l2, ...l3];
+    if (ltam.length < 1) { return false; };
+    var ss = ltam.toString().toLowerCase();
+    ss = suaStr(ss);
+    for (k in otim) {
+      s = k.toLowerCase();
+      if (ss.indexOf(s) === -1) {
+        return false;
+      }
+    }
+    return true;
+  } catch (err) { return false; }
+};
+
 var loadHsKh = async (csdl, otim) => {
   var bang = 'hoso', o1Data = {};
   try {
@@ -35,6 +78,40 @@ var loadHsKh = async (csdl, otim) => {
     ttxl.postMessage({ kq: null, status: 'err' });
   }
 };
+
+var getRecsave = (ogoc, omoi) => {
+  const key0test = { thongbao: 0, ghichu: 0, lastupdate: 0 }
+  try {
+    omoi = any2obj(omoi);
+    ogoc = any2obj(ogoc);
+    ogoc = JSON.stringify(ogoc) || '{}';
+    if (ogoc === '{}') {
+      ttxl.postMessage(omoi);
+      return;
+    }
+    ogoc = JSON.parse(ogoc);
+    for (k in omoi) {
+      if (!(k in ogoc)) {
+        ogoc[k] = omoi[k];
+      }
+      if (k in key0test) {
+        ogoc[k] = omoi[k];
+      }
+      // du lieu thay doi phai co
+      var dl = omoi[k] != null ? omoi[k].toString() : '';
+      if (dl.length > 0) {
+        ogoc[k] = omoi[k];
+      }
+    };
+    ogoc['status'] = 'ok';
+    ttxl.postMessage(ogoc);
+    //delay(1);
+  } catch (err) {
+    console.log('Error recSave: ', err.mesasage);
+  };
+};
+
+
 
 // main worker
 self.onconnect = (e) => {
@@ -75,5 +152,6 @@ self.onconnect = (e) => {
         loadHsKh(csdl, bang[k]);
       };
     }
+
   }
 };

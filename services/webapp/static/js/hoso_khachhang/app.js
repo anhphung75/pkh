@@ -70,20 +70,16 @@ var app = new Vue({
       w = undefined;
     },
     loadHoso() {
-      if (typeof (SharedWorker) === "undefined") {
-        console.log("Xin lỗi, trình duyệt không tương thích ..!")
-        return;
-      }
-      var w = new SharedWorker(this.url_ws.ttdl, { type: 'module' });
+      var w = new SharedWorker(this.url_ws.ttxl, { type: 'module' });
       w.port.start();
       const sw = w.port;
       sw.onerror = (err) => {
         console.log("err on loadHoso ", err.message);
       };
       sw.onmessage = (e) => {
-        console.log("worker say loadHoso= ", e.data);
-        this.oHoso = e.data || {};
-        console.log("worker typeof= ", typeof w);
+        var kq = e.data.kq;
+        console.log('sw.kq=', kq);
+        return kq;
       };
       var dprog = {
         csdl: {
@@ -92,8 +88,7 @@ var app = new Vue({
         },
         bang: {
           ten: 'hoso',
-          nap: this.mahoso,
-          //gom: 2022,
+          nap: { '2002': 0 },
         }
       };
       sw.postMessage(dprog);
