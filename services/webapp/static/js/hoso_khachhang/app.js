@@ -1,5 +1,5 @@
 import { data_test as test } from "../data_test.js"
-
+import { taodb, capnhat, nap, luu, luunhom } from "../ttdl/db.js";
 
 var app = new Vue({
   el: '#trangxem',
@@ -69,7 +69,7 @@ var app = new Vue({
       w.terminate();
       w = undefined;
     },
-    loadHoso() {
+    loadHoso1() {
       var w = new SharedWorker(this.url_ws.ttxl, { type: 'module' });
       w.port.start();
       const sw = w.port;
@@ -93,12 +93,37 @@ var app = new Vue({
       };
       sw.postMessage(dprog);
     },
-    saveHoso(rec) {
+    loadHoso() {
+      var db = {
+        ten: this.csdl,
+        sohieu: this.sohieu
+      };
+      taodb(db);
+      var bang = {
+        ten: 'hoso',
+        nap: this.mahoso
+      };
+      nap(db, bang);
+    },
+    saveHoso() {
+      var db = {
+        ten: this.csdl,
+        sohieu: this.sohieu
+      };
+      taodb(db);
+      var bang = {
+        ten: 'hoso',
+        luu: test.hoso[1],
+      };
+      console.log('bang=', bang)
+      luu(db, bang);
+    },
+    saveHoso1(rec) {
       if (typeof (SharedWorker) === "undefined") {
         console.log("Xin lỗi, trình duyệt không tương thích ..!")
         return;
       }
-      var w = new SharedWorker(this.url_ws.ttdl, { type: 'module' });
+      var w = new SharedWorker(this.url_ws.ttxl, { type: 'module' });
       w.port.start();
       const sw = w.port;
       sw.onerror = (err) => {
@@ -107,15 +132,15 @@ var app = new Vue({
       sw.onmessage = (e) => {
         console.log("worker say saveHoso= ", e.data);
       };
-      rec = test.hoso;
+      rec = test;
       var dprog = {
         csdl: {
           ten: this.csdl,
           sohieu: this.sohieu
         },
         bang: {
-          ten: 'hoso',
-          luunhom: rec,
+          ten: 'server',
+          capnhat: rec,
           //gom: 2020,}
         }
       };

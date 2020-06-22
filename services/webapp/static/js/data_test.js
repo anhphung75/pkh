@@ -188,32 +188,37 @@ export const data_test = {
       ghichu: null,
     },
   ],
-  map: [
+  tttt: [
     {
+      matttt: '2020tttt001',
       mahoso: '2020hs000001',
       makhachhang: '2020kh000001',
       madot: '2020GMMP001',
       madvtc: '2020dvtc004',
     },
     {
+      matttt: '2020tttt002',
       mahoso: '2020hs000002',
       makhachhang: '2020kh000002',
       madot: '2020GMMP001',
       madvtc: '2020dvtc004',
     },
     {
+      matttt: '2020tttt003',
       mahoso: '2020hs000003',
       makhachhang: '2020kh000003',
       madot: '2020GMMP002',
       madvtc: '2020dvtc002',
     },
     {
+      matttt: '2020tttt004',
       mahoso: '2020hs000004',
       makhachhang: '2020kh000004',
       madot: '2020GMMP003',
       madvtc: '2020dvtc003',
     },
     {
+      matttt: '2020tttt005',
       mahoso: '2020hs000005',
       makhachhang: '2020kh000005',
       madot: '2020GMMP003',
