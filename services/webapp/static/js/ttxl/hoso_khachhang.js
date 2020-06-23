@@ -1,11 +1,68 @@
-import { taodb, nap, capnhat } from "../ttdl/db.js";
-import { any2obj, suaStr } from "../utils/web.js";
+import { taodb, capnhat } from "../ttdl/db.js";
+import { defaInt, defaStr, defaObj } from "../utils/bien.js";
+import { suaStr } from "../utils/web.js";
 import { delay } from "../utils/thoigian.js";
 var ttxl;
 
 var loadHsKh = async (csdl, otim) => {
-  var bang = 'tttt', o1Data = {};
+  var o1Data = {};
+  var nap = async (bang, uuid) => {
+    try {
+      var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
+      yc.onsuccess = e => {
+        var ch = e.target.result
+          .transaction(bang, 'readonly')
+          .objectStore(bang)
+          .openCursor(IDBKeyRange.only(uuid));
+        ch.onsuccess = e => {
+          var cursor = e.target.result;
+          if (cursor) {
+            o1Data[bang] = defaObj(cursor.value);
+          }
+          return true;
+        };
+      };
+    } catch (err) {
+      return null;
+    }
+  };
+  var isData = () => {
+    var bang, k, v, s, ss, ltam = [];
+    var keybo = {
+      status: 0,
+      lastupdate: 0,
+      scan: 0,
+      blob: 0,
+      isedit: 0,
+      isselect: 0,
+    };
+    try {
+      for (bang in o1Data) {
+        for (k in bang) {
+          s = defaStr(bang[k]);
+          if ((k in keybo) || (s.length < 1)) {
+            delete bang[k];
+          }
+        }
+      }
+      for (bang in o1Data) {
+        v = Object.values(bang);
+        ss = [...ltam];
+        ltam = [...ss, ...v];
+      }
+      if (ltam.length < 1) { return false; };
+      ss = suaStr(defaStr(ltam).toLowerCase());
+      for (k in otim) {
+        s = k.toLowerCase();
+        if (ss.indexOf(s) === -1) {
+          return false;
+        }
+      }
+      return true;
+    } catch (err) { return false; }
+  };
   try {
+    var bang = 'tttt',
     var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
     yc.onsuccess = e => {
       var ch = e.target.result
@@ -15,17 +72,25 @@ var loadHsKh = async (csdl, otim) => {
       ch.onsuccess = e => {
         var cursor = e.target.result;
         if (cursor) {
-          var mahoso = cursor.value.mahoso || '';
-          var makhachhang = cursor.value.makhachhang || '';
-          var madot = cursor.value.madot || '';
-          var madvtc = cursor.value.madvtc || '';
-          var [oHoso, oKhach, oDot, oDvtc] = await Promise.all([
-            nap(csdl, { ten: 'hoso', nap: mahoso }),
-            //nap(csdl, { ten: 'khachhang', nap: makhachhang }),
-            //nap(csdl, { ten: 'dot', nap: madot }),
-            //nap(csdl, { ten: 'donvithicong', nap: madvtc }),
+          var mahoso = defaStr(cursor.value.mahoso);
+          var makhachhang = defaStr(cursor.value.makhachhang);
+          var madot = defaStr(cursor.value.madot);
+          var madvtc = defaStr(cursor.value.madvtc);
+          await Promise.all([
+            nap('hoso', mahoso),
+            nap('khachhang', makhachhang),
+            nap('dot', madot),
+            nap('donvithicong', madvtc),
           ]);
-          ttxl.postMessage({ kq: o1Data, status: 'ok' });
+          delay(100);
+          otim = defaObj(otim, {});
+          if (JSON.stringify(otim) === '{}') {
+            ttxl.postMessage({ kq: o1Data, status: 'ok' });
+          } else {
+            if (isData()) {
+              ttxl.postMessage({ kq: o1Data, status: 'ok' });
+            }
+          };
           //delay(100);
           cursor.continue();
         }

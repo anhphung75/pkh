@@ -1,5 +1,5 @@
 import { data_test as test } from "../data_test.js"
-import { taodb, capnhat, nap, luu, luunhom } from "../ttdl/db.js";
+import { taodb, capnhat, luu, luunhom } from "../ttdl/db.js";
 
 var app = new Vue({
   el: '#trangxem',
@@ -103,7 +103,7 @@ var app = new Vue({
         ten: 'hoso',
         nap: this.mahoso
       };
-      nap(db, bang);
+
     },
     saveHoso() {
       var db = {
@@ -117,6 +117,7 @@ var app = new Vue({
       };
       console.log('bang=', bang)
       luu(db, bang);
+      //capnhat(db, test);
     },
     saveHoso1(rec) {
       if (typeof (SharedWorker) === "undefined") {

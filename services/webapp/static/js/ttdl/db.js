@@ -1,11 +1,12 @@
-import { any2obj, suaStr } from "../utils/web.js";
+import { defaInt, defaStr, defaObj } from "../utils/bien.js";
+import { suaStr } from "../utils/web.js";
 import { delay } from "../utils/thoigian.js";
-const obang = {
-  tttt: { uid: "matttt", uid0: "matttt0" },
-  hoso: { uid: "mahoso", uid0: "mahoso0" },
-  dot: { uid: "madot", uid0: "madot0" },
-  khachhang: { uid: "makhachhang", uid0: "makhachhang0" },
-  donvithicong: { uid: "madvtc", uid0: "madvtc0" },
+var obang = {
+  "tttt": { uid: "matttt", uid0: "matttt0" },
+  "hoso": { "uid": "mahoso", "uid0": "mahoso0" },
+  "dot": { uid: "madot", uid0: "madot0" },
+  "khachhang": { uid: "makhachhang", uid0: "makhachhang0" },
+  "donvithicong": { uid: "madvtc", uid0: "madvtc0" },
 };
 
 var taodb = async (csdl) => {
@@ -37,33 +38,6 @@ var taodb = async (csdl) => {
   } catch (err) { };
 };
 
-var nap = async (csdl, bang) => {
-  try {
-    bang.ten = bang.ten != null ? bang.ten.toString() : '';
-    if (!(bang.ten in obang)) {
-      return null;
-    }
-    bang.nap = bang.nap != null ? bang.nap.toString() : '';
-    if (bang.nap.length < 1) {
-      return null;
-    }
-    var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
-    yc.onsuccess = e => {
-      var ch = e.target.result
-        .transaction(bang.ten, 'readonly')
-        .objectStore(bang.ten)
-        .get(IDBKeyRange.only(bang.nap));
-      ch.onsuccess = () => {
-        var kq = ch.result || null;
-        console.log('test kq nap=', kq);
-        return kq;
-      };
-    };
-  } catch (err) {
-    return null;
-  }
-};
-
 var xoa = async (csdl, bang) => {
   try {
     bang.ten = bang.ten != null ? bang.ten.toString() : '';
@@ -91,48 +65,53 @@ var xoa = async (csdl, bang) => {
 
 var luu = async (csdl, bang) => {
   try {
-    bang.ten = bang.ten != null ? bang.ten.toString() : '';
-    if (bang.ten in obang) {
-      var k = bang.ten, uid = obang[k].uid, uid0 = obang[k].uid0;
-    } else {
+    var recmoi = defaObj(suaStr(defaStr(bang.luu)));
+    console.log('recmoi=', recmoi);
+    if (JSON.stringify(recmoi) === '{}') {
       return false;
     }
-    var rec = bang.luu != null ? JSON.stringify(bang.luu) : '{}';
-    if (rec === '{}') {
-      return false;
+    bang = defaStr(bang.ten);
+
+    if (!obang[bang]) {
+      console.log('exit vi bang=', bang);
+      //return false;
     }
-    var utcid = Date.now().toString();
-    var recmoi = { ...bang['luu'] };
-    var uuid = recmoi[uid] != null ? recmoi[uid].toString() : '';
+    var uid = obang[bang.ten].uid, uid0 = obang[bang.ten].uid0;
+    var uuid = defaStr(recmoi[uid]);
+    console.log('uuid=', uuid, ' uid=', uid, ' uid0=', uid0);
     if (uuid.length < 1) {
-      uuid = utcid;
+      uuid = (new Date().getFullYear()) + csdl.ten + Date.now();
       recmoi[uid] = uuid;
       recmoi[uid0] = uuid;
+      delay(1);
     }
-    recmoi = any2obj(suaStr(rec));
-    console.log('bang luu, bang = ', bang, ' uuid=', uuid);
-    console.log('bang luu, recmoi = ', recmoi);
-    // load data cu
+    // load data
     var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
     yc.onsuccess = e => {
       var ch = e.target.result
-        .transaction(bang.ten, 'readwrite')
-        .objectStore(bang.ten)
+        .transaction(bang, 'readwrite')
+        .objectStore(bang)
         .openCursor(IDBKeyRange.only(uuid));
       ch.onsuccess = e => {
+        console.log('curso thanh cong =', bang);
         var cursor = e.target.result;
         if (cursor) {
-          rec = cursor.value;
-          rec[uid] = recmoi[uid];
+          var rec = cursor.value;
+          rec['lastupdate'] = defaInt(rec['lastupdate']);
+          recmoi['lastupdate'] = defaInt(recmoi['lastupdate']);
+          if (rec['lastupdate'] > recmoi['lastupdate']) {
+            console.log('data save too old');
+            return false;
+          }
           const key0test = { thongbao: 0, ghichu: 0, lastupdate: 0 }
-          for (k in recmoi) {
-            if (!(k in rec)) {
+          for (var k in recmoi) {
+            if (!rec[k]) {
               rec[k] = recmoi[k];
-            } else if (k in key0test) {
+            } else if (key0test[k]) {
               rec[k] = recmoi[k];
             } else {
               // du lieu thay doi phai co
-              var dl = recmoi[k] != null ? recmoi[k].toString() : '';
+              var dl = defaStr(recmoi[k]);
               if (dl.length > 0) {
                 rec[k] = recmoi[k];
               }
@@ -142,22 +121,26 @@ var luu = async (csdl, bang) => {
           var cs = cursor.update(rec);
           cs.onsuccess = () => {
             console.log('Save fin');
+            return true;
           };
-          delay(1);
-          console.log('cursor save delay 1');
           cursor.continue();
-          console.log('cursor save tiep');
-        }
-        ///new data
-        console.log('cursor chua co');
-        var yc1 = indexedDB.open(csdl.ten, csdl.sohieu);
-        yc1.onsuccess = e => {
-          var ch1 = e.target.result
-            .transaction(bang.ten, 'readwrite')
-            .objectStore(bang.ten)
-            .put(recmoi);
+        } else {
+          ///new data
+          console.log('data moi =', bang);
+          recmoi['lastupdate'] = Date.now();
+          var yc1 = indexedDB.open(csdl.ten, csdl.sohieu);
+          yc1.onsuccess = e => {
+            var ch1 = e.target.result
+              .transaction(bang, 'readwrite')
+              .objectStore(bang)
+              .put(recmoi);
+            ch1.onsuccess = () => {
+              console.log('Save new fin');
+              return true;
+            };
+          };
         };
-      };
+      }
     };
   } catch (err) {
     console.log('prog save err=', err.message);
@@ -264,5 +247,5 @@ var firstuid = async (csdl, bang) => {
   }
 };
 
-export { taodb, nap, xoa, luu, luunhom, capnhat };
+export { taodb, xoa, luu, luunhom, capnhat };
 export { obang, lastuid, firstuid };
