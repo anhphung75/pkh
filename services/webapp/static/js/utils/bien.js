@@ -7,16 +7,16 @@ var defaInt = (v, defa = 0) => {
 };
 
 var defaStr = (v, defa = '') => {
-  try {
-    var s = JSON.stringify(v);
-    return s;
-  } catch (err) {
-    try {
-      var s = v.toString();
-      return s;
-    } catch (err) {
-      return defa;
+  if (v != null) {
+    var s = v.toString();
+    if (s === '[object Object]') {
+      s = JSON.stringify(v);
+      s = s.replace(/"/g, '');
+      s = s.replace(/ +/g, ' ');
     }
+    return s;
+  } else {
+    return defa;
   }
 };
 
@@ -30,7 +30,7 @@ var defaFloat = (v, defa = 0.0) => {
 
 var defaObj = (v, defa = {}) => {
   try {
-    var s = defaStr(v, '{}');
+    var s = JSON.stringify(v);
     var d = s.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
     s = d.replace(/'/g, '"');
     return JSON.parse(s);

@@ -1,7 +1,7 @@
 import { defaInt, defaStr, defaObj } from "../utils/bien.js";
 import { suaStr } from "../utils/web.js";
 import { delay } from "../utils/thoigian.js";
-var obang = {
+const obang = {
   "tttt": { uid: "matttt", uid0: "matttt0" },
   "hoso": { "uid": "mahoso", "uid0": "mahoso0" },
   "dot": { uid: "madot", uid0: "madot0" },
@@ -65,20 +65,20 @@ var xoa = async (csdl, bang) => {
 
 var luu = async (csdl, bang) => {
   try {
-    var recmoi = defaObj(suaStr(defaStr(bang.luu)));
-    console.log('recmoi=', recmoi);
+    var recmoi = defaObj(bang.luu);
+    for (var k in recmoi) {
+      var s = defaStr(recmoi[k]).trim();
+      recmoi[k] = suaStr(s);
+    }
     if (JSON.stringify(recmoi) === '{}') {
       return false;
     }
     bang = defaStr(bang.ten);
-
     if (!obang[bang]) {
-      console.log('exit vi bang=', bang);
-      //return false;
+      return false;
     }
-    var uid = obang[bang.ten].uid, uid0 = obang[bang.ten].uid0;
+    var uid = obang[bang].uid, uid0 = obang[bang].uid0;
     var uuid = defaStr(recmoi[uid]);
-    console.log('uuid=', uuid, ' uid=', uid, ' uid0=', uid0);
     if (uuid.length < 1) {
       uuid = (new Date().getFullYear()) + csdl.ten + Date.now();
       recmoi[uid] = uuid;
@@ -104,7 +104,7 @@ var luu = async (csdl, bang) => {
             return false;
           }
           const key0test = { thongbao: 0, ghichu: 0, lastupdate: 0 }
-          for (var k in recmoi) {
+          for (k in recmoi) {
             if (!rec[k]) {
               rec[k] = recmoi[k];
             } else if (key0test[k]) {

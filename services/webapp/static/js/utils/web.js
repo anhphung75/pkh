@@ -5,6 +5,7 @@ var getCookie = (name) => {
 
 var suaStr = (ss = '') => {
   try {
+    ss = ss.trim();
     //loai bo 2 space, tabs, newlines
     ss = ss.replace(/\s\s+/g, ' ');
     //loai bo 2 space

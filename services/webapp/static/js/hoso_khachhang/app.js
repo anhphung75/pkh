@@ -1,5 +1,6 @@
 import { data_test as test } from "../data_test.js"
 import { taodb, capnhat, luu, luunhom } from "../ttdl/db.js";
+import { loadHsKh } from "../ttxl/hoso_khachhang.js";
 
 var app = new Vue({
   el: '#trangxem',
@@ -70,6 +71,14 @@ var app = new Vue({
       w = undefined;
     },
     loadHoso1() {
+      var db = {
+        ten: this.csdl,
+        sohieu: this.sohieu,
+      };
+      var otim = { '2020': 0 };
+      loadHsKh(db, otim);
+    },
+    loadHoso2() {
       var w = new SharedWorker(this.url_ws.ttxl, { type: 'module' });
       w.port.start();
       const sw = w.port;
@@ -116,8 +125,8 @@ var app = new Vue({
         luu: test.hoso[1],
       };
       console.log('bang=', bang)
-      luu(db, bang);
-      //capnhat(db, test);
+      //luu(db, bang);
+      capnhat(db, test);
     },
     saveHoso1(rec) {
       if (typeof (SharedWorker) === "undefined") {
