@@ -1,11 +1,11 @@
-import { taodb, capnhat } from "../ttdl/db.js";
 import { defaInt, defaStr, defaObj } from "../utils/bien.js";
 import { suaStr } from "../utils/web.js";
 import { delay } from "../utils/thoigian.js";
 var ttxl;
+var info;
 
 var loadHsKh = async (csdl, otim) => {
-  var o1Data = {};
+  var o1data = {};
   var nap = async (bang, uuid) => {
     try {
       var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
@@ -17,7 +17,7 @@ var loadHsKh = async (csdl, otim) => {
         ch.onsuccess = e => {
           var cursor = e.target.result;
           if (cursor) {
-            o1Data[bang] = defaObj(cursor.value);
+            o1data[bang] = defaObj(cursor.value);
           }
           return true;
         };
@@ -37,7 +37,7 @@ var loadHsKh = async (csdl, otim) => {
       isselect: 0,
     };
     try {
-      for (bang in o1Data) {
+      for (bang in o1data) {
         for (k in bang) {
           s = defaStr(bang[k]);
           if ((k in keybo) || (s.length < 1)) {
@@ -45,8 +45,8 @@ var loadHsKh = async (csdl, otim) => {
           }
         }
       }
-      for (bang in o1Data) {
-        v = Object.values(o1Data[bang]);
+      for (bang in o1data) {
+        v = Object.values(o1data[bang]);
         ltam = [...ltam, ...v];
       }
       if (ltam.length < 1) { return false; };
@@ -62,7 +62,7 @@ var loadHsKh = async (csdl, otim) => {
   };
   try {
     var bang = 'tttt';
-    var stt = 0;
+    var id = 0;
     var yc = await indexedDB.open(csdl.ten, csdl.sohieu);
     yc.onsuccess = e => {
       var ch = e.target.result
@@ -72,6 +72,8 @@ var loadHsKh = async (csdl, otim) => {
       ch.onsuccess = e => {
         var cursor = e.target.result;
         if (cursor) {
+          var matttt = defaStr(cursor.value.matttt);
+          o1data[bang] = cursor.value;
           var mahoso = defaStr(cursor.value.mahoso);
           var makhachhang = defaStr(cursor.value.makhachhang);
           var madot = defaStr(cursor.value.madot);
@@ -82,21 +84,24 @@ var loadHsKh = async (csdl, otim) => {
             nap('dot', madot),
             nap('donvithicong', madvtc),
           ]);
-          delay(100);
+          delay(500);
           otim = defaObj(otim, {});
           if (JSON.stringify(otim) === '{}') {
-            console.log('stt=', stt);
-            console.log({ kq: { stt: o1Data }, status: 'ok' });
-            //ttxl.postMessage({ kq: o1Data, status: 'ok' });
+            console.log('id=', id);
+            console.log({ id: id, kq: o1data, status: 'ok' });
+            ttxl.postMessage({ id: id, kq: o1data, status: 'ok', info: 'otim rong' });
+            id++;
           } else {
             if (isData()) {
-              console.log('stt=', stt);
-              console.log({ kq: { stt: o1Data }, status: 'ok' });
-              //ttxl.postMessage({ kq: o1Data, status: 'ok' });
+              console.log('id=', id);
+              console.log({ id: id, kq: o1data, status: 'ok' });
+              ttxl.postMessage({ id: id, kq: o1data, status: 'ok', info: 'otim ko rong ' });
+              id++;
+            } else {
+              info = 'isData false, matttt= ' + matttt;
+              ttxl.postMessage({ id: id, kq: o1data, status: 'nook', info: info });
             }
           };
-          //delay(100);
-          stt++;
           cursor.continue();
         }
       };
@@ -107,4 +112,29 @@ var loadHsKh = async (csdl, otim) => {
   }
 };
 
-export { loadHsKh };
+// main worker
+self.onconnect = (e) => {
+  ttxl = e.ports[0];
+  ttxl.postMessage('ttxl connect')
+  ttxl.start();
+
+  ttxl.onerror = (err) => {
+    ttxl.postMessage("Error ttxl: " + err.mesasage)
+  };
+  ttxl.onmessage = (e) => {
+    //dprog = {
+    //  csdl: {ten:"", sohieu:1}
+    //  bang: {ten:'hoso',gom:2020,xoa=uuid, sua={ mahoso: '', ngaylendot: '' } ,
+    //         suanhom: [{ mahoso: '', ngaylendot: '' }],
+    //  }
+    //};
+    var csdl = defaObj(e.data.csdl, null);
+    var otim = defaObj(e.data.otim, null);
+    if (!csdl) {
+      return;
+    }
+    if (otim) {
+      loadHsKh(csdl, otim);
+    }
+  }
+};

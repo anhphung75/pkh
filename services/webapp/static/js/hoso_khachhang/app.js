@@ -1,6 +1,6 @@
 import { data_test as test } from "../data_test.js"
-import { taodb, capnhat, luu, luunhom } from "../ttdl/db.js";
-import { loadHsKh } from "../ttxl/hoso_khachhang.js";
+import { taodb, cap1, capn, luu, luun } from "../ttdl/db.js";
+//import { loadHsKh } from "../ttxl/hoso_khachhang.js";
 
 var app = new Vue({
   el: '#trangxem',
@@ -38,8 +38,7 @@ var app = new Vue({
     }
   },
   async created() {
-
-    //await this.loadDb();
+    await taodb();
     //this.cats = await this.getCatsFromDb();
     //this.ready = true;
   },
@@ -47,6 +46,38 @@ var app = new Vue({
     // await this.odbHoso();
   },
   methods: {
+    loadHsKh() {
+      var dprog = {
+        csdl: {
+          ten: this.csdl,
+          sohieu: this.sohieu
+        },
+        otim: this.otim_ext,
+        //otim: { '2020': 0, 'gm': 0 },
+      };
+      this.ttdl = {};
+      var w = new SharedWorker(this.url_ws.ttxl, { type: 'module' });
+      w.port.start();
+      const sw = w.port;
+      sw.postMessage(dprog);
+      sw.onerror = (err) => {
+        console.log("err on loadHsKh ", err.message);
+      };
+      sw.onmessage = (e) => {
+        var info = e.data.info;
+        if (info) {
+          console.log('info= =', info);
+        }
+        var status = e.data.status || '';
+        if (status.toLowerCase() === 'ok') {
+          var id = e.data.id;
+          var kq = e.data.kq;
+          this.ttdl[id] = kq;
+          console.log('sw.id=', id, 'sw.kq=', kq);
+        }
+        console.log('ttdl=', this.ttdl);
+      };
+    },
     xoaUrl_ws() {
       var element = document.getElementById("url_ws");
       element.parentNode.removeChild(element);
@@ -78,30 +109,7 @@ var app = new Vue({
       var otim = { '2020': 0 };
       loadHsKh(db, otim);
     },
-    loadHoso2() {
-      var w = new SharedWorker(this.url_ws.ttxl, { type: 'module' });
-      w.port.start();
-      const sw = w.port;
-      sw.onerror = (err) => {
-        console.log("err on loadHoso ", err.message);
-      };
-      sw.onmessage = (e) => {
-        var kq = e.data.kq;
-        console.log('sw.kq=', kq);
-        return kq;
-      };
-      var dprog = {
-        csdl: {
-          ten: this.csdl,
-          sohieu: this.sohieu,
-        },
-        bang: {
-          ten: 'hoso',
-          nap: { '2002': 0 },
-        }
-      };
-      sw.postMessage(dprog);
-    },
+
     loadHoso() {
       var db = {
         ten: this.csdl,
@@ -126,7 +134,7 @@ var app = new Vue({
       };
       console.log('bang=', bang)
       //luu(db, bang);
-      capnhat(db, test);
+      capn(db, test);
     },
     saveHoso1(rec) {
       if (typeof (SharedWorker) === "undefined") {
@@ -150,7 +158,7 @@ var app = new Vue({
         },
         bang: {
           ten: 'server',
-          capnhat: rec,
+          capn: rec,
           //gom: 2020,}
         }
       };
@@ -200,8 +208,12 @@ var app = new Vue({
         'Equal', 'Comma', 'Minus', 'Period', 'Quote', 'Semicolon', 'BracketLeft', 'BracketRight', 'Slash',
         'Digit0', 'Digit1', 'Digit2', 'Digit3', 'Digit4', 'Digit5', 'Digit6', 'Digit7', 'Digit8', 'Digit9',
         'Numpad0', 'Numpad1', 'Numpad2', 'Numpad3', 'Numpad4', 'Numpad5', 'Numpad6', 'Numpad7', 'Numpad8', 'Numpad9',
-        'NumpadAdd', 'NumpadDecimal', 'NumpadComma', 'NumpadDevide', 'NumpadMultiply', 'NumpadStar', 'NumpadSubtract']
-      if (lcode.indexOf(e.code) > -1) { this.loadOttdl(); }
+        'NumpadAdd', 'NumpadDecimal', 'NumpadComma', 'NumpadDevide', 'NumpadMultiply', 'NumpadStar', 'NumpadSubtract',
+        'Backspace', 'Delete',]
+      if (lcode.indexOf(e.code) > -1) {
+        console.log('loadHsKh otim=', this.otim_ext);
+        this.loadHsKh();
+      }
       if (e.code === 'Insert' && this.stim.length > 0) {
         this.otim[this.stim] = true;
         this.showotim = true;
@@ -216,91 +228,6 @@ var app = new Vue({
         if (this.curtin < this.tindau) { this.curtin = this.tincuoi };
       };
     },
-    loadOttdl() {
-      this.ottdl = {};
-      var oMap; oData = {};
-      var dprog = {
-        nap: {
-          csdl: this.csdl,
-          sohieu: this.sohieu,
-          bang: 'hoso',
-          //uuid: this.mahoso,
-          gom: 2020,
-        }
-      };
-      var wMap = new Worker(this.url_ws.dulieu, { type: 'module' });
-      wMap.onerror = (err) => {
-        console.log("err on loadHoso ", err.message);
-      };
-      wMap.postMessage(dprog);
-      wMap.onmessage = (e) => {
-        if (e.data != null) {
-          oMap = e.data;
-        }
-        if ('mahoso' in oMap) {
-          var wHoso = new Worker(this.url_ws.bangbieu, { type: 'module' });
-          dprog.nap = {
-            csdl: this.csdl,
-            sohieu: this.sohieu,
-            bang: 'hoso',
-            uuid: oMap.mahoso,
-          }
-          wHoso.postMessage(dprog);
-          wHoso.onmessage = (e) => {
-            if (e.data != null) {
-              oData['hoso'] = e.data;
-            }
-          }
-        }
-        if ('madot' in oMap) {
-          var wDot = new Worker(this.url_ws.bangbieu, { type: 'module' });
-          dprog.nap = {
-            csdl: this.csdl,
-            sohieu: this.sohieu,
-            bang: 'dot',
-            uuid: oMap.madot,
-          }
-          wDot.postMessage(dprog);
-          wDot.onmessage = (e) => {
-            if (e.data != null) {
-              oData['dot'] = e.data;
-            }
-          }
-        }
-        if ('makhachhang' in oMap) {
-          var wKhach = new Worker(this.url_ws.bangbieu, { type: 'module' });
-          dprog.nap = {
-            csdl: this.csdl,
-            sohieu: this.sohieu,
-            bang: 'khachhang',
-            uuid: oMap.makhachhang,
-          }
-          wKhach.postMessage(dprog);
-          wKhach.onmessage = (e) => {
-            if (e.data != null) {
-              oData['khachhang'] = e.data;
-            }
-          }
-        }
-        if ('madvtc' in oMap) {
-          var wDvtc = new Worker(this.url_ws.bangbieu, { type: 'module' });
-          dprog.nap = {
-            csdl: this.csdl,
-            sohieu: this.sohieu,
-            bang: 'donvithicong',
-            uuid: oMap.madvtc,
-          }
-          wDvtc.postMessage(dprog);
-          wDvtc.onmessage = (e) => {
-            if (e.data != null) {
-              oData['donvithicong'] = e.data;
-            }
-          }
-        }
-        var wOttdl = new Worker(this.url_ws.dulieu, { type: 'module' });
-
-      };
-    },
   },
   computed: {
     otim_ext() {
@@ -308,46 +235,16 @@ var app = new Vue({
       let _otim = JSON.parse(JSON.stringify(this.otim));
       let s = '';
       if (['all', 'tất cả', 'toàn bộ',].indexOf(this.namlv) === -1) {
-        s = this.namlv + 'hs';
-        _otim[s] = true;
+        s = this.namlv;
+        _otim[s] = false;
+        s = 'hs';
+        _otim[s] = false;
       }
       s = this.stim;
       if (s.length > 0) {
-        _otim[s] = true;
+        _otim[s] = false;
       }
       return _otim;
-    },
-    ttdl() {
-      var i, k, dl, ltam;
-      var dtam = {
-        0: {
-          hoso: { mahoso: '', sohoso: '', ngaygan: '', ngayhoancong: '', isedit: false },
-          dot: { madot: '', sodot: '', ngaylap: '', isedit: false },
-          khachhang: { makhachhang: '', khachhang: '', diachi: '', isedit: false },
-          donvithicong: { madvtc: '', dvtc: '', isedit: false },
-          isedit: false,
-          isok: false,
-        }
-      };
-      //convert to list sort
-      dl = this.ottdl || {};
-      if (Object.keys(dl) < 1) { return; };
-      ltam = [];
-      for (k in dl) {
-        //s.push(tam[k]);
-        ltam = [...ltam, dl[k]];
-      };
-      dl = ltam.sort((a, b) => (a.mahoso > b.mahoso) ? 1 : ((b.mahoso > a.mahoso) ? -1 : 0));
-      //dtam = {};
-      k = dl.length;
-      try {
-        for (i = 0; i <= k; i++) {
-          dtam[i] = JSON.parse(JSON.stringify(dl[i]));
-        };
-      } catch (err) {
-        console.log('Error ttdl', err.message);
-      };
-      return dtam;
     },
     //phan trang
     tongtin() {
