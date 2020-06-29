@@ -1,5 +1,5 @@
-Vue.component('nd-bang1', {
-  props: ['rec','stt'],
+var ndBang1 = {
+  props: ['rec', 'stt'],
   template: `
   <div v-if="isedit" class="row m-0 p-0 bg-warning">
     <div class="col-1 crud text-break">
@@ -25,10 +25,10 @@ Vue.component('nd-bang1', {
   `,
   data() {
     return {
-      isedit: rec.isedit,
-      hoso: rec.hoso,
-      dot: rec.dot,
-      khachhang: rec.khachhang,
+      isedit: false,
+      hoso: { ...rec.hoso } || { mahoso: '' },
+      dot: { ...rec.dot } || null,
+      khachhang: { ...rec.khachhang },
     };
   },
   methods: {
@@ -45,4 +45,6 @@ Vue.component('nd-bang1', {
       console.log('save_ttdl');
     },
   },
-});
+};
+
+export { ndBang1 };
