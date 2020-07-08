@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div id="webapp">
     <div class="app-container">
       <img alt="Vue logo" src="./assets/logo.png" />
       <HelloWorld msg="Welcome to Your PrimeVue App" />
@@ -51,8 +51,8 @@ body {
   margin: 0;
 }
 
-#app {
-  height: 100vh;
+#webapp {
+  height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;

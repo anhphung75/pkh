@@ -13,6 +13,8 @@ import 'primeicons/primeicons.css';
 
 Vue.config.productionTip = false
 
-new Vue({
+var webapp = new Vue({
   render: h => h(App),
 }).$mount('#app')
+
+export { webapp as default };
