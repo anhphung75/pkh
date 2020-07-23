@@ -1,5 +1,6 @@
 import Vue from 'vue'
-import App from './App.vue'
+//import App from './App.vue'
+import App from './components/testChips.vue'
 
 // Importing the Rhea PrimeVue theme styles
 //import 'primevue/resources/themes/rhea/theme.css';
