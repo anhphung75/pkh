@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang='en'>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Phòng kế hoạch-test file</title>
+  <link rel="stylesheet" href="{{ static_url("css/tailwind.1.5.2.css") }}" type="text/css">
+  <link rel="stylesheet" href="{{ static_url("css/fontawesome.5.11.2.all.css") }}" type="text/css">
+</head>
+
+<body>
+  <div id="trangxem" class="vw-100 vh-100 m-0 p-0 bg-transparent d-print-none">
+    <div class="flex bg-gray-200">
+      <input type="search" class="flex-auto" v-model="stim" placeholder="Tìm ... (không phân biệt chữ hoa hay thường)">
+      <button type="button">
+        <i class="fa fa-search"></i>
+      </button>
+    </div>
+
+    </br>
+    <banghoso otim="stim">
+      <div slot-scope="{ data, error, isload, odata, ttdl }">
+        <h2>Bang ho so</h2>
+        <div>stim = {`stim`}</div>
+        <div>otim = {`otim`}</div>
+        <span v-if="isload">Loading...</span>
+        <span v-else-if="error">Error while fetching data!</span>
+        <ul v-else>
+          <li v-for="(v,k) in data">
+            <h3>{`k`}</h3>
+            <p>{`data[k]`}</p>
+          </li>
+        </ul>
+        <ul>
+          <li v-for="(v,k) in odata">
+            <h3>{`k`}</h3>
+            <p>{`odata[k]`}</p>
+          </li>
+        </ul>
+
+
+        <div>ttdl {`ttdl`}</div>
+        <div>odata {`odata`}</div>
+      </div>
+    </banghoso>
+    <!-- script  -->
+    <script src="{{ static_url("js/test/test.js") }}" type="module"></script>
+</body>
+
+</html>

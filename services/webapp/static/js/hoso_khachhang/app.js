@@ -1,5 +1,5 @@
 import Vue from 'https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.esm.browser.min.js';
-import { data_test as test } from "../data_test.js";
+import { data_test as test } from "../test/data_test.js";
 import { taodb, cap1, capn, luu, luun } from "../ttdl/db.js";
 //import { loadHsKh } from "../ttxl/hoso_khachhang.js";
 

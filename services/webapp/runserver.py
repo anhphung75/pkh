@@ -64,7 +64,7 @@ class SseBase(web.RequestHandler):
 
 class MainHandler(WebBase):
     def get(self):
-        self.render("hoso.html", error=None)
+        self.render("test.html", error=None)
         # self.write("Hello World")
 
 
