@@ -7,15 +7,18 @@
 
   <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
   <link rel="stylesheet" href="{{ static_url("css/base.css") }}" type="text/css">
-  <link rel="stylesheet" href="{{ static_url("css/bootstrap.css") }}" type="text/css">
   <link rel="stylesheet" href="{{ static_url("css/fontawesome.5.11.2.all.css") }}" type="text/css">
+  <link rel="stylesheet" href="{{ static_url("css/tailwind.1.5.2.css") }}" type="text/css">
   {% block cdn %}{% end %}
   {% block css %}{% end %}
 </head>
 
-<body>
+<body onload="brython({debug: 1, cache:false, indexedDB: true})">
   <div id="trangxem" class="d-flex flex-column align-items-stretch vw-100 vh-100 m-0 p-0 bg-transparent d-print-none">
     <div id="panel" class="flex-grow-0 w-100 m-0 p-0 bg-warning">
+      <div id="logo" class="w-6">
+        <img class="object-cover h-6 w-full src=" {{ static_url("favicon.png") }}">
+      </div>
       panel
       {% block panel %}{% end %}
     </div>
@@ -32,9 +35,13 @@
     </div>
     {% block url_ws %}{% end %}
   </div>
-  <!-- script  -->
+  <!-- script
   <script src="{{ static_url("js/refs/axios.min.js") }}"></script>
+  -->
+  <script type="text/javascript" src="{{ static_url("js/refs/brython.js") }}"></script>
+  <script type="text/javascript" src="{{ static_url("js/refs/brython_stdlib.js") }}"></script>
 
+  <script type="text/python" src="{{ static_url("py/base.py") }}" id="py:base"></script>
   {% block js %}{% end %}
 </body>
 

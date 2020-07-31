@@ -1,30 +1,27 @@
-import Vue from '../refs/vue.esm.2.6.11.js';
+import cloudtags from '../comps/cloudtags.js';
 import banghoso from './banghoso.js';
 
-var app = new Vue({
-  el: '#trangxem',
-  delimiters: ["{`", "`}"],
+const app = Vue.createApp({
+  //delimiters: ["{`", "`}"],
   components: {
-    banghoso,
+    //'banghoso': banghoso,
+    'cloud-tags': cloudtags,
   },
   data() {
     return {
       //search
-      stim: '',
-      //phan trang
-      tin1trang: 3,
-      curtin: 0,
-      curtrang: 1,
-      //bang hien thi
-      curbang: 0,
-      tongbang: 3,
-      url_ws: { ttdl: '', ttxl: '' },
-      isloadws: true,
+      otim: [],
+      curec: 0,
 
     }
   },
   methods: {
-
+    showotim(event) {
+      console.log('otim=', event.target.value) // will log a value of the selected option
+    }
   },
-
+  template: `
+  <cloud-tags></cloud-tags>
+  `
 });
+app.mount('#trangxem');

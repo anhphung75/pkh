@@ -6,47 +6,37 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <title>Phòng kế hoạch-test file</title>
-  <link rel="stylesheet" href="{{ static_url("css/tailwind.1.5.2.css") }}" type="text/css">
-  <link rel="stylesheet" href="{{ static_url("css/fontawesome.5.11.2.all.css") }}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/tailwind.1.5.2.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/fontawesome.5.11.2.all.css')}}" type="text/css">
 </head>
 
-<body>
-  <div id="trangxem" class="vw-100 vh-100 m-0 p-0 bg-transparent d-print-none">
-    <div class="flex bg-gray-200">
-      <input type="search" class="flex-auto" v-model="stim" placeholder="Tìm ... (không phân biệt chữ hoa hay thường)">
-      <button type="button">
-        <i class="fa fa-search"></i>
-      </button>
-    </div>
-
-    </br>
-    <banghoso otim="stim">
-      <div slot-scope="{ data, error, isload, odata, ttdl }">
-        <h2>Bang ho so</h2>
-        <div>stim = {`stim`}</div>
-        <div>otim = {`otim`}</div>
-        <span v-if="isload">Loading...</span>
-        <span v-else-if="error">Error while fetching data!</span>
-        <ul v-else>
-          <li v-for="(v,k) in data">
-            <h3>{`k`}</h3>
-            <p>{`data[k]`}</p>
-          </li>
-        </ul>
-        <ul>
-          <li v-for="(v,k) in odata">
-            <h3>{`k`}</h3>
-            <p>{`odata[k]`}</p>
-          </li>
-        </ul>
-
-
-        <div>ttdl {`ttdl`}</div>
-        <div>odata {`odata`}</div>
+<body onload="brython({debug: 1, cache:false, indexedDB: true})">
+  <div id="trangxem" class="w-screen h-screen m-0 p-0 bg-transparent d-print-none border-4 border-red-900">
+    <div id="panel" class="flex w-full m-0 p-0 border border-red-900">
+      <div id="logo" class="flex-none w-6 h-6 bg-transparent">
+        <img class="object-cover w-full" src="{{static_url('logo.png')}}">
       </div>
-    </banghoso>
+      <div class="flex-auto">
+        <div class="flex flex-row justify-end">
+          <span class="flex-auto">panel</span>
+          <span class="flex-auto">profile</span>
+          <span class="flex-auto">log out</span>
+        </div>
+      </div>
+    </div>
+    <div class="flex w-full h-full border border-blue-900">
+      <div id="menu" class="flex-none w-1/6 m-0 p-0 bg-gray-700">
+        menu
+      </div>
+      <div id="app" class="flex-auto m-0 p-0 bg-green-300">
+        app
+      </div>
+    </div>
     <!-- script  -->
-    <script src="{{ static_url("js/test/test.js") }}" type="module"></script>
+
+    <script type="text/javascript" src="{{static_url('js/refs/brython.js')}}"></script>
+    <script type="text/python" src="{{static_url('py/base.py')}}" id="py_base"></script>
 </body>
+
 
 </html>
