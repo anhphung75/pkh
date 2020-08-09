@@ -21,105 +21,106 @@ def tinh_tamqt(schema="dbo"):
         pass
     # main prog
     sql = (
-        f"ALTER PROC {schema}.tinh_tamqt "
-        f"@Baogiaid INT=0,"
-        f"@Plgia NVARCHAR(50)='dutoan',"
-        f"@Hesoid INT=0 "
-        f"WITH ENCRYPTION AS "
-        f"BEGIN SET NOCOUNT ON "
-        f"BEGIN TRY DECLARE "
-        # heso chiphi
-        f"@vl DECIMAL(19,5)=1.0000,"
-        f"@nc DECIMAL(19,5)=0.0000,"
-        f"@mtc DECIMAL(19,5)=0.0000,"
-        f"@tructiepkhac DECIMAL(19,5)=0.0000,"
-        f"@chung DECIMAL(19,5)=0.0000,"
-        f"@khongxacdinh DECIMAL(19,5)=0.0000,"
-        f"@thunhaptinhtruoc DECIMAL(19,5)=0.0000,"
-        f"@khaosat DECIMAL(19,5)=0.0000,"
-        f"@thietke DECIMAL(19,5)=0.0000,"
-        f"@giamsat DECIMAL(19,5)=0.0000,"
-        # tong ket kinh phi
-        f"@Plqt NVARCHAR(50),"
-        f"@tca DECIMAL(19,5)=0.0000,"
-        f"@tcb DECIMAL(19,5)=0.0000,"
-        f"@gxd DECIMAL(19,5)=0.0000,"
-        f"@Dautucty DECIMAL(19,5)=0.0000,"
-        f"@Dautukhach DECIMAL(19,5)=0.0000,"
-        f"@onZvl DECIMAL(19,5)=0.0000,"
-        f"@onZnc DECIMAL(19,5)=0.0000,"
-        f"@onZmtc DECIMAL(19,5)=0.0000,"
-        f"@ocZvl DECIMAL(19,5)=0.0000,"
-        f"@ocZnc DECIMAL(19,5)=0.0000,"
-        f"@ocZmtc DECIMAL(19,5)=0.0000,"
-        # phan ong nganh
-        f"@onVl DECIMAL(19,5)=0.0000,"
-        f"@onNc DECIMAL(19,5)=0.0000,"
-        f"@onMtc DECIMAL(19,5)=0.0000,"
-        f"@onA DECIMAL(19,5)=0.0000,"
-        f"@onTT DECIMAL(19,5)=0.0000,"
-        f"@onT DECIMAL(19,5)=0.0000,"
-        f"@onC DECIMAL(19,5)=0.0000,"
-        f"@onZ DECIMAL(19,5)=0.0000,"
-        f"@onTL DECIMAL(19,5)=0.0000,"
-        f"@onG DECIMAL(19,5)=0.0000,"
-        f"@onI DECIMAL(19,5)=0.0000,"
-        f"@onJ DECIMAL(19,5)=0.0000,"
-        f"@onLa DECIMAL(19,5)=0.0000,"
-        f"@onVat1 DECIMAL(19,5)=0.0000,"
-        f"@onGxd1 DECIMAL(19,5)=0.0000,"
-        f"@onGxd2 DECIMAL(19,5)=0.0000,"
-        f"@onLb DECIMAL(19,5)=0.0000,"
-        f"@onVat2 DECIMAL(19,5)=0.0000,"
-        f"@onGT DECIMAL(19,5)=0.0000,"
-        # phan ong cai
-        f"@ocVl DECIMAL(19,5)=0.0000,"
-        f"@ocNc DECIMAL(19,5)=0.0000,"
-        f"@ocMtc DECIMAL(19,5)=0.0000,"
-        f"@ocA DECIMAL(19,5)=0.0000,"
-        f"@ocTT DECIMAL(19,5)=0.0000,"
-        f"@ocT DECIMAL(19,5)=0.0000,"
-        f"@ocC DECIMAL(19,5)=0.0000,"
-        f"@ocZ DECIMAL(19,5)=0.0000,"
-        f"@ocTL DECIMAL(19,5)=0.0000,"
-        f"@ocG DECIMAL(19,5)=0.0000,"
-        f"@ocI DECIMAL(19,5)=0.0000,"
-        f"@ocJ DECIMAL(19,5)=0.0000,"
-        f"@ocLa DECIMAL(19,5)=0.0000,"
-        f"@ocVat1 DECIMAL(19,5)=0.0000,"
-        f"@ocGxd1 DECIMAL(19,5)=0.0000,"
-        f"@ocGxd2 DECIMAL(19,5)=0.0000,"
-        f"@ocLb DECIMAL(19,5)=0.0000,"
-        f"@ocVat2 DECIMAL(19,5)=0.0000,"
-        f"@ocGT DECIMAL(19,5)=0.0000;"
-        # tinh tamqtx
-        f"IF(@Baogiaid > 0) OR (Len(@Plgia) > 0) EXEC pkh.tinh_tamqt3x @Baogiaid, @Plgia;"
-        # load hesochiphi
-        f"Select @ nc=Isnull(heso_nc, 0), @ nc=Isnull(heso_mtc, 0), @ tructiepkhac=Isnull(heso_ttpk, 0),
-
-
-
-        f"@tructiepkhac DECIMAL(19,5)=0.0000,"
-        f"@chung DECIMAL(19,5)=0.0000,"
-        f"@khongxacdinh DECIMAL(19,5)=0.0000,"
-        f"@thunhaptinhtruoc DECIMAL(19,5)=0.0000,"
-        f"@khaosat DECIMAL(19,5)=0.0000,"
-        f"@thietke DECIMAL(19,5)=0.0000,"
-        f"@giamsat DECIMAL(19,5)=0.0000,"
-
-        # @ HesoTTPK=ISNULL(heso_ttpk, 0),
-        # @ HesoCPChung=ISNULL(heso_cpchung, 0),
-        # @ HesoThuNhapTT=ISNULL(heso_thunhaptt, 0),
-        # @ HesoKhaoSat=ISNULL(heso_khaoSat, 0),
-        # @ HesoThietKe=ISNULL(heso_thietke, 0),
-        # @ HesoGSTC=ISNULL(heso_gstc, 0)
-        # FROM
-        # dbo.hesochiphi
-        # WHERE
-        # hesoid= @ Hesoid
-
-        f"END END "
+        f"ALTER PROC {schema}.tinh_tamqt"
+        f" @Baogiaid INT=0,"
+        f" @Plgia NVARCHAR(50)='dutoan',"
+        f" @Hesoid INT=0;"
+        f" WITH ENCRYPTION AS"
+        f" BEGIN SET NOCOUNT ON"
+        f" BEGIN TRY DECLARE"
     )
+    # heso chiphi
+    lds = ["vl", "nc", "mtc", "tructiepkhac", "chung", "khongxacdinh",
+           "thutinhtruoc", "khaosat", "thietke", "giamsat"]
+    for heso in lds:
+        sql += f" @{heso} DECIMAL(19,5)=1.0000,"
+    # tong ket kinh phi
+    lds = ["tongxaydung", "tongtailap", "tongcongtrinh",
+           "dautucty", "dautukhach", "tratruoc"]
+    for chiphi in lds:
+        sql += f" @{chiphi} DECIMAL(19,5)=1.0000,"
+    # kinh phi chi tiet
+    lds = ["Zvl", "Znc", "Zmtc", "Vl", "Nc", "Mtc", "Zvlncmtc", "Tructiepkhac", "Tructiep", "Chung", "Giaxaydung", "Thutinhtruoc",
+           "Xaydungtruocthue", "KhaosatThietke", "Giamsat", "Tongxaydungtruocthue", "Vattongxaydung", "Tongxaydung", "Tailap", "Vattailap", "Tailaptruocthue"]
+    # phan ong nganh
+    for chiphi in lds:
+        sql += f" @on{chiphi} DECIMAL(19,5)=1.0000,"
+    # phan ong cai
+    for chiphi in lds:
+        sql += f" @oc{chiphi} DECIMAL(19,5)=1.0000,"
+    sql += f" @Plqt NVARCHAR(50);"
+    # tinh tamqtx
+    sql += f" IF((@Baogiaid>0) OR (Len(@Plgia)>0)) EXEC {schema}.tinh_tamqt3x @Baogiaid, @Plgia;"
+    # load Zvl, Znc, Zmtc, Tailap
+    # load hesochiphi
+    ods = {"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung", "khongxacdinh": "khongxacdinh",
+           "thutinhtruoc": "heso_thunhaptt", "khaosat": "heso_khaosat", "thietke": "heso_thietke", "giamsat": "heso_gstc"}
+    s = f" Select "
+    for heso in ods:
+        s += f"@{heso}=Isnull({ods[heso]},0),"
+    s += f"@vl=1.0000 From dbo.hesochiphi Where hesoid=@Hesoid;"
+    sql += s
+    # tinh chi phi
+    sql += f" CASE When @Hesoid<20200721 Then Begin"
+    s = ""
+    lds = ["on", "oc"]
+    for phui in lds:
+        s += (f" Set @{phui}Vl= dbo.lamtronso(@{phui}Zvl*@vl,0)"
+              f" Set @{phui}Nc= dbo.lamtronso(@{phui}Znc*@nc,0)"
+              f" Set @{phui}Mtc= dbo.lamtronso(@{phui}Zmtc*@mtc,0)"
+              f" Set @{phui}Zvlncmtc= (@{phui}Vl + @{phui}Nc + @{phui}Mtc)"
+              f" Set @{phui}Tructiepkhac= dbo.lamtronso(@{phui}Zvlncmtc * @tructiepkhac,0)"
+              f" Set @{phui}Tructiep= (@{phui}Zvlncmtc + @{phui}Tructiepkhac)"
+              f" Set @{phui}Chung= dbo.lamtronso(@{phui}Tructiep * @chung,0)"
+              f" Set @{phui}Giaxaydung= (@{phui}Chung + @{phui}Tructiep)"
+              f" Set @{phui}Thutinhtruoc= dbo.lamtronso(@{phui}Giaxaydung * @thutinhtruoc,0)"
+              f" Set @{phui}Xaydungtruocthue= (@{phui}Giaxaydung + @{phui}Thutinhtruoc)"
+              f" Set @{phui}KhaosatThietke= dbo.lamtronso(@{phui}Xaydungtruocthue * @khaosat * @thietke,0)"
+              f" Set @{phui}Giamsat= dbo.lamtronso(@{phui}Xaydungtruocthue * @giamsat,0)"
+              f" Set @{phui}Tongxaydungtruocthue= (@{phui}Xaydungtruocthue + @{phui}KhaosatThietke + + @{phui}Giamsat)"
+              f" Set @{phui}Vattongxaydung= dbo.lamtronso(@{phui}Tongxaydungtruocthue * 0.1,0)"
+              f" Set @{phui}Tongxaydung= (@{phui}Tongxaydungtruocthue + @{phui}Vattongxaydung)"
+              # Tailap
+              f" Set @{phui}Tailaptruocthue= dbo.lamtronso(@{phui}Tailap * 100/110,0)"
+              f" Set @{phui}Vattailap= (@{phui}Tailap - @{phui}Tailaptruocthue)"
+              )
+    s = (
+        f"{s}"
+        f" Set @tongxaydung= (@onTongxaydung + @ocTongxaydung)"
+        f" Set @tongtailap= (@onTailap + @ocTailap)"
+        f" Set @tongcongtrinh= (@tongxaydung + @tongtailap)"
+    )
+    sql += f" {s} End When @Hesoid>=20200721 Then Begin"
+    s = ""
+    lds = ["on", "oc"]
+    for phui in lds:
+        s += (f" Set @{phui}Vl= dbo.lamtronso(@{phui}Zvl*@vl,0)"
+              f" Set @{phui}Nc= dbo.lamtronso(@{phui}Znc*@nc,0)"
+              f" Set @{phui}Mtc= dbo.lamtronso(@{phui}Zmtc*@mtc,0)"
+              f" Set @{phui}Zvlncmtc= (@{phui}Vl + @{phui}Nc + @{phui}Mtc)"
+              f" Set @{phui}Tructiepkhac= dbo.lamtronso(@{phui}Zvlncmtc * @tructiepkhac,0)"
+              f" Set @{phui}Tructiep= (@{phui}Zvlncmtc + @{phui}Tructiepkhac)"
+              f" Set @{phui}Chung= dbo.lamtronso(@{phui}Tructiep * @chung,0)"
+              f" Set @{phui}Giaxaydung= (@{phui}Chung + @{phui}Tructiep)"
+              f" Set @{phui}Thutinhtruoc= dbo.lamtronso(@{phui}Giaxaydung * @thutinhtruoc,0)"
+              f" Set @{phui}Xaydungtruocthue= (@{phui}Giaxaydung + @{phui}Thutinhtruoc)"
+              f" Set @{phui}KhaosatThietke= dbo.lamtronso(@{phui}Xaydungtruocthue * @khaosat * @thietke,0)"
+              f" Set @{phui}Giamsat= dbo.lamtronso(@{phui}Xaydungtruocthue * @giamsat,0)"
+              f" Set @{phui}Tongxaydungtruocthue= (@{phui}Xaydungtruocthue + @{phui}KhaosatThietke + + @{phui}Giamsat)"
+              f" Set @{phui}Vattongxaydung= dbo.lamtronso(@{phui}Tongxaydungtruocthue * 0.1,0)"
+              f" Set @{phui}Tongxaydung= (@{phui}Tongxaydungtruocthue + @{phui}Vattongxaydung)"
+              # Tailap
+              f" Set @{phui}Tailaptruocthue= dbo.lamtronso(@{phui}Tailap * 100/110,0)"
+              f" Set @{phui}Vattailap= (@{phui}Tailap - @{phui}Tailaptruocthue)"
+              )
+    s = (
+        f"{s}"
+        f" Set @tongxaydung= (@onTongxaydung + @ocTongxaydung)"
+        f" Set @tongtailap= (@onTailap + @ocTailap)"
+        f" Set @tongcongtrinh= (@tongxaydung + @tongtailap)"
+    )
+    s += f" End END"
+    sql += f" END TRY END;"
     try:
         db.execute(sql)
     except:
