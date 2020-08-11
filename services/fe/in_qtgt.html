@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans">
+    <style>
+        body {
+            font-family: 'Open Sans';
+            font-size: 8pt;
+            line-height: 1;
+            width: 210mm;
+        }
+
+        #trangin {
+            width: 21cm;
+            height: 29.7cm;
+        }
+    </style>
+    <script type="text/javascript" src="brython.js"></script>
+    <script type="text/javascript" src="brython_stdlib.js"></script>
+</head>
+
+<body onload="brython(1)">
+    <div id="vungin">
+    </div>
+
+    <script type="text/python" id="combobox">
+    from browser import html, document as docu
+    import javascript as js
+    import datetime
+    
+    def creat_page(stt=1):
+        zone = html.DIV(
+            id=f"trangA4_{stt}",
+            Class="trangin flex flex-col bg-white m-0 p-0 border border-red-600",
+            )
+        return zone
+    
+    def quochuy():
+        zone_left=html.DIV()
+        zone_left<=html.DIV(
+            "CÔNG TY CỔ PHẦN CẤP NƯỚC THỦ ĐỨC",
+            Class="uppercase text-center m-px p-px font-bold")
+        zone_left<=html.DIV(
+            "ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC",
+            Class="uppercase text-center m-px p-px font-bold")
+        zone_left<=html.DIV(
+            "---------oOo---------",
+            Class="text-center text-xs m-px p-px")
+        zone_left<=html.DIV(
+            "Số tài khoản: 102010000183907",
+            Class="text-center text-xs m-px p-px")
+        zone_left<=html.DIV(
+            "Tại: Ngân hàng Công Thương Việt Nam - Cn Đông Sài Gòn",
+            Class="text-center text-xs m-px p-px")
+        zone_right=html.DIV()
+        zone_right<=html.DIV(
+            "CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM",
+            Class="uppercase text-center m-px p-px font-bold")
+        zone_right<=html.DIV(
+            "Độc lập - Tự do - Hạnh phúc",
+            Class="text-center m-px p-px font-bold")
+        zone_right<=html.DIV(
+            "---------oOo---------",
+            Class="text-center text-xs m-px p-px")
+        ngaylap=datetime.datetime.now()
+        zone_right<=html.DIV(
+            f"Thủ Đức, ngày {ngaylap:%d} tháng {ngaylap:%m} năm {ngaylap:%Y}",
+            Class="text-center m-px p-px")
+        zone_flex = html.DIV(
+            Class="flex justify-between")
+        zone_flex<=zone_left + zone_right
+        zone = html.DIV(
+            Class="flex-grow")
+        zone<=zone_flex
+        return zone
+    
+    def danhsotrang(page=1,pages=1):
+        baogiaid=20200701
+        baogiaid=str(baogiaid)
+        zone_left=html.DIV(
+            f"DT-TT09 ({baogiaid[-2:]}-{baogiaid[-4:-2]}-{baogiaid[:-4]})",
+            Class="text-left m-px p-px text-xs")
+        stt=1
+        zone_mid=html.DIV(
+            f"TT-{stt:02}",
+            Class="text-center m-px p-px text-xs")
+        zone_right=html.DIV(
+            f"Trang: {page:02}/{pages:02}",
+            Class="text-right m-px p-px text-xs")
+        zone_flex = html.DIV(Class="flex justify-between")
+        zone_flex<=zone_left + zone_mid + zone_right
+        zone=html.FOOTER(Class="flex-shrink-0")
+        zone<=zone_flex
+        return zone
+    
+    def creat_zone():
+        zone = docu['vungin']
+        zone.clear()
+        page1=creat_page(1)
+        page1<=quochuy()
+        page1<=danhsotrang(111,222)
+        zone<=page1
+        
+    creat_zone()
+    </script>
+</body>
+
+</html>
