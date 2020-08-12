@@ -1,5 +1,5 @@
 import json
-from maychu import tao_maychu, show_tables
+from maychu import db
 
 
 # from sqlalchemy.orm import scoped_session, sessionmaker
@@ -7,16 +7,15 @@ from maychu import tao_maychu, show_tables
 
 # pwd = "Ph0ngK3H0@ch"
 # cnnstr = f"mssql+pyodbc://pkh:{pwd}@192.168.24.4/PKHData?driver=ODBC+Driver+17+for+SQL+Server"
-db = tao_maychu("pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
-db.execution_options(isolation_level="AUTOCOMMIT")
-show_tables(db, "dbo")
+db = db("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
+db.show_views("dbo")
 
 
 def tinh_tamqt(schema="web"):
     # init prog
     sql = (f"CREATE PROC {schema}.tinh_tamqt AS ")
     try:
-        db.execute(sql)
+        db.engine().execute(sql)
     except:
         pass
     # main prog
@@ -134,13 +133,49 @@ def tinh_tamqt(schema="web"):
         f" gxd2kq2=@onTailap,"
         f" gxd=@tongcongtrinh,"
         f" dautucty= @dautucty,"
-        f" dautukhach= @dautukhach;")
+        f" dautukhach= @dautukhach,")
+    # thqt01 viev
+    sql += (
+        f" dhn15= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='DHN' AND giatripl=15),0),"
+        f" dhn50= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='DHN' AND giatripl=50),0),"
+        f" dhn80= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='DHN' AND giatripl=80),0),"
+        f" dhn100= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='DHN' AND giatripl=100),0),"
+        f" sldh= Isnull((Select sum(sl) From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='DHN'),0),"
+        # tong hop ong
+        f" ong25= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=25),0),"
+        f" ong34= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=34),0),"
+        f" ong50= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=50),0),"
+        f" ong100= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=100),0),"
+        f" ong125= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=125),0),"
+        f" ong150= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=150),0),"
+        f" ong200= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=200),0),"
+        f" ong250= Isnull((Select sl From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=250),0),"
+        f" slong= Isnull((Select sum(sl) From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Ong'),0),"
+        # tong hop cat
+        f" slcat= Isnull((Select sum(sl) From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Cat'),0),"
+        f" tiencat= Isnull((Select sum(vl) From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Cat'),0);")
     sql += (
         f" If @baogiaid>0 Update {schema}.tamqt SET baogiaid=@baogiaid;"
         f" If @hesoid>0 Update {schema}.tamqt SET hesoid=@hesoid;")
     sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
     try:
-        db.execute(sql)
+        db.engine().execute(sql)
     except:
         pass
 
