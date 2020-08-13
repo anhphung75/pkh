@@ -1,0 +1,54 @@
+@font-face {
+  font-family: 'UVN Tin Tuc Hep';
+  src: url('../webfonts/UVNTinTucHepItalic.woff2') format('woff2'),
+      url('../webfonts/UVNTinTucHepItalic.woff') format('woff');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'UVN Tin Tuc Hep Them';
+  src: url('../webfonts/UVNTinTucHepThem.woff2') format('woff2'),
+      url('../webfonts/UVNTinTucHepThem.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'UVN Tin Tuc Hep Them';
+  src: url('../webfonts/UVNTinTucHepThemBold.woff2') format('woff2'),
+      url('../webfonts/UVNTinTucHepThemBold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'UVN Tin Tuc Hep';
+  src: url('../webfonts/UVNTinTucHepBoldItalic.woff2') format('woff2'),
+      url('../webfonts/UVNTinTucHepBoldItalic.woff') format('woff');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'UVN Tin Tuc Hep';
+  src: url('../webfonts/UVNTinTucHepBold.woff2') format('woff2'),
+      url('../webfonts/UVNTinTucHepBold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'UVN Tin Tuc Hep';
+  src: url('../webfonts/UVNTinTucHep.woff2') format('woff2'),
+      url('../webfonts/UVNTinTucHep.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
