@@ -14,10 +14,14 @@ from sqlalchemy.ext.declarative import declarative_base
 Base = declarative_base()
 
 
-class DinhmucChiPhi(Base):
-    __tablename__ = 'dinhmucchiphi'
-    __table_args__ = {"schema": "dbo"}
-    madmcp = Column(Unicode(10), primary_key=True)  # yyyy.hs.xxxxxx
+class Hoso(Base):
+    pass
+
+
+class HesoChiPhi(Base):
+    __tablename__ = 'hesochiphi'
+    __table_args__ = {"schema": "web"}
+    hesoid = Column(Unicode(10), primary_key=True)  # yyyy.hs.xxxxxx
     mota = Column(Unicode(None))
-    lastupdate = Column(DateTime(timezone=True), default=func.now(),
+    lastupdate = Column(DateTime(timezone=False), default=func.now(),
                         onupdate=datetime.datetime.now)

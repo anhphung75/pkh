@@ -1,10 +1,10 @@
 # import urllib
 from sqlalchemy import create_engine, inspect
 from sqlalchemy.orm import scoped_session, sessionmaker
-from bangbieu import Base
+from ttdl.bangbieu import Base
 
 
-class db:
+class maychu:
     def __init__(self, server='postgresql', user=None, pwd=None, host=None, dbname=None):
         self.user = user
         self.pwd = pwd
@@ -23,7 +23,7 @@ class db:
             self.server = 'sqlite'
             self.cnnstr = f"{server}:///draft.db"
 
-    def engine(self):
+    def core(self):
         try:
             # params = urllib.parse.quote_plus(
             #    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
@@ -35,7 +35,7 @@ class db:
             return None
         return may
 
-    def api(self):
+    def orm(self):
         try:
             may = create_engine(self.cnnstr, echo=True)
             Base.metadata.create_all(may)

@@ -1,10 +1,13 @@
 <!DOCTYPE html>
-<html>
+<html lang='vi'>
 
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Report QTGT</title>
+    <link rel="stylesheet" href="{{static_url('css/tailwind.1.5.2.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{static_url('css/fontawesome.5.11.2.all.css')}}" type="text/css">
     <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans">
     <style>
         body {
@@ -13,56 +16,67 @@
             line-height: 1;
             width: 210mm;
         }
-
-        #vungin {
-            width: 21cm;
-        }
-
-        .trangA4 {
+        
+        .khungA4 {
             width: 210mm;
             height: 297mm;
             break-after: always;
         }
-
+        
         .trangin {
-            width: 194mm;
-            height: 277mm;
             margin-left: 8mm;
             margin-right: 8mm;
             margin-top: 10mm;
             margin-bottom: 10mm;
         }
+        
+        @media print {}
     </style>
-    <script type="text/javascript" src="brython.js"></script>
-    <script type="text/javascript" src="brython_stdlib.js"></script>
 </head>
 
 <body onload="brython(1)">
-    <div id="vungin" class="m-0 p-0 border-0">
-        <div class="trangA4 m-0 p-0 border border-black">
-            <div class="trangin m-0 p-0 border border-blue-600">
-                trang1
+    <div class="khungA4 flex m-0 p-0 border border-black">
+        <div id="khungin:1" class="trangin flex-1 p-0 border border-red-600 flex flex-col">
+            <div id="quochuy" class="m-0 p-0 border border-blue-400 flex justify-between">
+                <div id="quochuy:left" class="box-left">box left maqt01</div>
+                <div id="quochuy:right" class="box-right">box right</div>
             </div>
-        </div>
-        <div class="trangA4 m-0 p-0 border border-black">
-            <div class="trangin m-0 p-0 border border-blue-600">
-                trang2
+            <header class="m-0 p-0 border border-blue-400 flex justify-between">
+                <div id="header:left" class="box-left">box left</div>
+                <div id="header:mid" class="box-mid">tieude maqt01</div>
+                <div id="header:right" class="box-right">box right</div>
+            </header>
+            <main class="flex-1 m-0 p-0 border border-blue-400 flex flex-col">
+                <div class="flex-1 m-0 p-0 border border-green-400">bảng 1</div>
+                <div>TỔNG KẾT KINH PHÍ: THông tư</div>
+                <div>bang tổng kết 1</div>
+                <div>Phan tai lap</div>
+                <div>bangr tai lap</div>
+            </main>
+            <div>Kết toán chi phí</div>
+            <div class="m-0 p-0 border border-blue-400 flex">
+                <div id="duyet:left" class="flex-1 m-0 p-0">duyet trai</div>
+                <div id="duyet:mid" class="flex-1 m-0 p-0">duyet giua</div>
+                <div id="duyet:right" class="flex-1 m-0 p-0">duyet phai</div>
             </div>
-        </div>
-        <div class="trangA4 m-0 p-0 border border-black">
-            <div class="trangin m-0 p-0 border border-blue-600">
-                trang3
-            </div>
+            <footer class="flex m-0 p-0 border border-blue-400">
+                <div id="footer:left" class="flex-1">footer trai</div>
+                <div id="footer:mid" class="flex-1">footer giua</div>
+                <div id="footer:right" class="flex-1">footer phai</div>
+            </footer>
         </div>
     </div>
+    <!-- script  -->
+
+    <script type="text/javascript" src="{{static_url('js/refs/brython.js')}}"></script>
+    <script type="text/python" src="{{static_url('py/base.py')}}" id="py_base"></script>
+    <script type="text/python" src="{{static_url('py/cloudtags.py')}}" id="cloudtags"></script>
+</body>
 
 
-    <script type="text/python" id="combobox">
-    from browser import html, document as docu
-    import javascript as js
-    
-    
-    </script>
+</html>
+
+</script>
 </body>
 
 </html>

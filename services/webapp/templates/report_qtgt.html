@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang='vi'>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Report QTGT</title>
+  <link rel="stylesheet" href="{{static_url('css/tailwind.1.5.2.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/fontawesome.5.11.2.all.css')}}" type="text/css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans">
+  <style>
+    body {
+      font-family: 'Open Sans';
+      font-size: 8pt;
+      text-align: left;
+      line-height: 1;
+      width: 210mm;
+    }
+
+    .khungA4 {
+      width: 210mm;
+      height: 297mm;
+      break-after: always;
+    }
+
+    .trangin {
+      margin-left: 8mm;
+      margin-right: 8mm;
+      margin-top: 10mm;
+      margin-bottom: 10mm;
+    }
+
+    @media print {}
+
+  </style>
+</head>
+
+<body onload="brython(1)">
+
+  <!-- script  -->
+
+  <script type="text/javascript" src="{{static_url('js/refs/brython.js')}}"></script>
+  <script type="text/javascript" src="{{static_url('js/refs/brython_stdlib.js')}}"></script>
+  <script type="text/python" src="{{static_url('py/report_qtgt.py')}}" id="report_qtgt"></script>
+</body>
+
+
+</html>

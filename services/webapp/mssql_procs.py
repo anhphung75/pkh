@@ -1,5 +1,5 @@
 import json
-from maychu import db
+from ttdl import Maychu
 
 
 # from sqlalchemy.orm import scoped_session, sessionmaker
@@ -7,7 +7,7 @@ from maychu import db
 
 # pwd = "Ph0ngK3H0@ch"
 # cnnstr = f"mssql+pyodbc://pkh:{pwd}@192.168.24.4/PKHData?driver=ODBC+Driver+17+for+SQL+Server"
-db = db("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
+db = Maychu("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
 db.show_views("dbo")
 
 
@@ -15,7 +15,7 @@ def tinh_tamqt(schema="web"):
     # init prog
     sql = (f"CREATE PROC {schema}.tinh_tamqt AS ")
     try:
-        db.engine().execute(sql)
+        db.core().execute(sql)
     except:
         pass
     # main prog
@@ -175,7 +175,7 @@ def tinh_tamqt(schema="web"):
         f" If @hesoid>0 Update {schema}.tamqt SET hesoid=@hesoid;")
     sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
     try:
-        db.engine().execute(sql)
+        db.core().execute(sql)
     except:
         pass
 

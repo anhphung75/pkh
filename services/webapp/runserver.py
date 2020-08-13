@@ -12,17 +12,9 @@ import tornado.escape
 import tornado.websocket
 from tornado.options import define, options
 
-from ttdl.maychu import tao_maychu_api
-from ttxl import hoso
-from ttxl_sse import hoso as sse_hoso
-
-dssse_hoso = []
-test1 = sse_hoso.test()
-dssse_hoso.append(test1)
-test2 = sse_hoso.test()
-dssse_hoso.append(test2)
-test3 = sse_hoso.test()
-dssse_hoso.append(test3)
+from ttdl import Maychu
+from ttxl import apiHoso
+#from ttxl_sse import hoso as sse_hoso
 
 
 class WebBase(web.RequestHandler):
@@ -64,7 +56,7 @@ class SseBase(web.RequestHandler):
 
 class MainHandler(WebBase):
     def get(self):
-        self.render("test.html", error=None)
+        self.render("report_qtgt.html", error=None)
         # self.write("Hello World")
 
 
@@ -80,7 +72,7 @@ class Api1108_Hoso_Rest(ApiBase):
         res = {'id': uuid, 'event': '', 'data': []}
         # try:
         namhoso = 2019
-        data = hoso.gom(db, namhoso)
+        data = apiHoso.gom(db, namhoso)
         print('ApiRest get hoso gom ={}'.format(str(data)))
         res['data'] = data
         res['event'] = "gom"
@@ -104,7 +96,7 @@ class Api1108_Hoso_Crud(ApiBase):
     def get(self, nam, mahoso):
         res = {'info': '', 'hoso': []}
         try:
-            res['hoso'] = hoso.xem(db, mahoso)
+            res['hoso'] = apiHoso.doc(db, mahoso)
             res['info'] = 'OK'
         except:
             res['info'] = 'Không có dữ liệu'
@@ -116,6 +108,9 @@ class Api1108_Hoso_Crud(ApiBase):
         event = self.get_argument("event")
         data = self.get_argument("data")
         print('data from client id={} event={} data={}'.format(id, event, data))
+
+
+dssse_hoso = []
 
 
 class Api1108_Hoso_Sse(SseBase):
@@ -178,7 +173,7 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
         chat['tin']['ve'] = 'boss.{}'.format(str(tgdi))
         if chat['tin']['nhan'] == 'gom':
             namhoso = chat['kho']['hoso']['namhoso']
-            data = hoso.gom(db, namhoso)
+            data = apiHoso.gom(db, namhoso)
             # chuẩn bị data gửi lại
             chat['tin']['nhan'] = 'gom'
             chat['kho']['hoso'] = data
@@ -232,9 +227,6 @@ def make_app():
     return WebApp()
 
 
-db = None
-
-
 def main():
     # for win10
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -243,6 +235,8 @@ def main():
     # tornado.options.parse_command_line()
     # read args to run
     parser = argparse.ArgumentParser(allow_abbrev=False)
+    parser.add_argument('--server', '-server',
+                        type=str, default='mssql')
     parser.add_argument('--db_user', '-dbuser',
                         type=str, default='pkh.web')
     parser.add_argument('--db_pwd', '-dbpwd',  type=str, default='pkh.web')
@@ -250,13 +244,13 @@ def main():
                         type=str, default='pkh.web')
     parser.add_argument('--db_name', '-dbname',
                         type=str, default='pkh.web')
-    parser.add_argument('--port', '-p',  type=int, default=8000)
+    parser.add_argument('--port', '-p',  type=int, default=8888)
     thamso = parser.parse_args()
 
     # creat db
     global db
-    db = tao_maychu_api(thamso.db_user, thamso.db_pwd,
-                        thamso.db_host, thamso.db_name)
+    db = Maychu(thamso.server, thamso.db_user, thamso.db_pwd,
+                thamso.db_host, thamso.db_name)
 
     # creat webapp
     app = make_app()
