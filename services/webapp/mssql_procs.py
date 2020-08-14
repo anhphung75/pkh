@@ -8,7 +8,7 @@ from ttdl import Maychu
 # pwd = "Ph0ngK3H0@ch"
 # cnnstr = f"mssql+pyodbc://pkh:{pwd}@192.168.24.4/PKHData?driver=ODBC+Driver+17+for+SQL+Server"
 db = Maychu("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
-db.show_views("dbo")
+db.show_views()
 
 
 def tinh_tamqt(schema="web"):
@@ -181,4 +181,3 @@ def tinh_tamqt(schema="web"):
 
 
 tinh_tamqt("web")
-# db.close()

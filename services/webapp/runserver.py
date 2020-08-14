@@ -227,6 +227,9 @@ def make_app():
     return WebApp()
 
 
+db = None
+
+
 def main():
     # for win10
     asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
@@ -236,7 +239,7 @@ def main():
     # read args to run
     parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument('--server', '-server',
-                        type=str, default='mssql_test')
+                        type=str, default='mssql')
     parser.add_argument('--db_user', '-dbuser',
                         type=str, default='pkh.web')
     parser.add_argument('--db_pwd', '-dbpwd',  type=str, default='pkh.web')

@@ -1,6 +1,7 @@
 import os
 import sys
 import datetime
+import json
 #from utils.thoigian import stodate, datetos
 from sqlalchemy import create_engine, ForeignKey, inspect
 from sqlalchemy import Column, Sequence, func, desc
@@ -8,6 +9,7 @@ from sqlalchemy import Boolean, Integer, DECIMAL, Unicode, Date, DateTime, VARBI
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 
+from utils import Api
 
 Base = declarative_base()
 
@@ -72,15 +74,14 @@ class Maychu():
         return Session()
 
     def show_views(self, schema=None):
+        sql = f"Select * From Information_schema.tables"
         if schema:
-            schema = f"'{schema}'"
-        else:
-            schema = f"o.object_id"
-        sql = (
-            f"Select CONCAT(OBJECT_SCHEMA_NAME({schema}),'.', o.name) as view"
-            f" From	sys.objects as o Where o.type='V';")
+            sql += f" Where table_schema='{schema}'"
+        sql += f" Order by table_catalog, table_schema, table_type, table_name;"
         try:
-            self.core().execute(sql)
+            data = self.core().execute(sql)
+            #rawdata = Api.raw2listjson(data)
+            print(str(data))
         except:
             pass
 
@@ -90,5 +91,4 @@ class Maychu():
         try:
             self.core().execute(sql)
         except:
-            print(f"{otype} {oname} not exist!!!")
             pass

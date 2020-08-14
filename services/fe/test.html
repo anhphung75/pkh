@@ -2,94 +2,78 @@
 <html>
 
 <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans">
-    <style>
-        body {
-            font-family: 'Open Sans';
-            font-size: 8pt;
-            line-height: 1;
-            width: 210mm;
-        }
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css">
+  <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans">
+  <style>
+    @charset "UTF-8";
 
-        #vungin {
-            width: 21cm;
-        }
+    *,
+    *:before,
+    *:after {
+      box-sizing: border-box;
+      background-color: transparent;
+    }
 
-        .trangA4 {
-            width: 210mm;
-            height: 297mm;
-            break-after: always;
-        }
+    body {
+      font-family: "Open Sans", sans-serif;
+      font-size: 8pt;
+      line-height: 1;
+      margin: 0;
+      border: 0;
+      padding: 0;
+      border-collapse: collapse;
+      border-spacing: 0;
+      text-align: left;
+      float: none;
+      display: block;
+    }
 
-        .trangA4>section,
-        .trangin {
-            width: 194mm;
-            height: 277mm;
-            margin-left: 8mm;
-            margin-right: 8mm;
-            margin-top: 10mm;
-            margin-bottom: 10mm;
-        }
-    </style>
-    <script type="text/javascript" src="brython.js"></script>
-    <script type="text/javascript" src="brython_stdlib.js"></script>
+    .hbox {
+      width: 555pt;
+      height: 10cm;
+    }
+
+    .box1 {
+      flex: 1 1 140pt;
+    }
+
+    .box2 {
+      flex: 1 1 314pt;
+    }
+
+    .box3 {
+      flex: 1 1 100pt;
+    }
+
+  </style>
+  <script type="text/javascript" src="brython.js"></script>
+  <script type="text/javascript" src="brython_stdlib.js"></script>
 </head>
 
 <body onload="brython(1)">
-    <div id="vungin" class="m-0 p-0 border-0">
-        <div class="trangA4 m-0 p-0 border border-black">
-            <section id="maqt01" class="trangin flex flex-col bg-white m-0 p-0 border border-red-600">
-                <div id="quochuy" class="m-0 p-0 border border-blue-400 flex justify-between">
-                    <div id="quochuy:left" class="box-left">box left maqt01</div>
-                    <div id="quochuy:right" class="box-right">box right</div>
-                </div>
-                <header class="m-0 p-0 border border-blue-400 flex justify-between">
-                    <div id="header:left" class="box-left">box left</div>
-                    <div id="header:mid" class="box-mid">tieude maqt01</div>
-                    <div id="header:right" class="box-right">box right</div>
-                </header>
-                <main class="flex-1 m-0 p-0 border border-blue-400 flex flex-col">
-                    <div class="flex-1 m-0 p-0 border border-green-400">bảng 1</div>
-                    <div>TỔNG KẾT KINH PHÍ: THông tư</div>
-                    <div>bang tổng kết 1</div>
-                    <div>Phan tai lap</div>
-                    <div>bangr tai lap</div>
-                </main>
-                <div>Kết toán chi phí</div>
-                <div class="m-0 p-0 border border-blue-400 flex">
-                    <div id="duyet:left" class="flex-1 m-0 p-0">duyet trai</div>
-                    <div id="duyet:mid" class="flex-1 m-0 p-0">duyet giua</div>
-                    <div id="duyet:right" class="flex-1 m-0 p-0">duyet phai</div>
-                </div>
-                <footer class="flex m-0 p-0 border border-blue-400">
-                    <div id="footer:left" class="flex-1">footer trai</div>
-                    <div id="footer:mid" class="flex-1">footer giua</div>
-                    <div id="footer:right" class="flex-1">footer phai</div>
-                </footer>
-            </section>
-
-        </div>
+  <div class="hbox flex flex-wrap border border-black">
+    <div class="box1 border border-blue-400">box 1</div>
+    <div class="box2 border border-red-400">box 2</div>
+    <div class="box3 border border-green-400">box 3</div>
+    <div class="box1 border border-blue-400">box 11</div>
+    <div class="box2 border border-red-400">box 22</div>
+    <div class="box3 border border-green-400">box 33</div>
+    <div class="box1 border border-blue-400">box 111</div>
+    <div class="box2 border border-red-400">box 222</div>
+    <div class="box3 border border-green-400">box 333</div>
+  </div>
 
 
-    </div>
 
-    </div>
-
-
-    <script type="text/python" id="combobox">
+  <script type="text/python" id="combobox">
     from browser import html, document as docu
     import javascript as js
 
-    zone = docu['quochuy:left']
-    zone.clear()
-    zone<=html.DIV(
-        "CÔNG TY CỔ PHẦN CẤP NƯỚC THỦ ĐỨC",
-        Class="uppercase text-center m-px p-px font-bold")
-    
-    
+
+
+
     </script>
 </body>
 
