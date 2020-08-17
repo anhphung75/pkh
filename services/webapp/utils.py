@@ -72,77 +72,66 @@ class Tien():
             return f"Không thể đọc !!!"
         elif self.sotien == 0:
             return f"Không đồng."
-        ssotien = f"{self.sotien}"
-        if len(ssotien) > 21:
-            return f"Không thể đọc !!!"
-        chu = [u"không", u"một", u"hai", u"ba", u"bốn",
-               u"năm", u"sáu", u"bảy", u"tám", u"chín"]
+        elif self.sotien < 0:
+            sno = "Nợ "
+            self.sotien = abs(self.sotien)
+        else:
+            ssotien = f"{self.sotien}"
+            if len(ssotien) > 21:
+                return f"Không thể đọc !!!"
+            else:
+                sno = ""
+        chu = ["không", "một", "hai", "ba", "bốn",
+               "năm", "sáu", "bảy", "tám", "chín"]
+        hang = ['', 'ngàn', 'triệu', 'tỷ', 'ngàn tỷ', 'triệu tỷ', 'tỷ tỷ']
         # dao nguoc list so
         lso = []
         for so in list(str(self.sotien))[::-1]:
-          lso.append(int(so))
-        print(f"lso={lso}")
-        lchu = []
+            lso.append(int(so))
+        hangso = {}
+        for h in range(7):
+            hangso[h] = {"tram": 0, "chuc": 0, "donvi": 0}
         for id in range(len(lso)):
-            so=lso[id]
-            hang = id % 3
-            print(f"id={id} so={so} hang={hang}")
-            if hang == 0:
-                if lso[id] == 1:
-                    if lso[id+1] > 1:
-                        lchu.append(u"mốt")
-                    else:
-                        lchu.append(u"một")
-                elif lso[id] == 5:
-                    if lso[id+1] > 0:
-                        lchu.append(u"lăm")
-                    else:
-                        lchu.append(u"năm")
-                else:
-                    lchu.append(chu[so])
-            elif hang == 1:
-                lchu.append(u"mươi")
-                lchu.append(chu[so])
-            else:
-                lchu.append(u"trăm")
-                lchu.append(chu[so])
-        # điền hàng
-        print(f"lchu chua hang= {lchu}")
-        if len(lso) > 3:
-            lchu.insert(5, u"ngàn")
-        print(f"lchu dien hang ngan= {lchu}")
-        if len(lso) > 6:
-            lchu.insert(11, u"triệu")
-        print(f"lchu dien hang trieu= {lchu}")
-        if len(lso) > 9:
-            lchu.insert(17, u"tỷ")
-        if len(lso) > 12:
-            lchu.insert(23, u"ngàn tỷ")
-        if len(lso) > 15:
-            lchu.insert(29, u"triệu tỷ")
-        if len(lso) > 18:
-            lchu.insert(35, u"tỷ tỷ")
-        print(f"dien hang lchu= {lchu}")
-        # tạo chuõi
-        lchu = lchu[::-1]
+            h = int(id / 3)
+            trchdv = id % 3
+            if trchdv == 0:
+                hangso[h]['donvi'] = lso[id]
+            if trchdv == 1:
+                hangso[h]['chuc'] = lso[id]
+            if trchdv == 2:
+                hangso[h]['tram'] = lso[id]
         kq = ""
-        for chu in lchu:
-            kq += f"{chu} "
-        kq = f"{kq}đồng."
-        kq=str(kq)
-        kq.replace("không trăm không mươi không triệu tỷ", "")
-        kq.replace("không trăm không mươi không triệu tỷ", "")
-        kq.replace("không trăm không mươi không ngàn tỷ", "")
-        kq.replace("không trăm không mươi không tỷ", "")
-        kq.replace("không trăm không mươi không triệu", "")
-        kq.replace("không trăm không mươi không ngàn", "")
-        kq.replace("không trăm không mươi không", "")
-        kq.replace("không mươi không", "")
-        kq.replace("không mươi", "")
-        kq.replace("một mươi", "mười")
-        print(f"kq= {kq}")
-        " ".join(kq.split())
-        kq.replace("  ", " ")
-        kq = f"{kq[0].upper()}{kq[1:]}"
+        for h in range(6, -1, -1):
+            tram = hangso[h]['tram']
+            chuc = hangso[h]['chuc']
+            donvi = hangso[h]['donvi']
+            if (tram+chuc+donvi) > 0:
+                if len(kq) > 0:
+                    kq += f"{chu[tram]} trăm "
+                if (chuc+donvi) > 0:
+                    if chuc == 0:
+                        if len(kq) > 0:
+                            kq += f"lẻ {chu[donvi]} "
+                        else:
+                            kq += f"{chu[donvi]} "
+                    elif chuc == 1:
+                        if donvi == 5:
+                            kq += "mười lăm "
+                        elif donvi == 0:
+                            kq += "mười "
+                        else:
+                            kq += f"mười {chu[donvi]} "
+                    else:
+                        if donvi == 0:
+                            kq += f"{chu[chuc]} mươi "
+                        elif donvi == 1:
+                            kq += f"{chu[chuc]} mươi mốt "
+                        else:
+                            kq += f"{chu[chuc]} mươi {chu[donvi]} "
+                if len(hang[h]) > 0:
+                    kq += f"{hang[h]} "
+        if len(sno) > 0:
+            kq = f"{sno}{kq}đồng."
+        else:
+            kq = f"{kq[0].upper()}{kq[1:]}đồng."
         return kq
-

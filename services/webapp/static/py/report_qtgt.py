@@ -71,10 +71,10 @@ def load_odata():
 
 
 def lamtronso(sothapphan="0.000", phanle=2):
-    #from decimal import Decimal, ROUND_HALF_UP
+    from decimal import Decimal
     try:
-        somoi = int(sothapphan)
-    except expression as identifier:
+        somoi = round(Decimal(sothapphan),phanle)
+    except:
         somoi = None
     return somoi
 
@@ -108,8 +108,7 @@ def tinhkinhphi(odl={"hesodutoan": {"hesoid": 20200721, }, "qtgt": {"oc": {}, "o
     kp['oc']['Tructiepkhac'] = lamtronso(
         kp['oc']['Zvlncmtc'] * odl['hesodutoan']['tructiepkhac'], 0)
     kp['oc']['Tructiep'] = kp['oc']['Zvlncmtc'] + kp['oc']['Tructiepkhac']
-    kp['oc']['Chung'] = lamtronso(
-        kp['oc']['Tructiep'] * odl['hesodutoan']['chung'], 0)
+    kp['oc']['Chung'] = lamtronso(kp['oc']['Tructiep'] * odl['hesodutoan']['chung'], 0)
     kp['oc']['Giantiepkhac'] = lamtronso(
         kp['oc']['Tructiep'] * odl['hesodutoan']['giantiepkhac'], 0)
     kp['oc']['Giantiep'] = kp['oc']['Chung'] + kp['oc']['Giantiepkhac']
