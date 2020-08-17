@@ -48,7 +48,7 @@ odata = {
         "qtgt": {"tt": 1, "ngaylap": '20200813', "tieude": "BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC", "baogiaid": 20200813, "hesoid": 20190725, "oc": {"Zvl": 0, "Znc": 0, "Zmtc": 0, "Tailap": 0}, "on": {"Zvl": 1282982, "Znc": 708310, "Zmtc": 52780, "Tailap": 362000}},
         "donvithicong": {"tendvtc": "ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC", 'nguoiky': "Nguyễn Văn Tùng", "chucvu": "Đội trưởng"},
         "congvan": {"mienphi": "Thông tu 06/2016/TT-BXD (1003/2016)", "dongtien": "", "tailap": "Công văn số 327/BGTLMĐ ngày 01/04/2014"},
-        "hesochiphi": {"hesoid": 20190725, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.05, "thutinhtruoc": 0.055, "tructiepkhac": 0, "giantiepkhac": 0, "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566},
+        "hesodutoan": {"hesoid": 20190725, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.05, "thutinhtruoc": 0.055, "tructiepkhac": 0, "giantiepkhac": 0, "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566},
     },
     1: {
         "tttt": {"maqt": "pkh002", "madot": "2020gmmp242", "mahoso": "113344", "makhachhang": "2020kh001", "madvtc": "qlmltd"},
@@ -58,7 +58,7 @@ odata = {
         "qtgt": {"tt": 2, "ngaylap": '20200813', "tieude": "BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC", "baogiaid": 20200813, "hesoid": 20200721, "oc": {"Zvl": 0, "Znc": 0, "Zmtc": 0, "Tailap": 0}, "on": {"Zvl": 1366026, "Znc": 564590, "Zmtc": 46925, "Tailap": 2610000}},
         "donvithicong": {"tendvtc": "ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC", 'nguoiky': "Nguyễn Văn Tùng", "chucvu": "Đội trưởng"},
         "congvan": {"mienphi": "Nghị định 68/2019NĐ-CP (14/08/2019); Quyết định 2207/QĐ-UBND (18/06/2020)", "dongtien": "", "tailap": "Công văn số 327/BGTLMĐ ngày 01/04/2014"},
-        "hesochiphi": {"hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.055, "tructiepkhac": 0, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+        "hesodutoan": {"hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.055, "tructiepkhac": 0, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566},
     },
 }
@@ -91,37 +91,37 @@ def format_tien(sotien=None):
     return dinhdang
 
 
-def tinhkinhphi(odl={"hesochiphi": {"hesoid": 20200721, }, "qtgt": {"oc": {}, "on": {}}}):
+def tinhkinhphi(odl={"hesodutoan": {"hesoid": 20200721, }, "qtgt": {"oc": {}, "on": {}}}):
     # try:
-    print(f"tinhkinhphi hesochiphi={odl['hesochiphi']}")
+    print(f"tinhkinhphi hesodutoan={odl['hesodutoan']}")
     print(f"tinhkinhphi qtgt={odl['qtgt']}")
     kp = {"oc": {}, "on": {}}
     # ong cai
     kp['oc']['Vl'] = lamtronso(
-        odl['qtgt']['oc']['Zvl'] * odl['hesochiphi']['vl'], 0)
+        odl['qtgt']['oc']['Zvl'] * odl['hesodutoan']['vl'], 0)
     kp['oc']['Nc'] = lamtronso(
-        odl['qtgt']['oc']['Znc'] * odl['hesochiphi']['nc'], 0)
+        odl['qtgt']['oc']['Znc'] * odl['hesodutoan']['nc'], 0)
     kp['oc']['Mtc'] = lamtronso(
-        odl['qtgt']['oc']['Zmtc'] * odl['hesochiphi']['mtc'], 0)
+        odl['qtgt']['oc']['Zmtc'] * odl['hesodutoan']['mtc'], 0)
     kp['oc']['Zvlncmtc'] = kp['oc']['Vl'] + \
         kp['oc']['Nc'] + kp['oc']['Mtc']
     kp['oc']['Tructiepkhac'] = lamtronso(
-        kp['oc']['Zvlncmtc'] * odl['hesochiphi']['tructiepkhac'], 0)
+        kp['oc']['Zvlncmtc'] * odl['hesodutoan']['tructiepkhac'], 0)
     kp['oc']['Tructiep'] = kp['oc']['Zvlncmtc'] + kp['oc']['Tructiepkhac']
     kp['oc']['Chung'] = lamtronso(
-        kp['oc']['Tructiep'] * odl['hesochiphi']['chung'], 0)
+        kp['oc']['Tructiep'] * odl['hesodutoan']['chung'], 0)
     kp['oc']['Giantiepkhac'] = lamtronso(
-        kp['oc']['Tructiep'] * odl['hesochiphi']['giantiepkhac'], 0)
+        kp['oc']['Tructiep'] * odl['hesodutoan']['giantiepkhac'], 0)
     kp['oc']['Giantiep'] = kp['oc']['Chung'] + kp['oc']['Giantiepkhac']
     kp['oc']['Giaxaydung'] = kp['oc']['Tructiep'] + kp['oc']['Giantiep']
     kp['oc']['Thutinhtruoc'] = lamtronso(
-        kp['oc']['Giaxaydung'] * odl['hesochiphi']['thutinhtruoc'], 0)
+        kp['oc']['Giaxaydung'] * odl['hesodutoan']['thutinhtruoc'], 0)
     kp['oc']['Xaydungtruocthue'] = kp['oc']['Giaxaydung'] + \
         kp['oc']['Thutinhtruoc']
     kp['oc']['KhaosatThietke'] = lamtronso(
-        kp['oc']['Xaydungtruocthue'] * odl['hesochiphi']['khaosat'] * odl['hesochiphi']['thietke'], 0)
+        kp['oc']['Xaydungtruocthue'] * odl['hesodutoan']['khaosat'] * odl['hesodutoan']['thietke'], 0)
     kp['oc']['Giamsat'] = lamtronso(
-        kp['oc']['Xaydungtruocthue'] * odl['hesochiphi']['giamsat'], 0)
+        kp['oc']['Xaydungtruocthue'] * odl['hesodutoan']['giamsat'], 0)
     kp['oc']['Tongxaydungtruocthue'] = kp['oc']['Xaydungtruocthue'] + \
         kp['oc']['KhaosatThietke'] + kp['oc']['Giamsat']
     kp['oc']['Vattongxaydung'] = lamtronso(
@@ -134,30 +134,30 @@ def tinhkinhphi(odl={"hesochiphi": {"hesoid": 20200721, }, "qtgt": {"oc": {}, "o
     kp['oc']['Vattailap'] = kp['oc']['Tailap'] - kp['oc']['Tailaptruocthue']
     # ong nganh
     kp['on']['Vl'] = lamtronso(
-        odl['qtgt']['on']['Zvl'] * odl['hesochiphi']['vl'], 0)
+        odl['qtgt']['on']['Zvl'] * odl['hesodutoan']['vl'], 0)
     kp['on']['Nc'] = lamtronso(
-        odl['qtgt']['on']['Znc'] * odl['hesochiphi']['nc'], 0)
+        odl['qtgt']['on']['Znc'] * odl['hesodutoan']['nc'], 0)
     kp['on']['Mtc'] = lamtronso(
-        odl['qtgt']['on']['Zmtc'] * odl['hesochiphi']['mtc'], 0)
+        odl['qtgt']['on']['Zmtc'] * odl['hesodutoan']['mtc'], 0)
     kp['on']['Zvlncmtc'] = kp['on']['Vl'] + \
         kp['on']['Nc'] + kp['on']['Mtc']
     kp['on']['Tructiepkhac'] = lamtronso(
-        kp['on']['Zvlncmtc'] * odl['hesochiphi']['tructiepkhac'], 0)
+        kp['on']['Zvlncmtc'] * odl['hesodutoan']['tructiepkhac'], 0)
     kp['on']['Tructiep'] = kp['on']['Zvlncmtc'] + kp['on']['Tructiepkhac']
     kp['on']['Chung'] = lamtronso(
-        kp['on']['Tructiep'] * odl['hesochiphi']['chung'], 0)
+        kp['on']['Tructiep'] * odl['hesodutoan']['chung'], 0)
     kp['on']['Giantiepkhac'] = lamtronso(
-        kp['on']['Tructiep'] * odl['hesochiphi']['giantiepkhac'], 0)
+        kp['on']['Tructiep'] * odl['hesodutoan']['giantiepkhac'], 0)
     kp['on']['Giantiep'] = kp['on']['Chung'] + kp['on']['Giantiepkhac']
     kp['on']['Giaxaydung'] = kp['on']['Tructiep'] + kp['on']['Giantiep']
     kp['on']['Thutinhtruoc'] = lamtronso(
-        kp['on']['Giaxaydung'] * odl['hesochiphi']['thutinhtruoc'], 0)
+        kp['on']['Giaxaydung'] * odl['hesodutoan']['thutinhtruoc'], 0)
     kp['on']['Xaydungtruocthue'] = kp['on']['Giaxaydung'] + \
         kp['on']['Thutinhtruoc']
     kp['on']['KhaosatThietke'] = lamtronso(
-        kp['on']['Xaydungtruocthue'] * odl['hesochiphi']['khaosat'] * odl['hesochiphi']['thietke'], 0)
+        kp['on']['Xaydungtruocthue'] * odl['hesodutoan']['khaosat'] * odl['hesodutoan']['thietke'], 0)
     kp['on']['Giamsat'] = lamtronso(
-        kp['on']['Xaydungtruocthue'] * odl['hesochiphi']['giamsat'], 0)
+        kp['on']['Xaydungtruocthue'] * odl['hesodutoan']['giamsat'], 0)
     kp['on']['Tongxaydungtruocthue'] = kp['on']['Xaydungtruocthue'] + \
         kp['on']['KhaosatThietke'] + kp['on']['Giamsat']
     kp['on']['Vattongxaydung'] = lamtronso(
@@ -249,21 +249,15 @@ def quochuy(odl={'tendvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', 'ng
 
 
 def tieude(odl={'tieude': 'BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC', 'sohoso': 'GM08123/20', 'sodot': '202/20MP', 'khachhang': 'Phạm Thị Lan', 'diachigandhn': 'T15 Nguyễn Văn Hưởng- P.Thảo Điền- Q.2'}):
-    # display: grid;
-    # grid: auto-flow minmax(1rem, max-content) / 10fr 5fr 2fr;
     zone = html.DIV(
         Class="w-full",
-        style={"margin-top": "3pt"}
-    )
+        style={"margin-top": "3pt", "display": f"grid",
+               "grid": f"auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content,20pt)"})
     # tieude
     zone <= html.DIV(
         f"{odl['tieude']}",
-        Class="w-full uppercase text-center p-px font-bold",
-        style={'fontSize': '13pt', 'textJustify': 'inter-word'})
-    grid_box = html.DIV(
-        Class="w-full",
-        style={"display": f"grid",
-               "grid": f"auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content,20pt)"})
+        Class="uppercase text-center p-px font-bold",
+        style={'fontSize': '13pt', 'textJustify': 'inter-word', "gridArea": "1/1/2/5"})
     # row1
     box1 = html.DIV(
         f"Khách hàng: ",
@@ -279,7 +273,7 @@ def tieude(odl={'tieude': 'BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC
         f"{odl['sohoso']}",
         Class="uppercase text-justify p-px font-bold",
         style={'fontSize': '9pt', 'textJustify': 'inter-word'})
-    grid_box <= box1 + box2 + box3 + box4
+    zone <= box1 + box2 + box3 + box4
     # row2
     box1 = html.DIV(
         f"Địa chỉ:",
@@ -295,24 +289,91 @@ def tieude(odl={'tieude': 'BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC
         f"{odl['sodot']}",
         Class="uppercase text-justify p-px font-bold",
         style={'fontSize': '9pt', 'textJustify': 'inter-word'})
-    grid_box <= box1 + box2 + box3 + box4
-    zone <= grid_box
+    zone <= box1 + box2 + box3 + box4
+    return zone
+
+
+def bangphui(odl={"congvan": "Thông tư 06/2016TT-BXD(10/03/2016)"}):
+    zone = html.DIV(
+        Class="w-full",
+        style={"display": f"grid",
+               "grid": f"auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr"})
+    # tieude
+    box1 = html.DIV(
+        f"Mô tả công tác",
+        Class="text-center p-px font-bold border-black border-t border-l",
+        style={"gridArea": "1/1/3/2", "paddingTop": "6pt"})
+    box2 = html.DIV(
+        f"ĐVT",
+        Class="text-center p-px font-bold border-black border-t border-l",
+        style={"gridArea": "1/2/3/3", "paddingTop": "6pt"})
+    box3 = html.DIV(
+        f"SL",
+        Class="text-center p-px font-bold border-black border-t border-l",
+        style={"gridArea": "1/3/3/4", "paddingTop": "6pt"})
+    box4 = html.DIV(
+        f"Đơn giá",
+        Class="text-center p-px font-bold border-black border-t border-l",
+        style={"gridArea": "1/4/2/7"})
+    box5 = html.DIV(
+        f"Thành tiền",
+        Class="text-center p-px font-bold border-black border-t border-l border-r",
+        style={"gridArea": "1/7/2/10"})
+    zone <= box1 + box2 + box3 + box4 + box5
+    box4 = html.DIV(
+        f"VL",
+        Class="text-center p-px font-bold border-black border-t border-l",
+        style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "1px 0 0 1px",
+               "gridArea": "2/4/3/5"})
+    box5 = html.DIV(
+        f"NC",
+        Class="text-center p-px font-bold",
+        style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "1px 0 0 1px",
+               "gridArea": "2/5/3/6"})
+    box6 = html.DIV(
+        f"MTC",
+        Class="text-center p-px font-bold",
+        style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "1px 0 0 1px",
+               "gridArea": "2/6/3/7"})
+    box7 = html.DIV(
+        f"VL",
+        Class="text-center p-px font-bold",
+        style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "1px 0 0 1px",
+               "gridArea": "2/7/3/8"})
+    box8 = html.DIV(
+        f"NC",
+        Class="text-center p-px font-bold",
+        style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "1px 0 0 1px",
+               "gridArea": "2/8/3/9"})
+    box9 = html.DIV(
+        f"MTC",
+        Class="text-center p-px font-bold",
+        style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "1px 1px 0 1px",
+               "gridArea": "2/9/3/10"})
+    zone <= box4 + box5 + box6 + box7 + box8 + box9
     return zone
 
 
 def tongket0(odl={"congvan": "Thông tư 06/2016TT-BXD(10/03/2016)"}):
     zone = html.DIV(
-        f"{odl['congvan']}",
         Class="w-full",
-        style={"margin-top": "2pt", "margin-bottom": "2pt"}
-    )
+        style={"margin-top": "2pt", "margin-bottom": "2pt", "display": f"grid",
+               "grid": f"auto-flow minmax(1rem, max-content) / max-content 1fr"})
+    # tieude
+    box1 = html.DIV(
+        f"TỔNG KẾT KINH PHÍ:",
+        Class="p-px font-bold")
+    box2 = html.DIV(
+        f"{odl['congvan']}",
+        Class="p-px")
+    zone <= box1 + box2
     return zone
 
 
-def tongket_1phui_nd32(odl={"hesochiphi": {},
+def tongket_1phui_nd32(odl={"hesodutoan": {},
                             "qtgt": {"onZVl": "1982590", "onZnc": "2499584", "onZmtc": "240587"}}):
     # tinh du lieu
-    print(f"tongket_1phui_nd32 hesochiphi={odl['hesochiphi']}")
+    print(f"tongket_1phui_nd32 hesodutoan={odl['hesodutoan']}")
     print(f"tongket_1phui_nd32 qtgt={odl['qtgt']}")
     kp = tinhkinhphi(odl)
     phui = f'on'
@@ -322,7 +383,7 @@ def tongket_1phui_nd32(odl={"hesochiphi": {},
     zone = html.DIV(
         Class="w-full",
         style={"display": f"grid",
-               "grid": f"auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr 1fr"})
+               "grid": f"auto-flow minmax(1rem, max-content) / 151fr 278fr 63fr 63fr"})
     # tieude border: top right bot left
     box1 = html.DIV(
         f"Khoản mục chi phí",
@@ -424,7 +485,7 @@ def tongket_1phui_nd32(odl={"hesochiphi": {},
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box2 = html.DIV(
-        f"A  x  {odl['hesochiphi']['tructiepkhac']*100:01.2f} %",
+        f"A  x  {odl['hesodutoan']['tructiepkhac']*100:01.2f} %",
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box3 = html.DIV(
@@ -457,7 +518,7 @@ def tongket_1phui_nd32(odl={"hesochiphi": {},
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box2 = html.DIV(
-        f"T  x  {odl['hesochiphi']['chung']*100:01.2f}%",
+        f"T  x  {odl['hesodutoan']['chung']*100:01.2f}%",
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box3 = html.DIV(
@@ -490,7 +551,7 @@ def tongket_1phui_nd32(odl={"hesochiphi": {},
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box2 = html.DIV(
-        f"Z  x  {odl['hesochiphi']['thutinhtruoc']*100:01.2f}%",
+        f"Z  x  {odl['hesodutoan']['thutinhtruoc']*100:01.2f}%",
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box3 = html.DIV(
@@ -523,7 +584,7 @@ def tongket_1phui_nd32(odl={"hesochiphi": {},
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box2 = html.DIV(
-        f"G  x  {odl['hesochiphi']['khaosat']*100:01.2f}%  x  {odl['hesochiphi']['thietke']:01.2f}",
+        f"G  x  {odl['hesodutoan']['khaosat']*100:01.2f}%  x  {odl['hesodutoan']['thietke']:01.2f}",
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box3 = html.DIV(
@@ -540,7 +601,7 @@ def tongket_1phui_nd32(odl={"hesochiphi": {},
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box2 = html.DIV(
-        f"G  x  {odl['hesochiphi']['giamsat']*100:01.3f}%",
+        f"G  x  {odl['hesodutoan']['giamsat']*100:01.3f}%",
         Class="p-px",
         style={"borderStyle": "solid", "borderColor": "black", "borderWidth": "0 0 0 1px"})
     box3 = html.DIV(
@@ -663,6 +724,11 @@ def creat_1_report(o1data=None):
         'diachigandhn': o1data['hoso']['diachigandhn']}
     zone = tieude(odl)
     trang <= zone
+    # phui ong nganh
+    odl = {
+        'congvan': o1data['congvan']['mienphi']}
+    zone = bangphui(odl)
+    trang <= zone
 
     odl = {
         'congvan': o1data['congvan']['mienphi']}
@@ -671,7 +737,7 @@ def creat_1_report(o1data=None):
 
     odl = {
         'qtgt': o1data['qtgt'],
-        'hesochiphi': o1data['hesochiphi']}
+        'hesodutoan': o1data['hesodutoan']}
     zone = tongket_1phui_nd32(odl)
     trang <= zone + rrong("6pt")
 
