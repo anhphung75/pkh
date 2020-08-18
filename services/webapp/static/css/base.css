@@ -1,15 +1,13 @@
 @charset "UTF-8";
-*,
-*:before,
-*:after {
+*, *:before, *:after {
   box-sizing: border-box;
   background-color: transparent;
 }
 
-@import url(//fonts.googleapis.com/css?family=Open+Sans);
-
+@import url('./font_Opensans.css');
+@import url('./font_UVNTintuc.css');
 body {
-  font-family: "Open Sans", sans-serif;
+  font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
   /* font-size: 16pt; */
   margin: 0;
   border: 0;
@@ -21,7 +19,133 @@ body {
   display: block;
 }
 
+/* tetx */
+
+.l {
+  text-align: left;
+  padding: 1pt;
+}
+
+.r {
+  text-align: right;
+  padding: 1pt;
+}
+
+.j {
+  text-align: justify;
+  text-justify: inter-word;
+  padding: 1pt;
+}
+
+.u {
+  text-transform: uppercase;
+}
+
+/* font */
+
+.fb {
+  font-weight: bold;
+}
+
+.fi {
+  font-style: italic;
+}
+
+.fu {
+  text-decoration: underline;
+}
+
+.f1 {
+  font-size: calc( 1rem + 1pt);
+}
+
+.f2 {
+  font-size: calc( 1rem + 2pt);
+}
+
+.f3 {
+  font-size: calc( 1rem + 3pt);
+}
+
+.f4 {
+  font-size: calc( 1rem + 4pt);
+}
+
+.f5 {
+  font-size: calc( 1rem + 5pt);
+}
+
+.f6 {
+  font-size: calc( 1rem + 6pt);
+}
+
+/* border */
+
+.ba {
+  border: 1pt solid black;
+}
+
+.bl {
+  border-style: solid;
+  border-color: black;
+  border-left: 1pt;
+}
+
+.br {
+  border-style: solid;
+  border-color: black;
+  border-right: 1pt;
+}
+
+.bt {
+  border-style: solid;
+  border-color: black;
+  border-top: 1pt;
+}
+
+.bb {
+  border-style: solid;
+  border-color: black;
+  border-bottom: 1pt;
+}
+
 #trangxem {
-	width: 100vw;
+  width: 100vw;
   height: 100vh;
+}
+
+.A4doc, .A4ngang {
+  display: flex;
+  break-after: always;
+}
+
+.trangin {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 0%;
+}
+
+@media print {
+  body {
+    font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
+    font-size: 8pt;
+  }
+  .A4doc {
+    width: 210mm;
+    height: 297mm;
+    background: transparent;
+  }
+  .A4ngang {
+    width: 297mm;
+    height: 210mm;
+    background: transparent;
+  }
+  /*210mm=595.275pt => trangin= 555pt */
+  .trangin {
+    margin-left: 20pt;
+    margin-right: 20pt;
+    margin-top: 20pt;
+    margin-bottom: 20pt;
+    line-height: 1.05;
+  }
 }

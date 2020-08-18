@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang='en'>
+<html lang='vi'>
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
   <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
-  <link rel="stylesheet" href="{{ static_url("css/base.css") }}" type="text/css">
-  <link rel="stylesheet" href="{{ static_url("css/bootstrap.css") }}" type="text/css">
-  <link rel="stylesheet" href="{{ static_url("css/fontawesome.5.11.2.all.css") }}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/bootstrap.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/fontawesome.5.11.2.all.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
   {% block cdn %}{% end %}
   {% block css %}{% end %}
 </head>
@@ -19,7 +19,7 @@
       <div id="logo" class="container h-100 m-0 p-0 col-auto bg-dark">
         <nav class="navbar navbar-expand navbar-dark bg-dark m-0 p-0">
           <a class="navbar-brand" href="#">
-            <img src="{{ static_url("favicon.png") }}" height="30" alt="logo">
+            <img src="{{ static_url('favicon.png')}}" height="30" alt="logo">
           </a>
           {% module xsrf_form_html() %}
         </nav>
@@ -32,9 +32,9 @@
     </div>
   </div>
   <!-- script  -->
-  <script src="{{ static_url("js/refs/axios.min.js") }}"></script>
-  <script src="{{ static_url("js/refs/vue.min.js") }}"></script>
+  <script src="{{static_url('js/apps/base.js')}}"></script>
   {% block js %}{% end %}
+  {% block py %}{% end %}
 </body>
 
 </html>
