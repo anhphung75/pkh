@@ -1,11 +1,16 @@
 import Vue from 'https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.esm.browser.min.js';
-import {div} from "../comps/basetags.js";
-
+import { div } from "../../comps/basetags.js";
+import { phuivattu } from "./phuivattu.js";
 Vue.component('w', div);
+Vue.component('trangin', trangin);
 
 var app = new Vue({
   el: '#vungin',
   delimiters: ["{`", "`}"],
+  component: {
+    'ongcai': phuivattu,
+    'ongnganh': phuivattu,
+  },
   data() {
     return {
       ttdl: null,
@@ -38,11 +43,6 @@ var app = new Vue({
       isloadws: true,
     }
   },
-  template:`
-  <w class="A4doc ba">
-  <w class="trangin> trang1 </w>
-  </w>
-  `,
 })
 
-export{app}
+export { app }

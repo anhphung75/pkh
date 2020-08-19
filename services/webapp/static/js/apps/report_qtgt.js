@@ -1,1 +1,1 @@
-import { app } from "../reports/qtgt.js"
+import { app } from "../reports/qtgt/app.js"

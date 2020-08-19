@@ -31,6 +31,11 @@ body {
   padding: 1pt;
 }
 
+.c {
+  text-align: center;
+  padding: 1pt;
+}
+
 .j {
   text-align: justify;
   text-justify: inter-word;
