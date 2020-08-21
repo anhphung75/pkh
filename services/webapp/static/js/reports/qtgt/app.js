@@ -1,46 +1,69 @@
 import Vue from 'https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.esm.browser.min.js';
-import { div } from "../../comps/basetags.js";
-import { phuivattu } from "./phuivattu.js";
-Vue.component('w', div);
-Vue.component('trangin', trangin);
+import { div_tag } from "../../comps/basetags.js";
+import quochuy from "./quochuy.js";
+import tieude from "./tieude.js";
+import tieudebang from "./tieudebang.js";
+import cpvt from "./cpvt.js";
+
+Vue.component('w', div_tag);
 
 var app = new Vue({
   el: '#vungin',
   delimiters: ["{`", "`}"],
-  component: {
-    'ongcai': phuivattu,
-    'ongnganh': phuivattu,
+  components: {
+    'quochuy': quochuy,
+    'tieude': tieude,
+    'tieudebang': tieudebang,
+    'cpvt': cpvt,
   },
   data() {
     return {
-      ttdl: null,
-      ttxl: null,
-      csdl: 'Cntđ',
-      sohieu: 1,
-      namlv: 2020,
-      showMenu: false,
-      showotim: false,
-      ottdl: {},
-      oHoso: {},
-      oDot: {},
-      oKhach: {},
-      oDvtc: {},
-      mahoso: '2020hs000003',
-      madot: '2020GMMP002',
-      madvtc: '2020dvtc001',
-      makhachhang: '2020kh000002',
-      //search
-      stim: '',
-      otim: {},
-      //phan trang
-      tin1trang: 3,
-      curtin: 0,
-      curtrang: 1,
-      //bang hien thi
-      curbang: 0,
-      tongbang: 3,
-      url_ws: { ttdl: '', ttxl: '' },
+      css: {
+        grid: "auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr",
+      },
+      ldotqt: ["2020GMMP001001", "2020GMMP001002"],
+      url_ws: { ttdl: 'ttdl', ttxl: 'ttxl' },
       isloadws: true,
+      maqt: "2020GMMP001001",
+      onZvl:200,
+      onZnc:200,
+      onZmtc:200,
+      phuioc: [
+        {
+          mota: '- Cắt mặt nhựa', dvt: 'mét', 'sl': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+          'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040
+        },
+        {
+          mota: '- Đào bốc mặt nhựa', dvt: 'mét', 'sl': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+          'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040
+        },],
+      vattuoc: [
+        {
+          mota: 'Đai lấy nước PP 100 x 20F', dvt: 'bộ', 'sl': 1, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+          'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040
+        },
+        {
+          mota: 'Van bi cóc đồng 3/4" x 25mm', dvt: 'cái', 'sl': 1, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+          'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040
+        },],
+      phuion: [
+        {
+          mota: '- Cắt mặt nhựa', dvt: 'mét', 'sl': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+          'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040
+        },
+        {
+          mota: '- Đào bốc mặt nhựa', dvt: 'mét', 'sl': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+          'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040
+        },],
+      vattuon: [
+        {
+          mota: 'Đai lấy nước PP 100 x 20F', dvt: 'bộ', 'sl': 1, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+          'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040
+        },
+        {
+          mota: 'Van bi cóc đồng 3/4" x 25mm', dvt: 'cái', 'sl': 1, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+          'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040
+        },],
     }
   },
 })

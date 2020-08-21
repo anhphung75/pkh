@@ -65,6 +65,10 @@ class Hoso_Handler(WebBase):
         self.render("hoso.html", webapp_title='PKH')
         # self.write("Hello World")
 
+class Rpt_Qtgt(WebBase):
+    def get(self):
+        self.render("reports/qtgt.html", error=None)
+        # self.write("Hello World")
 
 class Api1108_Hoso_Rest(ApiBase):
     def get(self, namhoso):
@@ -202,6 +206,7 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
+            (r"/reports/qtgt", Rpt_Qtgt),
             # (r"/api1108/hoso/sse", Api1108_Hoso_Sse),
             (r"/api1108/hoso/([^/]+)", Api1108_Hoso_Rest),
             # (r"/api1108/hoso/([^/]+)/([^/]+)", Api1108_Hoso_Crud),

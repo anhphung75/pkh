@@ -6,7 +6,7 @@
 
 @import url('./font_Opensans.css');
 @import url('./font_UVNTintuc.css');
-body {
+html, body {
   font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
   /* font-size: 16pt; */
   margin: 0;
@@ -17,6 +17,7 @@ body {
   text-align: left;
   float: none;
   display: block;
+  font-size: 8pt;
 }
 
 /* tetx */
@@ -60,6 +61,14 @@ body {
   text-decoration: underline;
 }
 
+.f-2 {
+  font-size: calc( 1rem - 2pt);
+}
+
+.f-1 {
+  font-size: calc( 1rem - 1pt);
+}
+
 .f1 {
   font-size: calc( 1rem + 1pt);
 }
@@ -90,28 +99,60 @@ body {
   border: 1pt solid black;
 }
 
-.bl {
+.btl {
   border-style: solid;
   border-color: black;
-  border-left: 1pt;
+  border-width: 1pt 0 0 1pt;
 }
 
-.br {
+.btrl {
   border-style: solid;
   border-color: black;
-  border-right: 1pt;
+  border-width: 1pt 1pt 0 1pt;
 }
 
-.bt {
+.brbl {
   border-style: solid;
   border-color: black;
-  border-top: 1pt;
+  border-width: 0 1pt 1pt 1pt;
+}
+
+.brl {
+  border-style: solid;
+  border-color: black;
+  border-width: 0 1pt 0 1pt;
 }
 
 .bb {
   border-style: solid;
   border-color: black;
-  border-bottom: 1pt;
+  border-width: 0 0 1pt 0;
+}
+
+.bbr {
+  border-style: solid;
+  border-color: black;
+  border-width: 0 1pt 1pt 0;
+}
+
+.bbl {
+  border-style: solid;
+  border-color: black;
+  border-width: 0 0 1pt 1pt;
+}
+
+.bl {
+  border-style: solid;
+  border-color: black;
+  border-width: 0 0 0 1pt;
+}
+
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
 }
 
 #trangxem {
@@ -119,19 +160,37 @@ body {
   height: 100vh;
 }
 
-.A4doc, .A4ngang {
+.A4doc {
+  width: 210mm;
+  height: 297mm;
+  display: flex;
+  break-after: always;
+  background: green;
+}
+
+.A4ngang {
+  width: 297mm;
+  height: 210mm;
   display: flex;
   break-after: always;
 }
 
+/*210mm=595.275pt => trangin= 555pt */
+
 .trangin {
+  margin-left: 20pt;
+  margin-right: 20pt;
+  margin-top: 20pt;
+  margin-bottom: 20pt;
+  line-height: 1.05;
+  flex: 1 1 0%;
   display: flex;
   flex-direction: column;
-  flex: 1 1 0%;
+  background: white;
 }
 
 @media print {
-  body {
+  html, body {
     font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
     font-size: 8pt;
   }
@@ -144,13 +203,5 @@ body {
     width: 297mm;
     height: 210mm;
     background: transparent;
-  }
-  /*210mm=595.275pt => trangin= 555pt */
-  .trangin {
-    margin-left: 20pt;
-    margin-right: 20pt;
-    margin-top: 20pt;
-    margin-bottom: 20pt;
-    line-height: 1.05;
   }
 }

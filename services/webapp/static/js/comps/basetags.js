@@ -1,11 +1,9 @@
-var div = {
-  inheritAttrs: true,
-  props: ['class'],
+var div_tag = {
   template: `
-  <div :class='class'>
+  <div v-bind="$attrs" v-on="$listeners">
     <slot>div rỗng</slot>
   </div>
   `
-}
+};
 
-export { div }
+export { div_tag };

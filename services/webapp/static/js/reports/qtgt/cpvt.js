@@ -1,10 +1,17 @@
-var cpvt = {
+export default {
   props: {
     chiphi: {
       //old={mota:"",dvt:"",sl:"",giavl:0,gianc:0,giamtc:0,tienvl:0,tiennc:0,tienmtc:0}
       type: Object,
       required: false
     },
+  },
+  data() {
+    return {
+      css: {
+        grid: "auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr",
+      },
+    }
   },
   method: {
     tienso(tien, sole = 0) {
@@ -51,16 +58,14 @@ var cpvt = {
     },
   },
   template: `
-    <w class="bt bl l">{{mota}}</w>
-    <w class="bt bl c">{{dvt}}</w>
-    <w class="bt bl r">{{sl}}</w>
-    <w class="bt bl r">{{giavl}}</w>
-    <w class="bt bl r">{{gianc}}</w>
-    <w class="bt bl r">{{giamtc}}</w>
-    <w class="bt bl r">{{tienvl}}</w>
-    <w class="bt bl r">{{tiennc}}</w>
-    <w class="bt bl r">{{tienmtc}}</w>
+    <div class="bt bl l">{{mota}}</div>
+    <div class="bt bl c">{{dvt}}</div>
+    <div class="bt bl r">{{sl}}</div>
+    <div class="bt bl r">{{giavl}}</div>
+    <div class="bt bl r">{{gianc}}</div>
+    <div class="bt bl r">{{giamtc}}</div>
+    <div class="bt bl r">{{tienvl}}</div>
+    <div class="bt bl r">{{tiennc}}</div>
+    <div class="bt bl r">{{tienmtc}}</div>
   `
-}
-
-export { cpvt }
+};
