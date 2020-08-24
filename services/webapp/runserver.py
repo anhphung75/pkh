@@ -14,7 +14,7 @@ from tornado.options import define, options
 
 from ttdl import Maychu
 from ttxl import apiHoso
-#from ttxl_sse import hoso as sse_hoso
+# from ttxl_sse import hoso as sse_hoso
 
 
 class WebBase(web.RequestHandler):
@@ -65,10 +65,55 @@ class Hoso_Handler(WebBase):
         self.render("hoso.html", webapp_title='PKH')
         # self.write("Hello World")
 
+
 class Rpt_Qtgt(WebBase):
     def get(self):
-        self.render("reports/qtgt.html", error=None)
+        dsqt = [
+            {'maqt': '2020gmmp001', 'hesoid': '20200721', 'baogiaid': '20200721',
+             'on': {
+                 'phui': [
+                     {'chiphiid': 1, 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét', 'sl': 4.6,
+                      'giavl': 9480, 'gianc': 10864, 'giamtc': 2069,
+                      'tienvl': 43608, 'tiennc': 49974, 'tienmtc': 9517, },
+                     {'chiphiid': 1, 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét', 'sl': 4.6,
+                         'giavl': 9480, 'gianc': 10864, 'giamtc': 2069,
+                         'tienvl': 43608, 'tiennc': 49974, 'tienmtc': 9517, },
+                 ],
+                 'vattu': [
+                     {'chiphiid': 1, 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét', 'sl': 4.6,
+                      'giavl': 9480, 'gianc': 10864, 'giamtc': 2069,
+                      'tienvl': 43608, 'tiennc': 49974, 'tienmtc': 9517, },
+                     {'chiphiid': 1, 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét', 'sl': 4.6,
+                         'giavl': 9480, 'gianc': 10864, 'giamtc': 2069,
+                         'tienvl': 43608, 'tiennc': 49974, 'tienmtc': 9517, },
+                 ],
+                 'tailap': ''}
+             },
+            {'maqt': '2020gmmp002', 'hesoid': '20200721', 'baogiaid': '20200721',
+             'on': {
+                 'phui': [
+                     {'chiphiid': 1, 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét', 'sl': 4.6,
+                      'giavl': 9480, 'gianc': 10864, 'giamtc': 2069,
+                      'tienvl': 43608, 'tiennc': 49974, 'tienmtc': 9517, },
+                     {'chiphiid': 1, 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét', 'sl': 4.6,
+                         'giavl': 9480, 'gianc': 10864, 'giamtc': 2069,
+                         'tienvl': 43608, 'tiennc': 49974, 'tienmtc': 9517, },
+                 ],
+                 'vattu': [
+                     {'chiphiid': 1, 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét', 'sl': 4.6,
+                      'giavl': 9480, 'gianc': 10864, 'giamtc': 2069,
+                      'tienvl': 43608, 'tiennc': 49974, 'tienmtc': 9517, },
+                     {'chiphiid': 1, 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét', 'sl': 4.6,
+                         'giavl': 9480, 'gianc': 10864, 'giamtc': 2069,
+                         'tienvl': 43608, 'tiennc': 49974, 'tienmtc': 9517, },
+                 ],
+                 'tailap': ''}
+             },
+        ]
+        print(f"dsqt={dsqt}")
+        self.render("reports/qtgt.html", dsqt=dsqt, error=None)
         # self.write("Hello World")
+
 
 class Api1108_Hoso_Rest(ApiBase):
     def get(self, namhoso):
@@ -147,13 +192,13 @@ class Api1108_ws(tornado.websocket.WebSocketHandler):
     def on_close(self):
         Api1108_ws.waiters.remove(self)
 
-    @classmethod
+    @ classmethod
     def update_cache(cls, chat):
         cls.cache.append(chat)
         if len(cls.cache) > cls.cache_size:
             cls.cache = cls.cache[-cls.cache_size:]
 
-    @classmethod
+    @ classmethod
     def send_updates(cls, chat):
         logging.info("sending message to %d waiters", len(cls.waiters))
         for waiter in cls.waiters:
@@ -215,7 +260,8 @@ class WebApp(web.Application):
         ]
         settings = dict(
             webapp_title=u"PKH",
-            template_path=os.path.join(os.path.dirname(__file__), "templates"),
+            template_path=os.path.join(
+                os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             # ui_modules={"Entry": EntryModule},
             xsrf_cookies=True,

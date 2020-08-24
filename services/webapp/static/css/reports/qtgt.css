@@ -4,3 +4,13 @@ main {
   flex-direction: column;
   background: yellow;
 }
+
+.quochuy{
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
+}
+.tieude{
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content,20pt);
+}
+.bang{
+  grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+}
