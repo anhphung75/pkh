@@ -65,14 +65,110 @@ class Hoso_Handler(WebBase):
         self.render("hoso.html", webapp_title='PKH')
         # self.write("Hello World")
 
+
+tttt = [
+    {'maqt': 'gmmp001', 'hosoid': 'gmmp001', 'khachhangid': '001', 'madot': 'gm001',
+     'qtoc': {'phui': '001', 'vattu': '001', 'tailap': '001'},
+     'qton': {'phui': '002', 'vattu': '002', 'tailap': '002'},
+     },
+    {'maqt': 'gmmp002', 'hosoid': 'gmmp002', 'khachhangid': '002', 'madot': 'gm002',
+     'qtoc': {'phui': '002', 'vattu': '002', 'tailap': '002'},
+     'qton': {'phui': '001', 'vattu': '001', 'tailap': '001'},
+     },
+]
+qtgt = {
+    'gmmp001': {'hosoid': 'gmmp0001', 'dotid': 'gm001', 'hesoquanlyid': 20200721,
+                'baogiaid': 20200721, 'plgia': 'dutoan', 'madvtc': 'QLMLTD', 'ngaylap': '20200820',
+                'qtoc': {
+                    'phui': {'maqtphui': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
+                    'vattu': {'maqtvattu': '001', 'zvl': 0, 'znc': 1, 'zmtc': 0},
+                    'tailap': {'maqttailap': '001', 'ztl': 0}
+                },
+                'qton': {
+                    'phui': {'maqt33': '001', 'zvl': 0, 'znc': 0, 'zmtc': 2},
+                    'vattu': {'maqt34': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
+                    'tailap': {'maqt35': '001', 'ztl': 0}
+                }, },
+    'gmmp002': {'hosoid': 'gmmp0002', 'dotid': 'gm001', 'hesoquanlyid': 20200721,
+                'baogiaid': 20200721, 'plgia': 'dutoan',
+                'qtoc': {
+                    'phui': {'maqt31': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
+                    'vattu': {'maqt32': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
+                    'tailap': {'maqt35': '001', 'ztl': 0}
+                },
+                'qton': {
+                    'phui': {'maqt33': '001', 'zvl': 0, 'znc': 0, 'zmtc': 1},
+                    'vattu': {'maqt34': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
+                    'tailap': {'maqt35': '001', 'ztl': 0}
+                }, },
+}
+qtphui = {
+    '001': [{'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'sl': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'sl': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            ],
+    '002': [{'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'sl': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'sl': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            ],
+}
+qtvattu = {
+    '001': [{'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+             'sl': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+             'sl': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            ],
+    '002': [{'chiphiid': '003', 'mota': 'Đai lấy nước PP 150 x 20F', 'dvt': 'bộ',
+             'sl': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+             'sl': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            ],
+}
+qttailap = {
+    '001': [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
+             'sl': 0.35, 'gia': 412000},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+             'sl': 2.4, 'gia': 890000}, ],
+    '002': [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
+             'sl': 0.35, 'gia': 412000},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+             'sl': 2.4, 'gia': 890000}, ],
+}
+hoso = {
+    'gmmp001': {'sohoso': 'gm059367/20', 'makhachhang': '001', 'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', },
+    'gmmp002': {'sohoso': 'gm059368/20', 'makhachhang': '002', 'diachigandhn': 'T17- Kha Vạn Cân- Q.TĐ', },
+}
+dot = {
+    'gm001': {'sodot': '2020GMMP001', 'ngaylendot': '20200815'},
+    'gm002': {'sodot': '2020GMMP002', 'ngaylendot': '20200815'},
+}
+khachhang = {
+    '001': {'khachhang': 'Phạm Thị Lan', 'diachi': 'T15- Kha Vạn Cân- Q.TĐ'},
+    '002': {'khachhang': 'Bùi Văn Tiệp', 'diachi': 'T15- Kha Vạn Cân- Q.TĐ'},
+}
+
+
 class Rpt_Qtgt(WebBase):
     def get(self):
-        self.render("reports/qtgt.html", error=None)
-        # self.write("Hello World")
+        self.render("reports/qtgt.html",
+                    tttt=tttt, qtgt=qtgt, hoso=hoso, dot=dot, khachhang=khachhang,
+                    qtphui=qtphui, qtvattu=qtvattu, qttailap=qttailap, error=None)
+
 
 class TestVuejs(WebBase):
     def get(self):
         self.render("reports/test_vuejs.html", error=None)
+
 
 class Api1108_Hoso_Rest(ApiBase):
     def get(self, namhoso):

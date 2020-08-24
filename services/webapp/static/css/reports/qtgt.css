@@ -5,12 +5,22 @@ main {
   background: yellow;
 }
 
-.quochuy{
+.quochuy {
   grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
 }
-.tieude{
-  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content,20pt);
+
+.tieude {
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content, 20pt);
 }
-.bang{
+
+.bang {
   grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+}
+section>.ong-cai{
+  
+}
+.bang-mo {
+  grid-template-rows: 1fr minmax(1rem, max-content) minmax(1rem, max-content);
+  grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+  grid-auto-flow: row;
 }
