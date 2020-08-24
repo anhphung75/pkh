@@ -70,6 +70,10 @@ class Rpt_Qtgt(WebBase):
         self.render("reports/qtgt.html", error=None)
         # self.write("Hello World")
 
+class TestVuejs(WebBase):
+    def get(self):
+        self.render("reports/test_vuejs.html", error=None)
+
 class Api1108_Hoso_Rest(ApiBase):
     def get(self, namhoso):
         uuid = 'boss{}'.format(int(arrow.utcnow().float_timestamp * 1000))
@@ -206,6 +210,7 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
+            (r"/test_vuejs", TestVuejs),
             (r"/reports/qtgt", Rpt_Qtgt),
             # (r"/api1108/hoso/sse", Api1108_Hoso_Sse),
             (r"/api1108/hoso/([^/]+)", Api1108_Hoso_Rest),
