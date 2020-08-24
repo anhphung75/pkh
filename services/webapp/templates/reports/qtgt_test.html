@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang='vi'>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
+  <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/reports/qtgt.css')}}" type="text/css">
+</head>
+
+<body>
+  <div id="vungin">
+    <div id="maqt">
+      <div class="A4doc">
+        <div class="trangin ba">
+          <quochuy>
+            <template #tendvtc>
+              QLML Q9 ne
+            </template>
+          </quochuy>
+          <tieude>
+            <template #sodot>
+              QLML Q9 ne
+            </template>
+          </tieude>
+          <main>
+            <section class="ong-nganh">
+              <div class="grid" :style="css">
+                <!-- tieude bang ong nganh-->
+                <div class="c fb btl" style="grid-area:1/1/3/2;padding-top:3pt;">Mô tả công tác</div>
+                <div class="c fb btl" style="grid-area:1/2/3/3;padding-top:6pt;">ĐVT</div>
+                <div class="c fb btl" style="grid-area:1/3/3/4;padding-top:8pt;">Số lượng</div>
+                <div class="c fb btl" style="grid-area:1/4/2/7;">Đơn giá</div>
+                <div class="c fb btrl" style="grid-area:1/7/2/10;">Thành tiền</div>
+                <div class="c fb btl" style="grid-area:2/4/3/5;">VL</div>
+                <div class="c fb btl" style="grid-area:2/5/3/6;">NC</div>
+                <div class="c fb btl" style="grid-area:2/6/3/7;">MTC</div>
+                <div class="c fb btl" style="grid-area:2/7/3/8;">VL</div>
+                <div class="c fb btl" style="grid-area:2/8/3/9;">NC</div>
+                <div class="c fb btrl" style="grid-area:2/9/3/10;">MTC</div>
+                <!-- tieude phui ong nganh-->
+                <div class="c fb btl">LẮP ĐẶT ĐỒNG HỒ NƯỚC</div>
+                <div class="btl"></div>
+                <div class="btl"></div>
+                <div class="btl"></div>
+                <div class="btl"></div>
+                <div class="btl"></div>
+                <div class="btl"></div>
+                <div class="btl"></div>
+                <div class="btrl"></div>
+              </div>
+              <div class="grid" :style="css" v-for="(cp, id) in phuion" :key="id">
+                <!-- noidung phui ong nganh-->
+                <div class="bl l">{`cp.mota`}</div>
+                <div class="bl c">{`cp.dvt`}</div>
+                <div class="bl r">{`cp.sl`}</div>
+                <div class="bl r">{`cp.giavl`}</div>
+                <div class="bl r">{`cp.gianc`}</div>
+                <div class="bl r">{`cp.giamtc`}</div>
+                <div class="bl r">{`cp.tienvl`}</div>
+                <div class="bl r">{`cp.tiennc`}</div>
+                <div class="brl r">{`cp.tienmtc`}</div>
+              </div>
+              <!-- tieude vattu ong nganh-->
+              <div class="grid" :style="css">
+                <div class="c fb bl">Vật tư cấp mới (Cty CP CN đầu tư)</div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="brl"></div>
+              </div>
+              <!-- noidung vattu ong nganh-->
+              <div class="grid" :style="css" v-for="(cp, id) in vattuon" :key="id">
+                <div class="bl l">{`cp.mota`}</div>
+                <div class="bl c">{`cp.dvt`}</div>
+                <div class="bl r">{`cp.sl`}</div>
+                <div class="bl r">{`cp.giavl`}</div>
+                <div class="bl r">{`cp.gianc`}</div>
+                <div class="bl r">{`cp.giamtc`}</div>
+                <div class="bl r">{`cp.tienvl`}</div>
+                <div class="bl r">{`cp.tiennc`}</div>
+                <div class="brl r">{`cp.tienmtc`}</div>
+              </div>
+              <!-- tong vl nc mtc ong nganh-->
+              <div class="grid" :style="css">
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="bl"></div>
+                <div class="r btl">{`onZvl`}</div>
+                <div class="r btl">{`onZnc`}</div>
+                <div class="r btrl">{`onZmtc`}</div>
+              </div>
+              <!-- ket thuc bang ong nganh-->
+              <div class="grid" :style="css">
+                <div class="bbl"></div>
+                <div class="bbl"></div>
+                <div class="bbl"></div>
+                <div class="bbl"></div>
+                <div class="bbl"></div>
+                <div class="bbl"></div>
+                <div class="c bbl">vl</div>
+                <div class="c bbl">nc</div>
+                <div class="c brbl">mtc</div>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <!-- script  -->
+    <script src="{{static_url('js/apps/report_qtgt.js')}}" type="module"></script>
+</body>
+
+</html>
