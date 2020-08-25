@@ -32,7 +32,7 @@
             <div class="c">Thủ Đức, ngày tháng năm 2020</div>
           </div>
         </div>
-        <div class="grid tieude">
+        <nav class="grid tieude">
           <div class="c u fb f5" style="grid-area:1/1/2/5">
             BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC
           </div>
@@ -44,7 +44,7 @@
           <div class="l u fb f2">{{hoso[odl['hosoid']]['diachigandhn']}}</div>
           <div class="l">Sô đợt: </div>
           <div class="l u fb f2">{{dot[odl['madot']]['sodot']}}</div>
-        </div>
+        </nav>
         <main>
           {% if (qtgt[odl['maqt']]['qtoc']['phui']['zvl'] + qtgt[odl['maqt']]['qtoc']['vattu']['zvl']+
           qtgt[odl['maqt']]['qtoc']['phui']['znc'] + qtgt[odl['maqt']]['qtoc']['vattu']['znc']+
@@ -241,6 +241,84 @@
           </section>
           {% end %}
         </main>
+        {% if (qtgt[odl['maqt']]['inqt'])=='on' %}
+          {% if (odl['cpqlid'])>=20200721 %}
+          <div class="grid cpql1">
+            <div class="l u fb" style="grid-area:1/1/2/5">
+              TỔNG KẾT KINH PHÍ:
+              <span >tHEO cv 10505/sxd-qlktxd</span>
+            </div>
+            <!--tieude-->
+            <div class="c fb btl">Nội dung chi phí</div>
+            <div class="c fb btl">Cách tính</div>
+            <div class="c fb btl">Giá trị</div>
+            <div class="c fb btrl">Ký hiệu</div>
+            <div class="l u fb btl">PHẦN 1: ĐỒNG HỒ NƯỚC</div>
+            <div class="btl"></div>
+            <div class="btl"></div>
+            <div class="btrl"></div>
+            <div class="l u fb bl" style="padding-left: 3pt">I- CHI PHÍ XÂY DỰNG</div>
+            <div class="bl"></div>
+            <div class="bl"></div>
+            <div class="brl"></div>
+            <div class="l fb bl" style="padding-left: 7pt">I.1- Chi phí trực tiếp</div>
+            <div class="c bl">VL + NC + MTC</div>
+            <div class="r fb bl">567171</div>
+            <div class="c fb brl">T</div>
+            <div class="l fb bl" style="padding-left: 7pt">I.2- Chi phí gián tiếp</div>
+            <div class="c bl">C + TT</div>
+            <div class="r fb bl">0</div>
+            <div class="c fb brl">GT</div>
+            <div class="l bl" style="padding-left: 18pt">- Chi phí chung</div>
+            <div class="c bl">T x {{chiphiquanly[odl['cpqlid']]['chung']}}</div>
+            <div class="r bl">567171</div>
+            <div class="c brl">C</div>
+            <div class="l bl" style="padding-left: 18pt">- Chi phí 1 số công việc không xác định được khối lượng từ thiết kế</div>
+            <div class="c bl">T x {{chiphiquanly[odl['cpqlid']]['giantiepkhac']}}</div>
+            <div class="r bl">111111</div>
+            <div class="c brl">TT</div>
+            <div class="l fb bl" style="padding-left: 7pt">I.3- Thu nhập chịu thuế tính trước</div>
+            <div class="c bl">(T + GT) x 5,5%</div>
+            <div class="r fb bl">0</div>
+            <div class="c fb brl">TL</div>
+
+            <div class="c fb bl">Chi phí xây dựng trước thuế</div>
+            <div class="c bl">T + GT + TL</div>
+            <div class="r fb bl">0</div>
+            <div class="c fb brl">G<sub class="f-2">ĐO</sub></div>
+
+            <div class="l u fb bl" style="padding-left: 3pt">II- CHI PHÍ TƯ VẤN</div>
+            <div class="bl"></div>
+            <div class="bl"></div>
+            <div class="c fb brl">G<sub class="f-2">TV</sub></div>
+            <div class="l fb bl" style="padding-left: 7pt">II.1- Chi phí khảo sát, thiết kế</div>
+            <div class="c bl">G<sub class="f-2">ĐO</sub> x 2,07% x 1,2</div>
+            <div class="r bl">567171</div>
+            <div class="c brl">G<sub class="f-2">TV1</sub></div>
+            <div class="l fb bl" style="padding-left: 7pt">II.1- Chi phí giám sát</div>
+            <div class="c bl">G<sub class="f-2">ĐO</sub> x 2,566%</div>
+            <div class="r bl">567171</div>
+            <div class="c brl">G<sub class="f-2">TV2</sub></div>
+            <div class="c fb bl">Tổng giá trị dự toán xây dựng trước thuế</div>
+            <div class="c bl">G<sub class="f-2">ĐO</sub> + G<sub class="f-2">TV</sub></div>
+            <div class="r fb bl">0</div>
+            <div class="c fb brl">G<sub class="f-2">XD-ĐO</sub></div>
+            <div class="l u fb bl" style="padding-left: 3pt">III- THUẾ GIÁ TRỊ GIA TĂNG</div>
+            <div class="c bl">G<sub class="f-2">XD-ĐO</sub> x 10%</div>
+            <div class="r bl">0</div>
+            <div class="c fb brl">GTGT<sub class="f-2">1</sub></div>
+            <div class="c fb bl">Tổng giá trị dự toán xây dựng sau thuế</div>
+            <div class="c bl">G<sub class="f-2">XD-ĐO</sub> + GTGT<sub class="f-2">1</sub></div>
+            <div class="r fb bl">0</div>
+            <div class="c fb brl">G<sub class="f-2">XDCT-ĐO</sub></div>
+          </div>
+          {% else %}
+
+          {% end %}
+        {% end %}
+
+
+
       </div>
     </div>
   </div>

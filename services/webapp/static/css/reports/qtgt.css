@@ -28,3 +28,7 @@ main {
   grid-template-rows: minmax(0, 1fr);
   grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
 }
+
+.cpql1 {
+  grid: auto-flow minmax(1rem, max-content) / 335fr 100fr 70fr 50fr;
+}

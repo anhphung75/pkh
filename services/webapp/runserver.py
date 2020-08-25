@@ -68,17 +68,20 @@ class Hoso_Handler(WebBase):
 
 tttt = [
     {'maqt': 'gmmp001', 'hosoid': 'gmmp001', 'khachhangid': '001', 'madot': 'gm001',
+    'cpqlid':20200721, 'baogiaid':20200721,
      'qtoc': {'phui': '001', 'vattu': '001', 'tailap': '001'},
      'qton': {'phui': '002', 'vattu': '002', 'tailap': '002'},
      },
     {'maqt': 'gmmp002', 'hosoid': 'gmmp002', 'khachhangid': '002', 'madot': 'gm002',
+    'cpqlid':7, 'baogiaid':20200526,
      'qtoc': {'phui': '002', 'vattu': '002', 'tailap': '002'},
      'qton': {'phui': '001', 'vattu': '001', 'tailap': '001'},
      },
 ]
 qtgt = {
     'gmmp001': {'hosoid': 'gmmp0001', 'dotid': 'gm001', 'hesoquanlyid': 20200721,
-                'baogiaid': 20200721, 'plgia': 'dutoan', 'madvtc': 'QLMLTD', 'ngaylap': '20200820',
+                'baogiaid': 20200721, 'plgia': 'dutoan', 'madvtc': 'QLMLTD',
+                'ngaylap': '20200820', "inqt":'on',
                 'qtoc': {
                     'phui': {'maqtphui': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
                     'vattu': {'maqtvattu': '001', 'zvl': 0, 'znc': 1, 'zmtc': 0},
@@ -90,7 +93,8 @@ qtgt = {
                     'tailap': {'maqt35': '001', 'ztl': 0}
                 }, },
     'gmmp002': {'hosoid': 'gmmp0002', 'dotid': 'gm001', 'hesoquanlyid': 20200721,
-                'baogiaid': 20200721, 'plgia': 'dutoan',
+                'baogiaid': 20200721, 'plgia': 'dutoan', 'madvtc': 'QLMLTD',
+                'ngaylap': '20200820', "inqt":'on',
                 'qtoc': {
                     'phui': {'maqt31': '001', 'zvl': 0, 'znc': 0, 'zmtc': 1},
                     'vattu': {'maqt32': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
@@ -156,13 +160,19 @@ khachhang = {
     '001': {'khachhang': 'Phạm Thị Lan', 'diachi': 'T15- Kha Vạn Cân- Q.TĐ'},
     '002': {'khachhang': 'Bùi Văn Tiệp', 'diachi': 'T15- Kha Vạn Cân- Q.TĐ'},
 }
-
+chiphiquanly={
+    7:{"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0,
+                  "thutinhtruoc": 0.055, "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566},
+    20200721:{"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02,
+                  "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566},
+}
 
 class Rpt_Qtgt(WebBase):
     def get(self):
         self.render("reports/qtgt.html",
                     tttt=tttt, qtgt=qtgt, hoso=hoso, dot=dot, khachhang=khachhang,
-                    qtphui=qtphui, qtvattu=qtvattu, qttailap=qttailap, error=None)
+                    qtphui=qtphui, qtvattu=qtvattu, qttailap=qttailap,
+                    chiphiquanly=chiphiquanly,error=None)
 
 
 class TestVuejs(WebBase):
