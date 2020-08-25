@@ -32,10 +32,10 @@
             <div class="c">Thủ Đức, ngày tháng năm 2020</div>
           </div>
         </div>
-        <div class="c u fb f5">
-          BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC
-        </div>
         <div class="grid tieude">
+          <div class="c u fb f5" style="grid-area:1/1/2/5">
+            BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC
+          </div>
           <div class="l">Khách hàng: </div>
           <div class="l u fb f2">{{khachhang[odl['khachhangid']]['khachhang']}}</div>
           <div class="l">Sô hồ sơ: </div>
@@ -49,8 +49,8 @@
           {% if (qtgt[odl['maqt']]['qtoc']['phui']['zvl'] + qtgt[odl['maqt']]['qtoc']['vattu']['zvl']+
           qtgt[odl['maqt']]['qtoc']['phui']['znc'] + qtgt[odl['maqt']]['qtoc']['vattu']['znc']+
           qtgt[odl['maqt']]['qtoc']['phui']['zmtc'] + qtgt[odl['maqt']]['qtoc']['vattu']['zmtc'])>0 %}
-          <section class="ong-cai" style="margin-bottom:3pt;flex: 1 1 0%;">
-            <div class="grid bang">
+          <section id="oc:all:{{odl['maqt']}}" class="ong-cai">
+            <div id="oc:goc:{{odl['maqt']}}" class="grid bang">
               <!-- tieude bang ong cai-->
               <div class="c fb btl" style="grid-area:1/1/3/2;padding-top:3pt;">Mô tả công tác</div>
               <div class="c fb btl" style="grid-area:1/2/3/3;padding-top:6pt;">ĐVT</div>
@@ -108,8 +108,8 @@
               <div class="brl r">{{cp['tienmtc']}}</div>
               {% end %}
             </div>
-            <div class="grid bang-mo">
-              <!-- dong gian khoang cach-->
+            <!-- dong gian khoang cach-->
+            <div class="grid bang-dandong">
               <div class="bl"></div>
               <div class="bl"></div>
               <div class="bl"></div>
@@ -119,7 +119,9 @@
               <div class="bl"></div>
               <div class="bl"></div>
               <div class="brl"></div>
-              <!-- tong vl nc mtc ong nganh-->
+            </div>
+            <!-- tong vl nc mtc ong nganh-->
+            <div class="grid bang">
               <div class="bl"></div>
               <div class="bl"></div>
               <div class="bl"></div>
@@ -151,7 +153,7 @@
           {% if (qtgt[odl['maqt']]['qton']['phui']['zvl'] + qtgt[odl['maqt']]['qton']['vattu']['zvl']+
           qtgt[odl['maqt']]['qton']['phui']['znc'] + qtgt[odl['maqt']]['qton']['vattu']['znc']+
           qtgt[odl['maqt']]['qton']['phui']['zmtc'] + qtgt[odl['maqt']]['qton']['vattu']['zmtc'])>0 %}
-          <section class="ong-nganh">
+          <section class="ong-nganh" style="margin-top:3pt">
             <div class="grid bang">
               <!-- tieude bang ong nganh-->
               <div class="c fb btl" style="grid-area:1/1/3/2;padding-top:3pt;">Mô tả công tác</div>

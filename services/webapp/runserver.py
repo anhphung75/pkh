@@ -92,12 +92,12 @@ qtgt = {
     'gmmp002': {'hosoid': 'gmmp0002', 'dotid': 'gm001', 'hesoquanlyid': 20200721,
                 'baogiaid': 20200721, 'plgia': 'dutoan',
                 'qtoc': {
-                    'phui': {'maqt31': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
+                    'phui': {'maqt31': '001', 'zvl': 0, 'znc': 0, 'zmtc': 1},
                     'vattu': {'maqt32': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
                     'tailap': {'maqt35': '001', 'ztl': 0}
                 },
                 'qton': {
-                    'phui': {'maqt33': '001', 'zvl': 0, 'znc': 0, 'zmtc': 1},
+                    'phui': {'maqt33': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
                     'vattu': {'maqt34': '001', 'zvl': 0, 'znc': 0, 'zmtc': 0},
                     'tailap': {'maqt35': '001', 'ztl': 0}
                 }, },
