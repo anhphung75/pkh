@@ -12,6 +12,7 @@ import tornado.escape
 import tornado.websocket
 from tornado.options import define, options
 
+import comps
 from ttdl import Maychu
 from ttxl import apiHoso
 #from ttxl_sse import hoso as sse_hoso
@@ -328,7 +329,7 @@ class WebApp(web.Application):
             webapp_title=u"PKH",
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            # ui_modules={"Entry": EntryModule},
+            ui_modules={"RptCpqlNd68": comps.RptCpql_Nd2019_68},
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
             login_url="/auth/login",
