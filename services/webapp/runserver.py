@@ -170,7 +170,7 @@ chiphiquanly={
 
 class Rpt_Qtgt(WebBase):
     def get(self):
-        self.render("reports/qtgt.html",
+        self.render("reports/qtgt/main.html",
                     tttt=tttt, qtgt=qtgt, hoso=hoso, dot=dot, khachhang=khachhang,
                     qtphui=qtphui, qtvattu=qtvattu, qttailap=qttailap,
                     chiphiquanly=chiphiquanly,error=None)
@@ -327,9 +327,10 @@ class WebApp(web.Application):
         ]
         settings = dict(
             webapp_title=u"PKH",
+            
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
-            ui_modules={"RptCpqlNd68": comps.RptCpql_Nd2019_68},
+            ui_modules={"RptCpqlNd68": comps.RptCpql_Nd68_2019},
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
             login_url="/auth/login",

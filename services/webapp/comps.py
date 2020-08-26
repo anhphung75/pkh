@@ -33,10 +33,10 @@ def loadcpql(id):
     return data
 
 
-class RptCpql_Nd2019_68(web.UIModule):
+class RptCpql_Nd68_2019(web.UIModule):
     def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, isoc=False):
         # load data
         cpql = loadcpql(cpqlid)
         return self.render_string(
-            "reports/comps/rpt-cpql-nd68-2019.html",
+            "reports/qtgt/cpql-nd68-2019.html",
             cpql=cpql, zvl=zvl, znc=znc, zmtc=zmtc)

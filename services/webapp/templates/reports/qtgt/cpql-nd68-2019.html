@@ -1,8 +1,8 @@
+<div class="flex">
+  <div class="l u fb">TỔNG KẾT KINH PHÍ: </div>
+  <div class="l" style="flex:1;">theo Nghị định 68/2019NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020</div>
+</div>
 <div class="grid cpql1">
-  <div class="l u fb" style="grid-area:1/1/2/5">
-    TỔNG KẾT KINH PHÍ:
-    <span >tHEO cv 10505/sxd-qlktxd</span>
-  </div>
   <!--tieude-->
   <div class="c fb btl">Khoản mục chi phí</div>
   <div class="c fb btl">Cách tính</div>
@@ -36,10 +36,10 @@
   <div class="r bl">VL + NC + MTC + TTk</div>
   <div class="r fb btl">{{tt}}</div>
   <div class="c brl">TT</div>
-
+  {% set chung=(tt * cpql['chung']) %}
   <div class="l bl">5.Chi phí chung</div>
   <div class="l bl">TT x {{cpql['chung']}}</div>
-  <div class="r bl">567171</div>
+  <div class="r bl">{{chung}}</div>
   <div class="c brl">C</div>
   <div class="l bl" >6. Chi phí 1 số công việc không xác định được khối lượng từ thiết kế</div>
   <div class="l bl">TT x {{cpql['giantiepkhac']}}</div>
