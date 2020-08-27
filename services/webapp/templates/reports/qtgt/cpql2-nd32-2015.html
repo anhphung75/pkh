@@ -1,0 +1,89 @@
+<div class="flex">
+  <div class="l u fb">TỔNG KẾT KINH PHÍ: </div>
+  <div class="l" style="flex:1;">theo Nghị định 32/2015NĐ-CP ngày 25/03/2015; Quyết định 2207/QĐ-UBND ngày 18/06/2020
+  </div>
+</div>
+<div class="grid cpql2">
+  <!--tieude-->
+  <div class="c fb btl">Khoản mục chi phí</div>
+  <div class="c fb btl">Cách tính</div>
+  <div class="c fb btl">Giá trị</div>
+  <div class="c fb btrl">Ký hiệu</div>
+  <div class="l u fb btl">PHẦN 1: LẮP ĐẶT ĐỒNG HỒ NƯỚC</div>
+  <div class="btl"></div>
+  <div class="btl"></div>
+  <div class="btrl"></div>
+  {% set vl=zvl*cpql['vl'] %}
+  <div class="l bl">1. Chi phí vật tư (trước thuế)</div>
+  <div class="l bl">vl<sub class="f-2">2</sub> x {{cpql['vl']}}</div>
+  <div class="r bl">{{vl}}</div>
+  <div class="c brl">VL</div>
+  {% set nc=znc*cpql['nc'] %}
+  <div class="l bl">2. Chi phí nhân công</div>
+  <div class="l bl">nc<sub class="f-2">2</sub> x {{cpql['nc']}}</div>
+  <div class="r bl">{{nc}}</div>
+  <div class="c brl">NC</div>
+  {% set mtc=zmtc*cpql['mtc'] %}
+  <div class="l bl">3. Chi phí máy thi công</div>
+  <div class="l bl">mtc<sub class="f-2">2</sub> x {{cpql['mtc']}}</div>
+  <div class="r bl">{{mtc}}</div>
+  <div class="c brl">MTC</div>
+  <div class="l bl">4. Chi phí trực tiếp khác</div>
+  <div class="l bl">(VL + NC + MTC) x 0,0%</div>
+  <div class="r bl">0</div>
+  <div class="c brl">TTk</div>
+  {% set tt=vl+nc+mtc %}
+  <div class="r fb bl">Chi phí trực tiếp</div>
+  <div class="r bl">VL + NC + MTC + TTk</div>
+  <div class="r fb btl">{{tt}}</div>
+  <div class="c brl">TT</div>
+  {% set chung=(tt * cpql['chung']) %}
+  <div class="l bl">5.Chi phí chung</div>
+  <div class="l bl">TT x {{cpql['chung']}}</div>
+  <div class="r bl">{{chung}}</div>
+  <div class="c brl">C</div>
+  <div class="l bl">6. Chi phí 1 số công việc không xác định được khối lượng từ thiết kế</div>
+  <div class="l bl">TT x {{cpql['giantiepkhac']}}</div>
+  <div class="r bl">111111</div>
+  <div class="c brl">GTk</div>
+
+  <div class="r fb bl">Chi phí gián tiếp</div>
+  <div class="r bl">C + GTk</div>
+  <div class="r fb btl">0</div>
+  <div class="c brl">GT</div>
+
+  <div class="l bl">7. Thu nhập chịu thuế tính trước</div>
+  <div class="l bl">(TT + GT) x 5,5%</div>
+  <div class="r bl">0</div>
+  <div class="c brl">TL</div>
+
+  <div class="r fb bl">Chi phí xây dựng trước thuế</div>
+  <div class="r bl">TT + GT + TL</div>
+  <div class="r fb btl">0</div>
+  <div class="c fb brl">G<sub class="f-2">ĐO</sub></div>
+
+
+  <div class="l bl">8. Chi phí khảo sát thiết kế</div>
+  <div class="l bl">G<sub class="f-2">ĐO</sub> x 2,07% x 1,2</div>
+  <div class="r bl">567171</div>
+  <div class="c brl">G<sub class="f-2">TV1</sub></div>
+  <div class="l bl">9. Chi phí giám sát</div>
+  <div class="l bl">G<sub class="f-2">ĐO</sub> x 2,566%</div>
+  <div class="r bl">567171</div>
+  <div class="c brl">G<sub class="f-2">TV2</sub></div>
+
+  <div class="r fb bl">Giá trị xây dựng trước thuế</div>
+  <div class="r bl">G<sub class="f-2">ĐO</sub> + G<sub class="f-2">TV1</sub> + G<sub class="f-2">TV2</sub></div>
+  <div class="r fb btl">0</div>
+  <div class="c fb brl">G<sub class="f-2">XD-ĐO</sub></div>
+
+  <div class="l bl">10. Thuế giá trị gia tăng</div>
+  <div class="l bl">G<sub class="f-2">XD-ĐO</sub> x 10%</div>
+  <div class="r bl">0</div>
+  <div class="c fb brl">GTGT</div>
+
+  <div class="r fb bl">Giá trị xây dựng sau thuế</div>
+  <div class="r bl">G<sub class="f-2">XD-ĐO</sub> + GTGT</div>
+  <div class="r fb btl">0</div>
+  <div class="c fb brl">G<sub class="f-2">XDCT-ĐO</sub></div>
+</div>

@@ -111,6 +111,12 @@ html, body {
   border-width: 1pt 1pt 0 1pt;
 }
 
+.btbl {
+  border-style: solid;
+  border-color: black;
+  border-width: 1pt 0 1pt 1pt;
+}
+
 .brbl {
   border-style: solid;
   border-color: black;

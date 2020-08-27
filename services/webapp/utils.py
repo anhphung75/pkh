@@ -135,3 +135,12 @@ class Tien():
         else:
             kq = f"{kq[0].upper()}{kq[1:]}đồng."
         return kq
+
+
+def lamtronso(sothapphan=0, phanle=2):
+    from decimal import Decimal
+    #try:
+    somoi = float(round(Decimal(sothapphan), phanle))
+    #except:
+    #    somoi = None
+    return somoi

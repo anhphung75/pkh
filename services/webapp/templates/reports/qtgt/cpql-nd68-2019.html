@@ -2,7 +2,7 @@
   <div class="l u fb">TỔNG KẾT KINH PHÍ: </div>
   <div class="l" style="flex:1;">theo Nghị định 68/2019NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020</div>
 </div>
-<div class="grid cpql1">
+<div class="grid cpql">
   <!--tieude-->
   <div class="c fb btl">Nội dung chi phí</div>
   <div class="c fb btl">Cách tính</div>
@@ -12,71 +12,66 @@
   <div class="btl"></div>
   <div class="btl"></div>
   <div class="btrl"></div>
-  <div class="l u bl" style="padding-left:3pt">I. CHI PHÍ XÂY DỰNG</div>
+  <div class="l u fb bl" style="padding-left:3pt">I. CHI PHÍ XÂY DỰNG</div>
   <div class="c bl"></div>
   <div class="r bl"></div>
   <div class="c brl"></div>
-  {% set vl=zvl*cpql['vl'] %}
-  {% set nc=znc*cpql['nc'] %}
-  {% set mtc=zmtc*cpql['mtc'] %}
-  {% set tructiep=vl+nc+mtc %}
-  <div class="l fb bl" style="padding-left:3pt">1. Chi phí trực tiếp</div>
-  <div class="r bl">VL + NC + MTC</div>
-  <div class="r fb btl">{{tructiep}}</div>
-  <div class="c brl">T</div>
-  {% set chung=(tructiep * cpql['chung']) %}
-  {% set giantiepkhac=(tructiep * cpql['giantiepkhac']) %}
-  {% set giantiep=chung+giantiepkhac %}
-  <div class="r fb bl" style="padding-left:3pt">2. Chi phí gián tiếp</div>
-  <div class="l bl">C + TT</div>
-  <div class="r fb btl">{{giantiep}}</div>
-  <div class="c brl">GT</div>
-  <div class="l bl" style="padding-left:6pt">- Chi phí chung</div>
-  <div class="l bl">T x {{f"{cpql['chung']*100:01.2f}%"}}</div>
-  <div class="r bl">{{chung}}</div>
+  <div class="l fb bl" style="padding-left:6pt">1. Chi phí trực tiếp</div>
+  <div class="c bl">VL + NC + MTC</div>
+  <div class="r fb bl">{{cp['tructiep']}}</div>
+  <div class="c fb brl">T</div>
+  <div class="l fb bl" style="padding-left:6pt">2. Chi phí gián tiếp</div>
+  <div class="c bl">C + TT</div>
+  <div class="r fb bl">{{cp['giantiep']}}</div>
+  <div class="c fb brl">GT</div>
+  <div class="l bl" style="padding-left:12pt">- Chi phí chung</div>
+  <div class="c bl">T x {{hs['chung']}}</div>
+  <div class="r bl">{{cp['chung']}}</div>
   <div class="c brl">C</div>
-  <div class="l bl" style="padding-left:6pt">- Chi phí 1 số công việc không xác định được khối lượng từ thiết kế</div>
-  <div class="l bl">T x {{f"{cpql['giantiepkhac']*100:01.2f}%"}}</div>
-  <div class="r bl">{{giantiepkhac}}</div>
+  <div class="l bl" style="padding-left:12pt">- Chi phí 1 số công việc không xác định được khối lượng từ thiết kế</div>
+  <div class="c bl">T x {{hs['giantiepkhac']}}</div>
+  <div class="r bl">{{cp['giantiepkhac']}}</div>
   <div class="c brl">TT</div>
-  {% set thutinhtruoc=(tructiep+giantiep) * cpql['thutinhtruoc'] %}
-  <div class="l bl" style="padding-left:3pt">3. Thu nhập chịu thuế tính trước</div>
-  <div class="l bl">(TT + GT) x 5,5%</div>
-  <div class="r bl">0</div>
-  <div class="c brl">TL</div>
-  {% set xaydungtruocthue=tructiep+giantiep+thutinhtruoc %}
+  <div class="l fb bl" style="padding-left:6pt">3. Thu nhập chịu thuế tính trước</div>
+  <div class="c bl">(T + GT) x {{hs['thutinhtruoc']}}</div>
+  <div class="r fb bl">{{cp['thutinhtruoc']}}</div>
+  <div class="c fb brl">TL</div>
   <div class="r fb bl">Chi phí xây dựng trước thuế</div>
-  <div class="r bl">TT + GT + TL</div>
-  <div class="r fb btl">{{xaydungtruocthue}}</div>
+  <div class="c bl">T + GT + TL</div>
+  <div class="r fb bl">{{cp['xaydungtruocthue']}}</div>
   <div class="c fb brl">G<sub class="f-2">ĐO</sub></div>
-  {% set khaosatthietke=(xaydungtruocthue * cpql['giamsat'] * cpql['thietke']) %}
-  {% set giamsat=(xaydungtruocthue * cpql['giamsat']) %}
-  {% set tuvan=khaosatthietke+giamsat %}
-  <div class="l u bl" style="padding-left:3pt">II. CHI PHÍ TƯ VẤN</div>
+  <div class="l u fb bl" style="padding-left:3pt">II. CHI PHÍ TƯ VẤN</div>
   <div class="c bl"></div>
-  <div class="r bl"></div>
-  <div class="c brl"></div>
-  <div class="l bl" >1. Chi phí khảo sát thiết kế</div>
-  <div class="l bl">G<sub class="f-2">ĐO</sub> x 2,07% x 1,2</div>
-  <div class="r bl">{{khaosatthietke}}</div>
+  <div class="r fb bl">{{cp['tuvan']}}</div>
+  <div class="c fb brl">G<sub class="f-2">TV</sub></div>
+  <div class="l bl" style="padding-left:6pt">1. Chi phí khảo sát thiết kế</div>
+  <div class="c bl">G<sub class="f-2">ĐO</sub> x {{hs['khaosat']}} x {{hs['thietke']}}</div>
+  <div class="r bl">{{cp['khaosatthietke']}}</div>
   <div class="c brl">G<sub class="f-2">TV1</sub></div>
-  <div class="l bl" >2. Chi phí giám sát</div>
-  <div class="l bl">G<sub class="f-2">ĐO</sub> x 2,566%</div>
-  <div class="r bl">{{giamsat}}</div>
+  <div class="l bl" style="padding-left:6pt">2. Chi phí giám sát</div>
+  <div class="c bl">G<sub class="f-2">ĐO</sub> x {{hs['giamsat']}}</div>
+  <div class="r bl">{{cp['giamsat']}}</div>
   <div class="c brl">G<sub class="f-2">TV2</sub></div>
-  {% set tongxaydungtruocthue=(xaydungtruocthue + tuvan) %}
   <div class="r fb bl">Tổng giá trị quyết toán xây dựng trước thuế</div>
-  <div class="r bl">G<sub class="f-2">ĐO</sub> + G<sub class="f-2">TV1</sub> + G<sub class="f-2">TV2</sub></div>
-  <div class="r fb btl">0</div>
+  <div class="c bl">G<sub class="f-2">ĐO</sub> + G<sub class="f-2">TV</sub></div>
+  <div class="r fb bl">{{cp['tongxaydungtruocthue']}}</div>
   <div class="c fb brl">G<sub class="f-2">XD-ĐO</sub></div>
-  {% set thue=(tongxaydungtruocthue*0.1) %}
-  <div class="l bl">10. Thuế giá trị gia tăng</div>
-  <div class="l bl">G<sub class="f-2">XD-ĐO</sub> x 10%</div>
-  <div class="r bl">{{thue}}</div>
-  <div class="c fb brl">GTGT</div>
-  {% set tongxaydung=(xaydungtruocthue + thue) %}
-  <div class="r fb bl">Giá trị xây dựng sau thuế</div>
-  <div class="r bl">G<sub class="f-2">XD-ĐO</sub> + GTGT</div>
-  <div class="r fb btl">{{tongxaydung}}</div>
+  <div class="l u fb bl" style="padding-left:3pt">III. THUẾ GIÁ TRỊ GIA TĂNG</div>
+  <div class="c bl">G<sub class="f-2">XD-ĐO</sub> x 10%</div>
+  <div class="r bl">{{cp['thuexaydung']}}</div>
+  <div class="c brl">GTGT</div>
+  <div class="r fb bl">Chi phí xây dựng sau thuế (Phần 1)</div>
+  <div class="c bl">G<sub class="f-2">XD-ĐO</sub> + GTGT</div>
+  <div class="r fb bl">{{cp['tongxaydung']}}</div>
   <div class="c fb brl">G<sub class="f-2">XDCT-ĐO</sub></div>
+  
+  <div class="r fb bl">Chi phí xây dựng sau thuế (Phần 2)</div>
+  <div class="c"></div>
+  <div class="r fb bl">{{cp['tailap']}}</div>
+  <div class="c fb brl">G<sub class="f-2">XDCT-TL</sub></div>
+  
+  <div class="c u fb btbl">Tổng giá trị công trình</div>
+  <div class="c btbl">G<sub class="f-2">XDCT-ĐO</sub> + G<sub class="f-2">XDCT-TL</sub></div>
+  <div class="r fb btbl">{{cp['congtrinh']}}</div>
+  <div class="c fb ba">G<sub class="f-2">XDCT</sub></div>
 </div>
