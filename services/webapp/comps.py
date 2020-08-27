@@ -40,3 +40,11 @@ class RptCpql_Nd68_2019(web.UIModule):
         return self.render_string(
             "reports/qtgt/cpql-nd68-2019.html",
             cpql=cpql, zvl=zvl, znc=znc, zmtc=zmtc)
+
+class RptCpql_Nd32_2015(web.UIModule):
+    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, isoc=False):
+        # load data
+        cpql = loadcpql(cpqlid)
+        return self.render_string(
+            "reports/qtgt/cpql-nd32-2015.html",
+            cpql=cpql, zvl=zvl, znc=znc, zmtc=zmtc)
