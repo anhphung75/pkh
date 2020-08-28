@@ -96,61 +96,61 @@ html, body {
 /* border */
 
 .ba {
-  border: 1pt solid black;
+  border: 1px solid black;
 }
 
 .btl {
   border-style: solid;
   border-color: black;
-  border-width: 1pt 0 0 1pt;
+  border-width: 1px 0 0 1px;
 }
 
 .btrl {
   border-style: solid;
   border-color: black;
-  border-width: 1pt 1pt 0 1pt;
+  border-width: 1px 1px 0 1px;
 }
 
 .btbl {
   border-style: solid;
   border-color: black;
-  border-width: 1pt 0 1pt 1pt;
+  border-width: 1px 0 1px 1px;
 }
 
 .brbl {
   border-style: solid;
   border-color: black;
-  border-width: 0 1pt 1pt 1pt;
+  border-width: 0 1px 1px 1px;
 }
 
 .brl {
   border-style: solid;
   border-color: black;
-  border-width: 0 1pt 0 1pt;
+  border-width: 0 1px 0 1px;
 }
 
 .bb {
   border-style: solid;
   border-color: black;
-  border-width: 0 0 1pt 0;
+  border-width: 0 0 1px 0;
 }
 
 .bbr {
   border-style: solid;
   border-color: black;
-  border-width: 0 1pt 1pt 0;
+  border-width: 0 1px 1px 0;
 }
 
 .bbl {
   border-style: solid;
   border-color: black;
-  border-width: 0 0 1pt 1pt;
+  border-width: 0 0 1px 1px;
 }
 
 .bl {
   border-style: solid;
   border-color: black;
-  border-width: 0 0 0 1pt;
+  border-width: 0 0 0 1px;
 }
 
 .flex {
@@ -209,5 +209,12 @@ html, body {
     width: 297mm;
     height: 210mm;
     background: transparent;
+  }
+}
+
+@media screen {
+  .test {
+    border: 1px solid black;
+    background: yellow;
   }
 }

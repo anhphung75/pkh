@@ -1,5 +1,8 @@
+import locale
 import tornado.web as web
 from utils import lamtronso, Tien
+
+locale.setlocale(locale.LC_ALL, 'vi_VI')
 
 
 class RptTailap(web.UIModule):
@@ -42,6 +45,8 @@ def tinh_cpql(cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
         zmtc = 0
         ztl = 0
     heso = chiphiquanly[cpqlid]
+    for i in heso:
+        heso[i] = float(heso[i])
     cp = {}
     cp['vl'] = lamtronso(zvl*heso['vl'], 0)
     cp['nc'] = lamtronso(znc*heso['nc'], 0)
@@ -65,17 +70,18 @@ def tinh_cpql(cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
     cp['tailap'] = ztl
     cp['congtrinh'] = cp['tongxaydung']+ztl
     cp['congtrinhtruocthue'] = lamtronso(cp['congtrinh']*100/110, 0)
-    cp['thuecongtrirnh'] = cp['congtrinh']-cp['congtrinhtruocthue']
+    cp['thuecongtrinh'] = cp['congtrinh']-cp['congtrinhtruocthue']
     # format heso
     for i in ['tructiepkhac', 'giantiepkhac', 'chung', 'thutinhtruoc']:
-        heso[i] = f"{heso[i]*100:01.1f} %".replace('.', ',')
-    heso['khaosat'] = f"{heso['khaosat']*100:01.2f}%".replace('.', ',')
-    heso['thietke'] = f"{heso['thietke']:01.1f}".replace('.', ',')
-    heso['giamsat'] = f"{heso['giamsat']*100:01.3f}%".replace('.', ',')
+        heso[i] = locale.format_string('%.1f', heso[i]*100, True) + '%'
+    heso['khaosat'] = locale.format_string(
+        '%.2f', heso['khaosat']*100, True) + '%'
+    heso['thietke'] = locale.format_string('%.1f', heso['thietke'], True)
+    heso['giamsat'] = locale.format_string(
+        '%.3f', heso['giamsat']*100, True) + '%'
     # format chiphi
     for i in cp:
-        m = Tien(cp[i])
-        cp[i] = m.so()
+        cp[i] = locale.format_string('%.0f', cp[i], True)
     print(f"heso={heso}")
     print(f"chiphi={cp}")
     data = {'heso': heso, 'chiphi': cp}
@@ -98,6 +104,7 @@ class RptCpql_Nd32_2015(web.UIModule):
             "reports/qtgt/cpql-nd32-2015.html",
             hs=data['hs'], cp=data['cp'])
 
+
 class RptCpql2_Nd32_2015(web.UIModule):
     def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0, isoc=False):
         data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
@@ -105,12 +112,37 @@ class RptCpql2_Nd32_2015(web.UIModule):
             "reports/qtgt/cpql2-nd32-2015.html",
             hs=data['hs'], cp=data['cp'])
 
+
 class RptTlmd(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .tlmd {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 285fr 50fr 30fr 70fr 70fr 50fr;
+        }
+        '''
+        return __css
+
     def render(self, qt35id=None):
-        data = "chuaxong"
+        # pre data
+        data = {
+            0: {'chiphiid': '001', 'mota': '- Đường/Hẻm BTXM dày 10cm', 'dvt': 'm2', 'sl': 1.75, 'gia': 511000, 'tien': 894250},
+            1: {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+                'sl': 2.4, 'gia': 890000, 'tien': 2136000},
+            3: {'chiphiid': '001', 'mota': '- Đường/Hẻm BTXM dày 10cm', 'dvt': 'm2', 'sl': 1.75, 'gia': 511000, 'tien': 894250},
+            5: {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+                'sl': 2.4, 'gia': 890000, 'tien': 2136000},
+        }
+        # format data
+        for i in data:
+            data[i]['sl'] = locale.format_string('%.3f', data[i]['sl'], True)
+            data[i]['gia'] = locale.format_string('%.0f', data[i]['gia'], True)
+            data[i]['tien'] = locale.format_string(
+                '%.0f', data[i]['tien'], True)
         return self.render_string(
             "reports/qtgt/tlmd.html",
             cp=data)
+
 
 class RptTlmd2(web.UIModule):
     def render(self, qt35id=None):
@@ -118,3 +150,36 @@ class RptTlmd2(web.UIModule):
         return self.render_string(
             "reports/qtgt/tlmd2.html",
             cp=data)
+
+
+class RptKyduyet3(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .duyet {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 140fr 55fr 360fr;
+        }
+        .chuky {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr;
+        }
+        '''
+        return __css
+
+    def render(self, dvtcid=None, congty=20807178001, khach=10):
+        # format so:
+        a = Tien(congty)
+        congty = {'so': a.so(), 'chu': a.chu()}
+        a = Tien(khach)
+        khach = {'so': a.so(), 'chu': a.chu()}
+
+        duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
+                 'nhanvien': 'Nguyễn Công Minh'}
+        kiemtra = {'pbd': 'KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
+                   'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
+        lap = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
+               'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
+        return self.render_string(
+            "reports/qtgt/kyduyet3.html",
+            congty=congty, khach=khach,
+            duyet=duyet, kiemtra=kiemtra, lap=lap)

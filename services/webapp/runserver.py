@@ -17,6 +17,7 @@ from ttdl import Maychu
 from ttxl import apiHoso
 #from ttxl_sse import hoso as sse_hoso
 
+tornado.locale.set_default_locale('vi_VI')
 
 class WebBase(web.RequestHandler):
     def prepare(self):
@@ -335,7 +336,8 @@ class WebApp(web.Application):
                         "RptCpqlNd32": comps.RptCpql_Nd32_2015,
                         "RptCpql2Nd32": comps.RptCpql2_Nd32_2015,
                         "RptTlmd": comps.RptTlmd,
-                        "RptTlmd2": comps.RptTlmd2},
+                        "RptTlmd2": comps.RptTlmd2,
+                        "RptKyduyet3": comps.RptKyduyet3,},
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
             login_url="/auth/login",

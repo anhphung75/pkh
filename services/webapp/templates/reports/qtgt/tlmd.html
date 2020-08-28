@@ -1,11 +1,20 @@
 <div class="grid tlmd">
   <!--tieude-->
-  <div class="c fb btl">Nội dung chi phí</div>
-  <div class="c fb btl">Cách tính</div>
-  <div class="c fb btl">Giá trị</div>
-  <div class="c fb btrl">Ký hiệu</div>
-  <div class="l u fb btl">PHẦN 1: LẮP ĐẶT ĐỒNG HỒ NƯỚC</div>
-  <div class="btl"></div>
-  <div class="btl"></div>
-  <div class="btrl"></div>
+  <div class="l u fb bl">PHẦN 2: TÁI LẬP MẶT ĐƯỜNG (CV số 327/BGTLMĐ ngày 01/04/2014)</div>
+  <div class="r"> </div>
+  <div class="l"> </div>
+  <div class="r"> </div>
+  <div class="r bl"> </div>
+  <div class="c brl"> </div>
+  <!--chiphi-->
+  {% for id in range(10) %}
+    {% if id in cp %}
+    <div class="l bl">{{cp[id]['mota']}}</div>
+    <div class="r">{{cp[id]['sl']}}</div>
+    <div class="c">{{cp[id]['dvt']}} x </div>
+    <div class="r">{{cp[id]['gia']}}</div>
+    <div class="r bl">{{cp[id]['tien']}}</div>
+    <div class="c brl"></div>
+    {% end %}
+  {% end %}
 </div>
