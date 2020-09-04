@@ -95,6 +95,10 @@ html, body {
 
 /* border */
 
+.b0 {
+  border: 0;
+}
+
 .ba {
   border: 1px solid black;
 }

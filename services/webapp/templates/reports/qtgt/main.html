@@ -15,36 +15,10 @@
   <div id="qtgt:{{odl['maqt']}}">
     <div class="A4doc">
       <!-- trang 1-->
-      <div class="trangin ba">
-        <div class="grid quochuy">
-          <div>
-            <div class="c u b">CÔNG TY CỔ PHẦN CẤP NƯỚC THỦ ĐỨC</div>
-            <div class="c b">ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC</div>
-            <div class="c f-2">---------oOo---------</div>
-            <div class="c">Số tài khoản: 102010000183907</div>
-            <div class="c">Tại: Ngân hàng Công Thương Việt Nam - Cn Đông Sài Gòn</div>
-          </div>
-          <div></div>
-          <div>
-            <div class="c u b">CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
-            <div class="c b">Độc lập - Tự do - Hạnh phúc</div>
-            <div class="c f-2">---------oOo---------</div>
-            <div class="c">Thủ Đức, ngày tháng năm 2020</div>
-          </div>
-        </div>
-        <nav class="grid tieude">
-          <div class="c u fb f5" style="grid-area:1/1/2/5">
-            BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC
-          </div>
-          <div class="l">Khách hàng: </div>
-          <div class="l u fb f2">{{khachhang[odl['khachhangid']]['khachhang']}}</div>
-          <div class="l">Sô hồ sơ: </div>
-          <div class="l u fb f2">{{hoso[odl['hosoid']]['sohoso']}}</div>
-          <div class="l">Địa chỉ: </div>
-          <div class="l u fb f2">{{hoso[odl['hosoid']]['diachigandhn']}}</div>
-          <div class="l">Sô đợt: </div>
-          <div class="l u fb f2">{{dot[odl['madot']]['sodot']}}</div>
-        </nav>
+      <div class="trangin">
+        {% module RptQuochuy('qlmltd',20200904) %}
+        {% module RptQtgtTieude('qlmltd') %}
+
         <main>
           {% if (qtgt[odl['maqt']]['qtoc']['phui']['zvl'] + qtgt[odl['maqt']]['qtoc']['vattu']['zvl']+
           qtgt[odl['maqt']]['qtoc']['phui']['znc'] + qtgt[odl['maqt']]['qtoc']['vattu']['znc']+
@@ -245,8 +219,7 @@
           {% module RptCpqlNd68(20200721,1605181,1010628,116922,894250) %}
         {% end %}
         {% module RptKyduyet3('qlmltd') %}
-
-
+        {% module RptFooter(20200721,1) %}
       </div>
     </div>
   </div>

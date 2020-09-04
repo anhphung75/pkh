@@ -5,26 +5,6 @@ from utils import lamtronso, Tien
 locale.setlocale(locale.LC_ALL, 'vi_VI')
 
 
-class RptTailap(web.UIModule):
-    def loaddata():
-        __data = {
-            '001': [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
-                     'sl': 0.35, 'gia': 412000},
-                    {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-                     'sl': 2.4, 'gia': 890000}, ],
-            '002': [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
-                     'sl': 0.35, 'gia': 412000},
-                    {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-                     'sl': 2.4, 'gia': 890000}, ],
-        }
-        return __data
-
-    def render(self, maon=None, maoc=None):
-        # load data
-        return self.render_string(
-            "reports/comps/rpt-tailap.html", entry=entry, show_comments=show_comments)
-
-
 def tinh_cpql(cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
     chiphiquanly = {
         7: {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0,
@@ -88,7 +68,158 @@ def tinh_cpql(cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
     return data
 
 
+class RptQuochuy(web.UIModule):
+    def embedded_javascript(self):
+        __js = '''
+        function suangaylap(ngaylap) {
+            let w=document.getElementsByClassName("ngaylap");
+            let i=0, suatatca=true;
+            while (suatatca) {
+                try {
+                    w[i].innerHTML = ngaylap;
+                    i++;
+                }
+                catch(err) {
+                    suatatca=false;
+                    break;
+                }
+            }
+        }
+        '''
+        return __js
+
+    def embedded_css(self):
+        __css = '''
+        .quochuy {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
+        }
+        '''
+        return __css
+
+    def render(self, madvtc='qlmltd', ngaylap=20200904):
+        # format so:
+        dvtc = "ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC"
+        ngaylap = f"{ngaylap}"
+        ngaylap = f"Thủ Đức, {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
+        return self.render_string(
+            "reports/qtgt/quochuy.html",
+            dvtc=dvtc, ngaylap=ngaylap)
+
+
+class RptQtgtTieude(web.UIModule):
+    def embedded_javascript(self):
+        __js = '''
+        function suatieude(tieude) {
+            let w=document.getElementsByClassName("tieudeqtgt");
+            let i=0, suatatca=true;
+            while (suatatca) {
+                try {
+                    w[i].innerHTML = tieude;
+                    i++;
+                }
+                catch(err) {
+                    suatatca=false;
+                    break;
+                }
+            }
+        }
+        '''
+        return __js
+
+    def embedded_css(self):
+        __css = '''
+        .tieude {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content, 20pt);
+        }
+        '''
+        return __css
+
+    def render(self, maqt=None, mahoso=None, madot=None, makhachhang=None):
+        # format so:
+        tieude = "BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC 1 BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC 2 BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC 3"
+        sohoso = "gm02334/20"
+        sodot = "309/2020MP"
+        khachhang = 'Bùi đình quốc vệ'
+        diachigandhn = "t634- Ngô Chí Quốc- Kp.2- P.Bình Chiểu- Q.TĐ"
+        return self.render_string(
+            "reports/qtgt/tieude.html",
+            tieude=tieude, sohoso=sohoso, sodot=sodot, khachhang=khachhang, diachigandhn=diachigandhn)
+
+
+class RptQtgtChiphiTieude(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .bang {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        '''
+        return __css
+
+    def render(self):
+        return self.render_string(
+            "reports/qtgt/chiphi-tieude.html")
+
+
+class RptQtgtChiphiDandong(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .dandong {
+            width: 100%;
+            flex: 1 1 0%;
+            grid-template-rows: minmax(0, 1fr);
+            grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        '''
+        return __css
+
+    def render(self):
+        return self.render_string(
+            "reports/qtgt/chiphi-dandong.html")
+
+
+class RptQtgtChiphiNoidung(web.UIModule):
+    def render(self):
+        return self.render_string(
+            "reports/qtgt/chiphi-tieude.html")
+
+
+class RptQtgtChiphiTong(web.UIModule):
+    def render(self, vl=0, nc=0, mtc=0):
+        vl = locale.format_string('%.0f', vl, True)
+        nc = locale.format_string('%.0f', nc, True)
+        mtc = locale.format_string('%.0f', mtc, True)
+        return self.render_string(
+            "reports/qtgt/chiphi-tong.html",
+            vl=vl, nc=nc, mtc=mtc)
+
+
+class RptChiphi_Nd68_2019(web.UIModule):
+    def render(self, maqtoc=None, maqton=None, mabaogia=20200721):
+        # load data
+        plbaocao = 'oc'
+        data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
+        return self.render_string(
+            "reports/qtgt/chiphi-nd68-2019.html",
+            plbaocao=plbaocao, hs=data['heso'], cp=data['chiphi'])
+
+
 class RptCpql_Nd68_2019(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .bang {
+            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        .bang-dandong {
+            flex: 1 1 0%;
+            grid-template-rows: minmax(0, 1fr);
+            grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        '''
+        return __css
+
     def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
         # load data
         data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
@@ -98,6 +229,19 @@ class RptCpql_Nd68_2019(web.UIModule):
 
 
 class RptCpql_Nd32_2015(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .bang {
+            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        .bang-dandong {
+            flex: 1 1 0%;
+            grid-template-rows: minmax(0, 1fr);
+            grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        '''
+        return __css
+
     def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0, isoc=False):
         data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
         return self.render_string(
@@ -152,6 +296,37 @@ class RptTlmd2(web.UIModule):
             cp=data)
 
 
+class RptKyduyet2(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .duyet {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 140fr 55fr 360fr;
+        }
+        .chuky {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 1fr 1fr;
+        }
+        '''
+        return __css
+
+    def render(self, madvtc=None, congty=20807178001, khach=10):
+        # format so:
+        a = Tien(congty)
+        congty = {'so': a.so(), 'chu': a.chu()}
+        a = Tien(khach)
+        khach = {'so': a.so(), 'chu': a.chu()}
+
+        duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
+                 'nhanvien': 'Nguyễn Công Minh'}
+        lap = {'pbd': 'PHÒNG KỸ THUẬT',
+               'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Nguyễn Hồng Phương'}
+        return self.render_string(
+            "reports/qtgt/kyduyet2.html",
+            congty=congty, khach=khach,
+            duyet=duyet, lap=lap)
+
+
 class RptKyduyet3(web.UIModule):
     def embedded_css(self):
         __css = '''
@@ -183,3 +358,23 @@ class RptKyduyet3(web.UIModule):
             "reports/qtgt/kyduyet3.html",
             congty=congty, khach=khach,
             duyet=duyet, kiemtra=kiemtra, lap=lap)
+
+
+class RptFooter(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .footer {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 1fr 1fr;
+        }
+        '''
+        return __css
+
+    def render(self, baogiaid=20200721, stt=1):
+        # format so:
+        baogiaid = f"{baogiaid}"
+        lzone = f"QT-NĐ68 ({baogiaid[-2:]}-{baogiaid[-4:-2]}-{baogiaid[:-4]})"
+        rzone = f"TT-{stt:02}"
+        return self.render_string(
+            "reports/qtgt/footer.html",
+            lzone=lzone, rzone=rzone)

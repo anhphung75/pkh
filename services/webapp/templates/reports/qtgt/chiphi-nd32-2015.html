@@ -1,0 +1,196 @@
+<main>
+  {% if (qtgt[odl['maqt']]['qtoc']['phui']['zvl'] + qtgt[odl['maqt']]['qtoc']['vattu']['zvl']+
+  qtgt[odl['maqt']]['qtoc']['phui']['znc'] + qtgt[odl['maqt']]['qtoc']['vattu']['znc']+
+  qtgt[odl['maqt']]['qtoc']['phui']['zmtc'] + qtgt[odl['maqt']]['qtoc']['vattu']['zmtc'])>0 %}
+  <section id="oc:all:{{odl['maqt']}}" class="ong-cai">
+    <div id="oc:goc:{{odl['maqt']}}" class="grid bang">
+      <!-- tieude bang ong cai-->
+      <div class="c fb btl" style="grid-area:1/1/3/2;padding-top:3pt;">Mô tả công tác</div>
+      <div class="c fb btl" style="grid-area:1/2/3/3;padding-top:6pt;">ĐVT</div>
+      <div class="c fb btl" style="grid-area:1/3/3/4;padding-top:8pt;">Số lượng</div>
+      <div class="c fb btl" style="grid-area:1/4/2/7;">Đơn giá</div>
+      <div class="c fb btrl" style="grid-area:1/7/2/10;">Thành tiền</div>
+      <div class="c fb btl" style="grid-area:2/4/3/5;">VL</div>
+      <div class="c fb btl" style="grid-area:2/5/3/6;">NC</div>
+      <div class="c fb btl" style="grid-area:2/6/3/7;">MTC</div>
+      <div class="c fb btl" style="grid-area:2/7/3/8;">VL</div>
+      <div class="c fb btl" style="grid-area:2/8/3/9;">NC</div>
+      <div class="c fb btrl" style="grid-area:2/9/3/10;">MTC</div>
+      <!-- tieude phui ong cai-->
+      <div class="l fb btl">PHÁT TRIỂN ỐNG CÁI</div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btrl"></div>
+      {% for cp in qtphui[odl['qtoc']['phui']] %}
+      <!-- noidung phui ong cai-->
+      <div class="bl l">{{cp['mota']}}</div>
+      <div class="bl c">{{cp['dvt']}}</div>
+      <div class="bl r">{{cp['sl']}}</div>
+      <div class="bl r">{{cp['giavl']}}</div>
+      <div class="bl r">{{cp['gianc']}}</div>
+      <div class="bl r">{{cp['giamtc']}}</div>
+      <div class="bl r">{{cp['tienvl']}}</div>
+      <div class="bl r">{{cp['tiennc']}}</div>
+      <div class="brl r">{{cp['tienmtc']}}</div>
+      {% end %}
+      <!-- tieude vattu ong cai-->
+      <div class="c fb fu bl">Vật tư:</div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="brl"></div>
+      <!-- noidung vattu ong cai-->
+      {% for cp in qtvattu[odl['qtoc']['vattu']] %}
+      <div class="bl l">{{cp['mota']}}</div>
+      <div class="bl c">{{cp['dvt']}}</div>
+      <div class="bl r">{{cp['sl']}}</div>
+      <div class="bl r">{{cp['giavl']}}</div>
+      <div class="bl r">{{cp['gianc']}}</div>
+      <div class="bl r">{{cp['giamtc']}}</div>
+      <div class="bl r">{{cp['tienvl']}}</div>
+      <div class="bl r">{{cp['tiennc']}}</div>
+      <div class="brl r">{{cp['tienmtc']}}</div>
+      {% end %}
+    </div>
+    <!-- dong gian khoang cach-->
+    <div class="grid bang-dandong">
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="brl"></div>
+    </div>
+    <!-- tong vl nc mtc ong nganh-->
+    <div class="grid bang">
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="r btl">
+        {{qtgt[odl['maqt']]['qtoc']['phui']['zvl'] + qtgt[odl['maqt']]['qtoc']['vattu']['zvl']}}
+      </div>
+      <div class="r btl">
+        {{qtgt[odl['maqt']]['qtoc']['phui']['znc'] + qtgt[odl['maqt']]['qtoc']['vattu']['znc']}}
+      </div>
+      <div class="r btrl">
+        {{qtgt[odl['maqt']]['qtoc']['phui']['zmtc'] + qtgt[odl['maqt']]['qtoc']['vattu']['zmtc']}}
+      </div>
+      <!-- ket thuc bang ong cai-->
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="c bbl">(vl<sub class="f-2">1</sub>)</div>
+      <div class="c bbl">(nc<sub class="f-2">1</sub>)</div>
+      <div class="c brbl">(mtc<sub class="f-2">1</sub>)</div>
+    </div>
+  </section>
+  {% end %}
+  {% if (qtgt[odl['maqt']]['qton']['phui']['zvl'] + qtgt[odl['maqt']]['qton']['vattu']['zvl']+
+  qtgt[odl['maqt']]['qton']['phui']['znc'] + qtgt[odl['maqt']]['qton']['vattu']['znc']+
+  qtgt[odl['maqt']]['qton']['phui']['zmtc'] + qtgt[odl['maqt']]['qton']['vattu']['zmtc'])>0 %}
+  <section class="ong-nganh" style="margin-top:3pt">
+    <div class="grid bang">
+      <!-- tieude bang ong nganh-->
+      <div class="c fb btl" style="grid-area:1/1/3/2;padding-top:3pt;">Mô tả công tác</div>
+      <div class="c fb btl" style="grid-area:1/2/3/3;padding-top:6pt;">ĐVT</div>
+      <div class="c fb btl" style="grid-area:1/3/3/4;padding-top:8pt;">Số lượng</div>
+      <div class="c fb btl" style="grid-area:1/4/2/7;">Đơn giá</div>
+      <div class="c fb btrl" style="grid-area:1/7/2/10;">Thành tiền</div>
+      <div class="c fb btl" style="grid-area:2/4/3/5;">VL</div>
+      <div class="c fb btl" style="grid-area:2/5/3/6;">NC</div>
+      <div class="c fb btl" style="grid-area:2/6/3/7;">MTC</div>
+      <div class="c fb btl" style="grid-area:2/7/3/8;">VL</div>
+      <div class="c fb btl" style="grid-area:2/8/3/9;">NC</div>
+      <div class="c fb btrl" style="grid-area:2/9/3/10;">MTC</div>
+      <!-- tieude phui ong nganh-->
+      <div class="l fb btl">LẮP ĐẶT ĐỒNG HỒ NƯỚC</div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btl"></div>
+      <div class="btrl"></div>
+      <!-- noidung phui ong nganh-->
+      {% for cp in qtphui[odl['qton']['phui']] %}
+      <div class="bl l">{{cp['mota']}}</div>
+      <div class="bl c">{{cp['dvt']}}</div>
+      <div class="bl r">{{cp['sl']}}</div>
+      <div class="bl r">{{cp['giavl']}}</div>
+      <div class="bl r">{{cp['gianc']}}</div>
+      <div class="bl r">{{cp['giamtc']}}</div>
+      <div class="bl r">{{cp['tienvl']}}</div>
+      <div class="bl r">{{cp['tiennc']}}</div>
+      <div class="brl r">{{cp['tienmtc']}}</div>
+      {% end %}
+      <!-- tieude vattu ong nganh-->
+      <div class="c fb fu bl">Vật tư cấp mới (Cty CP CN đầu tư)</div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="brl"></div>
+      <!-- noidung vattu ong nganh-->
+      {% for cp in qtvattu[odl['qton']['vattu']] %}
+      <div class="bl l">{{cp['mota']}}</div>
+      <div class="bl c">{{cp['dvt']}}</div>
+      <div class="bl r">{{cp['sl']}}</div>
+      <div class="bl r">{{cp['giavl']}}</div>
+      <div class="bl r">{{cp['gianc']}}</div>
+      <div class="bl r">{{cp['giamtc']}}</div>
+      <div class="bl r">{{cp['tienvl']}}</div>
+      <div class="bl r">{{cp['tiennc']}}</div>
+      <div class="brl r">{{cp['tienmtc']}}</div>
+      {% end %}
+      <!-- tong vl nc mtc ong nganh-->
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="bl"></div>
+      <div class="r btl">
+        {{qtgt[odl['maqt']]['qton']['phui']['zvl'] + qtgt[odl['maqt']]['qton']['vattu']['zvl']}}
+      </div>
+      <div class="r btl">
+        {{qtgt[odl['maqt']]['qton']['phui']['znc'] + qtgt[odl['maqt']]['qton']['vattu']['znc']}}
+      </div>
+      <div class="r btrl">
+        {{qtgt[odl['maqt']]['qton']['phui']['zmtc'] + qtgt[odl['maqt']]['qton']['vattu']['zmtc']}}
+      </div>
+      <!-- ket thuc bang ong nganh-->
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="bbl"></div>
+      <div class="c bbl">(vl<sub class="f-2">2</sub>)</div>
+      <div class="c bbl">(nc<sub class="f-2">2</sub>)</div>
+      <div class="c brbl">(mtc<sub class="f-2">2</sub>)</div>
+    </div>
+  </section>
+  {% end %}
+</main>

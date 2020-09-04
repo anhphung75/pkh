@@ -1,0 +1,24 @@
+<div class="grid bang">
+  <!-- tieude-->
+  <div class="l fb btl">PHÁT TRIỂN ỐNG CÁI</div>
+  <div class="btl"></div>
+  <div class="btl"></div>
+  <div class="btl"></div>
+  <div class="btl"></div>
+  <div class="btl"></div>
+  <div class="btl"></div>
+  <div class="btl"></div>
+  <div class="btrl"></div>
+  <!-- noidung chiphi-->
+  {% for cp in chiphi %}
+  <div class="bl l">{{cp['mota']}}</div>
+  <div class="bl c">{{cp['dvt']}}</div>
+  <div class="bl r">{{cp['sl']}}</div>
+  <div class="bl r">{{cp['giavl']}}</div>
+  <div class="bl r">{{cp['gianc']}}</div>
+  <div class="bl r">{{cp['giamtc']}}</div>
+  <div class="bl r">{{cp['tienvl']}}</div>
+  <div class="bl r">{{cp['tiennc']}}</div>
+  <div class="brl r">{{cp['tienmtc']}}</div>
+  {% end %}
+</div>

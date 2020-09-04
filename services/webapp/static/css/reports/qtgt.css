@@ -4,17 +4,13 @@ main {
   flex-direction: column;
 }
 
-.quochuy {
-  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
-}
+
 
 .tieude {
   grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content, 20pt);
 }
 
-.bang {
-  grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
-}
+
 
 .ong-cai {
   flex: 1 1 0%;
@@ -22,11 +18,7 @@ main {
   flex-direction: column;
 }
 
-.bang-dandong {
-  flex: 1 1 0%;
-  grid-template-rows: minmax(0, 1fr);
-  grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
-}
+
 
 .cpql {
   grid: auto-flow minmax(1rem, max-content) / 335fr 100fr 70fr 50fr;
