@@ -19,6 +19,7 @@ from ttxl import apiHoso
 
 tornado.locale.set_default_locale('vi_VI')
 
+
 class WebBase(web.RequestHandler):
     def prepare(self):
         # get_current_user cannot be a coroutine, so set
@@ -178,6 +179,11 @@ class Rpt_Qtgt(WebBase):
                     chiphiquanly=chiphiquanly, error=None)
 
 
+class Rpt_Brython(WebBase):
+    def get(self):
+        self.render("reports/qtgt/brython.html", error=None)
+
+
 class TestVuejs(WebBase):
     def get(self):
         self.render("reports/test_vuejs.html", error=None)
@@ -321,6 +327,7 @@ class WebApp(web.Application):
             (r"/hoso/", Hoso_Handler),
             (r"/test_vuejs", TestVuejs),
             (r"/reports/qtgt", Rpt_Qtgt),
+            (r"/reports/qtgt/brython", Rpt_Brython),
             # (r"/api1108/hoso/sse", Api1108_Hoso_Sse),
             (r"/api1108/hoso/([^/]+)", Api1108_Hoso_Rest),
             # (r"/api1108/hoso/([^/]+)/([^/]+)", Api1108_Hoso_Crud),
@@ -348,7 +355,7 @@ class WebApp(web.Application):
                 "RptKyduyet2": comps.RptKyduyet2,
                 "RptKyduyet3": comps.RptKyduyet3,
                 "RptFooter": comps.RptFooter,
-                        },
+            },
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
             login_url="/auth/login",

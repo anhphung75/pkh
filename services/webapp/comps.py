@@ -228,6 +228,28 @@ class RptCpql_Nd68_2019(web.UIModule):
             hs=data['heso'], cp=data['chiphi'])
 
 
+class RptCpql2_Nd68_2019(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .bang {
+            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        .bang-dandong {
+            flex: 1 1 0%;
+            grid-template-rows: minmax(0, 1fr);
+            grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        '''
+        return __css
+
+    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
+        # load data
+        data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
+        return self.render_string(
+            "reports/qtgt/cpql-nd68-2019.html",
+            hs=data['heso'], cp=data['chiphi'])
+
+
 class RptCpql_Nd32_2015(web.UIModule):
     def embedded_css(self):
         __css = '''

@@ -63,6 +63,58 @@ odata = {
     },
 }
 
+dsmaqt=['pkh001','pkh002']
+tttt=[]
+class Qtgt:
+    def __init__(self, maqt):
+        self.maqt = maqt
+        tttt = self.load_tttt()
+
+    def load_tttt(self):
+        ##load tttt
+        data = {"maqt": "pkh002", "madot": "2020gmmp242", "mahoso": "113344", "makhachhang": "2020kh001", "madvtc": "qlmltd"}
+        return data
+
+    def dvtc(self):
+        return 'QLMLTD'
+
+qtgt0={
+    'dvtc':'QLMLTD',
+    'ngaylap':'20200907',
+    'sohoso':'GM01001/20',
+    'sodot':'999/2020MP',
+    'khachhang':'Nguyễn Lan Chi',
+    'diachigandhn':'25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ',
+    'ocCpxd':{},
+    'ocCpvt':{},
+    'ocCpvl':{},
+    'ocCptl':{},
+    'ocVl':0,
+    'ocNc':0,
+    'ocMtc':0,
+    'ocTl':0,
+    'onCpxd':{},
+    'onCpvt':{},
+    'onCpvl':{},
+    'onCptl':{},
+    'onVl':0,
+    'onNc':0,
+    'onMtc':0,
+    'onTl':0,
+    'cpqlid':'20200721',
+    'maubaocao':'on',
+    'hsVl':1,
+    'hsNc':1,
+    'hsMtc':1,
+    "hsChung": 0.055,
+    "hsTructiepkhac": 0,
+    "hsGiantiepkhac": 0.02,
+    "hsThutinhtruoc": 0.055,
+    "hsKhaosat": 0.0207,
+    "hsThietke": 1.2,
+    "hsGiamsat": 0.02566,
+}
+qtgt=qtgt0.copy()
 
 def load_odata():
     global odata
