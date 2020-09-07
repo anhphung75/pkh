@@ -1,3 +1,13 @@
+.quochuy {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
+}
+
+.tieudeqtgt {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content, 20pt);
+}
+
 main {
   flex: 1 1 0%;
   display: flex;
@@ -5,10 +15,6 @@ main {
 }
 
 
-
-.tieude {
-  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content, 20pt);
-}
 
 
 

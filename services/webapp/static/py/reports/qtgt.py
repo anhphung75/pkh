@@ -1,5 +1,5 @@
-#from browser import html, document as docu
-#import javascript as js
+from browser import html, document as docu
+import javascript as js
 import datetime
 import locale
 
@@ -53,7 +53,7 @@ class Qtgt:
 
     def __qtgt(self):
         # load tttt
-        dl = {'ngaylap':'20200907','macpql': '20200721', 'mabaogia': '20200721',
+        dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
               'ocZvl': 0, 'ocZnc': 0, 'ocZmtc': 0, 'ocZtl': 0,
               'onZvl': 0, 'onZnc': 0, 'onZmtc': 0, 'onZtl': 0,
               'cpCty': 0, 'cpKhach': 0}
@@ -212,7 +212,151 @@ class Qtgt:
             self.maubaocao = 'on'
 
 
+def rptQtgt(maqt='pkh001'):
+    maqt = f"qtgt:{maqt}"
+    if maqt in docu:
+        zone = document[maqt]
+    else:
+        zone = html.DIV(Id=maqt)
+        docu <= zone
+    return zone
 
+
+def khungA4():
+    zone = html.DIV(
+        Class="A4doc",
+    )
+    return zone
+
+
+def quochuy(tendvtc='ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', ngaylap='20200813'):
+    '''
+    <div class="grid quochuy">
+        <div>
+            <div class="c u fb" style="word-spacing: 3pt">CÔNG TY CỔ PHẦN CẤP NƯỚC THỦ ĐỨC</div>
+            <div class="c fb" style="word-spacing: 3pt">{{dvtc}}</div>
+            <div class="c f-2">---------oOo---------</div>
+            <div class="c">Số tài khoản: 102010000183907</div>
+            <div class="c">Tại: Nh Công Thương Việt Nam - Cn Đông Sài Gòn</div>
+        </div>
+        <div></div>
+        <div>
+            <div class="c u fb">CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+            <div class="c fb">Độc lập - Tự do - Hạnh phúc</div>
+            <div class="c f-2">---------oOo---------</div>
+            <div class="c ngaylap" contenteditable="true" onblur="suangaylap(this.innerHTML)">{{ngaylap}}</div>
+        </div>
+    </div> 
+    '''
+    zone = html.DIV(
+        Class="grid quochuy"
+    )
+    lbox = html.DIV()
+    lbox <= html.DIV(
+        "CÔNG TY CỔ PHẦN CẤP NƯỚC THỦ ĐỨC",
+        Class="c u fb",
+        style={"wordSpacing": '3pt'})
+    lbox <= html.DIV(
+        f"{tendvtc}",
+        Class="c u fb",
+        style={"wordSpacing": '3pt'})
+    lbox <= html.DIV(
+        "---------oOo---------",
+        Class="c f-2")
+    lbox <= html.DIV(
+        "Số tài khoản: 102010000183907",
+        Class="c")
+    lbox <= html.DIV(
+        "Tại: Nh Công Thương Việt Nam - Cn Đông Sài Gòn",
+        Class="c")
+    mbox = html.DIV()
+    rbox = html.DIV()
+    rbox <= html.DIV(
+        "CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM",
+        Class="c u fb")
+    rbox <= html.DIV(
+        "Độc lập - Tự do - Hạnh phúc",
+        Class="c fb")
+    rbox <= html.DIV(
+        "---------oOo---------",
+        Class="c f-2")
+    sthoi = f"{ngaylap}"
+    actbox = html.DIV(
+        f"Thủ Đức, ngày {sthoi[-2:]} tháng {sthoi[-4:-2]} năm {sthoi[:-4]}",
+        Class="c ngaylap",
+        contenteditable="true")
+
+    def suangaylap(ev):
+        noidung = ev.innerHTML
+        for el in docu.select(".ngaylap"):
+            el.attrs.innerHTML = noidung
+    actbox.bind("blur", suangaylap)
+    rbox <= actbox
+    zone <= lbox + mbox + rbox
+    return zone
+
+
+def tieudeqtgt(maqt='pkh001', tieude='BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC', sohoso='GM08123/20', sodot='202/20MP',
+               khachhang='Phạm Thị Lan', diachigandhn='T15 Nguyễn Văn Hưởng- P.Thảo Điền- Q.2'):
+    '''
+    <div class="grid tieudeqtgt">
+        <div class="c u fb f5 b0 tieudeqtgt" style="grid-area:1/1/2/5" contenteditable="true"
+            onblur="suatieude(this.innerHTML)">
+            {{tieude}}
+        </div>
+        <div class="l">Khách hàng: </div>
+        <div class="l u fb f2">{{khachhang}}</div>
+        <div class="l">Sô hồ sơ: </div>
+        <div class="l u fb f2">{{sohoso}}</div>
+        <div class="l">Địa chỉ: </div>
+        <div class="l fb f2">{{diachigandhn}}</div>
+        <div class="l">Sô đợt: </div>
+        <div class="l u fb f2">{{sodot}}</div>
+    </div>
+    '''
+    zone = html.DIV(
+        Class=f"grid tieudeqtgt"
+    )
+    actbox = html.DIV(
+        f"{tieude}",
+        Class=f"c u fb f5 b0 tieude_{maqt}",
+        style={"gridArea": "1/1/2/5"},
+        contenteditable="true")
+
+    def suatieude(ev):
+        noidung = ev.innerHTML
+        for el in docu.select(f".tieude_{maqt}"):
+            el.attrs.innerHTML = noidung
+    actbox.bind("blur", suatieude)
+    zone <= actbox
+    zone <= html.DIV(
+        f"Khách hàng: ",
+        Class="l")
+    zone <= html.DIV(
+        f"{khachhang}",
+        Class="l u fb f2")
+    zone <= html.DIV(
+        f"Sô hồ sơ: ",
+        Class="l")
+    zone <= html.DIV(
+        f"{sohoso}",
+        Class="l u fb f2")
+    zone <= html.DIV(
+        f"Địa chỉ: ",
+        Class="l")
+    zone <= html.DIV(
+        f"{diachigandhn}",
+        Class="l fb f2")
+    zone <= html.DIV(
+        f"Sô đợt: ",
+        Class="l")
+    zone <= html.DIV(
+        f"{sodot}",
+        Class="l u fb f2")
+    return zone
+
+
+# main
 dsinqt = ['pkh001', 'pkh002']
 for maqt in dsinqt:
     qtgt = Qtgt(maqt)
