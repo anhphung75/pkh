@@ -291,21 +291,76 @@ def quochuy(tendvtc='ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', ngaylap='20
     return zone
 
 
+def tieudeqtgt(maqt='pkh001', tieude='BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC', sohoso='GM08123/20', sodot='202/20MP',
+               khachhang='Phạm Thị Lan', diachigandhn='T15 Nguyễn Văn Hưởng- P.Thảo Điền- Q.2'):
+    '''
+    <div class="grid tieudeqtgt">
+        <div class="c u fb f5 b0 tieudeqtgt" style="grid-area:1/1/2/5" contenteditable="true"
+            onblur="suatieude(this.innerHTML)">
+            {{tieude}}
+        </div>
+        <div class="l">Khách hàng: </div>
+        <div class="l u fb f2">{{khachhang}}</div>
+        <div class="l">Sô hồ sơ: </div>
+        <div class="l u fb f2">{{sohoso}}</div>
+        <div class="l">Địa chỉ: </div>
+        <div class="l fb f2">{{diachigandhn}}</div>
+        <div class="l">Sô đợt: </div>
+        <div class="l u fb f2">{{sodot}}</div>
+    </div>
+    '''
+    zone = html.DIV(
+        Class=f"grid tieudeqtgt"
+    )
+    actbox = html.DIV(
+        f"{tieude}",
+        Class=f"c u fb f5 b0 tieude_{maqt}",
+        style={"gridArea": "1/1/2/5"},
+        contenteditable="true")
+
+    def suatieude(ev):
+        noidung = ev.innerHTML
+        for el in docu.select(f".tieude_{maqt}"):
+            el.attrs.innerHTML = noidung
+    actbox.bind("blur", suatieude)
+    zone <= actbox
+    zone <= html.DIV(
+        f"Khách hàng: ",
+        Class="l")
+    zone <= html.DIV(
+        f"{khachhang}",
+        Class="l u fb f2")
+    zone <= html.DIV(
+        f"Sô hồ sơ: ",
+        Class="l")
+    zone <= html.DIV(
+        f"{sohoso}",
+        Class="l u fb f2")
+    zone <= html.DIV(
+        f"Địa chỉ: ",
+        Class="l")
+    zone <= html.DIV(
+        f"{diachigandhn}",
+        Class="l fb f2")
+    zone <= html.DIV(
+        f"Sô đợt: ",
+        Class="l")
+    zone <= html.DIV(
+        f"{sodot}",
+        Class="l u fb f2")
+    return zone
+
+
 def creat_rptQtgt(maqt='pkh001'):
     maqt = f"qtgt:{maqt}"
     if maqt in docu:
         zone = docu[maqt]
     else:
-        print('chua co maqt')
         zone = html.DIV(id=maqt)
-        docu <= zone
-    vungin = khungA4()
-    trang1 = html.DIV(
-        Class="trangin")
-    qtgt = Qtgt(maqt)
-    box = quochuy(qtgt.dvtc, qtgt.ngaylap)
-    trang1 <= box
-    zone <= vungin <= trang1
+        docu['body'] <= zone
+    trang1 = khungA4()
+
+    zone <= trang1
 
 
 # main

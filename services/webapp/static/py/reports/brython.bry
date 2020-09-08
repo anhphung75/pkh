@@ -1,0 +1,28 @@
+from browser import html, document as docu
+def khungA4():
+    zone = html.DIV(
+        Class="A4doc ba"
+    )
+    return zone
+
+
+def creat_rptQtgt(maqt='pkh001'):
+    maqt = f"qtgt:{maqt}"
+    if maqt in docu:
+        zone = docu[maqt]
+    else:
+        print('chua co maqt')
+        zone = html.DIV(id=maqt)
+        docu <= zone
+    trang1 = khungA4()
+    trang1<=html.DIV(
+        f"test",
+        Class="A4doc ba"
+    )
+    zone <= trang1
+
+
+# main
+dsinqt = ['pkh001', 'pkh002']
+for maqt in dsinqt:
+    creat_rptQtgt(maqt)

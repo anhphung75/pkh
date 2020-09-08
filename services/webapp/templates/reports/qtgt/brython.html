@@ -4,44 +4,17 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
     <title>Report QTGT</title>
-    <link rel="stylesheet" href="{{static_url('css/tailwind.1.5.2.css')}}" type="text/css">
     <link rel="stylesheet" href="{{static_url('css/fontawesome.5.11.2.all.css')}}" type="text/css">
-    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Open+Sans">
-    <style>
-        body {
-            font-family: 'Open Sans';
-            font-size: 8pt;
-            line-height: 1;
-            width: 210mm;
-        }
-
-        .khungA4 {
-            width: 210mm;
-            height: 297mm;
-            break-after: always;
-        }
-
-        .trangin {
-            margin-left: 8mm;
-            margin-right: 8mm;
-            margin-top: 10mm;
-            margin-bottom: 10mm;
-        }
-
-        @media print {}
-    </style>
+    <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
+    <link rel="stylesheet" href="{{static_url('css/reports/qtgt.css')}}" type="text/css">
 </head>
 
 <body onload="brython(1)">
-
+    <div id="vungin"></div>
     <!-- script  -->
-
-    <script type="text/javascript" src="{{static_url('js/refs/brython.js')}}"></script>
-    <script type="text/javascript" src="{{static_url('js/refs/brython_stdlib.js')}}"></script>
-    <script type="text/python" src="{{static_url('py/reports/qtgt.py')}}" id="report:qtgt"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.10/brython.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.10/brython_stdlib.js"></script>
+    <script type="text/python" src="{{static_url('py/reports/qtgt.py')}}" id="report_qtgt"></script>
 </body>
-
-
 </html>
