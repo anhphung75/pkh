@@ -158,9 +158,10 @@ class Qtgt:
         self.ocVl = lamtronso(self.ocZvl * self.hsVl, 0)
         self.ocNc = lamtronso(self.ocZnc * self.hsNc, 0)
         self.ocMtc = lamtronso(self.ocZmtc * self.hsMtc, 0)
-        tructiep = self.ocVl + self.ocNc + self.ocMtc
-        self.ocTructiepkhac = lamtronso(tructiep * self.hsTructiepkhac, 0)
-        self.ocTructiep = tructiep + self.ocTructiepkhac
+        self.ocZvlncmtc = self.ocVl + self.ocNc + self.ocMtc
+        self.ocTructiepkhac = lamtronso(
+            self.ocZvlncmtc * self.hsTructiepkhac, 0)
+        self.ocTructiep = self.ocZvlncmtc + self.ocTructiepkhac
         self.ocChung = lamtronso(self.ocTructiep * self.hsChung, 0)
         self.ocGiantiepkhac = lamtronso(
             self.ocTructiep * self.hsGiantiepkhac, 0)
@@ -174,16 +175,18 @@ class Qtgt:
         self.ocGiamsat = lamtronso(self.ocXaydungtruocthue * self.hsGiamsat, 0)
         self.ocTuvan = self.ocKhaosatthietke + self.ocGiamsat
         self.ocTongxaydungtruocthue = self.ocXaydungtruocthue + self.ocTuvan
-        self.ocThuexaydung = lamtronso(self.ocTongxaydungtruocthue * 10/100, 0)
-        self.ocTongxaydung = self.ocTongxaydungtruocthue + self.ocThuexaydung
+        self.ocThuetongxaydung = lamtronso(
+            self.ocTongxaydungtruocthue * 10/100, 0)
+        self.ocTongxaydung = self.ocTongxaydungtruocthue + self.ocThuetongxaydung
         self.ocCongtrinh = self.ocTongxaydung + self.ocZtl
         # ong nganh
         self.onVl = lamtronso(self.onZvl * self.hsVl, 0)
         self.onNc = lamtronso(self.onZnc * self.hsNc, 0)
         self.onMtc = lamtronso(self.onZmtc * self.hsMtc, 0)
-        tructiep = self.onVl + self.onNc + self.onMtc
-        self.onTructiepkhac = lamtronso(tructiep * self.hsTructiepkhac, 0)
-        self.onTructiep = tructiep + self.onTructiepkhac
+        self.onZvlncmtc = self.onVl + self.onNc + self.onMtc
+        self.onTructiepkhac = lamtronso(
+            self.onZvlncmtc * self.hsTructiepkhac, 0)
+        self.onTructiep = self.onZvlncmtc + self.onTructiepkhac
         self.onChung = lamtronso(self.onTructiep * self.hsChung, 0)
         self.onGiantiepkhac = lamtronso(
             self.onTructiep * self.hsGiantiepkhac, 0)
@@ -197,13 +200,16 @@ class Qtgt:
         self.onGiamsat = lamtronso(self.onXaydungtruocthue * self.hsGiamsat, 0)
         self.onTuvan = self.onKhaosatthietke + self.onGiamsat
         self.onTongxaydungtruocthue = self.onXaydungtruocthue + self.onTuvan
-        self.onThuexaydung = lamtronso(self.onTongxaydungtruocthue * 10/100, 0)
-        self.onTongxaydung = self.onTongxaydungtruocthue + self.onThuexaydung
+        self.onThuetongxaydung = lamtronso(
+            self.onTongxaydungtruocthue*10/100, 0)
+        self.onTongxaydung = self.onTongxaydungtruocthue + self.onThuetongxaydung
         self.onCongtrinh = self.onTongxaydung + self.onZtl
         # tong
         self.xaydung = self.ocTongxaydung + self.onTongxaydung
         self.tailap = self.ocZtl + self.onZtl
         self.congtrinh = self.xaydung + self.tailap
+        self.congtrinhtruocthue = lamtronso(self.congtrinh*100/110, 0)
+        self.thuecongtrinh = self.congtrinh - self.congtrinhtruocthue
         if (self.ocTongxaydung*self.onTongxaydung) > 0:
             self.maubaocao = 'o2'
         elif self.ocTongxaydung > 0:
@@ -212,6 +218,7 @@ class Qtgt:
             self.maubaocao = 'on'
 
 
+<<<<<<< Updated upstream
 def rptQtgt(maqt='pkh001'):
     maqt = f"qtgt:{maqt}"
     if maqt in docu:
@@ -357,6 +364,8 @@ def tieudeqtgt(maqt='pkh001', tieude='BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG H
 
 
 # main
+=======
+>>>>>>> Stashed changes
 dsinqt = ['pkh001', 'pkh002']
 for maqt in dsinqt:
     qtgt = Qtgt(maqt)
