@@ -184,9 +184,9 @@ class Rpt_Brython(WebBase):
         self.render("reports/qtgt/brython.html", error=None)
 
 
-class TestVuejs(WebBase):
+class Rpt_Vuejs(WebBase):
     def get(self):
-        self.render("reports/test_vuejs.html", error=None)
+        self.render("reports/qtgt/vuejs.html", error=None)
 
 
 class Api1108_Hoso_Rest(ApiBase):
@@ -325,9 +325,9 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/hoso/", Hoso_Handler),
-            (r"/test_vuejs", TestVuejs),
             (r"/reports/qtgt", Rpt_Qtgt),
             (r"/reports/qtgt/brython", Rpt_Brython),
+            (r"/reports/qtgt/vuejs", Rpt_Vuejs),
             # (r"/api1108/hoso/sse", Api1108_Hoso_Sse),
             (r"/api1108/hoso/([^/]+)", Api1108_Hoso_Rest),
             # (r"/api1108/hoso/([^/]+)/([^/]+)", Api1108_Hoso_Crud),
@@ -375,7 +375,7 @@ db = None
 
 def main():
     # for win10
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    # asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     # tornado.options.options.logging = None
     # tornado.options.parse_command_line()

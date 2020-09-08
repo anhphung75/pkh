@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='vi'>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
+  <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/reports/qtgt.css')}}" type="text/css">
+</head>
+
+<body>
+  <div v-for="maqt in dsmaqt" id="qtgt:maqt">
+    <div class="A4doc">
+      <!-- trang 1-->
+      <div class="trangin trang1">
+        <quochuy>
+          <template #dvtc>
+            qlmltd
+          </template>
+          <template #ngaylap>
+            Thu duc
+          </template>
+        </quochuy>
+      </div>
+    </div>
+  </div>
+  <!-- script  -->
+  <script src="{{static_url('js/reports/qtgt/main.js')}}" type="module"></script>
+</body>
+
+</html>
