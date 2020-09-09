@@ -13,8 +13,8 @@
 <body onload="brython(1)">
     <div id="vungin"></div>
     <!-- script  -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.10/brython.min.js"></script>
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/brython@3.8.10/brython_stdlib.js"></script>
+    <script type="text/javascript" src="{{static_url('js/refs/brython.js')}}"></script>
+    <script type="text/javascript" src="{{static_url('js/refs/brython_stdlib.js')}}"></script>
     <script type="text/python" src="{{static_url('py/reports/qtgt.py')}}" id="report_qtgt"></script>
 </body>
 </html>

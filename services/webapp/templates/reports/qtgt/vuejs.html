@@ -11,18 +11,20 @@
 </head>
 
 <body>
-  <div v-for="maqt in dsmaqt" id="qtgt:maqt">
-    <div class="A4doc">
+  <div id="vungin">
+    <div v-for="maqt in dsmaqt" :id="'qtgt:'+maqt" :ref="'qtgt'+maqt">
       <!-- trang 1-->
-      <div class="trangin trang1">
-        <quochuy>
-          <template #dvtc>
-            qlmltd
-          </template>
-          <template #ngaylap>
-            Thu duc
-          </template>
-        </quochuy>
+      <div class="A4doc">
+        <div class="trangin trang1">
+          <quochuy :id="'quochuy:'+maqt" :ref="'quochuy'+maqt">
+            <template #dvtc></template>
+            <template #ngaylap></template>
+          </quochuy>
+          {`maqt`}
+          {`caorpt`}
+          {`curid='quochuy'+maqt`}
+          {`tinh_caorpt('#quochuy'+maqt)`}
+        </div>
       </div>
     </div>
   </div>

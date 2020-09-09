@@ -282,9 +282,9 @@ def quochuy(tendvtc='ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', ngaylap='20
         contenteditable="true")
 
     def suangaylap(ev):
-        noidung = ev.innerHTML
+        noidung = f"{ev.target.innerHTML}"
         for el in docu.select(".ngaylap"):
-            el.attrs.innerHTML = noidung
+            el.innerHTML = noidung
     actbox.bind("blur", suangaylap)
     rbox <= actbox
     zone <= lbox + mbox + rbox
@@ -299,6 +299,7 @@ def creat_rptQtgt(maqt='pkh001'):
         print('chua co maqt')
         zone = html.DIV(id=maqt)
         docu <= zone
+    caorpt = 0
     vungin = khungA4()
     trang1 = html.DIV(
         Class="trangin")
@@ -306,6 +307,8 @@ def creat_rptQtgt(maqt='pkh001'):
     box = quochuy(qtgt.dvtc, qtgt.ngaylap)
     trang1 <= box
     zone <= vungin <= trang1
+    caorpt += box.offsetHeight
+    print('caorpt=',caorpt)
 
 
 # main
