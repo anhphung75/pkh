@@ -157,6 +157,14 @@ html, body {
   border-width: 0 0 0 1px;
 }
 
+.hov:hover {
+  background-color: yellow;
+}
+
+.hov1:hover {
+  background-color: lightgreen;
+}
+
 .flex {
   display: flex;
 }

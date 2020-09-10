@@ -1,74 +1,8 @@
-import locale
 import tornado.web as web
-from utils import lamtronso, Tien
-
-locale.setlocale(locale.LC_ALL, 'vi_VI')
+from utils import Tien, tachhangso
 
 
-def tinh_cpql(cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
-    chiphiquanly = {
-        7: {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0,
-            "thutinhtruoc": 0.055, "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566},
-        20200721: {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02,
-                   "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566},
-    }
-    try:
-        cpqlid = int(cpqlid)
-        zvl = int(zvl)
-        znc = int(znc)
-        zmtc = int(zmtc)
-        ztl = int(ztl)
-    except:
-        cpqlid = 20200721
-        zvl = 0
-        znc = 0
-        zmtc = 0
-        ztl = 0
-    heso = chiphiquanly[cpqlid]
-    for i in heso:
-        heso[i] = float(heso[i])
-    cp = {}
-    cp['vl'] = lamtronso(zvl*heso['vl'], 0)
-    cp['nc'] = lamtronso(znc*heso['nc'], 0)
-    cp['mtc'] = lamtronso(zmtc*heso['mtc'], 0)
-    tructiep = cp['vl'] + cp['nc'] + cp['mtc']
-    cp['tructiepkhac'] = lamtronso(tructiep*heso['tructiepkhac'], 0)
-    cp['tructiep'] = tructiep + cp['tructiepkhac']
-    cp['chung'] = lamtronso(cp['tructiep']*heso['chung'], 0)
-    cp['giantiepkhac'] = lamtronso(cp['tructiep']*heso['giantiepkhac'], 0)
-    cp['giantiep'] = cp['chung'] + cp['giantiepkhac']
-    cp['giaxaydung'] = cp['tructiep'] + cp['giantiep']
-    cp['thutinhtruoc'] = lamtronso(cp['giaxaydung']*heso['thutinhtruoc'], 0)
-    cp['xaydungtruocthue'] = cp['giaxaydung'] + cp['thutinhtruoc']
-    cp['khaosatthietke'] = lamtronso(
-        cp['xaydungtruocthue']*heso['khaosat']*heso['thietke'], 0)
-    cp['giamsat'] = lamtronso(cp['xaydungtruocthue']*heso['giamsat'], 0)
-    cp['tuvan'] = cp['khaosatthietke'] + cp['giamsat']
-    cp['tongxaydungtruocthue'] = cp['xaydungtruocthue'] + cp['tuvan']
-    cp['thuexaydung'] = lamtronso(cp['tongxaydungtruocthue'] * 0.1, 0)
-    cp['tongxaydung'] = cp['tongxaydungtruocthue'] + cp['thuexaydung']
-    cp['tailap'] = ztl
-    cp['congtrinh'] = cp['tongxaydung']+ztl
-    cp['congtrinhtruocthue'] = lamtronso(cp['congtrinh']*100/110, 0)
-    cp['thuecongtrinh'] = cp['congtrinh']-cp['congtrinhtruocthue']
-    # format heso
-    for i in ['tructiepkhac', 'giantiepkhac', 'chung', 'thutinhtruoc']:
-        heso[i] = locale.format_string('%.1f', heso[i]*100, True) + '%'
-    heso['khaosat'] = locale.format_string(
-        '%.2f', heso['khaosat']*100, True) + '%'
-    heso['thietke'] = locale.format_string('%.1f', heso['thietke'], True)
-    heso['giamsat'] = locale.format_string(
-        '%.3f', heso['giamsat']*100, True) + '%'
-    # format chiphi
-    for i in cp:
-        cp[i] = locale.format_string('%.0f', cp[i], True)
-    print(f"heso={heso}")
-    print(f"chiphi={cp}")
-    data = {'heso': heso, 'chiphi': cp}
-    return data
-
-
-class RptQuochuy(web.UIModule):
+class RptQtgt_Quochuy(web.UIModule):
     def embedded_javascript(self):
         __js = '''
         function suangaylap(ngaylap) {
@@ -97,9 +31,8 @@ class RptQuochuy(web.UIModule):
         '''
         return __css
 
-    def render(self, madvtc='qlmltd', ngaylap=20200904):
+    def render(self, dvtc="ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC", ngaylap=20200904):
         # format so:
-        dvtc = "ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC"
         ngaylap = f"{ngaylap}"
         ngaylap = f"Thủ Đức, {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
         return self.render_string(
@@ -107,7 +40,7 @@ class RptQuochuy(web.UIModule):
             dvtc=dvtc, ngaylap=ngaylap)
 
 
-class RptQtgtTieude(web.UIModule):
+class RptQtgt_Tieude(web.UIModule):
     def embedded_javascript(self):
         __js = '''
         function suatieude(tieude) {
@@ -136,19 +69,13 @@ class RptQtgtTieude(web.UIModule):
         '''
         return __css
 
-    def render(self, maqt=None, mahoso=None, madot=None, makhachhang=None):
-        # format so:
-        tieude = "BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC 1 BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC 2 BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC 3"
-        sohoso = "gm02334/20"
-        sodot = "309/2020MP"
-        khachhang = 'Bùi đình quốc vệ'
-        diachigandhn = "t634- Ngô Chí Quốc- Kp.2- P.Bình Chiểu- Q.TĐ"
+    def render(self, tieude="BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC", sohoso='', sodot='', khachhang='', diachigandhn=''):
         return self.render_string(
             "reports/qtgt/tieude.html",
             tieude=tieude, sohoso=sohoso, sodot=sodot, khachhang=khachhang, diachigandhn=diachigandhn)
 
 
-class RptQtgtChiphiTieude(web.UIModule):
+class RptQtgt_ChiphiTieudebang(web.UIModule):
     def embedded_css(self):
         __css = '''
         .bang {
@@ -160,10 +87,65 @@ class RptQtgtChiphiTieude(web.UIModule):
 
     def render(self):
         return self.render_string(
-            "reports/qtgt/chiphi-tieude.html")
+            "reports/qtgt/chiphi-tieudebang.html")
 
 
-class RptQtgtChiphiDandong(web.UIModule):
+class RptQtgt_ChiphiTieude(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .bang {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        '''
+        return __css
+
+    def render(self, tieude=''):
+        return self.render_string(
+            "reports/qtgt/chiphi-tieude.html", tieude=tieude)
+
+
+class RptQtgt_ChiphiNoidung(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .sl {
+            color:blue;
+        }
+        .vl {
+            color:red;
+        }
+        .nc {
+            color:green;
+        }
+        .mtc {
+            color:magenta;
+        }
+        '''
+        return __css
+
+    def render(self, uid=None, mota=None, dvt=None, soluong=0, giavl=0, gianc=0, giamtc=0, tienvl=0, tiennc=0, tienmtc=0):
+        # format number
+        soluong = tachhangso(soluong, 3)
+        m = Tien(giavl)
+        giavl = m.so()
+        m = Tien(gianc)
+        gianc = m.so()
+        m = Tien(giamtc)
+        giamtc = m.so()
+        m = Tien(tienvl)
+        tienvl = m.so()
+        m = Tien(tiennc)
+        tiennc = m.so()
+        m = Tien(tienmtc)
+        tienmtc = m.so()
+        return self.render_string(
+            "reports/qtgt/chiphi-noidung.html",
+            uid=uid, mota=mota, dvt=dvt, soluong=soluong,
+            giavl=giavl, gianc=giavl, giamtc=giamtc,
+            tienvl=tienvl, tiennc=tiennc, tienmtc=tienmtc)
+
+
+class RptQtgt_ChiphiDandong(web.UIModule):
     def embedded_css(self):
         __css = '''
         .dandong {
@@ -180,13 +162,7 @@ class RptQtgtChiphiDandong(web.UIModule):
             "reports/qtgt/chiphi-dandong.html")
 
 
-class RptQtgtChiphiNoidung(web.UIModule):
-    def render(self):
-        return self.render_string(
-            "reports/qtgt/chiphi-tieude.html")
-
-
-class RptQtgtChiphiTong(web.UIModule):
+class RptQtgt_ChiphiTong(web.UIModule):
     def render(self, vl=0, nc=0, mtc=0):
         vl = locale.format_string('%.0f', vl, True)
         nc = locale.format_string('%.0f', nc, True)
@@ -196,90 +172,7 @@ class RptQtgtChiphiTong(web.UIModule):
             vl=vl, nc=nc, mtc=mtc)
 
 
-class RptChiphi_Nd68_2019(web.UIModule):
-    def render(self, maqtoc=None, maqton=None, mabaogia=20200721):
-        # load data
-        plbaocao = 'oc'
-        data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
-        return self.render_string(
-            "reports/qtgt/chiphi-nd68-2019.html",
-            plbaocao=plbaocao, hs=data['heso'], cp=data['chiphi'])
-
-
-class RptCpql_Nd68_2019(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .bang {
-            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
-        }
-        .bang-dandong {
-            flex: 1 1 0%;
-            grid-template-rows: minmax(0, 1fr);
-            grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
-        }
-        '''
-        return __css
-
-    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
-        # load data
-        data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
-        return self.render_string(
-            "reports/qtgt/cpql-nd68-2019.html",
-            hs=data['heso'], cp=data['chiphi'])
-
-
-class RptCpql2_Nd68_2019(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .bang {
-            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
-        }
-        .bang-dandong {
-            flex: 1 1 0%;
-            grid-template-rows: minmax(0, 1fr);
-            grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
-        }
-        '''
-        return __css
-
-    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
-        # load data
-        data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
-        return self.render_string(
-            "reports/qtgt/cpql-nd68-2019.html",
-            hs=data['heso'], cp=data['chiphi'])
-
-
-class RptCpql_Nd32_2015(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .bang {
-            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
-        }
-        .bang-dandong {
-            flex: 1 1 0%;
-            grid-template-rows: minmax(0, 1fr);
-            grid-template-columns: 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
-        }
-        '''
-        return __css
-
-    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0, isoc=False):
-        data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
-        return self.render_string(
-            "reports/qtgt/cpql-nd32-2015.html",
-            hs=data['hs'], cp=data['cp'])
-
-
-class RptCpql2_Nd32_2015(web.UIModule):
-    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0, isoc=False):
-        data = tinh_cpql(cpqlid, zvl, znc, zmtc, ztl)
-        return self.render_string(
-            "reports/qtgt/cpql2-nd32-2015.html",
-            hs=data['hs'], cp=data['cp'])
-
-
-class RptTlmd(web.UIModule):
+class RptQtgt_Tlmd(web.UIModule):
     def embedded_css(self):
         __css = '''
         .tlmd {
@@ -310,7 +203,7 @@ class RptTlmd(web.UIModule):
             cp=data)
 
 
-class RptTlmd2(web.UIModule):
+class RptQtgt_Tlmd2(web.UIModule):
     def render(self, qt35id=None):
         data = "chuaxong"
         return self.render_string(
@@ -382,7 +275,7 @@ class RptKyduyet3(web.UIModule):
             duyet=duyet, kiemtra=kiemtra, lap=lap)
 
 
-class RptFooter(web.UIModule):
+class RptQtgt_Footer(web.UIModule):
     def embedded_css(self):
         __css = '''
         .footer {
@@ -400,3 +293,49 @@ class RptFooter(web.UIModule):
         return self.render_string(
             "reports/qtgt/footer.html",
             lzone=lzone, rzone=rzone)
+
+
+class RptQtgt_Cpql_20200721(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .bang {
+            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        '''
+        return __css
+
+    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
+        # load data
+        return self.render_string(
+            "reports/qtgt/cpql-20200721.html")
+
+
+class RptQtgt_Cpql2_20200721(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .bang {
+            grid: auto-flow minmax(1rem, max-content) / 151fr 30fr 45fr 60fr 40fr 40fr 63fr 63fr 63fr;
+        }
+        '''
+        return __css
+
+    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
+        # format data
+        return self.render_string(
+            "reports/qtgt/cpql2-20200721.html")
+
+
+class RptQtgt_Cpql_20200905(web.UIModule):
+    def embedded_css(self):
+        pass
+
+    def render(self):
+        pass
+
+
+class RptQtgt_Cpql2_20200905(web.UIModule):
+    def embedded_css(self):
+        pass
+
+    def render(self):
+        pass

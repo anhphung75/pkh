@@ -1,24 +1,11 @@
-<div class="grid bang">
-  <!-- tieude-->
-  <div class="l fb btl">PHÁT TRIỂN ỐNG CÁI</div>
-  <div class="btl"></div>
-  <div class="btl"></div>
-  <div class="btl"></div>
-  <div class="btl"></div>
-  <div class="btl"></div>
-  <div class="btl"></div>
-  <div class="btl"></div>
-  <div class="btrl"></div>
-  <!-- noidung chiphi-->
-  {% for cp in chiphi %}
-  <div class="bl l">{{cp['mota']}}</div>
-  <div class="bl c">{{cp['dvt']}}</div>
-  <div class="bl r">{{cp['sl']}}</div>
-  <div class="bl r">{{cp['giavl']}}</div>
-  <div class="bl r">{{cp['gianc']}}</div>
-  <div class="bl r">{{cp['giamtc']}}</div>
-  <div class="bl r">{{cp['tienvl']}}</div>
-  <div class="bl r">{{cp['tiennc']}}</div>
-  <div class="brl r">{{cp['tienmtc']}}</div>
-  {% end %}
+<div class="grid bang hov {{f'{uid[:4]} cp{uid[4:]}'}}">
+  <div class="bl l">{{mota}}</div>
+  <div class="bl c">{{dvt}}</div>
+  <div class="bl r sl">{{soluong}}</div>
+  <div class="bl r vl">{{giavl}}</div>
+  <div class="bl r nc">{{gianc}}</div>
+  <div class="bl r mtc">{{giamtc}}</div>
+  <div class="bl r vl">{{tienvl}}</div>
+  <div class="bl r nc">{{tiennc}}</div>
+  <div class="brl r mtc">{{tienmtc}}</div>
 </div>

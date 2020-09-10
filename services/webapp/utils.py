@@ -1,4 +1,5 @@
 import datetime
+import locale
 
 
 class Thoigian():
@@ -59,13 +60,19 @@ class Tien():
         except:
             self.sotien = None
 
-    def so(self):
+    def so(self, kyhieu=False):
         if self.sotien == None:
-            return None
-        elif self.sotien == 0:
-            return f"- "
+            return f""
+        if self.sotien == 0:
+            return f""
         else:
-            return f"{self.sotien:,}".replace(',', '.')
+            try:
+                locale.setlocale(locale.LC_ALL, 'vi_VI')
+                somoi = locale.format_string(
+                    f'%.0f', self.sotien, True, kyhieu)
+            except:
+                return f""
+            return somoi
 
     def chu(self):
         if self.sotien == None:
@@ -139,8 +146,22 @@ class Tien():
 
 def lamtronso(sothapphan=0, phanle=2):
     from decimal import Decimal
-    #try:
-    somoi = float(round(Decimal(sothapphan), phanle))
-    #except:
-    #    somoi = None
+    try:
+        somoi = float(round(Decimal(sothapphan), phanle))
+    except:
+        somoi = 0
     return somoi
+
+
+def tachhangso(sothapphan=0, phanle=3):
+    if sothapphan == None:
+        return f""
+    elif sothapphan == 0:
+        return f""
+    else:
+        try:
+            locale.setlocale(locale.LC_ALL, 'vi_VI')
+            somoi = locale.format_string(f'%.{phanle}f', sothapphan, True)
+        except:
+            return f""
+        return somoi
