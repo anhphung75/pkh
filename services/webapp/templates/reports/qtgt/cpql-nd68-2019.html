@@ -17,50 +17,62 @@
   <div class="c bl"></div>
   <div class="r bl"></div>
   <div class="c brl"></div>
+
   <div class="l fb bl" style="padding-left:6pt">1. Chi phí trực tiếp</div>
   <div class="c bl">VL + NC + MTC</div>
   <div class="r fb bl">{{cp['tructiep']}}</div>
   <div class="c fb brl">T</div>
+
   <div class="l fb bl" style="padding-left:6pt">2. Chi phí gián tiếp</div>
   <div class="c bl">C + TT</div>
   <div class="r fb bl">{{cp['giantiep']}}</div>
   <div class="c fb brl">GT</div>
+
   <div class="l bl" style="padding-left:12pt">- Chi phí chung</div>
   <div class="c bl">T x {{hs['chung']}}</div>
   <div class="r bl">{{cp['chung']}}</div>
   <div class="c brl">C</div>
+
   <div class="l bl" style="padding-left:12pt">- Chi phí 1 số công việc không xác định được khối lượng từ thiết kế</div>
   <div class="c bl">T x {{hs['giantiepkhac']}}</div>
   <div class="r bl">{{cp['giantiepkhac']}}</div>
   <div class="c brl">TT</div>
+
   <div class="l fb bl" style="padding-left:6pt">3. Thu nhập chịu thuế tính trước</div>
   <div class="c bl">(T + GT) x {{hs['thutinhtruoc']}}</div>
   <div class="r fb bl">{{cp['thutinhtruoc']}}</div>
   <div class="c fb brl">TL</div>
+
   <div class="r fb bl">Chi phí xây dựng trước thuế</div>
   <div class="c bl">T + GT + TL</div>
   <div class="r fb bl">{{cp['xaydungtruocthue']}}</div>
   <div class="c fb brl">G<sub class="f-2">ĐO</sub></div>
+
   <div class="l u fb bl" style="padding-left:3pt">II. CHI PHÍ TƯ VẤN</div>
   <div class="c bl"></div>
   <div class="r fb bl">{{cp['tuvan']}}</div>
   <div class="c fb brl">G<sub class="f-2">TV</sub></div>
+
   <div class="l bl" style="padding-left:6pt">1. Chi phí khảo sát thiết kế</div>
   <div class="c bl">G<sub class="f-2">ĐO</sub> x {{hs['khaosat']}} x {{hs['thietke']}}</div>
   <div class="r bl">{{cp['khaosatthietke']}}</div>
   <div class="c brl">G<sub class="f-2">TV1</sub></div>
+
   <div class="l bl" style="padding-left:6pt">2. Chi phí giám sát</div>
   <div class="c bl">G<sub class="f-2">ĐO</sub> x {{hs['giamsat']}}</div>
   <div class="r bl">{{cp['giamsat']}}</div>
   <div class="c brl">G<sub class="f-2">TV2</sub></div>
+
   <div class="r fb bl">Tổng giá trị quyết toán xây dựng trước thuế</div>
   <div class="c bl">G<sub class="f-2">ĐO</sub> + G<sub class="f-2">TV</sub></div>
   <div class="r fb bl">{{cp['tongxaydungtruocthue']}}</div>
   <div class="c fb brl">G<sub class="f-2">XD-ĐO</sub></div>
+
   <div class="l u fb bl" style="padding-left:3pt">III. THUẾ GIÁ TRỊ GIA TĂNG</div>
   <div class="c bl">G<sub class="f-2">XD-ĐO</sub> x 10%</div>
   <div class="r bl">{{cp['thuexaydung']}}</div>
   <div class="c brl">GTGT</div>
+
   <div class="r fb bbl">Chi phí xây dựng sau thuế (Phần 1)</div>
   <div class="c bbl">G<sub class="f-2">XD-ĐO</sub> + GTGT</div>
   <div class="r fb bbl">{{cp['tongxaydung']}}</div>
@@ -72,14 +84,17 @@
   <div class="c"></div>
   <div class="r fb bl">{{cp['tailap']}}</div>
   <div class="c fb brl">G<sub class="f-2">XDCT-TL</sub></div>
+
   <div class="c u fb btl">TỔNG CỘNG</div>
   <div class="c btl">G<sub class="f-2">XDCT-ĐO</sub> + G<sub class="f-2">XDCT-TL</sub></div>
   <div class="r fb btl">{{cp['congtrinh']}}</div>
   <div class="c fb btrl">G<sub class="f-2">XDCT</sub></div>
+
   <div class="r bl">Trong đó: giá trị trước thuế</div>
   <div class="c bl"></div>
   <div class="r bl">{{cp['congtrinhtruocthue']}}</div>
   <div class="c brl"></div>
+
   <div class="r bbl">Thuế giá trị gia tăng</div>
   <div class="c bbl"></div>
   <div class="r bbl">{{cp['thuecongtrinh']}}</div>

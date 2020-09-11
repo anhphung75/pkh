@@ -209,7 +209,7 @@ class RptQtgt:
              'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
              'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
             {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'soluong': 122195, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
              'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
         ]
         # load gia
@@ -312,8 +312,8 @@ class RptQtgt:
         # load tttt
         dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
               'oczvl': 0, 'ocznc': 0, 'oczmtc': 0, 'ocztl': 0,
-              'onzvl': 0, 'onznc': 0, 'onzmtc': 0, 'onztl': 0,
-              'ktcpcty': 0, 'ktcpkhach': 0}
+              'onzvl': 4894054, 'onznc': 1596281, 'onzmtc': 61084, 'onztl': 691200,
+              'ktcpcty': 9277084, 'ktcpkhach': 0}
         if 'tl' in self.maqt.lower():
             self.tieude = 'BẢNG QUYẾT TOÁN TÁI LẬP DANH BỘ'
         else:

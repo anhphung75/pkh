@@ -304,10 +304,49 @@ class RptQtgt_Cpql_20200721(web.UIModule):
         '''
         return __css
 
-    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
-        # load data
+    def render(self, maubaocao='on',vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
+               thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0,
+               cpzvlncmtc=0, cptructiepkhac=0, cptructiep=0, cpchung=0, cpgiantiepkhac=0, cpgiantiep=0,
+               cpgiaxaydung=0, cpthutinhtruoc=0, cpxaydungtruocthue=0, cpkhaosatthietke=0, cpgiamsat=0, cptuvan=0, cptongxaydungtruocthue=0, cpthuetongxaydung=0, cptongxaydung=0, cpcongtrinh=0,
+               xaydung=0, tailap=0, congtrinh=0, congtrinhtruocthue=0, thuecongtrinh=0):
+        # markup heso
+        chung = f"{tachhangso(chung*100,1)}%"
+        giantiepkhac = f"{tachhangso(giantiepkhac*100,1)}%"
+        thutinhtruoc = f"{tachhangso(thutinhtruoc*100,1)}%"
+        khaosat = f"{tachhangso(khaosat*100,2)}%"
+        giamsat = f"{tachhangso(giamsat*100,3)}%"
+        thietke = tachhangso(thietke, 1)
+        # markup chiphi
+        cpzvlncmtc = tachhangso(cpzvlncmtc, 0)
+        cptructiepkhac = tachhangso(cptructiepkhac, 0)
+        cptructiep = tachhangso(cptructiep, 0)
+        cpchung = tachhangso(cpchung, 0)
+        cpgiantiepkhac = tachhangso(cpgiantiepkhac, 0)
+        cpgiantiep = tachhangso(cpgiantiep, 0)
+        cpgiaxaydung = tachhangso(cpgiaxaydung, 0)
+        cpthutinhtruoc = tachhangso(cpthutinhtruoc, 0)
+        cpxaydungtruocthue = tachhangso(cpxaydungtruocthue, 0)
+        cpkhaosatthietke = tachhangso(cpkhaosatthietke, 0)
+        cpgiamsat = tachhangso(cpgiamsat, 0)
+        cptuvan = tachhangso(cptuvan, 0)
+        cptongxaydungtruocthue = tachhangso(cptongxaydungtruocthue, 0)
+        cpthuetongxaydung = tachhangso(cpthuetongxaydung, 0)
+        cptongxaydung = tachhangso(cptongxaydung, 0)
+        cpcongtrinh = tachhangso(cpcongtrinh, 0)
+        xaydung = tachhangso(xaydung, 0)
+        tailap = tachhangso(tailap, 0)
+        congtrinh = tachhangso(congtrinh, 0)
+        congtrinhtruocthue = tachhangso(congtrinhtruocthue, 0)
+        thuecongtrinh = tachhangso(thuecongtrinh, 0)
         return self.render_string(
-            "reports/qtgt/cpql-20200721.html")
+            "reports/qtgt/cpql-20200721.html",maubaocao=maubaocao,
+            vl=vl, nc=nc, mtc=mtc, tructiepkhac=tructiepkhac, chung=chung, giantiepkhac=giantiepkhac,
+            thutinhtruoc=thutinhtruoc, khaosat=khaosat, thietke=thietke, giamsat=giamsat,
+            cpzvlncmtc=cpzvlncmtc, cptructiepkhac=cptructiepkhac, cptructiep=cptructiep, cpchung=cpchung, cpgiantiepkhac=cpgiantiepkhac, cpgiantiep=cpgiantiep, cpgiaxaydung=cpgiaxaydung,
+            cpthutinhtruoc=cpthutinhtruoc, cpxaydungtruocthue=cpxaydungtruocthue, cpkhaosatthietke=cpkhaosatthietke, cpgiamsat=cpgiamsat, cptuvan=cptuvan, cptongxaydungtruocthue=cptongxaydungtruocthue,
+            cpthuetongxaydung=cpthuetongxaydung, cptongxaydung=cptongxaydung, cpcongtrinh=cpcongtrinh,
+            xaydung=xaydung, tailap=tailap, congtrinh=congtrinh, congtrinhtruocthue=congtrinhtruocthue,
+            thuecongtrinh=thuecongtrinh)
 
 
 class RptQtgt_Cpql2_20200721(web.UIModule):
@@ -322,7 +361,15 @@ class RptQtgt_Cpql2_20200721(web.UIModule):
     def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
         # format data
         return self.render_string(
-            "reports/qtgt/cpql2-20200721.html")
+            "reports/qtgt/cpql2-20200721.html",
+            vl, nc, mtc, tructiepkhac, chung, giantiepkhac, thutinhtruoc, khaosat, thietke, giamsat,
+            oczvlncmtc, octructiepkhac, octructiep, occhung, ocgiantiepkhac, ocgiantiep, ocgiaxaydung,
+            octhutinhtruoc, ocxaydungtruocthue, ockhaosatthietke, ocgiamsat, octuvan, octongxaydungtruocthue,
+            octhuetongxaydung, octongxaydung, occongtrinh,
+            onzvlncmtc, ontructiepkhac, ontructiep, onchung, ongiantiepkhac, ongiantiep, ongiaxaydung,
+            onthutinhtruoc, onxaydungtruocthue, onkhaosatthietke, ongiamsat, ontuvan, ontongxaydungtruocthue,
+            onthuetongxaydung, ontongxaydung, oncongtrinh,
+            xaydung, tailap, congtrinh, congtrinhtruocthue, thuecongtrinh, ktcpcty, ktcpkhach)
 
 
 class RptQtgt_Cpql_20200905(web.UIModule):
