@@ -23,7 +23,7 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
     # main prog
     sql = (
         f"ALTER PROC {schema}.tinh_tamqt3{qt3x}"
-        f" @Baogiaid INT=0, @Cpqlid INT=0, @Plgia NVARCHAR(50)='dutoan'"
+        f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
         f" BEGIN TRY")
@@ -93,7 +93,7 @@ def tinh_tamqt35(schema="web"):
     # main prog
     sql = (
         f"ALTER PROC {schema}.tinh_tamqt35"
-        f" @Baogiaid INT=0, @Cpqlid INT=0, @Plgia NVARCHAR(50)='dutoan'"
+        f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
         f" BEGIN TRY")
@@ -111,9 +111,9 @@ def tinh_tamqt35(schema="web"):
         f" dongia=(Select Top 1 isnull(gia,0) From dbo.baogiachiphi bg"
         f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=#tamdulieu.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
         f" Order By baogiaid DESC),"
-        f" trigia1=(Case When @Cpqlid<20200721 Then (dbo.lamtronso(sl1*dongia/1000,0)*1000)"
+        f" trigia1=(Case When @Hesoid<20200721 Then (dbo.lamtronso(sl1*dongia/1000,0)*1000)"
         f" Else dbo.lamtronso(sl1*dongia,0) End),"
-        f" trigia2=(Case When @Cpqlid<20200721 Then (dbo.lamtronso(sl2*dongia/1000,0)*1000)"
+        f" trigia2=(Case When @Hesoid<20200721 Then (dbo.lamtronso(sl2*dongia/1000,0)*1000)"
         f" Else dbo.lamtronso(sl2*dongia,0) End),"
         f" maqt=(Select Top 1 maqt From {schema}.tamqt),"
         f" maqtgt=(Case When id<10 Then CONCAT(maqt,50,id) Else CONCAT(maqt,5,id) End),"
@@ -142,17 +142,17 @@ def tinh_tamqt3x(schema="web"):
     # main prog
     sql = (
         f"ALTER PROC {schema}.tinh_tamqt3x"
-        f" @Baogiaid INT=0, @Cpqlid INT=0, @Plgia NVARCHAR(50)='dutoan'"
+        f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
         f" BEGIN TRY")
     # load tamdulieu
     sql += (
-        f" EXEC {schema}.tinh_tamqt31 @Baogiaid, @Cpqlid, @Plgia;"
-        f" EXEC {schema}.tinh_tamqt32 @Baogiaid, @Cpqlid, @Plgia;"
-        f" EXEC {schema}.tinh_tamqt33 @Baogiaid, @Cpqlid, @Plgia;"
-        f" EXEC {schema}.tinh_tamqt34 @Baogiaid, @Cpqlid, @Plgia;"
-        f" EXEC {schema}.tinh_tamqt35 @Baogiaid, @Cpqlid, @Plgia;"
+        f" EXEC {schema}.tinh_tamqt31 @Baogiaid, @Hesoid, @Plgia;"
+        f" EXEC {schema}.tinh_tamqt32 @Baogiaid, @Hesoid, @Plgia;"
+        f" EXEC {schema}.tinh_tamqt33 @Baogiaid, @Hesoid, @Plgia;"
+        f" EXEC {schema}.tinh_tamqt34 @Baogiaid, @Hesoid, @Plgia;"
+        f" EXEC {schema}.tinh_tamqt35 @Baogiaid, @Hesoid, @Plgia;"
     )
     sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
     try:
@@ -171,7 +171,7 @@ def tinh_tamqt(schema="web"):
     # main prog
     sql = (
         f"ALTER PROC {schema}.tinh_tamqt"
-        f" @Baogiaid INT=0, @Cpqlid INT=0, @Plgia NVARCHAR(50)='dutoan'"
+        f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
         f" BEGIN TRY DECLARE")
@@ -195,7 +195,7 @@ def tinh_tamqt(schema="web"):
             f" @oc{chiphi} DECIMAL(19,5)=1.0000,")
     sql += f" @Plqt NVARCHAR(50);"
     # tinh tamqtx
-    sql += f" IF((@Baogiaid>0) OR (Len(@Plgia)>0)) EXEC {schema}.tinh_tamqt3x @Baogiaid, @Cpqlid, @Plgia;"
+    sql += f" IF((@Baogiaid>0) OR (Len(@Plgia)>0)) EXEC {schema}.tinh_tamqt3x @Baogiaid, @Hesoid, @Plgia;"
     # load Zvl, Znc, Zmtc, Tailap
     sql += (
         f" SELECT @ocZvl=Sum(zVl), @ocZnc=Sum(zNc), @ocZmtc=Sum(zMtc) FROM"
@@ -218,7 +218,7 @@ def tinh_tamqt(schema="web"):
     sql += f" Select "
     for heso in ods:
         sql += f"@{heso}=Isnull({ods[heso]},0),"
-    sql += f"@vl=1.0000 From dbo.hesochiphi Where hesoid=@Cpqlid;"
+    sql += f"@vl=1.0000 From dbo.hesochiphi Where hesoid=@Hesoid;"
     # tinh chi phi
     lds = ["on", "oc"]
     for phui in lds:
@@ -307,7 +307,7 @@ def tinh_tamqt(schema="web"):
         f" Where tinhtrang='Moi' AND phanloai='Cat'),0);")
     sql += (
         f" If @Baogiaid>0 Update {schema}.tamqt SET baogiaid=@Baogiaid;"
-        f" If @Cpqlid>0 Update {schema}.tamqt SET hesoid=@Cpqlid;")
+        f" If @Hesoid>0 Update {schema}.tamqt SET hesoid=@Hesoid;")
     sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
     try:
         db.core().execute(sql)
