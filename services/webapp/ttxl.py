@@ -107,7 +107,31 @@ class RptQtgt:
              'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
             {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
              'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0}
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
         ]
         # load gia
         # tinh tien
@@ -125,7 +149,19 @@ class RptQtgt:
             {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
              'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
              'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-             {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
              'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
              'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
             {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
@@ -142,11 +178,14 @@ class RptQtgt:
 
     def qtoc_vl(self):
         dl = [
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+            {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
+             'soluong': 0.763, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
              'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+            {'chiphiid': '002', 'mota': 'Đá dăm 4x6', 'dvt': 'm3',
+             'soluong': 15.462, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            {'chiphiid': '002', 'mota': 'Lưỡi cắt bê tông loại 356mm', 'dvt': 'cái',
+             'soluong': 0.076, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
              'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
         ]
         # load gia
@@ -161,7 +200,12 @@ class RptQtgt:
         dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
                'soluong': 0.35, 'gia': 412000},
               {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-               'soluong': 2.4, 'gia': 890000}, ]
+               'soluong': 2.4, 'gia': 890000},
+              {'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
+               'soluong': 0.35, 'gia': 412000},
+              {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+               'soluong': 2.4, 'gia': 890000},
+              ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -176,7 +220,31 @@ class RptQtgt:
              'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
             {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
              'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0}
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
         ]
         # load gia
         # tinh tien
@@ -194,6 +262,24 @@ class RptQtgt:
             {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
              'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
              'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
         ]
         # load gia
         # tinh tien
@@ -205,11 +291,14 @@ class RptQtgt:
 
     def qton_vl(self):
         dl = [
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+            {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
+             'soluong': 0.763, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
              'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 122195, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+            {'chiphiid': '002', 'mota': 'Đá dăm 4x6', 'dvt': 'm3',
+             'soluong': 15.462, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            {'chiphiid': '002', 'mota': 'Lưỡi cắt bê tông loại 356mm', 'dvt': 'cái',
+             'soluong': 0.076, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
              'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
         ]
         # load gia
@@ -224,7 +313,12 @@ class RptQtgt:
         dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
                'soluong': 0.35, 'gia': 412000},
               {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-               'soluong': 2.4, 'gia': 890000}, ]
+               'soluong': 2.4, 'gia': 890000},
+              {'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
+               'soluong': 0.35, 'gia': 412000},
+              {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+               'soluong': 2.4, 'gia': 890000},
+              ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -311,8 +405,8 @@ class RptQtgt:
     def qtgt(self):
         # load tttt
         dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
-              'oczvl': 0, 'ocznc': 0, 'oczmtc': 0, 'ocztl': 0,
-              'onzvl': 4894054, 'onznc': 1596281, 'onzmtc': 61084, 'onztl': 691200,
+              'oczvl': 4894054, 'ocznc': 1596281, 'oczmtc': 61084, 'ocztl': 691200,
+              'onzvl': 4894054, 'onznc': 0, 'onzmtc': 0, 'onztl': 0,
               'ktcpcty': 9277084, 'ktcpkhach': 0}
         if 'tl' in self.maqt.lower():
             self.tieude = 'BẢNG QUYẾT TOÁN TÁI LẬP DANH BỘ'

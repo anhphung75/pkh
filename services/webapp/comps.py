@@ -174,6 +174,42 @@ class RptQtgt_ChiphiTong(web.UIModule):
 
 
 class RptQtgt_Tlmd(web.UIModule):
+    def embedded_javascript(self):
+        __js = '''
+        function hover_in(rowid) {
+            let w=document.getElementsByClassName(rowid);
+            let i=0, suatatca=true;
+            while (suatatca) {
+                try {
+                    w[i].dataset.curcolor = w[i].style.backgroundColor;
+                    w[i].style.backgroundColor = 'yellow';
+                    i++;
+                }
+                catch(err) {
+                    suatatca=false;
+                    break;
+                }
+            }
+        }
+
+        function hover_out(rowid) {
+            let w=document.getElementsByClassName(rowid);
+            let i=0, suatatca=true;
+            while (suatatca) {
+                try {
+                    let curcolor = w[i].dataset.curcolor;
+                    w[i].style.backgroundColor = curcolor;
+                    i++;
+                }
+                catch(err) {
+                    suatatca=false;
+                    break;
+                }
+            }
+        }
+        '''
+        return __js
+
     def embedded_css(self):
         __css = '''
         .tlmd {
@@ -183,33 +219,80 @@ class RptQtgt_Tlmd(web.UIModule):
         '''
         return __css
 
-    def render(self, qt35id=None):
-        # pre data
-        data = {
-            0: {'chiphiid': '001', 'mota': '- Đường/Hẻm BTXM dày 10cm', 'dvt': 'm2', 'sl': 1.75, 'gia': 511000, 'tien': 894250},
-            1: {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-                'sl': 2.4, 'gia': 890000, 'tien': 2136000},
-            3: {'chiphiid': '001', 'mota': '- Đường/Hẻm BTXM dày 10cm', 'dvt': 'm2', 'sl': 1.75, 'gia': 511000, 'tien': 894250},
-            5: {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-                'sl': 2.4, 'gia': 890000, 'tien': 2136000},
-        }
-        # format data
-        for i in data:
-            data[i]['sl'] = locale.format_string('%.3f', data[i]['sl'], True)
-            data[i]['gia'] = locale.format_string('%.0f', data[i]['gia'], True)
-            data[i]['tien'] = locale.format_string(
-                '%.0f', data[i]['tien'], True)
+    def render(self, cptl):
+        # markup cptl
+        for cp in cptl:
+            for k in ['sl_on', 'sl_oc']:
+                if k in cp:
+                    cp['soluong'] = tachhangso(cp[k], 3)
+            for k in ['tien_on', 'tien_oc']:
+                if k in cp:
+                    cp['tien'] = tachhangso(cp[k], 0)
+            cp['gia'] = tachhangso(cp['gia'], 0)
         return self.render_string(
             "reports/qtgt/tlmd.html",
-            cp=data)
+            cptl=cptl)
 
 
 class RptQtgt_Tlmd2(web.UIModule):
-    def render(self, qt35id=None):
-        data = "chuaxong"
+    def embedded_javascript(self):
+        __js = '''
+        function hover_in(rowid) {
+            let w=document.getElementsByClassName(rowid);
+            let i=0, suatatca=true;
+            while (suatatca) {
+                try {
+                    w[i].dataset.curcolor = w[i].style.backgroundColor;
+                    w[i].style.backgroundColor = 'yellow';
+                    i++;
+                }
+                catch(err) {
+                    suatatca=false;
+                    break;
+                }
+            }
+        }
+
+        function hover_out(rowid) {
+            let w=document.getElementsByClassName(rowid);
+            let i=0, suatatca=true;
+            while (suatatca) {
+                try {
+                    let curcolor = w[i].dataset.curcolor;
+                    w[i].style.backgroundColor = curcolor;
+                    i++;
+                }
+                catch(err) {
+                    suatatca=false;
+                    break;
+                }
+            }
+        }
+        '''
+        return __js
+
+    def embedded_css(self):
+        __css = '''
+        .tlmd {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 285fr 50fr 30fr 70fr 70fr 50fr;
+        }
+        '''
+        return __css
+
+    def render(self, cptl):
+        # markup cptl
+        for cp in cptl:
+            for k in ['sl_on', 'sl_oc']:
+                if k in cp:
+                    cp[k] = tachhangso(cp[k], 3)
+            for k in ['tien_on', 'tien_oc']:
+                if k in cp:
+                    cp[k] = tachhangso(cp[k], 0)
+            cp['gia'] = tachhangso(cp['gia'], 0)
         return self.render_string(
             "reports/qtgt/tlmd2.html",
-            cp=data)
+            cptl=cptl)
 
 
 class RptKyduyet2(web.UIModule):
@@ -305,11 +388,11 @@ class RptQtgt_Cpql_20200721(web.UIModule):
         '''
         return __css
 
-    def render(self, maubaocao='on',vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
+    def render(self, maubaocao='on', vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
                thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0,
                cpzvlncmtc=0, cptructiepkhac=0, cptructiep=0, cpchung=0, cpgiantiepkhac=0, cpgiantiep=0,
                cpgiaxaydung=0, cpthutinhtruoc=0, cpxaydungtruocthue=0, cpkhaosatthietke=0, cpgiamsat=0, cptuvan=0, cptongxaydungtruocthue=0, cpthuetongxaydung=0, cptongxaydung=0, cpcongtrinh=0,
-               xaydung=0, tailap=0, congtrinh=0, congtrinhtruocthue=0, thuecongtrinh=0):
+               xaydung=0, tailap=0, congtrinh=0, congtrinhtruocthue=0, thuecongtrinh=0, cptl=[]):
         # markup heso
         chung = f"{tachhangso(chung*100,1)}%"
         giantiepkhac = f"{tachhangso(giantiepkhac*100,1)}%"
@@ -340,14 +423,14 @@ class RptQtgt_Cpql_20200721(web.UIModule):
         congtrinhtruocthue = tachhangso(congtrinhtruocthue, 0)
         thuecongtrinh = tachhangso(thuecongtrinh, 0)
         return self.render_string(
-            "reports/qtgt/cpql-20200721.html",maubaocao=maubaocao,
+            "reports/qtgt/cpql-20200721.html", maubaocao=maubaocao,
             vl=vl, nc=nc, mtc=mtc, tructiepkhac=tructiepkhac, chung=chung, giantiepkhac=giantiepkhac,
             thutinhtruoc=thutinhtruoc, khaosat=khaosat, thietke=thietke, giamsat=giamsat,
             cpzvlncmtc=cpzvlncmtc, cptructiepkhac=cptructiepkhac, cptructiep=cptructiep, cpchung=cpchung, cpgiantiepkhac=cpgiantiepkhac, cpgiantiep=cpgiantiep, cpgiaxaydung=cpgiaxaydung,
             cpthutinhtruoc=cpthutinhtruoc, cpxaydungtruocthue=cpxaydungtruocthue, cpkhaosatthietke=cpkhaosatthietke, cpgiamsat=cpgiamsat, cptuvan=cptuvan, cptongxaydungtruocthue=cptongxaydungtruocthue,
             cpthuetongxaydung=cpthuetongxaydung, cptongxaydung=cptongxaydung, cpcongtrinh=cpcongtrinh,
             xaydung=xaydung, tailap=tailap, congtrinh=congtrinh, congtrinhtruocthue=congtrinhtruocthue,
-            thuecongtrinh=thuecongtrinh)
+            thuecongtrinh=thuecongtrinh, cptl=cptl)
 
 
 class RptQtgt_Cpql2_20200721(web.UIModule):
@@ -359,18 +442,72 @@ class RptQtgt_Cpql2_20200721(web.UIModule):
         '''
         return __css
 
-    def render(self, cpqlid=None, zvl=0, znc=0, zmtc=0, ztl=0):
-        # format data
+    def render(self, maubaocao='o2', vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
+               thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0,
+               oczvlncmtc=0, octructiepkhac=0, octructiep=0, occhung=0, ocgiantiepkhac=0, ocgiantiep=0,
+               ocgiaxaydung=0, octhutinhtruoc=0, ocxaydungtruocthue=0, ockhaosatthietke=0, ocgiamsat=0, octuvan=0, octongxaydungtruocthue=0, octhuetongxaydung=0, octongxaydung=0, occongtrinh=0,
+               onzvlncmtc=0, ontructiepkhac=0, ontructiep=0, onchung=0, ongiantiepkhac=0, ongiantiep=0,
+               ongiaxaydung=0, onthutinhtruoc=0, onxaydungtruocthue=0, onkhaosatthietke=0, ongiamsat=0, ontuvan=0, ontongxaydungtruocthue=0, onthuetongxaydung=0, ontongxaydung=0, oncongtrinh=0,
+               xaydung=0, tailap=0, congtrinh=0, congtrinhtruocthue=0, thuecongtrinh=0, cptl=[]):
+        # markup heso
+        chung = f"{tachhangso(chung*100,1)}%"
+        giantiepkhac = f"{tachhangso(giantiepkhac*100,1)}%"
+        thutinhtruoc = f"{tachhangso(thutinhtruoc*100,1)}%"
+        khaosat = f"{tachhangso(khaosat*100,2)}%"
+        giamsat = f"{tachhangso(giamsat*100,3)}%"
+        thietke = tachhangso(thietke, 1)
+        # markup chiphi
+        oczvlncmtc = tachhangso(oczvlncmtc, 0)
+        octructiepkhac = tachhangso(octructiepkhac, 0)
+        octructiep = tachhangso(octructiep, 0)
+        occhung = tachhangso(occhung, 0)
+        ocgiantiepkhac = tachhangso(ocgiantiepkhac, 0)
+        ocgiantiep = tachhangso(ocgiantiep, 0)
+        ocgiaxaydung = tachhangso(ocgiaxaydung, 0)
+        octhutinhtruoc = tachhangso(octhutinhtruoc, 0)
+        ocxaydungtruocthue = tachhangso(ocxaydungtruocthue, 0)
+        ockhaosatthietke = tachhangso(ockhaosatthietke, 0)
+        ocgiamsat = tachhangso(ocgiamsat, 0)
+        octuvan = tachhangso(octuvan, 0)
+        octongxaydungtruocthue = tachhangso(octongxaydungtruocthue, 0)
+        octhuetongxaydung = tachhangso(octhuetongxaydung, 0)
+        octongxaydung = tachhangso(octongxaydung, 0)
+        occongtrinh = tachhangso(occongtrinh, 0)
+
+        onzvlncmtc = tachhangso(onzvlncmtc, 0)
+        ontructiepkhac = tachhangso(ontructiepkhac, 0)
+        ontructiep = tachhangso(ontructiep, 0)
+        onchung = tachhangso(onchung, 0)
+        ongiantiepkhac = tachhangso(ongiantiepkhac, 0)
+        ongiantiep = tachhangso(ongiantiep, 0)
+        ongiaxaydung = tachhangso(ongiaxaydung, 0)
+        onthutinhtruoc = tachhangso(onthutinhtruoc, 0)
+        onxaydungtruocthue = tachhangso(onxaydungtruocthue, 0)
+        onkhaosatthietke = tachhangso(onkhaosatthietke, 0)
+        ongiamsat = tachhangso(ongiamsat, 0)
+        ontuvan = tachhangso(ontuvan, 0)
+        ontongxaydungtruocthue = tachhangso(ontongxaydungtruocthue, 0)
+        onthuetongxaydung = tachhangso(onthuetongxaydung, 0)
+        ontongxaydung = tachhangso(ontongxaydung, 0)
+        oncongtrinh = tachhangso(oncongtrinh, 0)
+
+        xaydung = tachhangso(xaydung, 0)
+        tailap = tachhangso(tailap, 0)
+        congtrinh = tachhangso(congtrinh, 0)
+        congtrinhtruocthue = tachhangso(congtrinhtruocthue, 0)
+        thuecongtrinh = tachhangso(thuecongtrinh, 0)
         return self.render_string(
-            "reports/qtgt/cpql2-20200721.html",
-            vl, nc, mtc, tructiepkhac, chung, giantiepkhac, thutinhtruoc, khaosat, thietke, giamsat,
-            oczvlncmtc, octructiepkhac, octructiep, occhung, ocgiantiepkhac, ocgiantiep, ocgiaxaydung,
-            octhutinhtruoc, ocxaydungtruocthue, ockhaosatthietke, ocgiamsat, octuvan, octongxaydungtruocthue,
-            octhuetongxaydung, octongxaydung, occongtrinh,
-            onzvlncmtc, ontructiepkhac, ontructiep, onchung, ongiantiepkhac, ongiantiep, ongiaxaydung,
-            onthutinhtruoc, onxaydungtruocthue, onkhaosatthietke, ongiamsat, ontuvan, ontongxaydungtruocthue,
-            onthuetongxaydung, ontongxaydung, oncongtrinh,
-            xaydung, tailap, congtrinh, congtrinhtruocthue, thuecongtrinh, ktcpcty, ktcpkhach)
+            "reports/qtgt/cpql2-20200721.html", maubaocao=maubaocao,
+            vl=vl, nc=nc, mtc=mtc, tructiepkhac=tructiepkhac, chung=chung, giantiepkhac=giantiepkhac,
+            thutinhtruoc=thutinhtruoc, khaosat=khaosat, thietke=thietke, giamsat=giamsat,
+            oczvlncmtc=oczvlncmtc, octructiepkhac=octructiepkhac, octructiep=octructiep, occhung=occhung, ocgiantiepkhac=ocgiantiepkhac, ocgiantiep=ocgiantiep, ocgiaxaydung=ocgiaxaydung,
+            octhutinhtruoc=octhutinhtruoc, ocxaydungtruocthue=ocxaydungtruocthue, ockhaosatthietke=ockhaosatthietke, ocgiamsat=ocgiamsat, octuvan=octuvan, octongxaydungtruocthue=octongxaydungtruocthue,
+            octhuetongxaydung=octhuetongxaydung, octongxaydung=octongxaydung, occongtrinh=occongtrinh,
+            onzvlncmtc=onzvlncmtc, ontructiepkhac=ontructiepkhac, ontructiep=ontructiep, onchung=onchung, ongiantiepkhac=ongiantiepkhac, ongiantiep=ongiantiep, ongiaxaydung=ongiaxaydung,
+            onthutinhtruoc=onthutinhtruoc, onxaydungtruocthue=onxaydungtruocthue, onkhaosatthietke=onkhaosatthietke, ongiamsat=ongiamsat, ontuvan=ontuvan, ontongxaydungtruocthue=ontongxaydungtruocthue,
+            onthuetongxaydung=onthuetongxaydung, ontongxaydung=ontongxaydung, oncongtrinh=oncongtrinh,
+            xaydung=xaydung, tailap=tailap, congtrinh=congtrinh, congtrinhtruocthue=congtrinhtruocthue,
+            thuecongtrinh=thuecongtrinh, cptl=cptl)
 
 
 class RptQtgt_Cpql_20200905(web.UIModule):

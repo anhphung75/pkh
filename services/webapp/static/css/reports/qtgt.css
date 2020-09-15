@@ -14,14 +14,11 @@ main {
   flex-direction: column;
 }
 
-
 .ong-cai {
   flex: 1 1 0%;
   display: flex;
   flex-direction: column;
 }
-
-
 
 .cpql {
   grid: auto-flow minmax(1rem, max-content) / 335fr 100fr 70fr 50fr;
@@ -29,4 +26,16 @@ main {
 
 .cpql2 {
   grid: auto-flow minmax(1rem, max-content) / 335fr 100fr 70fr 50fr;
+}
+
+@media print {
+  *, *:before, *:after {
+    box-sizing: border-box;
+    background-color: transparent;
+    color: black;
+  }
+  html, body {
+    font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
+    font-size: 8pt;
+  }
 }

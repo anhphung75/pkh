@@ -2,6 +2,7 @@
 *, *:before, *:after {
   box-sizing: border-box;
   background-color: transparent;
+  color: black;
 }
 
 @import url('./font_Opensans.css');
@@ -91,6 +92,18 @@ html, body {
 
 .f6 {
   font-size: calc( 1rem + 6pt);
+}
+
+/* chieu cao */
+
+.c3 {
+  height: calc( 1rem + 3pt);
+  padding-top: 2pt;
+}
+
+.c6 {
+  height: calc( 1rem + 6pt);
+  padding-top: 3pt;
 }
 
 /* word break */
@@ -214,6 +227,11 @@ html, body {
 }
 
 @media print {
+  *, *:before, *:after {
+    box-sizing: border-box;
+    background-color: transparent;
+    color: black;
+  }
   html, body {
     font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
     font-size: 8pt;
