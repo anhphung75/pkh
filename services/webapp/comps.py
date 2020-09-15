@@ -157,19 +157,20 @@ class RptQtgt_ChiphiDandong(web.UIModule):
         '''
         return __css
 
-    def render(self):
+    def render(self, keday=False):
         return self.render_string(
-            "reports/qtgt/chiphi-dandong.html")
+            "reports/qtgt/chiphi-dandong.html",
+            keday=keday)
 
 
 class RptQtgt_ChiphiTong(web.UIModule):
-    def render(self, vl=0, nc=0, mtc=0):
-        vl = locale.format_string('%.0f', vl, True)
-        nc = locale.format_string('%.0f', nc, True)
-        mtc = locale.format_string('%.0f', mtc, True)
+    def render(self, zvl=0, znc=0, zmtc=0):
+        zvl = tachhangso(zvl, 0)
+        znc = tachhangso(znc, 0)
+        zmtc = tachhangso(zmtc, 0)
         return self.render_string(
             "reports/qtgt/chiphi-tong.html",
-            vl=vl, nc=nc, mtc=mtc)
+            zvl=zvl, znc=znc, zmtc=zmtc)
 
 
 class RptQtgt_Tlmd(web.UIModule):

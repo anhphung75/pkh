@@ -93,6 +93,12 @@ html, body {
   font-size: calc( 1rem + 6pt);
 }
 
+/* word break */
+
+.wb {
+  word-break: break-all;
+}
+
 /* border */
 
 .b0 {
