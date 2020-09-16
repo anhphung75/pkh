@@ -89,7 +89,7 @@ class WebApp(web.Application):
                 "RptQtgt_Cpql2_20200905": comps.RptQtgt_Cpql2_20200905,
                 "RptQtgt_Tlmd": comps.RptQtgt_Tlmd,
                 "RptQtgt_Tlmd2": comps.RptQtgt_Tlmd2,
-                "RptQtgt_Kettoan":comps.RptQtgt_Kettoan,
+                "RptQtgt_Kettoan": comps.RptQtgt_Kettoan,
                 "RptKyduyet2": comps.RptKyduyet2,
                 "RptKyduyet3": comps.RptKyduyet3,
                 "RptQtgt_Footer": comps.RptQtgt_Footer,

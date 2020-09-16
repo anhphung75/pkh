@@ -1,11 +1,7 @@
-.quochuy {
-  width: 100%;
-  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
-}
-
-.tieudeqtgt {
-  width: 100%;
-  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content, 20pt);
+html, body {
+  /* "Open Sans Condensed", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", "Open Sans", sans-serif */
+  font-family: "Open Sans";
+  font-size: 8pt;
 }
 
 main {
@@ -14,18 +10,16 @@ main {
   flex-direction: column;
 }
 
-.ong-cai {
+.trangin {
+  margin-left: 20pt;
+  margin-right: 20pt;
+  margin-top: 20pt;
+  margin-bottom: 20pt;
+  line-height: 1.05;
   flex: 1 1 0%;
   display: flex;
   flex-direction: column;
-}
-
-.cpql {
-  grid: auto-flow minmax(1rem, max-content) / 335fr 100fr 70fr 50fr;
-}
-
-.cpql2 {
-  grid: auto-flow minmax(1rem, max-content) / 335fr 100fr 70fr 50fr;
+  background: white;
 }
 
 @media print {
@@ -33,9 +27,5 @@ main {
     box-sizing: border-box;
     background-color: transparent;
     color: black;
-  }
-  html, body {
-    font-family: "Open Sans Condensed", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", "Open Sans", sans-serif;
-    font-size: 8pt;
   }
 }
