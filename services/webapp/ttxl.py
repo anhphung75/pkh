@@ -102,10 +102,10 @@ class RptQtgt:
 
     def qtoc_xd(self):
         dl = [
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+            {'chiphiid': '001', 'mota': '- Chi phí ống cái', 'dvt': 'mét',
              'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
              'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+            {'chiphiid': '002', 'mota': '- Chi phí ống cái', 'dvt': 'm3',
              'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
              'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
             {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
@@ -215,10 +215,10 @@ class RptQtgt:
 
     def qton_xd(self):
         dl = [
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+            {'chiphiid': '001', 'mota': '- Chi phí ống ngánh', 'dvt': 'mét',
              'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
              'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+            {'chiphiid': '002', 'mota': '- Chi phí ống ngánh', 'dvt': 'm3',
              'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
              'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
             {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
@@ -406,8 +406,8 @@ class RptQtgt:
         # load tttt
         dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
               'oczvl': 4894054, 'ocznc': 1596281, 'oczmtc': 61084, 'ocztl': 691200,
-              'onzvl': 4894054, 'onznc': 0, 'onzmtc': 0, 'onztl': 0,
-              'ktcpcty': 9277084, 'ktcpkhach': 0}
+              'onzvl': 0, 'onznc': 0, 'onzmtc': 0, 'onztl': 0,
+              'ktcpcty': 9999277584, 'ktcpkhach': 9199277584}
         if 'tl' in self.maqt.lower():
             self.tieude = 'BẢNG QUYẾT TOÁN TÁI LẬP DANH BỘ'
         else:

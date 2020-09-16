@@ -108,6 +108,10 @@ html, body {
 
 /* word break */
 
+.w100 {
+  width: 100%;
+}
+
 .wb {
   word-break: break-all;
 }

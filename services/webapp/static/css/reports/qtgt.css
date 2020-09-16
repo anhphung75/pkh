@@ -35,7 +35,7 @@ main {
     color: black;
   }
   html, body {
-    font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
+    font-family: "Open Sans Condensed", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", "Open Sans", sans-serif;
     font-size: 8pt;
   }
 }

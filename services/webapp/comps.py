@@ -1,5 +1,5 @@
 import tornado.web as web
-from utils import Tien, tachhangso
+from utils import Tien, tachhangso, lamtronso
 
 
 class RptQtgt_Quochuy(web.UIModule):
@@ -295,6 +295,47 @@ class RptQtgt_Tlmd2(web.UIModule):
             cptl=cptl)
 
 
+class RptQtgt_Kettoan(web.UIModule):
+    def embedded_css(self):
+        __css = '''
+        .kettoanso {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 255fr 100fr 100fr 100fr;
+        }
+        .kettoan1 {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 134fr 63fr 40fr 318fr;
+        }
+        .kettoan2 {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content) / 150fr 405fr;
+        }
+        '''
+        return __css
+
+    def render(self, ktcpcty=0, ktcpkhach=0):
+        # tinh them cho ke toan
+        cpctytruocthue = lamtronso(ktcpcty*100/110, 0)
+        thuecpcty = ktcpcty-cpctytruocthue
+        cpkhachtruocthue = lamtronso(ktcpkhach*100/110, 0)
+        thuecpkhach = ktcpkhach-cpkhachtruocthue
+        # format so:
+        m = Tien(ktcpcty)
+        cpctyso = m.so()
+        cpctychu = m.chu()
+        cpctytruocthue = tachhangso(cpctytruocthue, 0)
+        thuecpcty = tachhangso(thuecpcty, 0)
+        m = Tien(ktcpkhach)
+        cpkhachso = m.so()
+        cpkhachchu = m.chu()
+        cpkhachtruocthue = tachhangso(cpkhachtruocthue, 0)
+        thuecpkhach = tachhangso(thuecpkhach, 0)
+        return self.render_string(
+            "reports/qtgt/kettoan.html",
+            ktcpcty=ktcpcty, cpctyso=cpctyso, cpctychu=cpctychu, cpctytruocthue=cpctytruocthue, thuecpcty=thuecpcty,
+            ktcpkhach=ktcpkhach, cpkhachso=cpkhachso, cpkhachchu=cpkhachchu, cpkhachtruocthue=cpkhachtruocthue, thuecpkhach=thuecpkhach)
+
+
 class RptKyduyet2(web.UIModule):
     def embedded_css(self):
         __css = '''
@@ -329,24 +370,15 @@ class RptKyduyet2(web.UIModule):
 class RptKyduyet3(web.UIModule):
     def embedded_css(self):
         __css = '''
-        .duyet {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 140fr 55fr 360fr;
-        }
-        .chuky {
+        .chuky3 {
             width: 100%;
             grid: auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr;
         }
         '''
         return __css
 
-    def render(self, dvtcid=None, congty=20807178001, khach=10):
-        # format so:
-        a = Tien(congty)
-        congty = {'so': a.so(), 'chu': a.chu()}
-        a = Tien(khach)
-        khach = {'so': a.so(), 'chu': a.chu()}
-
+    def render(self, dvtc='', ktcpcty=0, ktcpkhach=0):
+        # markup dulieu
         duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
                  'nhanvien': 'Nguyễn Công Minh'}
         kiemtra = {'pbd': 'KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
@@ -355,8 +387,8 @@ class RptKyduyet3(web.UIModule):
                'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
         return self.render_string(
             "reports/qtgt/kyduyet3.html",
-            congty=congty, khach=khach,
-            duyet=duyet, kiemtra=kiemtra, lap=lap)
+            duyet=duyet, kiemtra=kiemtra, lap=lap,
+            ktcpcty=ktcpcty, ktcpkhach=ktcpkhach)
 
 
 class RptQtgt_Footer(web.UIModule):

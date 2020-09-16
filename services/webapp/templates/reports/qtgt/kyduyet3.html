@@ -1,16 +1,5 @@
-<div class="grid duyet">
-  {% if '-' not in congty['so'] %}
-  <div class="l">Kết toán chi phí gắn ĐHN miễn phí: </div>
-  <div class="l fb">{{congty['so']}}</div>
-  <div class="l">({{congty['chu']}})</div>
-  {% end %}
-  {% if '-' not in khach['so'] %}
-  <div class="l">Kết toán chi phí khách hàng đầu tư: </div>
-  <div class="l fb">{{khach['so']}}</div>
-  <div class="l">({{khach['chu']}})</div>
-  {% end %}
-</div>
-<div class="grid chuky" style="margin-top:6pt">
+{% module RptQtgt_Kettoan(ktcpcty, ktcpkhach) %}
+<div class="grid chuky3" style="margin-top:6pt">
   <div class="c u fb f2">DUYỆT</div>
   <div class="c u fb f2">KIỂM TRA</div>
   <div class="c u fb f2">THÀNH LẬP</div>
