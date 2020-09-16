@@ -1,6 +1,8 @@
+import tornado
 import tornado.web as web
 from utils import Tien, tachhangso, lamtronso
 
+tornado.locale.set_default_locale("vi_VI")
 
 class RptQtgt_Quochuy(web.UIModule):
     def embedded_javascript(self):
@@ -223,21 +225,21 @@ class RptQtgt_Tlmd2(web.UIModule):
         __css = '''
         .tlmd2 {
             width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 285fr 50fr 30fr 70fr 70fr 50fr;
+            grid: auto-flow minmax(1rem, max-content) / 245fr 40fr 40fr 40fr 70fr 70fr 50fr;
         }
         '''
         return __css
 
     def render(self, cptl):
         # markup cptl
+        print(f"RptQtgt_Tlmd2 cptl={cptl}")
         for cp in cptl:
             for k in ['sl_on', 'sl_oc']:
                 if k in cp:
                     cp[k] = tachhangso(cp[k], 3)
-            for k in ['tien_on', 'tien_oc']:
+            for k in ['gia', 'tien_on', 'tien_oc']:
                 if k in cp:
                     cp[k] = tachhangso(cp[k], 0)
-            cp['gia'] = tachhangso(cp['gia'], 0)
         return self.render_string(
             "reports/qtgt/tlmd2.html",
             cptl=cptl)
@@ -407,7 +409,7 @@ class RptQtgt_Cpql2_20200721(web.UIModule):
     def embedded_css(self):
         __css = '''
         .cpql2 {
-            grid: auto-flow minmax(1rem, max-content) / 335fr 100fr 70fr 50fr;
+            grid: auto-flow minmax(1rem, max-content) / 285fr 80fr 70fr 70fr 50fr;
         }
         '''
         return __css
@@ -415,9 +417,9 @@ class RptQtgt_Cpql2_20200721(web.UIModule):
     def render(self, maubaocao='o2', vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
                thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0,
                oczvlncmtc=0, octructiepkhac=0, octructiep=0, occhung=0, ocgiantiepkhac=0, ocgiantiep=0,
-               ocgiaxaydung=0, octhutinhtruoc=0, ocxaydungtruocthue=0, ockhaosatthietke=0, ocgiamsat=0, octuvan=0, octongxaydungtruocthue=0, octhuetongxaydung=0, octongxaydung=0, occongtrinh=0,
+               ocgiaxaydung=0, octhutinhtruoc=0, ocxaydungtruocthue=0, ockhaosatthietke=0, ocgiamsat=0, octuvan=0, octongxaydungtruocthue=0, octhuetongxaydung=0, octongxaydung=0, ocztl=0, occongtrinh=0,
                onzvlncmtc=0, ontructiepkhac=0, ontructiep=0, onchung=0, ongiantiepkhac=0, ongiantiep=0,
-               ongiaxaydung=0, onthutinhtruoc=0, onxaydungtruocthue=0, onkhaosatthietke=0, ongiamsat=0, ontuvan=0, ontongxaydungtruocthue=0, onthuetongxaydung=0, ontongxaydung=0, oncongtrinh=0,
+               ongiaxaydung=0, onthutinhtruoc=0, onxaydungtruocthue=0, onkhaosatthietke=0, ongiamsat=0, ontuvan=0, ontongxaydungtruocthue=0, onthuetongxaydung=0, ontongxaydung=0, onztl=0, oncongtrinh=0,
                xaydung=0, tailap=0, congtrinh=0, congtrinhtruocthue=0, thuecongtrinh=0, cptl=[]):
         # markup heso
         chung = f"{tachhangso(chung*100,1)}%"
@@ -443,7 +445,7 @@ class RptQtgt_Cpql2_20200721(web.UIModule):
         octhuetongxaydung = tachhangso(octhuetongxaydung, 0)
         octongxaydung = tachhangso(octongxaydung, 0)
         occongtrinh = tachhangso(occongtrinh, 0)
-
+        ocztl = tachhangso(ocztl, 0)
         onzvlncmtc = tachhangso(onzvlncmtc, 0)
         ontructiepkhac = tachhangso(ontructiepkhac, 0)
         ontructiep = tachhangso(ontructiep, 0)
@@ -460,7 +462,7 @@ class RptQtgt_Cpql2_20200721(web.UIModule):
         onthuetongxaydung = tachhangso(onthuetongxaydung, 0)
         ontongxaydung = tachhangso(ontongxaydung, 0)
         oncongtrinh = tachhangso(oncongtrinh, 0)
-
+        onztl = tachhangso(onztl, 0)
         xaydung = tachhangso(xaydung, 0)
         tailap = tachhangso(tailap, 0)
         congtrinh = tachhangso(congtrinh, 0)
@@ -472,10 +474,11 @@ class RptQtgt_Cpql2_20200721(web.UIModule):
             thutinhtruoc=thutinhtruoc, khaosat=khaosat, thietke=thietke, giamsat=giamsat,
             oczvlncmtc=oczvlncmtc, octructiepkhac=octructiepkhac, octructiep=octructiep, occhung=occhung, ocgiantiepkhac=ocgiantiepkhac, ocgiantiep=ocgiantiep, ocgiaxaydung=ocgiaxaydung,
             octhutinhtruoc=octhutinhtruoc, ocxaydungtruocthue=ocxaydungtruocthue, ockhaosatthietke=ockhaosatthietke, ocgiamsat=ocgiamsat, octuvan=octuvan, octongxaydungtruocthue=octongxaydungtruocthue,
-            octhuetongxaydung=octhuetongxaydung, octongxaydung=octongxaydung, occongtrinh=occongtrinh,
+            octhuetongxaydung=octhuetongxaydung, octongxaydung=octongxaydung, ocztl=ocztl, occongtrinh=occongtrinh,
             onzvlncmtc=onzvlncmtc, ontructiepkhac=ontructiepkhac, ontructiep=ontructiep, onchung=onchung, ongiantiepkhac=ongiantiepkhac, ongiantiep=ongiantiep, ongiaxaydung=ongiaxaydung,
             onthutinhtruoc=onthutinhtruoc, onxaydungtruocthue=onxaydungtruocthue, onkhaosatthietke=onkhaosatthietke, ongiamsat=ongiamsat, ontuvan=ontuvan, ontongxaydungtruocthue=ontongxaydungtruocthue,
-            onthuetongxaydung=onthuetongxaydung, ontongxaydung=ontongxaydung, oncongtrinh=oncongtrinh,
+            onthuetongxaydung=onthuetongxaydung, ontongxaydung=ontongxaydung,
+            onztl=onztl, oncongtrinh=oncongtrinh,
             xaydung=xaydung, tailap=tailap, congtrinh=congtrinh, congtrinhtruocthue=congtrinhtruocthue,
             thuecongtrinh=thuecongtrinh, cptl=cptl)
 

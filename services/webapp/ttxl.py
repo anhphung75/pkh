@@ -60,10 +60,10 @@ class RptQtgt:
         self.load_qtgt()
 
     def load_qtgt(self):
-        self.tttt()
+        self.get_tttt()
         self.hoso()
         self.dot()
-        self.khachhang()
+        self.get_khachhang()
         self.donvithicong()
         self.qtoc_xd()
         self.qtoc_vt()
@@ -73,10 +73,12 @@ class RptQtgt:
         self.qton_vt()
         self.qton_vl()
         self.qton_tl()
+        self.tlmd()
+        print(f"ttxl cptl={self.cptl}")
         self.qtgt()
         self.chiphiquanly()
 
-    def tttt(self):
+    def get_tttt(self):
         dl = {"maqt": "pkh002", "madot": "2020gmmp242", "mahoso": "113344",
               "makhachhang": "2020kh001", "madvtc": "qlmltd"}
         self.tttt = dl
@@ -92,7 +94,7 @@ class RptQtgt:
         dl = {'sodot': '999/2020MP', }
         self.sodot = dl['sodot']
 
-    def khachhang(self):
+    def get_khachhang(self):
         dl = {'khachhang': 'Nguyễn Lan Chi', }
         self.khachhang = dl['khachhang']
 
@@ -326,6 +328,30 @@ class RptQtgt:
             cp['tien_on'] = lamtronso(cp['soluong'] * cp['gia'], 0)
         self.on_cptl = dl.copy()
 
+    def tlmd(self):
+        dl = {}
+        for cp in self.oc_cptl:
+            k = cp['chiphiid']
+            rec = {'chiphiid': k, 'machiphi': '', 'mota': '', 'dvt': '',
+                   'sl_oc': 0, 'sl_on': 0, 'gia': 0, 'tien_oc': 0, 'tien_on': 0}
+            for _k in cp:
+                rec[_k] = cp[_k]
+            dl[k] = rec
+        for cp in self.on_cptl:
+            k = cp['chiphiid']
+            rec = {'chiphiid': k, 'machiphi': '', 'mota': '', 'dvt': '',
+                   'sl_oc': 0, 'sl_on': 0, 'gia': 0, 'tien_oc': 0, 'tien_on': 0}
+            for _k in cp:
+                rec[_k] = cp[_k]
+            dl[k] = rec
+        # convert to list
+        tam = []
+        for cp in dl:
+            rec = dl[cp]
+            if (rec['sl_oc']+rec['sl_on']) > 0:
+                tam.append(rec)
+        self.cptl = tam.copy()
+
     def chiphiquanly(self):
         dl = {"hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.055, "tructiepkhac": 0, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
               "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566}
@@ -405,8 +431,8 @@ class RptQtgt:
     def qtgt(self):
         # load tttt
         dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
-              'oczvl': 0, 'ocznc': 0, 'oczmtc': 0, 'ocztl': 0,
-              'onzvl': 88889998888, 'onznc': 8888998888, 'onzmtc': 8888998888, 'onztl': 691200,
+              'oczvl': 88889998888, 'ocznc': 8888998888, 'oczmtc': 8888998888, 'ocztl': 691200,
+              'onzvl': 0, 'onznc': 0, 'onzmtc': 0, 'onztl': 0,
               'ktcpcty': 9999277584, 'ktcpkhach': 0}
         if 'tl' in self.maqt.lower():
             self.tieude = 'BẢNG QUYẾT TOÁN TÁI LẬP DANH BỘ'

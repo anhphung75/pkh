@@ -67,7 +67,7 @@ class Tien():
             return f""
         else:
             try:
-                locale.setlocale(locale.LC_ALL, 'vi_VI')
+                #locale.setlocale(locale.LC_ALL, 'vi_VI')
                 somoi = locale.format_string(
                     f'%.0f', self.sotien, True, kyhieu)
             except:
@@ -159,9 +159,9 @@ def tachhangso(sothapphan=0, phanle=3):
     elif sothapphan == 0:
         return f""
     else:
-        try:
-            locale.setlocale(locale.LC_ALL, 'vi_VI')
-            somoi = locale.format_string(f'%.{phanle}f', sothapphan, True)
-        except:
-            return f""
+        #try:
+        #locale.setlocale(locale.LC_ALL, 'vi_VI')
+        somoi = locale.format_string(f'%.{phanle}f', sothapphan, True)
+        #except:
+        #    return f""
         return somoi
