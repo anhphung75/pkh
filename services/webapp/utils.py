@@ -149,7 +149,7 @@ class Tien():
         return kq
 
 
-def lamtronso(sothapphan=0, phanle=2):
+def lamtronso(sothapphan=0, phanle=3):
     from decimal import Decimal
     try:
         somoi = float(round(Decimal(sothapphan), phanle))
