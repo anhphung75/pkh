@@ -1,8 +1,13 @@
 import datetime
-import locale
 
 
 class Thoigian():
+    def __init__(self, vdate=None):
+        try:
+            self.vdate = int(vdate)
+        except:
+            self.vdate = None
+
     def stodate(self, sdate):
         if type(sdate) in (datetime, datetime.datetime, datetime.time):
             return sdate.date()
@@ -60,19 +65,19 @@ class Tien():
         except:
             self.sotien = None
 
-    def so(self, kyhieu=False):
+    def so(self, kyhieu=''):
         if self.sotien == None:
             return f""
         if self.sotien == 0:
             return f""
         else:
-            try:
-                #locale.setlocale(locale.LC_ALL, 'vi_VI')
-                somoi = locale.format_string(
-                    f'%.0f', self.sotien, True, kyhieu)
-            except:
-                return f""
-            return somoi
+            s = f"{self.sotien}"
+            hang = []
+            while len(s) > 2:
+                hang.append(s[-3:])
+                s = s[:-3]
+            somoi = f"{'.'.join(reversed(hang))} {kyhieu}"
+            return somoi.strip()
 
     def chu(self):
         if self.sotien == None:
@@ -159,9 +164,19 @@ def tachhangso(sothapphan=0, phanle=3):
     elif sothapphan == 0:
         return f""
     else:
-        #try:
-        #locale.setlocale(locale.LC_ALL, 'vi_VI')
-        somoi = locale.format_string(f'%.{phanle}f', sothapphan, True)
-        #except:
-        #    return f""
-        return somoi
+        s = f"{sothapphan:12f}"
+        dauthapphan = ','
+        for d in ['.', ',']:
+            if s.count(d) == 1:
+                dauthapphan = d
+        v = s.find(dauthapphan)
+        songuyen = s[:v]
+        sole = s[v+1:][:phanle]
+        hang = []
+        while len(songuyen) > 2:
+            hang.append(songuyen[-3:])
+            songuyen = songuyen[:-3]
+        if phanle == 0:
+            return f"{'.'.join(reversed(hang))}"
+        else:
+            return f"{'.'.join(reversed(hang))},{sole}"

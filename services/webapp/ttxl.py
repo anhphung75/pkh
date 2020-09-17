@@ -431,8 +431,8 @@ class RptQtgt:
     def qtgt(self):
         # load tttt
         dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
-              'oczvl': 88889998888, 'ocznc': 8888998888, 'oczmtc': 8888998888, 'ocztl': 691200,
-              'onzvl': 0, 'onznc': 0, 'onzmtc': 0, 'onztl': 0,
+              'oczvl': 0, 'ocznc': 0, 'oczmtc': 0, 'ocztl': 0,
+              'onzvl': 88889998888, 'onznc': 8888998888, 'onzmtc': 0, 'onztl': 0,
               'ktcpcty': 9999277584, 'ktcpkhach': 0}
         if 'tl' in self.maqt.lower():
             self.tieude = 'BẢNG QUYẾT TOÁN TÁI LẬP DANH BỘ'

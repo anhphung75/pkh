@@ -225,7 +225,7 @@ class RptQtgt_Tlmd2(web.UIModule):
         __css = '''
         .tlmd2 {
             width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 245fr 40fr 40fr 40fr 70fr 70fr 50fr;
+            grid: auto-flow minmax(1rem, max-content) / 215fr 50fr 50fr 50fr 70fr 70fr 50fr;
         }
         '''
         return __css
