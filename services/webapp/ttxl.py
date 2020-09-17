@@ -450,3 +450,132 @@ class RptQtgt:
         self.ktcpcty = dl['ktcpcty']
         self.ktcpkhach = dl['ktcpkhach']
         self.mabaogia = dl['mabaogia']
+
+
+class Phui_20200721:
+    def __init__(self, phui):
+        # phui=[{macptl,dai,rong,sau}]
+        for cp in phui:
+            if not cp['dai']:
+                cp['dai'] = 0
+            if not cp['rong']:
+                cp['rong'] = 0
+            if not cp['sau']:
+                cp['sau'] = 0
+            cp['dientich'] = cp['dai']*cp['rong']
+            cp['chuvi'] = (cp['dai']+cp['rong'])*2
+            cp['thetich'] = cp['dai']*cp['rong']*cp['sau']
+        self.phui = phui
+        self.tinhphui()
+
+    def tinhphui(self):
+        self.tinh_cat_matnhua_btxm_gach()
+        self.tinh_dao_phui_dat_cap2_thucong()
+        self.tinh_vanchuyen_dat_cap2_thucong()
+        self.tinh_catlot()
+        self.tinh_dao_phui_dat_cap3_thucong()
+        self.tinh_dao_boc_mat_nhua()
+        self.tinh_dao_boc_btxm()
+        self.tinh_dao_boc_gach_vua()
+
+    def tinh_cat_matnhua_btxm_gach(self):
+        kl = 0
+        for cp in self.phui:
+            kl += cp['chuvi']
+        self.cat_matnhua_btxm_gach = lamtronso(kl, 3)
+
+    def tinh_dao_phui_dat_cap2_thucong(self):
+        kl = 0
+        for cp in self.phui:
+            if cp['macptl'] in ['nhua_155mm']:
+                heso = cp['sau'] - 0.67
+            elif cp['macptl'] in ['nhua_120mm']:
+                heso = cp['sau'] - 0.52
+            elif cp['macptl'] in ['nhua_100mm']:
+                heso = cp['sau'] - 0.37
+            elif cp['macptl'] in ['duong_daxanh', 'duong_datda', 'le_datda', 'le_datthuong']:
+                heso = cp['sau'] - 0.35
+            elif cp['macptl'] in ['duong_btxm', 'hem_btxm', 'le_gachbeton_tuchen', 'le_dache']:
+                heso = cp['sau'] - 0.3
+            elif cp['macptl'] in ['le_daxe']:
+                heso = cp['sau'] - 0.245
+            elif cp['macptl'] in ['le_btxm']:
+                heso = cp['sau'] - 0.2
+            elif cp['macptl'] in ['le_gachterrazzo', 'le_dagranit']:
+                heso = cp['sau'] - 0.195
+            elif cp['macptl'] in ['le_gachconsau', 'le_gachhinhsin']:
+                heso = cp['sau'] - 0.1
+            else:
+                heso = 0
+            kl += cp['dientich'] * heso
+        self.dao_phui_dat_cap2_thucong = lamtronso(kl, 3)
+
+    def tinh_vanchuyen_dat_cap2_thucong(self):
+        kl = self.dao_phui_dat_cap2_thucong
+        self.vanchuyen_dat_cap2_thucong = lamtronso(kl, 3)
+
+    def tinh_catlot(self):
+        kl = self.vanchuyen_dat_cap2_thucong
+        heso = 1.22
+        self.catlot = lamtronso(kl*heso, 3)
+
+    def tinh_dao_phui_dat_cap3_thucong(self):
+        kl = 0
+        for cp in self.phui:
+            if cp['macptl'] in ['nhua_155mm']:
+                heso = 0.55
+            elif cp['macptl'] in ['nhua_120mm']:
+                heso = 0.4
+            elif cp['macptl'] in ['duong_daxanh', 'duong_datda', 'le_datda', 'le_datthuong']:
+                heso = 0.35
+            elif cp['macptl'] in ['nhua_100mm']:
+                heso = 0.25
+            elif cp['macptl'] in ['duong_btxm', 'hem_btxm']:
+                heso = 0.20
+            else:
+                heso = 0.1
+            kl += cp['dientich'] * heso
+        self.dao_phui_dat_cap3_thucong = lamtronso(kl, 3)
+
+    def tinh_dao_boc_mat_nhua(self):
+        kl = 0
+        for cp in self.phui:
+            if cp['macptl'] in ['nhua_155mm', 'nhua_120mm', 'nhua_100mm']:
+                heso = 0.12
+            else:
+                heso = 0
+            kl += cp['dientich'] * heso
+        self.dao_boc_mat_nhua = lamtronso(kl, 3)
+
+    def tinh_dao_boc_btxm(self):
+        kl = 0
+        for cp in self.phui:
+            if cp['macptl'] in ['le_btxm', 'hem_btxm', 'duong_btxm']:
+                heso = 0.1
+            else:
+                heso = 0
+            kl += cp['dientich'] * heso
+        self.dao_boc_btxm = lamtronso(kl, 3)
+
+    def tinh_dao_boc_gach_vua(self):
+        kl = 0
+        for cp in self.phui:
+            if cp['macptl'] in ['le_dagranit']:
+                heso = 0.03 + 0.015
+            else:
+                heso = 0
+            kl += cp['dientich'] * heso
+        self.dao_boc_gach_vua = lamtronso(kl, 3)
+
+    def tinh_vanchuyen_dat_cap3_thucong(self):
+        kl = self.dao_phui_dat_cap3_thucong
+        kl += self.dao_boc_mat_nhua
+        kl += self.dao_boc_btxm
+        kl += self.dao_boc_gach_vua
+        self.vanchuyen_dat_cap3_thucong = lamtronso(kl, 3)
+
+
+# test
+phui = [{'macptl': 'le_dagranit', 'dai': 1, 'rong': 0.5, 'sau': 1}]
+kq = Phui_20200721(phui)
+print(vars(kq))
