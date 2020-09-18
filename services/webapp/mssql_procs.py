@@ -10,7 +10,63 @@ from ttdl import Maychu
 db = Maychu("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
 db.show_views()
 
+#function
+def tinhlai_dotqt(schema="web"):
+    # init prog
+    sql = (f"CREATE PROC {schema}.tinhlai_dotqt AS ")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"CREATE FUNCTION dbo.lamtronso(@Socanlamtron decimal(38,9), @Sole int=0)"
+        f" Returns decimal(38,9) AS BEGIN"
+        f" Declare @Sosanh decimal(38,0)=0.0, @Them decimal(38,9)=0.0, @Kq decimal(38,9)=0,"
+        f" @Socat0 decimal(38,9)=0.0, @Socat1 decimal(38,9)=0.0;"
+        f" If @Sole<0 or @Sole>8 RETURN @Socanlamtron;"
 
+        )
+
+
+
+
+    sql += (
+        f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH"
+        f" CLOSE mCursor; DEALLOCATE mCursor; END;")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+
+
+'''
+CREATE FUNCTION dbo.lamtronso(@Socanlamtron decimal(38,9), @Sole int=0)
+Returns decimal(38,9)
+AS
+BEGIN
+	Declare @Sosanh decimal(38,0)=0.0, @Them decimal(38,9)=0.0, @Kq decimal(38,9)=0, @Socat decimal(38,9)=0.0, @Socatdu decimal(38,9)=0.0;
+	If @Sole<0 or @Sole>8
+		SET @Sodalamtron=@Socanlamtron;
+	Else
+		Begin
+			---Cut với số thập phân =sole+1
+			SET @Socatdu=round(@Socanlamtron,@Sole+1,1);
+			SET @Socat=round(@Socanlamtron,@Sole,1);
+			---phan chenh lech dua ve so nguyen
+			SET @Sososanh=(@Socatdu-@Socat)*power(10,@Sole+1);
+			SET @Socongthem= 1.0/power(10,@Sole);
+			---So sanh bieu thuc
+			IF @Sososanh>=5.0
+				SET @Sodalamtron=@Socat +@Socongthem
+			ELSE
+				SET @Sodalamtron=@Socat;
+		End
+	Return @Sodalamtron
+END
+GO
+'''
+#proc
 def creat_tinh_tamqt3x(schema="web", qt3x=1):
     # init prog
     if qt3x not in [1, 2, 3, 4]:
@@ -302,13 +358,50 @@ def tinh_tamqt(schema="web"):
         f" Where tinhtrang='Moi' AND phanloai='Ong'),0),"
         # tong hop cat
         f" slcat= Isnull((Select sum(sl) From {schema}.tamthqt01"
-        f" Where tinhtrang='Moi' AND phanloai='Cat'),0),"
+        f" Where tinhtrang='Moi' AND phanloai='Cat20200721'),0),"
         f" tiencat= Isnull((Select sum(vl) From {schema}.tamthqt01"
-        f" Where tinhtrang='Moi' AND phanloai='Cat'),0);")
+        f" Where tinhtrang='Moi' AND phanloai='Cat20200721'),0);")
     sql += (
         f" If @Baogiaid>0 Update {schema}.tamqt SET baogiaid=@Baogiaid;"
         f" If @Hesoid>0 Update {schema}.tamqt SET hesoid=@Hesoid;")
     sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+
+
+def tinhlai_dotqt(schema="web"):
+    # init prog
+    sql = (f"CREATE PROC {schema}.tinhlai_dotqt AS ")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"ALTER PROC {schema}.tinhlai_dotqt"
+        f" @Madot NVARCHAR(MAX)=''"
+        f" WITH ENCRYPTION AS"
+        f" BEGIN SET NOCOUNT ON"
+        f" DECLARE @Maqt NVARCHAR(MAX)='',@Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan';"
+        f" DECLARE mCursor CURSOR FOR"
+        f" Select maqt,baogiaid,hesoid,plgia From {schema}.qt"
+        f" Where madot = @Madot AND Left(Isnull(tinhtrang, ''), 2) Not In ('Fi', 'TN', 'OK', 'oK');"
+        f" OPEN mCursor;"
+        f" BEGIN TRY")
+    # mo cursor
+    sql += (
+        f" Fetch Next From mCursor INTO @Maqt,@Baogiaid,@Hesoid,@Plgia;"
+        f" WHILE @@FETCH_STATUS = 0 Begin Begin"
+        f" EXEC {schema}.load_tamqt @Maqt;"
+        f" EXEC {schema}.tinh_tamqt @Baogiaid, @Hesoid, @Plgia;"
+        f" EXEC {schema}.save_tamqt; End"
+        f" Fetch Next From mCursor INTO @Maqt,@Baogiaid,@Hesoid,@Plgia; End"
+    )
+    sql += (
+        f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH"
+        f" CLOSE mCursor; DEALLOCATE mCursor; END;")
     try:
         db.core().execute(sql)
     except:
@@ -323,6 +416,7 @@ def spQtgt(schema="web"):
     tinh_tamqt35(schema)
     tinh_tamqt3x(schema)
     tinh_tamqt(schema)
+    tinhlai_dotqt(schema)
 
 
 spQtgt("pkh")
