@@ -11,29 +11,30 @@ db = Maychu("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
 db.show_views()
 
 #function
-def tinhlai_dotqt(schema="web"):
+def lamtronso(schema="dbo"):
     # init prog
-    sql = (f"CREATE PROC {schema}.tinhlai_dotqt AS ")
+    sql = (f"CREATE FUNCTION {schema}.lamtronso AS ")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
     sql = (
-        f"CREATE FUNCTION dbo.lamtronso(@Socanlamtron decimal(38,9), @Sole int=0)"
-        f" Returns decimal(38,9) AS BEGIN"
+        f"ALTER FUNCTION {schema}.lamtronso(@Socanlamtron decimal(38,9), @Sole int=0)"
+        f" Returns decimal(38,9) AS BEGIN TRY"
         f" Declare @Sosanh decimal(38,0)=0.0, @Them decimal(38,9)=0.0, @Kq decimal(38,9)=0,"
-        f" @Socat0 decimal(38,9)=0.0, @Socat1 decimal(38,9)=0.0;"
+        f" @Socat decimal(38,9)=0.0, @Socat1 decimal(38,9)=0.0;"
         f" If @Sole<0 or @Sole>8 RETURN @Socanlamtron;"
-
+        f" Begin SET @Socat1=round(@Socanlamtron,@Sole+1,1);"
+        f" SET @Socat=round(@Socanlamtron,@Sole,1);"
+        f" SET @Sosanh=(@Socat1-@Socat)*power(10,@Sole);"
+        f" SET @Them= 1.0/power(10,@Sole); End"
+        f" IF @Sososanh>=0.5 RETURN (@Socat +@Them)"
+        f" ELSE RETURN @Socat"
         )
-
-
-
-
     sql += (
         f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH"
-        f" CLOSE mCursor; DEALLOCATE mCursor; END;")
+        f" END;")
     try:
         db.core().execute(sql)
     except:

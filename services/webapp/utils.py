@@ -152,10 +152,15 @@ class Tien():
 def lamtronso(sothapphan=0, phanle=3):
     from decimal import Decimal
     try:
-        somoi = float(round(Decimal(sothapphan), phanle))
+        somoi = round(sothapphan, phanle)
+        somoi1 = round(sothapphan, phanle+1)
+        lech = (somoi1-somoi)*(10**phanle)
+        if lech >= 0.5:
+            somoi += 1/(10**phanle)
+            somoi = round(Decimal(somoi), phanle)
     except:
         somoi = 0
-    return somoi
+    return float(somoi)
 
 
 def tachhangso(sothapphan=0, phanle=3):
