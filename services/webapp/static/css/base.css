@@ -18,7 +18,6 @@ html, body {
   text-align: left;
   float: none;
   display: block;
-  font-size: 8pt;
 }
 
 /* tetx */
@@ -244,10 +243,7 @@ html, body {
     background-color: transparent;
     color: black;
   }
-  html, body {
-    font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
-    font-size: 8pt;
-  }
+
   .A4doc {
     width: 210mm;
     height: 297mm;

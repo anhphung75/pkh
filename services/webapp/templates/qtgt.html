@@ -1,0 +1,44 @@
+{% extends "base_vuejs3.html" %}
+
+{% block webapp %}
+<div class="u fb w100 tieude">QUYẾT TOÁN GIÁ TRỊ</div>
+<div id="ongcai">
+
+</div>
+
+<div id="ongnganh">
+  {# ongnganh tieude#}
+  <div class="grid">
+    <div class="b">
+      {`zvl`}
+    </div>
+  </div>
+  {# ongnganh noidung#}
+  <div id="on_cpxd">
+    <div class="tieude-cp flex">
+      <div class="b">Chi phí xây dựng</div>
+      <div>
+        <button @click="show.phui=true; show.cpxd=false;">Nhập phui</button>
+      </div>
+      <div>
+        <button @click="show.cpxd=true; show.phui=false;">Nhập giá trị</button>
+      </div>
+    </div>
+
+    <div class="noidung-cpxd " v-if="show.phui">
+      chiphi xd
+    </div>
+    <div class="phui-cpxd" v-if="show.cpxd">
+      chiphi vatlieu
+    </div>
+  </div>
+
+</div>
+<div id="tailap">
+phan tai lap
+</div>
+{% end %}
+
+{% block js %}
+<script src="{{static_url('js/qtgt/main.js')}}"></script>
+{% end %}

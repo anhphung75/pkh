@@ -56,8 +56,11 @@ class SseBase(web.RequestHandler):
 
 class MainHandler(WebBase):
     def get(self):
-        self.write("Hello World")
+        self.render("base_vuejs3.html", error=None)
 
+class Frm_Qtgt(WebBase):
+    def get(self):
+        self.render("forms/qtgt/main.html", error=None)
 
 class Rpt_Qtgt(WebBase):
     def get(self):
@@ -69,6 +72,7 @@ class WebApp(web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
+            (r"/cntd/pkh/qtgt", Frm_Qtgt),
             (r"/reports/qtgt", Rpt_Qtgt),
         ]
         settings = dict(
@@ -76,6 +80,7 @@ class WebApp(web.Application):
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             ui_modules={
+                "FrmQtgt_Ongnganh":comps.FrmQtgt_Ongnganh,
                 "RptQtgt_Quochuy": comps.RptQtgt_Quochuy,
                 "RptQtgt_Tieude": comps.RptQtgt_Tieude,
                 "RptQtgt_ChiphiTieudebang": comps.RptQtgt_ChiphiTieudebang,
@@ -90,9 +95,10 @@ class WebApp(web.Application):
                 "RptQtgt_Tlmd": comps.RptQtgt_Tlmd,
                 "RptQtgt_Tlmd2": comps.RptQtgt_Tlmd2,
                 "RptQtgt_Kettoan": comps.RptQtgt_Kettoan,
+                "RptQtgt_Footer": comps.RptQtgt_Footer,
                 "RptKyduyet2": comps.RptKyduyet2,
                 "RptKyduyet3": comps.RptKyduyet3,
-                "RptQtgt_Footer": comps.RptQtgt_Footer,
+
             },
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",

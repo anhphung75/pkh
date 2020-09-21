@@ -4,6 +4,41 @@ from utils import Tien, tachhangso, lamtronso
 
 tornado.locale.set_default_locale("vi_VI")
 
+
+class FrmQtgt_Ongnganh(web.UIModule):
+    def embedded_javascript(self):
+        __js = '''
+        var qtgt_on = {
+            delimiters: ["{`", "`}"],
+            data() {
+                return {
+                show: {'ongnganh':false,'on_cpxd':false,'phui': false, 'cpxd': false, 'cpvt': false, 'cptl': false},
+                }
+            },
+            method:{
+                show_chiphi(zone){
+
+                }
+            },
+        };
+
+        Vue.createApp(qtgt_on).mount('#ongnganh')
+        '''
+        return __js
+
+    def embedded_css(self):
+        __css = '''
+        .tieude-ongnganh {
+            width: 100%;
+            grid: auto-flow minmax(1rem, max-content)/5fr 1fr 1fr 1fr;
+        }
+        '''
+        return __css
+
+    def render(self):
+        return self.render_string(
+            "forms/qtgt/ongnganh.html")
+
 class RptQtgt_Quochuy(web.UIModule):
     def embedded_javascript(self):
         __js = '''
