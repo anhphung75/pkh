@@ -1,14 +1,14 @@
 var qtgt_on = {
   delimiters: ["{`", "`}"],
   data() {
-    return {
+      return {
       show: {'ongnganh':false,'on_cpxd':false,'phui': false, 'cpxd': false, 'cpvt': false, 'cptl': false},
-    }
+      }
   },
   method:{
-    show_chiphi(zone){
+      show_chiphi(zone){
 
-    }
+      }
   },
 };
 

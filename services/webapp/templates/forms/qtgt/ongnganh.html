@@ -1,13 +1,30 @@
 <div id="ongnganh" class="w100">
   {# ongnganh tieude #}
-  <div class="grid tieude-ongnganh">
+  <div class="grid tieude-ongnganh" @click="show.ongnganh=!show.ongnganh">
     <div class="u f2">Phần ống ngánh</div>
     <div class="b">Vl={`zvl`}</div>
     <div class="b">Nc={`znc`}</div>
     <div class="b">Mtc={`zmtc`}</div>
   </div>
   {# ongnganh noidung #}
-  <div>
-    noi dung
+  <div class="noidung-ongnganh" v-if="show.ongnganh">
+    <div id="on_cpxd">
+      <div class="tieude-cp flex">
+        <div class="b">Chi phí xây dựng</div>
+        <div>
+          <button @click="show.phui=true; show.cpxd=false;">Nhập phui</button>
+        </div>
+        <div>
+          <button @click="show.cpxd=true; show.phui=false;">Nhập giá trị</button>
+        </div>
+      </div>
+
+      <div class="noidung-cpxd " v-if="show.phui">
+        chiphi phui
+      </div>
+      <div class="phui-cpxd" v-if="show.cpxd">
+        chiphi xd
+      </div>
+    </div>
   </div>
 </div>

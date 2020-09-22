@@ -10,7 +10,9 @@ from ttdl import Maychu
 db = Maychu("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
 db.show_views()
 
-#function
+# function
+
+
 def lamtronso(schema="dbo"):
     # init prog
     sql = (f"CREATE FUNCTION {schema}.lamtronso AS ")
@@ -23,15 +25,16 @@ def lamtronso(schema="dbo"):
         f"ALTER FUNCTION {schema}.lamtronso(@Socanlamtron decimal(38,9), @Sole int=0)"
         f" Returns decimal(38,9) AS BEGIN TRY"
         f" Declare @Sosanh decimal(38,0)=0.0, @Them decimal(38,9)=0.0, @Kq decimal(38,9)=0,"
-        f" @Socat decimal(38,9)=0.0, @Socat1 decimal(38,9)=0.0;"
+        f" @Kq1 decimal(38,9)=0.0,@Socat decimal(38,9)=0.0;"
         f" If @Sole<0 or @Sole>8 RETURN @Socanlamtron;"
-        f" Begin SET @Socat1=round(@Socanlamtron,@Sole+1,1);"
-        f" SET @Socat=round(@Socanlamtron,@Sole,1);"
-        f" SET @Sosanh=(@Socat1-@Socat)*power(10,@Sole);"
-        f" SET @Them= 1.0/power(10,@Sole); End"
-        f" IF @Sososanh>=0.5 RETURN (@Socat +@Them)"
-        f" ELSE RETURN @Socat"
-        )
+        f" Begin SET @Socat=round(@Socanlamtron,@Sole+1,1);"
+        f" SET @Kq=round(@Socanlamtron,@Sole,1);"
+        f" SET @Sosanh=(@Socat-@Kq)*power(10,@Sole);"
+        f" SET @Them= 1.0/power(10,@Sole);"
+        f" SET @Kq1= round((@Socat +@Them),@Sole,1);"
+        f" IF @Sososanh>=0.5 RETURN @Kq1"
+        f" ELSE RETURN @Kq"
+    )
     sql += (
         f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH"
         f" END;")
@@ -41,33 +44,7 @@ def lamtronso(schema="dbo"):
         pass
 
 
-'''
-CREATE FUNCTION dbo.lamtronso(@Socanlamtron decimal(38,9), @Sole int=0)
-Returns decimal(38,9)
-AS
-BEGIN
-	Declare @Sosanh decimal(38,0)=0.0, @Them decimal(38,9)=0.0, @Kq decimal(38,9)=0, @Socat decimal(38,9)=0.0, @Socatdu decimal(38,9)=0.0;
-	If @Sole<0 or @Sole>8
-		SET @Sodalamtron=@Socanlamtron;
-	Else
-		Begin
-			---Cut với số thập phân =sole+1
-			SET @Socatdu=round(@Socanlamtron,@Sole+1,1);
-			SET @Socat=round(@Socanlamtron,@Sole,1);
-			---phan chenh lech dua ve so nguyen
-			SET @Sososanh=(@Socatdu-@Socat)*power(10,@Sole+1);
-			SET @Socongthem= 1.0/power(10,@Sole);
-			---So sanh bieu thuc
-			IF @Sososanh>=5.0
-				SET @Sodalamtron=@Socat +@Socongthem
-			ELSE
-				SET @Sodalamtron=@Socat;
-		End
-	Return @Sodalamtron
-END
-GO
-'''
-#proc
+# proc
 def creat_tinh_tamqt3x(schema="web", qt3x=1):
     # init prog
     if qt3x not in [1, 2, 3, 4]:
@@ -168,9 +145,9 @@ def tinh_tamqt35(schema="web"):
         f" dongia=(Select Top 1 isnull(gia,0) From dbo.baogiachiphi bg"
         f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=#tamdulieu.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
         f" Order By baogiaid DESC),"
-        f" trigia1=(Case When @Hesoid<20200721 Then (dbo.lamtronso(sl1*dongia/1000,0)*1000)"
+        f" trigia1=(Case When @Hesoid<20200827 Then (dbo.lamtronso(sl1*dongia/1000,0)*1000)"
         f" Else dbo.lamtronso(sl1*dongia,0) End),"
-        f" trigia2=(Case When @Hesoid<20200721 Then (dbo.lamtronso(sl2*dongia/1000,0)*1000)"
+        f" trigia2=(Case When @Hesoid<20200827 Then (dbo.lamtronso(sl2*dongia/1000,0)*1000)"
         f" Else dbo.lamtronso(sl2*dongia,0) End),"
         f" maqt=(Select Top 1 maqt From {schema}.tamqt),"
         f" maqtgt=(Case When id<10 Then CONCAT(maqt,50,id) Else CONCAT(maqt,5,id) End),"
@@ -359,9 +336,9 @@ def tinh_tamqt(schema="web"):
         f" Where tinhtrang='Moi' AND phanloai='Ong'),0),"
         # tong hop cat
         f" slcat= Isnull((Select sum(sl) From {schema}.tamthqt01"
-        f" Where tinhtrang='Moi' AND phanloai='Cat20200721'),0),"
+        f" Where tinhtrang='Moi' AND phanloai='Cat20200827'),0),"
         f" tiencat= Isnull((Select sum(vl) From {schema}.tamthqt01"
-        f" Where tinhtrang='Moi' AND phanloai='Cat20200721'),0);")
+        f" Where tinhtrang='Moi' AND phanloai='Cat20200827'),0);")
     sql += (
         f" If @Baogiaid>0 Update {schema}.tamqt SET baogiaid=@Baogiaid;"
         f" If @Hesoid>0 Update {schema}.tamqt SET hesoid=@Hesoid;")
@@ -410,6 +387,7 @@ def tinhlai_dotqt(schema="web"):
 
 
 def spQtgt(schema="web"):
+    lamtronso()
     creat_tinh_tamqt3x(schema, 1)
     creat_tinh_tamqt3x(schema, 2)
     creat_tinh_tamqt3x(schema, 3)
@@ -420,4 +398,4 @@ def spQtgt(schema="web"):
     tinhlai_dotqt(schema)
 
 
-spQtgt("pkh")
+spQtgt("qlmlq2")

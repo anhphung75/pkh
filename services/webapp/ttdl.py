@@ -20,15 +20,18 @@ class Hoso(Base):
     uctid = Column(Integer, primary_key=True)  # yyyy.hs.xxxxxx
     mahoso = Column(Unicode(50))  # yyyy.hs.xxxxxx
     mota = Column(Unicode(None))
+    ghichu = Column(Unicode(255))
     lastupdate = Column(DateTime(timezone=False), default=func.now(),
                         onupdate=datetime.datetime.now)
 
 
-class HesoChiphi(Base):
-    __tablename__ = 'hesochiphi'
+class ChiphiQuanly(Base):
+    __tablename__ = 'chiphiquanly'
     __table_args__ = {"schema": "web"}
-    hesoid = Column(Unicode(10), primary_key=True)  # yyyy.hs.xxxxxx
+    uctid = Column(Integer, primary_key=True)
+    cpqlid = Column(Integer)  # yyyy.hs.xxxxxx
     mota = Column(Unicode(None))
+    ghichu = Column(Unicode(255))
     lastupdate = Column(DateTime(timezone=False), default=func.now(),
                         onupdate=datetime.datetime.now)
 
