@@ -13,6 +13,7 @@ import tornado.websocket
 
 import comps
 from ttdl import Maychu
+from ttxl import runsql
 
 tornado.locale.set_default_locale('vi_VI')
 
@@ -58,14 +59,26 @@ class MainHandler(WebBase):
     def get(self):
         self.render("base_vuejs3.html", error=None)
 
+
 class Frm_Qtgt(WebBase):
     def get(self):
         self.render("forms/qtgt/main.html", error=None)
 
+
 class Rpt_Qtgt(WebBase):
     def get(self):
-        dsmaqt = ['pkh001', 'pkh002']
-        self.render("reports/qtgt/main.html", dsmaqt=dsmaqt, error=None)
+        schema = 'qlmltd'
+        sql = (
+            f"Select maqt From dbo.dot RIGHT JOIN {schema}.qt"
+            f" Where (dot.inok<>0 And qt.inok<>0)"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+            dsmaqt = dl[0]
+        else:
+            dsmaqt = ['pkh001', 'pkh002']
+        self.render("reports/qtgt/main.html", dsmaqt=dsmaqt,
+                    schema=schema, error=None)
 
 
 class WebApp(web.Application):
@@ -80,7 +93,7 @@ class WebApp(web.Application):
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             ui_modules={
-                "FrmQtgt_Ongnganh":comps.FrmQtgt_Ongnganh,
+                "FrmQtgt_Ongnganh": comps.FrmQtgt_Ongnganh,
                 "RptQtgt_Quochuy": comps.RptQtgt_Quochuy,
                 "RptQtgt_Tieude": comps.RptQtgt_Tieude,
                 "RptQtgt_ChiphiTieudebang": comps.RptQtgt_ChiphiTieudebang,

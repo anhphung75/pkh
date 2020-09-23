@@ -14,7 +14,7 @@
   {% from ttxl import RptQtgt %}
   {% for maqt in dsmaqt %}
   <div id="qtgt:{{maqt}}">
-    {% set qtgt = RptQtgt(maqt) %}
+    {% set qtgt = RptQtgt(maqt,schema) %}
     {% if qtgt.maubaocao == 'on' %}
     {#   trang 1   #}
     <div class="A4doc">

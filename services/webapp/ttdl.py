@@ -17,7 +17,7 @@ Base = declarative_base()
 class Hoso(Base):
     __tablename__ = 'hoso'
     __table_args__ = {"schema": "web"}
-    uctid = Column(Integer, primary_key=True)  # yyyy.hs.xxxxxx
+    uctid = Column(Integer, primary_key=True)
     mahoso = Column(Unicode(50))  # yyyy.hs.xxxxxx
     mota = Column(Unicode(None))
     ghichu = Column(Unicode(255))

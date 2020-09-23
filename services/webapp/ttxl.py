@@ -3,6 +3,7 @@ import json
 import arrow
 
 from sqlalchemy import func, desc
+from ttdl import Maychu
 from ttdl import Hoso
 from utils import Api, lamtronso
 
@@ -54,9 +55,23 @@ class sseHoso():
         return
 
 
+def runsql(sql=''):
+    dl = []
+    try:
+        mssql = Maychu("mssql", "pkh", "Ph0ngK3H0@ch",
+                       "192.168.24.4:1433", "PKHData")
+        kq = mssql.core().execute(sql)
+        for row in kq:
+            dl.append(dict(row))
+    except:
+        return None
+    return dl
+
+
 class RptQtgt:
-    def __init__(self, maqt):
+    def __init__(self, maqt='', schema='qlmltd'):
         self.maqt = maqt
+        self.schema = schema
         self.load_qtgt()
 
     def load_qtgt(self):
@@ -84,57 +99,98 @@ class RptQtgt:
         self.tttt = dl
 
     def hoso(self):
-        dl = {
-            'sohoso': 'GM01001/20',
-            'diachigandhn': '25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ', }
+        sql = (
+            f"Select top 1 sohoso, diachikhachhang as diachigandhn From dbo.hoso"
+            f" Where hosoid=(Select top 1 hosoid from dbo.qt Where maqt='{self.maqt}')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+            dl = dl[0]
+        else:
+            dl = {
+                'sohoso': 'GM01001/20',
+                'diachigandhn': '25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ', }
         self.sohoso = dl['sohoso']
         self.diachigandhn = dl['diachigandhn']
 
     def dot(self):
-        dl = {'sodot': '999/2020MP', }
+        sql = (
+            f"Select top 1 sodot From dbo.dot"
+            f" Where madot=(Select top 1 madot from dbo.qt Where maqt='{self.maqt}')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+            dl = dl[0]
+        else:
+            dl = {'sodot': '999/2020MP', }
         self.sodot = dl['sodot']
 
     def get_khachhang(self):
-        dl = {'khachhang': 'Nguyễn Lan Chi', }
+        sql = (
+            f"Select top 1 khachhang From dbo.hoso"
+            f" Where hosoid=(Select top 1 hosoid from dbo.qt Where maqt='{self.maqt}')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+            dl = dl[0]
+        else:
+            dl = {'khachhang': 'Lỗi Dữ Liệu', }
         self.khachhang = dl['khachhang']
 
     def donvithicong(self):
-        dl = {'dvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', }
+        sql = (
+            f"Select top 1 ten as dvtc From dbo.nhathau"
+            f" Where nhathauid=(Select top 1 nhathauid From dbo.dot"
+            f" Where madot=(Select top 1 madot from dbo.qt Where maqt='{self.maqt}'))"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+            dl = dl[0]
+        else:
+            dl = {'dvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', }
         self.dvtc = dl['dvtc']
 
     def qtoc_xd(self):
-        dl = [
-            {'chiphiid': '001', 'mota': '- Chi phí ống cái', 'dvt': 'mét',
-             'soluong': 8888.899, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Chi phí ống cái', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-        ]
+        sql = (
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt31 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+        else:
+            dl = [
+                {'chiphiid': '001', 'mota': '- Chi phí ống cái', 'dvt': 'mét',
+                 'soluong': 8888.899, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Chi phí ống cái', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+                {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+                {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+                {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+                {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -144,32 +200,40 @@ class RptQtgt:
         self.oc_cpxd = dl.copy()
 
     def qtoc_vt(self):
-        dl = [
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-        ]
+        sql = (
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'VT%')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+        else:
+            dl = [
+                {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+                 'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+                 'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+                {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+                 'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+                 'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+                {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+                 'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+                 'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+                {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+                 'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+                 'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -179,17 +243,25 @@ class RptQtgt:
         self.oc_cpvt = dl.copy()
 
     def qtoc_vl(self):
-        dl = [
-            {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
-             'soluong': 0.763, 'giavl': 8888933988, 'gianc': 888847948, 'giamtc': 888899999,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Đá dăm 4x6', 'dvt': 'm3',
-             'soluong': 15.462, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-            {'chiphiid': '002', 'mota': 'Lưỡi cắt bê tông loại 356mm', 'dvt': 'cái',
-             'soluong': 0.076, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-        ]
+        sql = (
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'VL%')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+        else:
+            dl = [
+                {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
+                 'soluong': 0.763, 'giavl': 8888933988, 'gianc': 888847948, 'giamtc': 888899999,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Đá dăm 4x6', 'dvt': 'm3',
+                 'soluong': 15.462, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+                {'chiphiid': '002', 'mota': 'Lưỡi cắt bê tông loại 356mm', 'dvt': 'cái',
+                 'soluong': 0.076, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -199,15 +271,23 @@ class RptQtgt:
         self.oc_cpvl = dl.copy()
 
     def qtoc_tl(self):
-        dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
-               'soluong': 0.35, 'gia': 412000},
-              {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-               'soluong': 2.4, 'gia': 8890000},
-              {'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
-               'soluong': 0.35, 'gia': 412000},
-              {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-               'soluong': 2.4, 'gia': 890000},
-              ]
+        sql = (
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.sl1 as soluong,qt.dongia as gia"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt35 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'TL%')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+        else:
+            dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
+                   'soluong': 0.35, 'gia': 412000},
+                  {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+                   'soluong': 2.4, 'gia': 8890000},
+                  {'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
+                   'soluong': 0.35, 'gia': 412000},
+                  {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+                   'soluong': 2.4, 'gia': 890000},
+                  ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -216,38 +296,46 @@ class RptQtgt:
         self.oc_cptl = dl.copy()
 
     def qton_xd(self):
-        dl = [
-            {'chiphiid': '001', 'mota': '- Chi phí ống ngánh', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Chi phí ống ngánh', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-            {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
-             'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
-             'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
-            {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
-             'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
-             'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
-        ]
+        sql = (
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt33 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+        else:
+            dl = [
+                {'chiphiid': '001', 'mota': '- Chi phí ống ngánh', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Chi phí ống ngánh', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+                {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+                {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+                {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+                {'chiphiid': '001', 'mota': '- Cắt mặt nhựa và BTXM', 'dvt': 'mét',
+                 'soluong': 16, 'giavl': 6510, 'gianc': 13174, 'giamtc': 5815,
+                 'tienvl': 104154, 'tiennc': 210776, 'tienmtc': 93040},
+                {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm3',
+                 'soluong': 0.24, 'giavl': 0, 'gianc': 538918, 'giamtc': 0,
+                 'tienvl': 0, 'tiennc': 129340, 'tienmtc': 0},
+            ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -257,32 +345,40 @@ class RptQtgt:
         self.on_cpxd = dl.copy()
 
     def qton_vt(self):
-        dl = [
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-            {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
-             'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
-             'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-        ]
+        sql = (
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'VT%')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+        else:
+            dl = [
+                {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+                 'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+                 'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+                {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+                 'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+                 'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+                {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+                 'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+                 'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+                {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
+                 'soluong': 1, 'giavl': 133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Ống HDPE 25x3mm', 'dvt': 'mét',
+                 'soluong': 12, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -292,17 +388,25 @@ class RptQtgt:
         self.on_cpvt = dl.copy()
 
     def qton_vl(self):
-        dl = [
-            {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
-             'soluong': 0.763, 'giavl': 8888133900, 'gianc': 47904, 'giamtc': 0,
-             'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
-            {'chiphiid': '002', 'mota': 'Đá dăm 4x6', 'dvt': 'm3',
-             'soluong': 15.462, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-            {'chiphiid': '002', 'mota': 'Lưỡi cắt bê tông loại 356mm', 'dvt': 'cái',
-             'soluong': 0.076, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
-             'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
-        ]
+        sql = (
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'VL%')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+        else:
+            dl = [
+                {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
+                 'soluong': 0.763, 'giavl': 8888133900, 'gianc': 47904, 'giamtc': 0,
+                 'tienvl': 133900, 'tiennc': 47904, 'tienmtc': 0},
+                {'chiphiid': '002', 'mota': 'Đá dăm 4x6', 'dvt': 'm3',
+                 'soluong': 15.462, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+                {'chiphiid': '002', 'mota': 'Lưỡi cắt bê tông loại 356mm', 'dvt': 'cái',
+                 'soluong': 0.076, 'giavl': 13895, 'gianc': 17174, 'giamtc': 774,
+                 'tienvl': 166740, 'tiennc': 206088, 'tienmtc': 9288},
+            ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -312,15 +416,23 @@ class RptQtgt:
         self.on_cpvl = dl.copy()
 
     def qton_tl(self):
-        dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
-               'soluong': 0.35, 'gia': 412000},
-              {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-               'soluong': 2.4, 'gia': 890000},
-              {'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
-               'soluong': 0.35, 'gia': 412000},
-              {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
-               'soluong': 2.4, 'gia': 890000},
-              ]
+        sql = (
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.sl1 as soluong,qt.dongia as gia"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt35 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'TL%')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+        else:
+            dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
+                   'soluong': 0.35, 'gia': 412000},
+                  {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+                   'soluong': 2.4, 'gia': 890000},
+                  {'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
+                   'soluong': 0.35, 'gia': 412000},
+                  {'chiphiid': '002', 'mota': '- Đào bốc mặt đường nhựa', 'dvt': 'm2',
+                   'soluong': 2.4, 'gia': 890000},
+                  ]
         # load gia
         # tinh tien
         for cp in dl:
@@ -346,15 +458,32 @@ class RptQtgt:
             dl[k] = rec
         # convert to list
         tam = []
+        ocztl = 0
+        onztl = 0
         for cp in dl:
             rec = dl[cp]
             if (rec['sl_oc']+rec['sl_on']) > 0:
+                ocztl += rec['tien_oc']
+                onztl += rec['tien_on']
                 tam.append(rec)
         self.cptl = tam.copy()
+        self.ocztl = ocztl
+        self.onztl = onztl
 
     def chiphiquanly(self):
-        dl = {"hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.055, "tructiepkhac": 0, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
-              "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566}
+        sql = (
+            f"Select top 1 1 as vl,heso_nc as nc, heso_mtc as mtc,heso_ttpk as tructiepkhac,"
+            f" giantiepkhac,heso_cpchung as chung,heso_thunhaptt as thutinhtruoc,"
+            f" heso_khaosat as khaosat, heso_thietke as thietke, heso_gstc as giamsat"
+            f" From dbo.hesochiphi Where hesoid=(Select top 1 hesoid From {self.schema}.qt"
+            f" Where maqt='{self.maqt}')"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+            dl[0]
+        else:
+            dl = {"hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.055, "tructiepkhac": 0,
+                  "giantiepkhac": 0.02, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566}
         self.vl = dl['vl']
         self.nc = dl['nc']
         self.mtc = dl['mtc']
@@ -429,11 +558,22 @@ class RptQtgt:
             self.maubaocao = 'on'
 
     def qtgt(self):
-        # load tttt
-        dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
-              'oczvl': 0, 'ocznc': 0, 'oczmtc': 0, 'ocztl': 0,
-              'onzvl': 88889998888, 'onznc': 8888998888, 'onzmtc': 0, 'onztl': 0,
-              'ktcpcty': 9999277584, 'ktcpkhach': 0}
+        sql = (
+            f"Select top 1 ngaylap,baogiaid as mabaogia,"
+            f" dautucty as ktcpcty, dautukhach as ktcpkhach,"
+            f" vlcai as oczvl,nccai as ocznc,mtccai as oczmtc,"
+            f" vlnganh as onzvl, ncnganh as onznc, mtcnganh as onzmtc"
+            f" From {self.schema}.qt"
+            f" Where maqt='{self.maqt}'"
+        )
+        dl = runsql(sql)
+        if len(dl) > 0:
+            dl[0]
+        else:
+            dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
+                  'oczvl': 0, 'ocznc': 0, 'oczmtc': 0, 'ocztl': 0,
+                  'onzvl': 88889998888, 'onznc': 8888998888, 'onzmtc': 0, 'onztl': 0,
+                  'ktcpcty': 9999277584, 'ktcpkhach': 0}
         if 'tl' in self.maqt.lower():
             self.tieude = 'BẢNG QUYẾT TOÁN TÁI LẬP DANH BỘ'
         else:
@@ -442,11 +582,11 @@ class RptQtgt:
         self.oczvl = dl['oczvl']
         self.ocznc = dl['ocznc']
         self.oczmtc = dl['oczmtc']
-        self.ocztl = dl['ocztl']
+        #self.ocztl = dl['ocztl']
         self.onzvl = dl['onzvl']
         self.onznc = dl['onznc']
         self.onzmtc = dl['onzmtc']
-        self.onztl = dl['onztl']
+        #self.onztl = dl['onztl']
         self.ktcpcty = dl['ktcpcty']
         self.ktcpkhach = dl['ktcpkhach']
         self.mabaogia = dl['mabaogia']
