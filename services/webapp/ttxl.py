@@ -63,6 +63,7 @@ def runsql(sql=''):
         kq = mssql.core().execute(sql)
         for row in kq:
             dl.append(dict(row))
+        kq.close()
     except:
         return None
     return dl
