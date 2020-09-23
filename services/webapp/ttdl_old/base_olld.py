@@ -3,7 +3,6 @@ import sys
 import sqlite3
 import datetime
 
-from utils import stodate, datetos
 
 from sqlalchemy import create_engine, Column, Sequence, func, desc
 from sqlalchemy import Boolean, Integer, DECIMAL, Unicode, Date, DateTime
@@ -194,6 +193,7 @@ class Hesochiphi(Base):
     heso_nc = Column(DECIMAL(19, 5), default=0)
     heso_mtc = Column(DECIMAL(19, 5), default=0)
     heso_ttpk = Column(DECIMAL(19, 5), default=0)
+    giantiepkhac= Column(DECIMAL(19, 5), default=0)
     heso_cpchung = Column(DECIMAL(19, 5), default=0)
     heso_thunhaptt = Column(DECIMAL(19, 5), default=0)
     heso_khaosat = Column(DECIMAL(19, 5), default=0)
@@ -503,7 +503,7 @@ class Trinhky(Base):
 
 #engine = create_engine('sqlite:///quyettoan/quyettoan.db', echo=True)
 #engine = create_engine('sqlite:///:memory:', echo=True)
-cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+13+for+SQL+Server".format(
+cnnstr = "mssql+pyodbc://{}:{}@{}/{}?driver=ODBC+Driver+17+for+SQL+Server".format(
     'pkh', 'Ph0ngK3H0@ch', '192.168.24.4:1433', 'PKHData')
 engine = create_engine(cnnstr)
 
