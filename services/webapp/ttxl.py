@@ -1,5 +1,5 @@
 import datetime
-import numbers
+import decimal
 import json
 import arrow
 
@@ -66,8 +66,13 @@ def runsql(sql=''):
         dl = dict(row)
         for k in dl.copy():
             #print(f"dl[{k}]={dl[k]} type={type(dl[k])}")
-            if type(dl[k]) in (datetime, datetime.date, datetime.datetime, datetime.time):
-                dl[k] = arrow.get(dl[k]).format("YYYYMMDD")
+            if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
+                if k=='lastupdate':
+                    dl[k] = int(arrow.get(dl[k]).float_timestamp * 1000)
+                else:
+                    dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
+            if isinstance(dl[k], decimal.Decimal):
+                dl[k] =float(dl[k])
         data.append(dl)
     kq.close()
     for cp in data:
@@ -162,12 +167,13 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt31 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}')"
+            f" Where (qt.maqt='{self.maqt}') Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
             for r in dl:
                 try:
+                    
                     r['soluong']=float(r[k])
                 except:
                     r['soluong']=0
@@ -222,7 +228,7 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%') Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
@@ -276,7 +282,7 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%') Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
@@ -315,7 +321,7 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.sl1 as soluong,qt.dongia as gia"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt35 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%') Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
@@ -351,7 +357,7 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt33 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}')"
+            f" Where (qt.maqt='{self.maqt}') Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
@@ -413,7 +419,7 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%') Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
@@ -467,7 +473,7 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%') Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
@@ -506,7 +512,7 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.sl2 as soluong,qt.dongia as gia"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt35 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%') Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
