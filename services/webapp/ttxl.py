@@ -1,4 +1,5 @@
 import datetime
+import numbers
 import json
 import arrow
 
@@ -56,17 +57,24 @@ class sseHoso():
 
 
 def runsql(sql=''):
-    dl = []
-    try:
-        mssql = Maychu("mssql", "pkh", "Ph0ngK3H0@ch",
-                       "192.168.24.4:1433", "PKHData")
-        kq = mssql.core().execute(sql)
-        for row in kq:
-            dl.append(dict(row))
-        kq.close()
-    except:
-        return None
-    return dl
+    mssql = Maychu("mssql", "pkh", "Ph0ngK3H0@ch",
+                   "192.168.24.4:1433", "PKHData")
+    #try:
+    kq = mssql.core().execute(sql)
+    data = []
+    for row in kq:
+        dl = dict(row)
+        for k in dl.copy():
+            #print(f"dl[{k}]={dl[k]} type={type(dl[k])}")
+            if type(dl[k]) in (datetime, datetime.date, datetime.datetime, datetime.time):
+                dl[k] = arrow.get(dl[k]).format("YYYYMMDD")
+        data.append(dl)
+    kq.close()
+    for cp in data:
+        print(f"runsql cp={cp}")
+    return data
+    #except:
+    #    return None
 
 
 class RptQtgt:
@@ -76,23 +84,22 @@ class RptQtgt:
         self.load_qtgt()
 
     def load_qtgt(self):
-        self.get_tttt()
-        self.hoso()
-        self.dot()
-        self.get_khachhang()
-        self.donvithicong()
-        self.qtoc_xd()
-        self.qtoc_vt()
-        self.qtoc_vl()
-        self.qtoc_tl()
+        # self.get_tttt()
+        #self.hoso()
+        #self.dot()
+        #self.get_khachhang()
+        #self.donvithicong()
+        #self.qtoc_xd()
+        #self.qtoc_vt()
+        #self.qtoc_vl()
+        #self.qtoc_tl()
         self.qton_xd()
-        self.qton_vt()
-        self.qton_vl()
-        self.qton_tl()
-        self.tlmd()
-        print(f"ttxl cptl={self.cptl}")
-        self.qtgt()
-        self.chiphiquanly()
+        #self.qton_vt()
+        #self.qton_vl()
+        #self.qton_tl()
+        #self.tlmd()
+        #self.qtgt()
+        #self.chiphiquanly()
 
     def get_tttt(self):
         dl = {"maqt": "pkh002", "madot": "2020gmmp242", "mahoso": "113344",
@@ -105,7 +112,7 @@ class RptQtgt:
             f" Where hosoid=(Select top 1 hosoid from dbo.qt Where maqt='{self.maqt}')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
             dl = {
@@ -120,7 +127,7 @@ class RptQtgt:
             f" Where madot=(Select top 1 madot from dbo.qt Where maqt='{self.maqt}')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
             dl = {'sodot': '999/2020MP', }
@@ -132,7 +139,7 @@ class RptQtgt:
             f" Where hosoid=(Select top 1 hosoid from dbo.qt Where maqt='{self.maqt}')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
             dl = {'khachhang': 'Lỗi Dữ Liệu', }
@@ -145,7 +152,7 @@ class RptQtgt:
             f" Where madot=(Select top 1 madot from dbo.qt Where maqt='{self.maqt}'))"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
             dl = {'dvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', }
@@ -158,7 +165,18 @@ class RptQtgt:
             f" Where (qt.maqt='{self.maqt}')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
+            for r in dl:
+                try:
+                    r['soluong']=float(r[k])
+                except:
+                    r['soluong']=0
+                for k in r:
+                    if k in ['giavl','gianc','giamtc']:
+                        try:
+                            r[k]=int(r[k])
+                        except:
+                            r[k]=0
         else:
             dl = [
                 {'chiphiid': '001', 'mota': '- Chi phí ống cái', 'dvt': 'mét',
@@ -204,10 +222,21 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'VT%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
+            for r in dl:
+                try:
+                    r['soluong']=float(r[k])
+                except:
+                    r['soluong']=0
+                for k in r:
+                    if k in ['giavl','gianc','giamtc']:
+                        try:
+                            r[k]=int(r[k])
+                        except:
+                            r[k]=0
         else:
             dl = [
                 {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
@@ -247,10 +276,21 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'VL%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
+            for r in dl:
+                try:
+                    r['soluong']=float(r[k])
+                except:
+                    r['soluong']=0
+                for k in r:
+                    if k in ['giavl','gianc','giamtc']:
+                        try:
+                            r[k]=int(r[k])
+                        except:
+                            r[k]=0
         else:
             dl = [
                 {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
@@ -275,10 +315,21 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.sl1 as soluong,qt.dongia as gia"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt35 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'TL%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
+            for r in dl:
+                try:
+                    r['soluong']=float(r[k])
+                except:
+                    r['soluong']=0
+                for k in r:
+                    if k in ['gia','dongia']:
+                        try:
+                            r[k]=int(r[k])
+                        except:
+                            r[k]=0
         else:
             dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
                    'soluong': 0.35, 'gia': 412000},
@@ -303,7 +354,18 @@ class RptQtgt:
             f" Where (qt.maqt='{self.maqt}')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
+            for r in dl:
+                try:
+                    r['soluong']=float(r[k])
+                except:
+                    r['soluong']=0
+                for k in r:
+                    if k in ['giavl','gianc','giamtc']:
+                        try:
+                            r[k]=int(r[k])
+                        except:
+                            r[k]=0
         else:
             dl = [
                 {'chiphiid': '001', 'mota': '- Chi phí ống ngánh', 'dvt': 'mét',
@@ -343,16 +405,29 @@ class RptQtgt:
             cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
             cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
             cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
+        for cp in dl:
+            print(f"on_cpxd={cp}")
         self.on_cpxd = dl.copy()
 
     def qton_vt(self):
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'VT%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
+            for r in dl:
+                try:
+                    r['soluong']=float(r[k])
+                except:
+                    r['soluong']=0
+                for k in r:
+                    if k in ['giavl','gianc','giamtc']:
+                        try:
+                            r[k]=int(r[k])
+                        except:
+                            r[k]=0
         else:
             dl = [
                 {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
@@ -392,10 +467,21 @@ class RptQtgt:
         sql = (
             f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.soluong,qt.giavl,qt.gianc,qt.giamtc"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'VL%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
+            for r in dl:
+                try:
+                    r['soluong']=float(r[k])
+                except:
+                    r['soluong']=0
+                for k in r:
+                    if k in ['giavl','gianc','giamtc']:
+                        try:
+                            r[k]=int(r[k])
+                        except:
+                            r[k]=0
         else:
             dl = [
                 {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
@@ -418,12 +504,23 @@ class RptQtgt:
 
     def qton_tl(self):
         sql = (
-            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.sl1 as soluong,qt.dongia as gia"
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,qt.sl2 as soluong,qt.dongia as gia"
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt35 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl2 Like 'TL%')"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
+        if (dl != None and len(dl) > 0):
+            for r in dl:
+                try:
+                    r['soluong']=float(r[k])
+                except:
+                    r['soluong']=0
+                for k in r:
+                    if k in ['gia','dongia']:
+                        try:
+                            r[k]=int(r[k])
+                        except:
+                            r[k]=0
         else:
             dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
                    'soluong': 0.35, 'gia': 412000},
@@ -480,21 +577,21 @@ class RptQtgt:
             f" Where maqt='{self.maqt}')"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
-            dl[0]
+        if (dl != None and len(dl) > 0):
+            dl = dl[0]
         else:
             dl = {"hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.055, "tructiepkhac": 0,
                   "giantiepkhac": 0.02, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566}
-        self.vl = dl['vl']
-        self.nc = dl['nc']
-        self.mtc = dl['mtc']
-        self.tructiepkhac = dl['tructiepkhac']
-        self.chung = dl['chung']
-        self.giantiepkhac = dl['giantiepkhac']
-        self.thutinhtruoc = dl['thutinhtruoc']
-        self.khaosat = dl['khaosat']
-        self.thietke = dl['thietke']
-        self.giamsat = dl['giamsat']
+        self.vl = float(dl['vl'])
+        self.nc = float(dl['nc'])
+        self.mtc = float(dl['mtc'])
+        self.tructiepkhac = float(dl['tructiepkhac'])
+        self.chung = float(dl['chung'])
+        self.giantiepkhac = float(dl['giantiepkhac'])
+        self.thutinhtruoc = float(dl['thutinhtruoc'])
+        self.khaosat = float(dl['khaosat'])
+        self.thietke = float(dl['thietke'])
+        self.giamsat = float(dl['giamsat'])
         # ong cai
         self.ocvl = lamtronso(self.oczvl * self.vl, 0)
         self.ocnc = lamtronso(self.ocznc * self.nc, 0)
@@ -559,8 +656,10 @@ class RptQtgt:
             self.maubaocao = 'on'
 
     def qtgt(self):
+        #convert(ngaylap, getdate(), 112)
+        # FORMAT(baogiaid, 'yyyyMMdd', 'en-US' ) AS
         sql = (
-            f"Select top 1 ngaylap,baogiaid as mabaogia,"
+            f"Select top 1 ngaylap, convert(datetime, baogiaid) as mabaogia,"
             f" dautucty as ktcpcty, dautukhach as ktcpkhach,"
             f" vlcai as oczvl,nccai as ocznc,mtccai as oczmtc,"
             f" vlnganh as onzvl, ncnganh as onznc, mtcnganh as onzmtc"
@@ -568,8 +667,9 @@ class RptQtgt:
             f" Where maqt='{self.maqt}'"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
-            dl[0]
+        if (dl != None and len(dl) > 0):
+            dl = dl[0]
+            #print(f"qtgt dl={dl}")
         else:
             dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
                   'oczvl': 0, 'ocznc': 0, 'oczmtc': 0, 'ocztl': 0,
@@ -580,16 +680,16 @@ class RptQtgt:
         else:
             self.tieude = 'BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC'
         self.ngaylap = dl['ngaylap']
-        self.oczvl = dl['oczvl']
-        self.ocznc = dl['ocznc']
-        self.oczmtc = dl['oczmtc']
+        self.oczvl = int(dl['oczvl'])
+        self.ocznc = int(dl['ocznc'])
+        self.oczmtc = int(dl['oczmtc'])
         #self.ocztl = dl['ocztl']
-        self.onzvl = dl['onzvl']
-        self.onznc = dl['onznc']
-        self.onzmtc = dl['onzmtc']
+        self.onzvl = int(dl['onzvl'])
+        self.onznc = int(dl['onznc'])
+        self.onzmtc = int(dl['onzmtc'])
         #self.onztl = dl['onztl']
-        self.ktcpcty = dl['ktcpcty']
-        self.ktcpkhach = dl['ktcpkhach']
+        self.ktcpcty = int(dl['ktcpcty'])
+        self.ktcpkhach = int(dl['ktcpkhach'])
         self.mabaogia = dl['mabaogia']
 
 
@@ -843,13 +943,17 @@ class Phui_20200721:
         self.cpvl = cpvl
 
 
-# test
-phui = [{'macptl': 'nhua_10cm', 'dai': 0.5, 'rong': 0.5, 'sau': 1},
-        {'macptl': 'nhua_12cm', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-        {'macptl': 'nhua_10cm', 'dai': 1, 'rong': 0.3, 'sau': 0.6},
-        {'macptl': 'le_gachterrazzo', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-        {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-        {'macptl': 'hem_btxm', 'dai': 1, 'rong': 0.3, 'sau': 0.6}
-        ]
-kq = Phui_20200721(phui)
-print(vars(kq))
+def test_phui():
+    phui = [{'macptl': 'nhua_10cm', 'dai': 0.5, 'rong': 0.5, 'sau': 1},
+            {'macptl': 'nhua_12cm', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'nhua_10cm', 'dai': 1, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_gachterrazzo', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'hem_btxm', 'dai': 1, 'rong': 0.3, 'sau': 0.6}
+            ]
+    kq = Phui_20200721(phui)
+    print(vars(kq))
+
+schema='pkh'
+maqt='2020GMMP571002'
+qtgt=RptQtgt(maqt,schema)

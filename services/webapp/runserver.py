@@ -15,7 +15,7 @@ import comps
 from ttdl import Maychu
 from ttxl import runsql
 
-tornado.locale.set_default_locale('vi_VI')
+# tornado.locale.set_default_locale('vi_VI')
 
 
 class WebBase(web.RequestHandler):
@@ -67,16 +67,20 @@ class Frm_Qtgt(WebBase):
 
 class Rpt_Qtgt(WebBase):
     def get(self):
-        schema = 'qlmltd'
+        schema = 'pkh'
         sql = (
-            f"Select maqt From dbo.dot RIGHT JOIN {schema}.qt"
+            f"Select qt.maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON dot.madot=qt.madot"
             f" Where (dot.inok<>0 And qt.inok<>0)"
         )
         dl = runsql(sql)
-        if len(dl) > 0:
-            dsmaqt = dl[0]
+        print(f"server dl={dl}")
+        if (dl != None and len(dl) > 0):
+            dsmaqt = []
+            for r in dl:
+                dsmaqt.append(r['maqt'])
         else:
             dsmaqt = ['pkh001', 'pkh002']
+        print(f"dsmaqt={dsmaqt}")
         self.render("reports/qtgt/main.html", dsmaqt=dsmaqt,
                     schema=schema, error=None)
 
