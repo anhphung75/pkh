@@ -1,6 +1,6 @@
 import { lamtronso } from "../../utils.js";
 
-class RptQtgt {
+export default class DulieuQtgt {
   constructor(maqt) {
     this.maqt = maqt;
     this.rptid = 'qtgt_' + maqt;
@@ -109,12 +109,11 @@ class RptQtgt {
   mau() {
     //markup data
     let tpl = `
-    
+
     `
     return tpl;
   }
 }
 
-export {RptQtgt}
 //use qtgt=new RptQtgt('maqt');
 // render_quochuy= qtgt.quochuy(ngaylap,dvtc)

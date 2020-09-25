@@ -71,7 +71,7 @@ class RptQtgt_Quochuy(web.UIModule):
     def render(self, dvtc="ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC", ngaylap=20200904):
         # format so:
         ngaylap = f"{ngaylap}"
-        ngaylap = f"Thủ Đức, {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
+        ngaylap = f"Thủ Đức, ngày {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
         return self.render_string(
             "reports/qtgt/quochuy.html",
             dvtc=dvtc, ngaylap=ngaylap)

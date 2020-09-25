@@ -59,7 +59,7 @@ class sseHoso():
 def runsql(sql=''):
     mssql = Maychu("mssql", "pkh", "Ph0ngK3H0@ch",
                    "192.168.24.4:1433", "PKHData")
-    #try:
+    # try:
     kq = mssql.core().execute(sql)
     data = []
     for row in kq:
@@ -67,18 +67,18 @@ def runsql(sql=''):
         for k in dl.copy():
             #print(f"dl[{k}]={dl[k]} type={type(dl[k])}")
             if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
-                if k=='lastupdate':
+                if k == 'lastupdate':
                     dl[k] = int(arrow.get(dl[k]).float_timestamp * 1000)
                 else:
                     dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
             if isinstance(dl[k], decimal.Decimal):
-                dl[k] =float(dl[k])
+                dl[k] = float(dl[k])
         data.append(dl)
     kq.close()
     for cp in data:
         print(f"runsql cp={cp}")
     return data
-    #except:
+    # except:
     #    return None
 
 
@@ -90,21 +90,21 @@ class RptQtgt:
 
     def load_qtgt(self):
         # self.get_tttt()
-        #self.hoso()
-        #self.dot()
-        #self.get_khachhang()
-        #self.donvithicong()
-        #self.qtoc_xd()
-        #self.qtoc_vt()
-        #self.qtoc_vl()
-        #self.qtoc_tl()
+        self.hoso()
+        self.dot()
+        self.get_khachhang()
+        self.donvithicong()
+        self.qtoc_xd()
+        self.qtoc_vt()
+        self.qtoc_vl()
+        self.qtoc_tl()
         self.qton_xd()
-        #self.qton_vt()
-        #self.qton_vl()
-        #self.qton_tl()
-        #self.tlmd()
-        #self.qtgt()
-        #self.chiphiquanly()
+        self.qton_vt()
+        self.qton_vl()
+        self.qton_tl()
+        self.tlmd()
+        self.qtgt()
+        self.chiphiquanly()
 
     def get_tttt(self):
         dl = {"maqt": "pkh002", "madot": "2020gmmp242", "mahoso": "113344",
@@ -123,6 +123,9 @@ class RptQtgt:
             dl = {
                 'sohoso': 'GM01001/20',
                 'diachigandhn': '25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ', }
+        # test
+        for cp in dl:
+            print(f"hoso={cp}")
         self.sohoso = dl['sohoso']
         self.diachigandhn = dl['diachigandhn']
 
@@ -136,6 +139,9 @@ class RptQtgt:
             dl = dl[0]
         else:
             dl = {'sodot': '999/2020MP', }
+        # test
+        for cp in dl:
+            print(f"dot={cp}")
         self.sodot = dl['sodot']
 
     def get_khachhang(self):
@@ -148,6 +154,9 @@ class RptQtgt:
             dl = dl[0]
         else:
             dl = {'khachhang': 'Lỗi Dữ Liệu', }
+        # test
+        for cp in dl:
+            print(f"khachhang={cp}")
         self.khachhang = dl['khachhang']
 
     def donvithicong(self):
@@ -161,6 +170,9 @@ class RptQtgt:
             dl = dl[0]
         else:
             dl = {'dvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', }
+        # test
+        for cp in dl:
+            print(f"dvtc={cp}")
         self.dvtc = dl['dvtc']
 
     def qtoc_xd(self):
@@ -171,18 +183,7 @@ class RptQtgt:
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
-            for r in dl:
-                try:
-                    
-                    r['soluong']=float(r[k])
-                except:
-                    r['soluong']=0
-                for k in r:
-                    if k in ['giavl','gianc','giamtc']:
-                        try:
-                            r[k]=int(r[k])
-                        except:
-                            r[k]=0
+            pass
         else:
             dl = [
                 {'chiphiid': '001', 'mota': '- Chi phí ống cái', 'dvt': 'mét',
@@ -222,6 +223,9 @@ class RptQtgt:
             cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
             cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
             cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
+        # test
+        for cp in dl:
+            print(f"oc_cpxd={cp}")
         self.oc_cpxd = dl.copy()
 
     def qtoc_vt(self):
@@ -232,17 +236,7 @@ class RptQtgt:
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
-            for r in dl:
-                try:
-                    r['soluong']=float(r[k])
-                except:
-                    r['soluong']=0
-                for k in r:
-                    if k in ['giavl','gianc','giamtc']:
-                        try:
-                            r[k]=int(r[k])
-                        except:
-                            r[k]=0
+            pass
         else:
             dl = [
                 {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
@@ -276,6 +270,9 @@ class RptQtgt:
             cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
             cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
             cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
+        # test
+        for cp in dl:
+            print(f"on_cpvt={cp}")
         self.oc_cpvt = dl.copy()
 
     def qtoc_vl(self):
@@ -286,17 +283,7 @@ class RptQtgt:
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
-            for r in dl:
-                try:
-                    r['soluong']=float(r[k])
-                except:
-                    r['soluong']=0
-                for k in r:
-                    if k in ['giavl','gianc','giamtc']:
-                        try:
-                            r[k]=int(r[k])
-                        except:
-                            r[k]=0
+            pass
         else:
             dl = [
                 {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
@@ -315,6 +302,9 @@ class RptQtgt:
             cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
             cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
             cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
+        # test
+        for cp in dl:
+            print(f"on_cpvl={cp}")
         self.oc_cpvl = dl.copy()
 
     def qtoc_tl(self):
@@ -325,17 +315,7 @@ class RptQtgt:
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
-            for r in dl:
-                try:
-                    r['soluong']=float(r[k])
-                except:
-                    r['soluong']=0
-                for k in r:
-                    if k in ['gia','dongia']:
-                        try:
-                            r[k]=int(r[k])
-                        except:
-                            r[k]=0
+            pass
         else:
             dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
                    'soluong': 0.35, 'gia': 412000},
@@ -351,6 +331,9 @@ class RptQtgt:
         for cp in dl:
             cp['sl_oc'] = cp['soluong']
             cp['tien_oc'] = lamtronso(cp['soluong'] * cp['gia'], 0)
+        # test
+        for cp in dl:
+            print(f"on_cptl={cp}")
         self.oc_cptl = dl.copy()
 
     def qton_xd(self):
@@ -361,17 +344,7 @@ class RptQtgt:
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
-            for r in dl:
-                try:
-                    r['soluong']=float(r[k])
-                except:
-                    r['soluong']=0
-                for k in r:
-                    if k in ['giavl','gianc','giamtc']:
-                        try:
-                            r[k]=int(r[k])
-                        except:
-                            r[k]=0
+            pass
         else:
             dl = [
                 {'chiphiid': '001', 'mota': '- Chi phí ống ngánh', 'dvt': 'mét',
@@ -411,6 +384,7 @@ class RptQtgt:
             cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
             cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
             cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
+        # test
         for cp in dl:
             print(f"on_cpxd={cp}")
         self.on_cpxd = dl.copy()
@@ -423,17 +397,7 @@ class RptQtgt:
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
-            for r in dl:
-                try:
-                    r['soluong']=float(r[k])
-                except:
-                    r['soluong']=0
-                for k in r:
-                    if k in ['giavl','gianc','giamtc']:
-                        try:
-                            r[k]=int(r[k])
-                        except:
-                            r[k]=0
+            pass
         else:
             dl = [
                 {'chiphiid': '001', 'mota': 'Đai lấy nước PP 100 x 20F', 'dvt': 'bộ',
@@ -467,6 +431,9 @@ class RptQtgt:
             cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
             cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
             cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
+       # test
+        for cp in dl:
+            print(f"on_cpvt={cp}")
         self.on_cpvt = dl.copy()
 
     def qton_vl(self):
@@ -477,17 +444,7 @@ class RptQtgt:
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
-            for r in dl:
-                try:
-                    r['soluong']=float(r[k])
-                except:
-                    r['soluong']=0
-                for k in r:
-                    if k in ['giavl','gianc','giamtc']:
-                        try:
-                            r[k]=int(r[k])
-                        except:
-                            r[k]=0
+            pass
         else:
             dl = [
                 {'chiphiid': '001', 'mota': 'Cát san lấp', 'dvt': 'm3',
@@ -506,6 +463,9 @@ class RptQtgt:
             cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
             cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
             cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
+        # test
+        for cp in dl:
+            print(f"on_cpvl={cp}")
         self.on_cpvl = dl.copy()
 
     def qton_tl(self):
@@ -516,17 +476,7 @@ class RptQtgt:
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
-            for r in dl:
-                try:
-                    r['soluong']=float(r[k])
-                except:
-                    r['soluong']=0
-                for k in r:
-                    if k in ['gia','dongia']:
-                        try:
-                            r[k]=int(r[k])
-                        except:
-                            r[k]=0
+            pass
         else:
             dl = [{'chiphiid': '001', 'mota': 'Gạch hình sin', 'dvt': 'm2',
                    'soluong': 0.35, 'gia': 412000},
@@ -542,6 +492,9 @@ class RptQtgt:
         for cp in dl:
             cp['sl_on'] = cp['soluong']
             cp['tien_on'] = lamtronso(cp['soluong'] * cp['gia'], 0)
+        # test
+        for cp in dl:
+            print(f"on_cptl={cp}")
         self.on_cptl = dl.copy()
 
     def tlmd(self):
@@ -570,6 +523,9 @@ class RptQtgt:
                 ocztl += rec['tien_oc']
                 onztl += rec['tien_on']
                 tam.append(rec)
+        # test
+        for cp in dl:
+            print(f"cptl={cp}")
         self.cptl = tam.copy()
         self.ocztl = ocztl
         self.onztl = onztl
@@ -588,16 +544,16 @@ class RptQtgt:
         else:
             dl = {"hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "chung": 0.055, "tructiepkhac": 0,
                   "giantiepkhac": 0.02, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566}
-        self.vl = float(dl['vl'])
-        self.nc = float(dl['nc'])
-        self.mtc = float(dl['mtc'])
-        self.tructiepkhac = float(dl['tructiepkhac'])
-        self.chung = float(dl['chung'])
-        self.giantiepkhac = float(dl['giantiepkhac'])
-        self.thutinhtruoc = float(dl['thutinhtruoc'])
-        self.khaosat = float(dl['khaosat'])
-        self.thietke = float(dl['thietke'])
-        self.giamsat = float(dl['giamsat'])
+        self.vl = dl['vl']
+        self.nc = dl['nc']
+        self.mtc = dl['mtc']
+        self.tructiepkhac = dl['tructiepkhac']
+        self.chung = dl['chung']
+        self.giantiepkhac = dl['giantiepkhac']
+        self.thutinhtruoc = dl['thutinhtruoc']
+        self.khaosat = dl['khaosat']
+        self.thietke = dl['thietke']
+        self.giamsat = dl['giamsat']
         # ong cai
         self.ocvl = lamtronso(self.oczvl * self.vl, 0)
         self.ocnc = lamtronso(self.ocznc * self.nc, 0)
@@ -960,6 +916,3 @@ def test_phui():
     kq = Phui_20200721(phui)
     print(vars(kq))
 
-schema='pkh'
-maqt='2020GMMP571002'
-qtgt=RptQtgt(maqt,schema)
