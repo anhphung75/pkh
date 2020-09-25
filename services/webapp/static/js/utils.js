@@ -25,7 +25,7 @@ class Tien {
     if (this.tien) {
       return new Intl.NumberFormat('vi-VI', { maximumSignificantDigits: 0 }).format(this.tien);
     } else {
-      return "";
+      return "- ";
     }
   }
   chu() {

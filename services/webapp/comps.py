@@ -114,12 +114,6 @@ class RptQtgt_Tieude(web.UIModule):
 
 
 class RptQtgt_ChiphiTieudebang(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-
-        '''
-        return __css
-
     def render(self):
         return self.render_string(
             "reports/qtgt/chiphi-tieudebang.html")

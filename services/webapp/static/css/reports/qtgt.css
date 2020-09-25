@@ -24,7 +24,7 @@ main {
 
 .bang {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / 157fr 30fr 40fr 56fr 50fr 50fr 60fr 56fr 56fr;
+  grid: auto-flow minmax(1rem, max-content) / 215fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr;
 }
 
 @media print {
