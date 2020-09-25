@@ -8,7 +8,7 @@
 @import url('./font_Opensans.css');
 @import url('./font_UVNTintuc.css');
 html, body {
-  font-family: "Open Sans Condensed", "Open Sans", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", sans-serif;
+  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
   /* font-size: 16pt; */
   margin: 0;
   border: 0;
@@ -61,6 +61,26 @@ html, body {
   text-decoration: underline;
 }
 
+.fc {
+  font-family: "Open Sans";
+  font-stretch: condensed;
+}
+
+.fc1 {
+  font-family: "Open Sans Condensed";
+  font-stretch: condensed;
+}
+
+.fc2 {
+  font-family: "UVN Tin Tuc Hep";
+  font-stretch: normal;
+}
+
+.fc3 {
+  font-family: "UVN Tin Tuc Hep Them";
+  font-stretch: normal;
+}
+
 .f-2 {
   font-size: calc( 1rem - 2pt);
 }
@@ -105,8 +125,8 @@ html, body {
   padding-top: 3pt;
 }
 
-.h1px{
-  height:1px;
+.h1px {
+  height: 1px;
 }
 
 .w100 {
@@ -243,7 +263,6 @@ html, body {
     background-color: transparent;
     color: black;
   }
-
   .A4doc {
     width: 210mm;
     height: 297mm;

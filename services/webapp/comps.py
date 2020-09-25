@@ -39,6 +39,7 @@ class FrmQtgt_Ongnganh(web.UIModule):
         return self.render_string(
             "forms/qtgt/ongnganh.html")
 
+
 class RptQtgt_Quochuy(web.UIModule):
     def embedded_javascript(self):
         __js = '''
@@ -115,10 +116,7 @@ class RptQtgt_Tieude(web.UIModule):
 class RptQtgt_ChiphiTieudebang(web.UIModule):
     def embedded_css(self):
         __css = '''
-        .bang {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 157fr 30fr 40fr 56fr 50fr 50fr 60fr 56fr 56fr;
-        }
+
         '''
         return __css
 
@@ -153,6 +151,8 @@ class RptQtgt_ChiphiNoidung(web.UIModule):
 
     def render(self, uid=None, mota=None, dvt=None, soluong=0, giavl=0, gianc=0, giamtc=0, tienvl=0, tiennc=0, tienmtc=0):
         # format number
+        print(
+            f"truoc format soluong={soluong} giavl={giavl} gianc={gianc} giamtc={giamtc} tienvl={tienvl} tiennc={tiennc} tienmtc={tienmtc}")
         soluong = tachhangso(soluong, 3)
         giavl = tachhangso(giavl, 0)
         gianc = tachhangso(gianc, 0)
@@ -160,6 +160,8 @@ class RptQtgt_ChiphiNoidung(web.UIModule):
         tienvl = tachhangso(tienvl, 0)
         tiennc = tachhangso(tiennc, 0)
         tienmtc = tachhangso(tienmtc, 0)
+        print(
+            f"sau format soluong={soluong} giavl={giavl} gianc={gianc} giamtc={giamtc} tienvl={tienvl} tiennc={tiennc} tienmtc={tienmtc}")
         return self.render_string(
             "reports/qtgt/chiphi-noidung.html",
             uid=uid, mota=mota, dvt=dvt, soluong=soluong,
@@ -358,8 +360,15 @@ class RptKyduyet3(web.UIModule):
                  'nhanvien': 'Nguyễn Công Minh'}
         kiemtra = {'pbd': 'KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
                    'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
-        lap = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
-               'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
+        if dvtc.lower() in ['qlmlq2', 'đội qlmlcn quận 2', 'đội qlml cấp nước quận 2', 'đội quản lý mạng lưới cấp nước quận 2']:
+            lap = {'pbd': 'ĐỘI QLMLCN QUẬN 2',
+                   'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Ngọc Quý'}
+        elif dvtc.lower() in ['qlmlq9', 'đội qlmlcn quận 9', 'đội qlml cấp nước quận 9', 'đội quản lý mạng lưới cấp nước quận 9']:
+            lap = {'pbd': 'ĐỘI QLMLCN QUẬN 9',
+                   'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Bùi Quang Thiên Chương'}
+        else:
+            lap = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
+                   'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
         return self.render_string(
             "reports/qtgt/kyduyet3.html",
             duyet=duyet, kiemtra=kiemtra, lap=lap,

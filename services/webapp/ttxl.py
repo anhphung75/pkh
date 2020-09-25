@@ -86,14 +86,15 @@ class RptQtgt:
     def __init__(self, maqt='', schema='qlmltd'):
         self.maqt = maqt
         self.schema = schema
-        self.load_qtgt()
+        self.get_qtgt()
 
-    def load_qtgt(self):
+    def get_qtgt(self):
         # self.get_tttt()
-        self.hoso()
-        self.dot()
+        self.get_hoso()
+        self.get_dot()
         self.get_khachhang()
-        self.donvithicong()
+        self.get_donvithicong()
+        self.get_cpqlid()
         self.qtoc_xd()
         self.qtoc_vt()
         self.qtoc_vl()
@@ -103,15 +104,15 @@ class RptQtgt:
         self.qton_vl()
         self.qton_tl()
         self.tlmd()
-        self.qtgt()
-        self.chiphiquanly()
+        self.get_quyettoangiatri()
+        self.get_chiphiquanly()
 
     def get_tttt(self):
         dl = {"maqt": "pkh002", "madot": "2020gmmp242", "mahoso": "113344",
               "makhachhang": "2020kh001", "madvtc": "qlmltd"}
         self.tttt = dl
 
-    def hoso(self):
+    def get_hoso(self):
         sql = (
             f"Select top 1 sohoso, diachikhachhang as diachigandhn From dbo.hoso"
             f" Where hosoid=(Select top 1 hosoid from dbo.qt Where maqt='{self.maqt}')"
@@ -120,16 +121,16 @@ class RptQtgt:
         if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
-            dl = {
+            dl = [{
                 'sohoso': 'GM01001/20',
-                'diachigandhn': '25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ', }
+                'diachigandhn': '25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ', }]
         # test
         for cp in dl:
-            print(f"hoso={cp}")
+            print(f"hoso={dl[cp]}")
         self.sohoso = dl['sohoso']
         self.diachigandhn = dl['diachigandhn']
 
-    def dot(self):
+    def get_dot(self):
         sql = (
             f"Select top 1 sodot From dbo.dot"
             f" Where madot=(Select top 1 madot from dbo.qt Where maqt='{self.maqt}')"
@@ -138,10 +139,10 @@ class RptQtgt:
         if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
-            dl = {'sodot': '999/2020MP', }
+            dl = [{'sodot': '999/2020MP', }]
         # test
         for cp in dl:
-            print(f"dot={cp}")
+            print(f"dot={dl[cp]}")
         self.sodot = dl['sodot']
 
     def get_khachhang(self):
@@ -153,13 +154,13 @@ class RptQtgt:
         if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
-            dl = {'khachhang': 'Lỗi Dữ Liệu', }
+            dl = [{'khachhang': 'Lỗi Dữ Liệu', }]
         # test
         for cp in dl:
-            print(f"khachhang={cp}")
+            print(f"khachhang={dl[cp]}")
         self.khachhang = dl['khachhang']
 
-    def donvithicong(self):
+    def get_donvithicong(self):
         sql = (
             f"Select top 1 ten as dvtc From dbo.nhathau"
             f" Where nhathauid=(Select top 1 nhathauid From dbo.dot"
@@ -169,11 +170,24 @@ class RptQtgt:
         if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
-            dl = {'dvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', }
+            dl = [{'dvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', }]
         # test
         for cp in dl:
-            print(f"dvtc={cp}")
+            print(f"dvtc={dl[cp]}")
         self.dvtc = dl['dvtc']
+
+    def get_cpqlid(self):
+        sql = f"Select top 1 hesoid as cpqlid From {self.schema}.qt Where maqt='{self.maqt}'"
+        dl = runsql(sql)
+        if (dl != None and len(dl) > 0):
+            dl = dl[0]
+        else:
+            dl = [{'cpqlid': 20200721}]
+        # test
+        for cp in dl:
+            print(f"cpqlid=hesoid={dl[cp]}")
+        self.cpqlid = dl['cpqlid']
+        self.hesoid = self.cpqlid
 
     def qtoc_xd(self):
         sql = (
@@ -299,9 +313,17 @@ class RptQtgt:
         # load gia
         # tinh tien
         for cp in dl:
-            cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
-            cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
-            cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
+            if self.cpqlid >= 20200827:
+                cp['tienvl'] = lamtronso(
+                    cp['soluong'] * cp['giavl']/1000, 0)*1000
+                cp['tiennc'] = lamtronso(
+                    cp['soluong'] * cp['gianc']/1000, 0)*1000
+                cp['tienmtc'] = lamtronso(
+                    cp['soluong'] * cp['giamtc']/1000, 0)*1000
+            else:
+                cp['tienvl'] = lamtronso(cp['soluong'] * cp['giavl'], 0)
+                cp['tiennc'] = lamtronso(cp['soluong'] * cp['gianc'], 0)
+                cp['tienmtc'] = lamtronso(cp['soluong'] * cp['giamtc'], 0)
         # test
         for cp in dl:
             print(f"on_cpvl={cp}")
@@ -530,13 +552,12 @@ class RptQtgt:
         self.ocztl = ocztl
         self.onztl = onztl
 
-    def chiphiquanly(self):
+    def get_chiphiquanly(self):
         sql = (
             f"Select top 1 1 as vl,heso_nc as nc, heso_mtc as mtc,heso_ttpk as tructiepkhac,"
             f" giantiepkhac,heso_cpchung as chung,heso_thunhaptt as thutinhtruoc,"
             f" heso_khaosat as khaosat, heso_thietke as thietke, heso_gstc as giamsat"
-            f" From dbo.hesochiphi Where hesoid=(Select top 1 hesoid From {self.schema}.qt"
-            f" Where maqt='{self.maqt}')"
+            f" From dbo.hesochiphi Where hesoid={self.cpqlid}"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
@@ -617,7 +638,7 @@ class RptQtgt:
         else:
             self.maubaocao = 'on'
 
-    def qtgt(self):
+    def get_quyettoangiatri(self):
         #convert(ngaylap, getdate(), 112)
         # FORMAT(baogiaid, 'yyyyMMdd', 'en-US' ) AS
         sql = (
@@ -915,4 +936,3 @@ def test_phui():
             ]
     kq = Phui_20200721(phui)
     print(vars(kq))
-

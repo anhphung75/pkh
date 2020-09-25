@@ -77,6 +77,11 @@ class Tien():
             while len(s) > 2:
                 hang.append(s[-3:])
                 s = s[:-3]
+            try:
+                s = int(s)
+                hang.append(f"{s}")
+            except:
+                pass
             somoi = f"{'.'.join(reversed(hang))} {kyhieu}"
             return somoi.strip()
 
@@ -165,12 +170,11 @@ def lamtronso(sothapphan=0, phanle=3):
 
 def tachhangso(sothapphan=0, phanle=3):
     if sothapphan == None:
-        return f""
+        return f"- "
     elif sothapphan == 0:
-        return f""
+        return f"- "
     else:
         s = f"{sothapphan:12f}"
-        dauthapphan = ','
         for d in ['.', ',']:
             if s.count(d) == 1:
                 dauthapphan = d
@@ -181,7 +185,12 @@ def tachhangso(sothapphan=0, phanle=3):
         while len(songuyen) > 2:
             hang.append(songuyen[-3:])
             songuyen = songuyen[:-3]
+        try:
+            songuyen = int(songuyen)
+            hang.append(f"{songuyen}")
+        except:
+            pass
         if phanle == 0:
-            return f"{'.'.join(reversed(hang))}"
+            return f"{'.'.join(reversed(hang))}".strip()
         else:
-            return f"{'.'.join(reversed(hang))},{sole}"
+            return f"{'.'.join(reversed(hang))},{sole}".strip()

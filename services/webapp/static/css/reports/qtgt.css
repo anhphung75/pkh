@@ -4,12 +4,6 @@ html, body {
   font-size: 8pt;
 }
 
-main {
-  flex: 1 1 0%;
-  display: flex;
-  flex-direction: column;
-}
-
 .trangin {
   margin-left: 20pt;
   margin-right: 20pt;
@@ -20,6 +14,17 @@ main {
   display: flex;
   flex-direction: column;
   background: white;
+}
+
+main {
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+}
+
+.bang {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content) / 157fr 30fr 40fr 56fr 50fr 50fr 60fr 56fr 56fr;
 }
 
 @media print {
