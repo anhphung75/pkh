@@ -90,11 +90,10 @@ class RptQtgt:
 
     def get_qtgt(self):
         # self.get_tttt()
-        self.get_hoso()
-        self.get_dot()
-        self.get_khachhang()
-        self.get_donvithicong()
-        self.get_cpqlid()
+        self.tbl_qtgt()
+        self.tbl_hoso()
+        self.tbl_dot()
+        self.tbl_donvithicong()
         self.qtoc_xd()
         self.qtoc_vt()
         self.qtoc_vl()
@@ -104,7 +103,6 @@ class RptQtgt:
         self.qton_vl()
         self.qton_tl()
         self.tlmd()
-        self.get_quyettoangiatri()
         self.get_chiphiquanly()
 
     def get_tttt(self):
@@ -112,82 +110,101 @@ class RptQtgt:
               "makhachhang": "2020kh001", "madvtc": "qlmltd"}
         self.tttt = dl
 
-    def get_hoso(self):
+    def tbl_qtgt(self):
+        #convert(ngaylap, getdate(), 112)
+        # FORMAT(baogiaid, 'yyyyMMdd', 'en-US' ) AS
         sql = (
-            f"Select top 1 sohoso, diachikhachhang as diachigandhn From dbo.hoso"
-            f" Where hosoid=(Select top 1 hosoid from dbo.qt Where maqt='{self.maqt}')"
+            f"Select top 1 ngaylap, dautucty as tiencty, dautukhach as tienkhach, gxd, tt,"
+            f" vlcai as oczvl,nccai as ocznc,mtccai as oczmtc,"
+            f" vlnganh as onzvl, ncnganh as onznc, mtcnganh as onzmtc,"
+            f" convert(datetime, baogiaid) as mabaogia, hesoid as cpqlid, madot, hosoid, plgia"
+            f" From {self.schema}.qt"
+            f" Where (maqt='{self.maqt}')"
+        )
+        dl = runsql(sql)
+        if (dl != None and len(dl) > 0):
+            dl = dl[0]
+            print(f"qtgt dl={dl}")
+        else:
+            dl = {"ngaylap": "20200907", "cpqlid": 20200721, "mabaogia": "20200721",
+                  "oczvl": 0, "ocznc": 0, "oczmtc": 0, "ocztl": 0,
+                  "onzvl": 88889998888, "onznc": 8888998888, "onzmtc": 0, "onztl": 0,
+                  "tiencty": 9999277584, "tienkhach": 0, "gxd": 0, "tt": 0,
+                  "plgia": "dutoan", "hosoid": 0, "madot": "9999GMMP001"}
+        if 'tl' in self.maqt.lower():
+            self.tieude = 'BẢNG QUYẾT TOÁN TÁI LẬP DANH BỘ'
+        else:
+            self.tieude = 'BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC'
+        self.ngaylap = dl['ngaylap']
+        self.gxd = dl['gxd']
+        self.tiencty = dl['tiencty']
+        self.tienkhach = dl['tienkhach']
+        self.tt = dl['tt']
+        self.oczvl = dl['oczvl']
+        self.ocznc = dl['ocznc']
+        self.oczmtc = dl['oczmtc']
+        #self.ocztl = dl['ocztl']
+        self.onzvl = dl['onzvl']
+        self.onznc = dl['onznc']
+        self.onzmtc = dl['onzmtc']
+        #self.onztl = dl['onztl']
+        self.madot = dl['madot']
+        self.hosoid = dl['hosoid']
+        self.mabaogia = dl['mabaogia']
+        self.plgia = dl['plgia']
+        self.cpqlid = dl['cpqlid']
+        self.hesoid = self.cpqlid
+
+    def tbl_hoso(self):
+        sql = (
+            f"Select top 1 sohoso, diachikhachhang as diachigandhn, khachhang From dbo.hoso"
+            f" Where (hosoid='{self.hosoid}')"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
-            dl = [{
-                'sohoso': 'GM01001/20',
-                'diachigandhn': '25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ', }]
+            dl = {
+                "sohoso": "GM01001/20",
+                "diachigandhn": "25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ",
+                "khachhang": "Lỗi dữ liệu"}
         # test
         for cp in dl:
             print(f"hoso={dl[cp]}")
         self.sohoso = dl['sohoso']
         self.diachigandhn = dl['diachigandhn']
-
-    def get_dot(self):
-        sql = (
-            f"Select top 1 sodot From dbo.dot"
-            f" Where madot=(Select top 1 madot from dbo.qt Where maqt='{self.maqt}')"
-        )
-        dl = runsql(sql)
-        if (dl != None and len(dl) > 0):
-            dl = dl[0]
-        else:
-            dl = [{'sodot': '999/2020MP', }]
-        # test
-        for cp in dl:
-            print(f"dot={dl[cp]}")
-        self.sodot = dl['sodot']
-
-    def get_khachhang(self):
-        sql = (
-            f"Select top 1 khachhang From dbo.hoso"
-            f" Where hosoid=(Select top 1 hosoid from dbo.qt Where maqt='{self.maqt}')"
-        )
-        dl = runsql(sql)
-        if (dl != None and len(dl) > 0):
-            dl = dl[0]
-        else:
-            dl = [{'khachhang': 'Lỗi Dữ Liệu', }]
-        # test
-        for cp in dl:
-            print(f"khachhang={dl[cp]}")
         self.khachhang = dl['khachhang']
 
-    def get_donvithicong(self):
+    def tbl_dot(self):
         sql = (
-            f"Select top 1 ten as dvtc From dbo.nhathau"
-            f" Where nhathauid=(Select top 1 nhathauid From dbo.dot"
-            f" Where madot=(Select top 1 madot from dbo.qt Where maqt='{self.maqt}'))"
+            f"Select top 1 sodot, nhathauid as dvtcid From dbo.dot"
+            f" Where (madot='{self.madot}')"
         )
         dl = runsql(sql)
         if (dl != None and len(dl) > 0):
             dl = dl[0]
         else:
-            dl = [{'dvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', }]
+            dl = {"sodot": "999/2020MP", "nhathauid": 4}
+        # test
+        for cp in dl:
+            print(f"dot {cp}={dl[cp]}")
+        self.sodot = dl["sodot"]
+        self.dvtcid = dl["dvtcid"]
+
+    def tbl_donvithicong(self):
+        sql = (
+            f"Select top 1 ten as dvtc From dbo.nhathau"
+            f" Where (nhathauid='{self.dvtcid}')"
+        )
+        dl = runsql(sql)
+        if (dl != None and len(dl) > 0):
+            dl = dl[0]
+        else:
+            dl = {'dvtc': 'ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC', }
         # test
         for cp in dl:
             print(f"dvtc={dl[cp]}")
         self.dvtc = dl['dvtc']
-
-    def get_cpqlid(self):
-        sql = f"Select top 1 hesoid as cpqlid From {self.schema}.qt Where maqt='{self.maqt}'"
-        dl = runsql(sql)
-        if (dl != None and len(dl) > 0):
-            dl = dl[0]
-        else:
-            dl = [{'cpqlid': 20200721}]
-        # test
-        for cp in dl:
-            print(f"cpqlid=hesoid={dl[cp]}")
-        self.cpqlid = dl['cpqlid']
-        self.hesoid = self.cpqlid
 
     def qtoc_xd(self):
         sql = (
@@ -637,43 +654,6 @@ class RptQtgt:
             self.maubaocao = 'oc'
         else:
             self.maubaocao = 'on'
-
-    def get_quyettoangiatri(self):
-        #convert(ngaylap, getdate(), 112)
-        # FORMAT(baogiaid, 'yyyyMMdd', 'en-US' ) AS
-        sql = (
-            f"Select top 1 ngaylap, convert(datetime, baogiaid) as mabaogia,"
-            f" dautucty as ktcpcty, dautukhach as ktcpkhach,"
-            f" vlcai as oczvl,nccai as ocznc,mtccai as oczmtc,"
-            f" vlnganh as onzvl, ncnganh as onznc, mtcnganh as onzmtc"
-            f" From {self.schema}.qt"
-            f" Where maqt='{self.maqt}'"
-        )
-        dl = runsql(sql)
-        if (dl != None and len(dl) > 0):
-            dl = dl[0]
-            #print(f"qtgt dl={dl}")
-        else:
-            dl = {'ngaylap': '20200907', 'macpql': '20200721', 'mabaogia': '20200721',
-                  'oczvl': 0, 'ocznc': 0, 'oczmtc': 0, 'ocztl': 0,
-                  'onzvl': 88889998888, 'onznc': 8888998888, 'onzmtc': 0, 'onztl': 0,
-                  'ktcpcty': 9999277584, 'ktcpkhach': 0}
-        if 'tl' in self.maqt.lower():
-            self.tieude = 'BẢNG QUYẾT TOÁN TÁI LẬP DANH BỘ'
-        else:
-            self.tieude = 'BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC'
-        self.ngaylap = dl['ngaylap']
-        self.oczvl = int(dl['oczvl'])
-        self.ocznc = int(dl['ocznc'])
-        self.oczmtc = int(dl['oczmtc'])
-        #self.ocztl = dl['ocztl']
-        self.onzvl = int(dl['onzvl'])
-        self.onznc = int(dl['onznc'])
-        self.onzmtc = int(dl['onzmtc'])
-        #self.onztl = dl['onztl']
-        self.ktcpcty = int(dl['ktcpcty'])
-        self.ktcpkhach = int(dl['ktcpkhach'])
-        self.mabaogia = dl['mabaogia']
 
 
 class Phui_20200721:

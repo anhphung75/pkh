@@ -1,4 +1,4 @@
-{% if (ktcpcty*ktcpkhach)>0 %}
+{% if (tiencty*tienkhach)>0 %}
 <div class="l u fb w100 c6">THANH TOÁN CHI PHÍ</div>
 <div class="grid kettoanso hov">
   <div class="c fb btbl">Nội dung</div>
@@ -8,30 +8,30 @@
 </div>
 <div class="grid kettoanso hov">
   <div class="l bl">1. Cty Cp Cấp nước Thủ Đức đầu tư</div>
-  <div class="r bl">{{cpctytruocthue}}</div>
-  <div class="r bl">{{thuecpcty}}</div>
-  <div class="r fb brl">{{cpctyso}}</div>
+  <div class="r bl">{{tienctytruocthue}}</div>
+  <div class="r bl">{{thuecty}}</div>
+  <div class="r fb brl">{{tienctyso}}</div>
 </div>
 <div class="grid kettoanso hov">
   <div class="l bbl">2. Khách hàng đầu tư</div>
-  <div class="r bbl">{{cpkhachtruocthue}}</div>
-  <div class="r bbl">{{thuecpkhach}}</div>
-  <div class="r fb brbl">{{cpkhachso}}</div>
+  <div class="r bbl">{{tienkhachtruocthue}}</div>
+  <div class="r bbl">{{thuekhach}}</div>
+  <div class="r fb brbl">{{tienkhachso}}</div>
 </div>
 {% end %}
-{% if ktcpcty>0 %}
+{% if tiencty>0 %}
 <div class="grid kettoan2 hov">
   <div class="l" style="padding-left:6pt">Kết toán chi phí gắn ĐHN miễn phí:</div>
-  <div class="l fb">{{cpctyso}} VNĐ</div>
+  <div class="l fb">{{tienctyso}} VNĐ</div>
   <div class="l fu" style="padding-left:100pt">Bằng chữ:</div>
-  <div class="l fb">{{cpctychu}}</div>
+  <div class="l fb">{{tienctychu}}</div>
 </div>
 {% end %}
-{% if ktcpkhach>0 %}
+{% if tienkhach>0 %}
 <div class="grid kettoan2 hov">
   <div class="l" style="padding-left:6pt">Kết toán chi phí khách hàng đầu tư:</div>
-  <div class="l fb">{{cpkhachso}} VNĐ</div>
+  <div class="l fb">{{tienkhachso}} VNĐ</div>
   <div class="l fu" style="padding-left:100pt">Bằng chữ:</div>
-  <div class="l fb">{{cpkhachchu}}</div>
+  <div class="l fb">{{tienkhachchu}}</div>
 </div>
 {% end %}

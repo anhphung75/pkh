@@ -41,34 +41,6 @@ class FrmQtgt_Ongnganh(web.UIModule):
 
 
 class RptQtgt_Quochuy(web.UIModule):
-    def embedded_javascript(self):
-        __js = '''
-        function suangaylap(ngaylap) {
-            let w=document.getElementsByClassName("ngaylap");
-            let i=0, suatatca=true;
-            while (suatatca) {
-                try {
-                    w[i].innerHTML = ngaylap;
-                    i++;
-                }
-                catch(err) {
-                    suatatca=false;
-                    break;
-                }
-            }
-        }
-        '''
-        return __js
-
-    def embedded_css(self):
-        __css = '''
-        .quochuy {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
-        }
-        '''
-        return __css
-
     def render(self, dvtc="ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC", ngaylap=20200904):
         # format so:
         ngaylap = f"{ngaylap}"
@@ -79,34 +51,6 @@ class RptQtgt_Quochuy(web.UIModule):
 
 
 class RptQtgt_Tieude(web.UIModule):
-    def embedded_javascript(self):
-        __js = '''
-        function suatieude(tieude) {
-            let w=document.getElementsByClassName("tieudeqtgt");
-            let i=0, suatatca=true;
-            while (suatatca) {
-                try {
-                    w[i].innerHTML = tieude;
-                    i++;
-                }
-                catch(err) {
-                    suatatca=false;
-                    break;
-                }
-            }
-        }
-        '''
-        return __js
-
-    def embedded_css(self):
-        __css = '''
-        .tieude {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content minmax(max-content, 20pt);
-        }
-        '''
-        return __css
-
     def render(self, tieude="BẢNG QUYẾT TOÁN GẮN MỚI ĐỒNG HỒ NƯỚC", sohoso='', sodot='', khachhang='', diachigandhn=''):
         return self.render_string(
             "reports/qtgt/tieude.html",
@@ -126,23 +70,6 @@ class RptQtgt_ChiphiTieude(web.UIModule):
 
 
 class RptQtgt_ChiphiNoidung(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .sl {
-            color:blue;
-        }
-        .vl {
-            color:red;
-        }
-        .nc {
-            color:green;
-        }
-        .mtc {
-            color:magenta;
-        }
-        '''
-        return __css
-
     def render(self, uid=None, mota=None, dvt=None, soluong=0, giavl=0, gianc=0, giamtc=0, tienvl=0, tiennc=0, tienmtc=0):
         # format number
         print(
@@ -164,16 +91,6 @@ class RptQtgt_ChiphiNoidung(web.UIModule):
 
 
 class RptQtgt_ChiphiDandong(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .dandong {
-            width: 100%;
-            flex: 1 1 0%;
-            grid-template-rows: minmax(0, 1fr);
-        }
-        '''
-        return __css
-
     def render(self, keday=False):
         return self.render_string(
             "reports/qtgt/chiphi-dandong.html",
@@ -191,51 +108,6 @@ class RptQtgt_ChiphiTong(web.UIModule):
 
 
 class RptQtgt_Tlmd(web.UIModule):
-    def embedded_javascript(self):
-        __js = '''
-        function hover_in(rowid) {
-            let w=document.getElementsByClassName(rowid);
-            let i=0, suatatca=true;
-            while (suatatca) {
-                try {
-                    w[i].dataset.curcolor = w[i].style.backgroundColor;
-                    w[i].style.backgroundColor = 'yellow';
-                    i++;
-                }
-                catch(err) {
-                    suatatca=false;
-                    break;
-                }
-            }
-        }
-
-        function hover_out(rowid) {
-            let w=document.getElementsByClassName(rowid);
-            let i=0, suatatca=true;
-            while (suatatca) {
-                try {
-                    let curcolor = w[i].dataset.curcolor;
-                    w[i].style.backgroundColor = curcolor;
-                    i++;
-                }
-                catch(err) {
-                    suatatca=false;
-                    break;
-                }
-            }
-        }
-        '''
-        return __js
-
-    def embedded_css(self):
-        __css = '''
-        .tlmd {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 290fr 40fr 25fr 38fr 42fr 70fr 50fr;
-        }
-        '''
-        return __css
-
     def render(self, cptl):
         # markup cptl
         for cp in cptl:
@@ -252,15 +124,6 @@ class RptQtgt_Tlmd(web.UIModule):
 
 
 class RptQtgt_Tlmd2(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .tlmd2 {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 215fr 50fr 50fr 50fr 70fr 70fr 50fr;
-        }
-        '''
-        return __css
-
     def render(self, cptl):
         # markup cptl
         print(f"RptQtgt_Tlmd2 cptl={cptl}")
@@ -277,57 +140,31 @@ class RptQtgt_Tlmd2(web.UIModule):
 
 
 class RptQtgt_Kettoan(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .kettoanso {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 255fr 100fr 100fr 100fr;
-        }
-        .kettoan1 {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 134fr 63fr 40fr 318fr;
-        }
-        .kettoan2 {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 150fr 405fr;
-        }
-        '''
-        return __css
-
-    def render(self, ktcpcty=0, ktcpkhach=0):
+    def render(self, tiencty=0, tienkhach=0):
         # tinh them cho ke toan
-        cpctytruocthue = lamtronso(ktcpcty*100/110, 0)
-        thuecpcty = ktcpcty-cpctytruocthue
-        cpkhachtruocthue = lamtronso(ktcpkhach*100/110, 0)
-        thuecpkhach = ktcpkhach-cpkhachtruocthue
+        tienctytruocthue = lamtronso(tiencty*100/110, 0)
+        thuecty = tiencty-tienctytruocthue
+        tienkhachtruocthue = lamtronso(tienkhach*100/110, 0)
+        thuekhach = tienkhach-tienkhachtruocthue
         # format so:
-        m = Tien(ktcpcty)
-        cpctyso = m.so()
-        cpctychu = m.chu()
-        cpctytruocthue = tachhangso(cpctytruocthue, 0)
-        thuecpcty = tachhangso(thuecpcty, 0)
-        m = Tien(ktcpkhach)
-        cpkhachso = m.so()
-        cpkhachchu = m.chu()
-        cpkhachtruocthue = tachhangso(cpkhachtruocthue, 0)
-        thuecpkhach = tachhangso(thuecpkhach, 0)
+        m = Tien(tiencty)
+        tienctyso = m.so()
+        tienctychu = m.chu()
+        tienctytruocthue = tachhangso(tienctytruocthue, 0)
+        thuecty = tachhangso(thuecty, 0)
+        m = Tien(tienkhach)
+        tienkhachso = m.so()
+        tienkhachchu = m.chu()
+        tienkhachtruocthue = tachhangso(tienkhachtruocthue, 0)
+        thuekhach = tachhangso(thuekhach, 0)
         return self.render_string(
             "reports/qtgt/kettoan.html",
-            ktcpcty=ktcpcty, cpctyso=cpctyso, cpctychu=cpctychu, cpctytruocthue=cpctytruocthue, thuecpcty=thuecpcty,
-            ktcpkhach=ktcpkhach, cpkhachso=cpkhachso, cpkhachchu=cpkhachchu, cpkhachtruocthue=cpkhachtruocthue, thuecpkhach=thuecpkhach)
+            tiencty=tiencty, tienctyso=tienctyso, tienctychu=tienctychu, tienctytruocthue=tienctytruocthue, thuecty=thuecty,
+            tienkhach=tienkhach, tienkhachso=tienkhachso, tienkhachchu=tienkhachchu, tienkhachtruocthue=tienkhachtruocthue, thuekhach=thuekhach)
 
 
 class RptKyduyet2(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .chuky2 {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 1fr 1fr;
-        }
-        '''
-        return __css
-
-    def render(self, dvtc='', ktcpcty=0, ktcpkhach=0):
+    def render(self, dvtc='', tiencty=0, tienkhach=0):
         duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
                  'nhanvien': 'Nguyễn Công Minh'}
         lap = {'pbd': 'PHÒNG KỸ THUẬT',
@@ -335,20 +172,11 @@ class RptKyduyet2(web.UIModule):
         return self.render_string(
             "reports/qtgt/kyduyet2.html",
             duyet=duyet, lap=lap,
-            ktcpcty=ktcpcty, ktcpkhach=ktcpkhach)
+            tiencty=tiencty, tienkhach=tienkhach)
 
 
 class RptKyduyet3(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .chuky3 {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr;
-        }
-        '''
-        return __css
-
-    def render(self, dvtc='', ktcpcty=0, ktcpkhach=0):
+    def render(self, dvtc='', tiencty=0, tienkhach=0):
         # markup dulieu
         duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
                  'nhanvien': 'Nguyễn Công Minh'}
@@ -366,38 +194,22 @@ class RptKyduyet3(web.UIModule):
         return self.render_string(
             "reports/qtgt/kyduyet3.html",
             duyet=duyet, kiemtra=kiemtra, lap=lap,
-            ktcpcty=ktcpcty, ktcpkhach=ktcpkhach)
+            tiencty=tiencty, tienkhach=tienkhach)
 
 
 class RptQtgt_Footer(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .footer {
-            width: 100%;
-            grid: auto-flow minmax(1rem, max-content) / 1fr 1fr;
-        }
-        '''
-        return __css
-
-    def render(self, baogiaid=20200721, stt=1):
+    def render(self, mabaogia=20200721, stt=1, page=1, pages=1):
         # format so:
-        baogiaid = f"{baogiaid}"
-        lzone = f"QT-NĐ68 ({baogiaid[-2:]}-{baogiaid[-4:-2]}-{baogiaid[:-4]})"
-        rzone = f"TT-{stt:02}"
+        mabaogia = f"{mabaogia}"
+        lzone = f"QT-NĐ68 ({mabaogia[-2:]}-{mabaogia[-4:-2]}-{mabaogia[:-4]})"
+        mzone = f"TT-{stt:02}"
+        rzone = f"Trang: {page:01}/{pages:01}"
         return self.render_string(
             "reports/qtgt/footer.html",
-            lzone=lzone, rzone=rzone)
+            lzone=lzone, mzone=mzone, rzone=rzone)
 
 
 class RptQtgt_Cpql_20200721(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .cpql {
-            grid: auto-flow minmax(1rem, max-content) / 355fr 80fr 70fr 50fr;
-        }
-        '''
-        return __css
-
     def render(self, maubaocao='on', vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
                thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0,
                cpzvlncmtc=0, cptructiepkhac=0, cptructiep=0, cpchung=0, cpgiantiepkhac=0, cpgiantiep=0,
@@ -444,14 +256,6 @@ class RptQtgt_Cpql_20200721(web.UIModule):
 
 
 class RptQtgt_Cpql2_20200721(web.UIModule):
-    def embedded_css(self):
-        __css = '''
-        .cpql2 {
-            grid: auto-flow minmax(1rem, max-content) / 285fr 80fr 70fr 70fr 50fr;
-        }
-        '''
-        return __css
-
     def render(self, maubaocao='o2', vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
                thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0,
                oczvlncmtc=0, octructiepkhac=0, octructiep=0, occhung=0, ocgiantiepkhac=0, ocgiantiep=0,

@@ -62,23 +62,19 @@ html, body {
 }
 
 .fc {
-  font-family: "Open Sans";
-  font-stretch: condensed;
+  font-stretch: semi-condensed;
 }
 
 .fc1 {
-  font-family: "Open Sans Condensed";
   font-stretch: condensed;
 }
 
 .fc2 {
-  font-family: "UVN Tin Tuc Hep";
-  font-stretch: normal;
+  font-stretch: extra-condensed;
 }
 
 .fc3 {
-  font-family: "UVN Tin Tuc Hep Them";
-  font-stretch: normal;
+  font-stretch: ultra-condensed;
 }
 
 .f-2 {
@@ -209,6 +205,10 @@ html, body {
 
 .hov1:hover {
   background-color: lightgreen;
+}
+
+.hide {
+  display: none;
 }
 
 .flex {
