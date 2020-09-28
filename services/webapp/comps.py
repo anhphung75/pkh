@@ -202,11 +202,10 @@ class RptQtgt_Footer(web.UIModule):
         # format so:
         mabaogia = f"{mabaogia}"
         lzone = f"QT-NĐ68 ({mabaogia[-2:]}-{mabaogia[-4:-2]}-{mabaogia[:-4]})"
-        mzone = f"TT-{stt:02}"
-        rzone = f"Trang: {page:01}/{pages:01}"
+        rzone = f"TT-{stt:02}- Trang: {page:01}/{pages:01}"
         return self.render_string(
             "reports/qtgt/footer.html",
-            lzone=lzone, mzone=mzone, rzone=rzone)
+            lzone=lzone, rzone=rzone)
 
 
 class RptQtgt_Cpql_20200721(web.UIModule):

@@ -1,6 +1,6 @@
 html, body {
   /* "Open Sans Condensed", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", "Open Sans", sans-serif */
-  font-family: "UVN Tin Tuc Hep","Open Sans", "Open Sans Condensed", sans-serif;
+  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
   font-size: 8pt;
 }
 
@@ -88,7 +88,7 @@ main {
 
 .footer {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr;
+  grid: auto-flow minmax(1rem, max-content) / 1fr 1fr;
 }
 
 .sl {
@@ -108,9 +108,7 @@ main {
 }
 
 @media print {
-  *,
-  *:before,
-  *:after {
+  *, *:before, *:after {
     box-sizing: border-box;
     background-color: transparent;
     color: black;

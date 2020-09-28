@@ -1,36 +1,36 @@
 <div class="grid tlmd">
   {#--tieude--#}
-  <div class="l u fb bl c3 cptl00" onmouseover="hover_in('cptl00')" onmouseout="hover_out('cptl00')">
+  <div class="l u fb bl c3 cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')">
     PHẦN 2: TÁI LẬP MẶT ĐƯỜNG (CV số 327/BGTLMĐ ngày 01/04/2014)
   </div>
-  <div class="r cptl00" onmouseover="hover_in('cptl00')" onmouseout="hover_out('cptl00')"> </div>
-  <div class="l cptl00" onmouseover="hover_in('cptl00')" onmouseout="hover_out('cptl00')"> </div>
-  <div class="l cptl00" onmouseover="hover_in('cptl00')" onmouseout="hover_out('cptl00')"> </div>
-  <div class="r cptl00" onmouseover="hover_in('cptl00')" onmouseout="hover_out('cptl00')"> </div>
-  <div class="r bl cptl00" onmouseover="hover_in('cptl00')" onmouseout="hover_out('cptl00')"> </div>
-  <div class="c brl cptl00" onmouseover="hover_in('cptl00')" onmouseout="hover_out('cptl00')"> </div>
+  <div class="r cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="l cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="l cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="r cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="r bl cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="c brl cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
   {#--chiphi--#}
   {% if len(cptl) > 0 %}
     {% set stt = 1 %}
     {% for cp in cptl %}
       {% set _uid=f"cptl{stt:02}"%}
-      <div class="l bl {{_uid}}" onmouseover="hover_in('{{_uid}}')" onmouseout="hover_out('{{_uid}}')">
+      <div class="l bl {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
         {{cp['mota']}}
       </div>
-      <div class="r {{_uid}}" onmouseover="hover_in('{{_uid}}')" onmouseout="hover_out('{{_uid}}')">
+      <div class="r {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
         {{cp['soluong']}}
       </div>
-      <div class="c {{_uid}}" onmouseover="hover_in('{{_uid}}')" onmouseout="hover_out('{{_uid}}')">
+      <div class="c {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
         {{cp['dvt']}} x
       </div>
-      <div class="r {{_uid}}" onmouseover="hover_in('{{_uid}}')" onmouseout="hover_out('{{_uid}}')">
+      <div class="r {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
         {{cp['gia']}}
       </div>
-      <div class="r {{_uid}}" onmouseover="hover_in('{{_uid}}')" onmouseout="hover_out('{{_uid}}')"></div>
-      <div class="r bl {{_uid}}" onmouseover="hover_in('{{_uid}}')" onmouseout="hover_out('{{_uid}}')">
+      <div class="r {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')"></div>
+      <div class="r bl {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
         {{cp['tien']}}
       </div>
-      <div class="c brl {{_uid}}" onmouseover="hover_in('{{_uid}}')" onmouseout="hover_out('{{_uid}}')"></div>
+      <div class="c brl {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')"></div>
       {% set stt += 1 %}
     {% end %}
   {% end %}
