@@ -66,23 +66,29 @@ class Frm_Qtgt(WebBase):
 
 
 class Rpt_Qtgt(WebBase):
-    def get(self):
-        schema = 'pkh'
-        sql = (
-            f"Select qt.maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON dot.madot=qt.madot"
-            f" Where (dot.inok<>0 And qt.inok<>0)"
-        )
-        dl = runsql(sql)
-        print(f"server dl={dl}")
-        if (dl != None and len(dl) > 0):
-            dsmaqt = []
-            for r in dl:
-                dsmaqt.append(r['maqt'])
+    def get(self, schema):
+        schema = schema.lower()
+        if schema=="qlmltđ":
+            schema="qlmltd"
+        if schema in ['pkh','qlmlq2', 'qlmlq9', 'qlmltd']:
+            sql = (
+                f"Select qt.maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON dot.madot=qt.madot"
+                f" Where (dot.inok<>0 And qt.inok<>0) Order By dot.madot,qt.tt,qt.lastupdate"
+            )
+            dl = runsql(sql)
+            print(f"server dl={dl}")
+            if (dl != None and len(dl) > 0):
+                dsmaqt = []
+                for r in dl:
+                    dsmaqt.append(r['maqt'])
+            else:
+                dsmaqt = ['pkh001', 'pkh002']
+            print(f"dsmaqt={dsmaqt}")
+            self.render("reports/qtgt/main.html", dsmaqt=dsmaqt,
+                        schema=schema, error=None)
         else:
-            dsmaqt = ['pkh001', 'pkh002']
-        print(f"dsmaqt={dsmaqt}")
-        self.render("reports/qtgt/main.html", dsmaqt=dsmaqt,
-                    schema=schema, error=None)
+            self.render("errors/404.html", error=None)
+
 
 
 class WebApp(web.Application):
@@ -90,7 +96,8 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/cntd/pkh/qtgt", Frm_Qtgt),
-            (r"/reports/qtgt", Rpt_Qtgt),
+            (r"/([^/]+)/reports/qtgt", Rpt_Qtgt),
+            #(r"/qlmlt%C4%91/reports/qtgt", Rpt_Qtgt),
         ]
         settings = dict(
             webapp_title=u"PKH",
