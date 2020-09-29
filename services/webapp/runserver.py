@@ -122,7 +122,6 @@ class WebApp(web.Application):
                 "RptQtgt_Footer": comps.RptQtgt_Footer,
                 "RptKyduyet2": comps.RptKyduyet2,
                 "RptKyduyet3": comps.RptKyduyet3,
-
             },
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",
