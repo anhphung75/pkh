@@ -167,7 +167,7 @@ def main():
 
     # creat webapp
     app = make_app()
-    sercurity_socket = False
+    sercurity_socket = True
     if sercurity_socket:
         ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ssl_path = "services/webapp/ssl_cert"
