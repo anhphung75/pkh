@@ -42,21 +42,51 @@ class Thoigian():
 
 
 class Api():
-    def raw2listjson(self, recs):
-        data = []
-        # try:
-        for rec in recs:
-            d = rec.__dict__
-            dsbo = ['_sa_instance_state']
-            for k in d.copy():
-                if type(d[k]) in (datetime, datetime.date, datetime.datetime, datetime.time):
-                    d[k] = d[k].isoformat()
-                if k in dsbo:
-                    del d[k]
-            data.append(d)
-        # except:
-        #    return []
-        return data
+    def __init__(self, recs):
+        self.recs = recs
+
+    def orm(self):
+        try:
+            data = []
+            dsbo = ["_sa_instance_state"]
+            for row in self.recs:
+                #dl = dict(row)
+                dl = row.__dict__
+                for k in dl.copy():
+                    if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
+                        if k in ["lastupdate", "utcid"]:
+                            dl[k] = int(
+                                arrow.get(dl[k]).float_timestamp * 1000)
+                        else:
+                            dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
+                    if isinstance(dl[k], decimal.Decimal):
+                        dl[k] = float(dl[k])
+                    for l in dsbo:
+                        if l in k:
+                            del dl[k]
+                data.append(dl)
+            return data
+        except:
+            return None
+
+    def core(self):
+        try:
+            data = []
+            for row in self.recs:
+                dl = dict(row)
+                for k in dl:
+                    if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
+                        if k in ["lastupdate", "utcid"]:
+                            dl[k] = int(
+                                arrow.get(dl[k]).float_timestamp * 1000)
+                        else:
+                            dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
+                    if isinstance(dl[k], decimal.Decimal):
+                        dl[k] = float(dl[k])
+                data.append(dl)
+            return data
+        except:
+            return None
 
 
 class Tien():
