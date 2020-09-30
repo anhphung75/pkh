@@ -14,6 +14,20 @@ var any2obj = (sdata) => {
   return sdata;
 };
 
+function lamtronso(solamtron, sole) {
+  try {
+    let so = parseInt(solamtron * 10 ** (sole + 1));
+    let lech = so % 10;
+    if (lech >= 5) {
+      so += 5;
+    }
+    so = so / 10 ** (sole + 1);
+    return so.toFixed(sole);
+  } catch (error) {
+    return 0;
+  }
+}
+
 var ld2dd = (recs) => {
   let orecs = {};
   if (Array.isArray(recs)) {
@@ -50,4 +64,4 @@ var suaStr = (ss = '') => {
   return ss;
 };
 
-export { isObjEmpty, ld2dd, suaStr, any2obj };
+export { isObjEmpty, ld2dd, suaStr, any2obj, lamtronso };

@@ -11,6 +11,18 @@ db = Maychu("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
 db.show_views()
 
 # function
+'''
+def lamtronso(sothapphan=0, phanle=3):
+    try:
+        so = int(sothapphan*10**(phanle+1))
+        lech = so % 10
+        if lech >= 5:
+            so += 5
+        somoi = round(so/10**(phanle+1), phanle)
+    except:
+        somoi = 0
+    return somoi
+'''
 
 
 def lamtronso(schema="dbo"):
@@ -22,22 +34,15 @@ def lamtronso(schema="dbo"):
         pass
     # main prog
     sql = (
-        f"ALTER FUNCTION {schema}.lamtronso(@Socanlamtron decimal(38,9), @Sole int=0)"
-        f" Returns decimal(38,9) AS BEGIN TRY"
-        f" Declare @Sosanh decimal(38,0)=0.0, @Them decimal(38,9)=0.0, @Kq decimal(38,9)=0,"
-        f" @Kq1 decimal(38,9)=0.0,@Socat decimal(38,9)=0.0;"
-        f" If @Sole<0 or @Sole>8 RETURN @Socanlamtron;"
-        f" Begin SET @Socat=round(@Socanlamtron,@Sole+1,1);"
-        f" SET @Kq=round(@Socanlamtron,@Sole,1);"
-        f" SET @Sosanh=(@Socat-@Kq)*power(10,@Sole);"
-        f" SET @Them= 1.0/power(10,@Sole);"
-        f" SET @Kq1= round((@Socat +@Them),@Sole,1);"
-        f" IF @Sososanh>=0.5 RETURN @Kq1"
-        f" ELSE RETURN @Kq"
-    )
-    sql += (
-        f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH"
-        f" END;")
+        f"ALTER FUNCTION {schema}.lamtronso(@Sothapphan decimal(38,9), @Phanle int=0)"
+        f" Returns decimal(38,9) AS BEGIN"
+        f" Declare @So decimal(38,0)=0.0, @Lech decimal(38,9)=0.0, @Kq decimal(38,9)=0.0;"
+        f" If @Phanle<0 or @Phanle>8 RETURN @Sothapphan;"
+        f" SET @So=CAST(@Sothapphan*Power(10,@Phanle+1) AS int);"
+        f" SET @Lech=@So % 10;"
+        f" IF @Lech>=5 SET @So=@So+5;"
+        f" SET @Kq= round(@So/Power(10,@Phanle+1),@Phanle,1);"
+        f" RETURN @Kq; END;")
     try:
         db.core().execute(sql)
     except:
@@ -398,4 +403,5 @@ def spQtgt(schema="web"):
     tinhlai_dotqt(schema)
 
 
-spQtgt("qlmlq2")
+# spQtgt("qlmlq2")
+lamtronso()

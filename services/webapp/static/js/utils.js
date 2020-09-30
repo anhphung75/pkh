@@ -1,17 +1,17 @@
 function lamtronso(solamtron, sole) {
   try {
-    let so1 = solamtron.toFixed(sole+1);
-    let so = solamtron.toFixed(sole);
-    let lech = (so1-so)*(10**sole);
-    if (lech>=0.5){
-      so1 = so + 1/(10**phanle)
-      so =so1.toFixed(sole);
+    let so = parseInt(solamtron * 10 ** (sole + 1));
+    let lech = so % 10;
+    if (lech >= 5) {
+      so += 5;
     }
-    return so;
+    so = so / 10 ** (sole + 1);
+    return so.toFixed(sole);
   } catch (error) {
     return 0;
   }
 }
+
 
 class Tien {
   constructor(sotien) {

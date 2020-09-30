@@ -186,12 +186,11 @@ class Tien():
 
 def lamtronso(sothapphan=0, phanle=3):
     try:
-        somoi = round(sothapphan, phanle)
-        somoi1 = round(sothapphan, phanle+1)
-        lech = (somoi1-somoi)*(10**phanle)
-        if lech >= 0.5:
-            somoi += 1/(10**phanle)
-            somoi = round(somoi, phanle)
+        so = int(sothapphan*10**(phanle+1))
+        lech = so % 10
+        if lech >= 5:
+            so += 5
+        somoi = round(so/10**(phanle+1), phanle)
     except:
         somoi = 0
     return somoi
