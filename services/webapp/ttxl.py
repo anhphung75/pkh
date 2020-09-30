@@ -1,12 +1,10 @@
 import datetime
 import decimal
-import json
 import arrow
 
-from sqlalchemy import func, desc
+#from sqlalchemy import func, desc
 from ttdl import Maychu
-from ttdl import Hoso
-from utils import Api, lamtronso
+from utils import lamtronso
 
 
 class apiHoso():
@@ -198,12 +196,11 @@ class RptQtgt:
 
     def tbl_qtgt(self):
         sql = (
-            f'Select top 1 ngaylap, isnull(tt,1),'
-            f' isnull(dautucty,0) as tiencty, isnull(dautukhach,0) as tienkhach, isnull(gxd,0),'
-            f' convert(datetime, baogiaid) as mabaogia, isnull(hesoid,0) as cpqlid, madot,'
-            f' isnull(hosoid,0), isnull(plgia,"dutoan")'
-            f' From {self.schema}.qt'
-            f' Where (maqt="{self.maqt}" And datalength(madot)>0)'
+            f"Select top 1 madot,ngaylap,isnull(plgia,'dutoan') as plgia,isnull(tt,1) as tt,"
+            f" isnull(dautucty,0) as tiencty, isnull(dautukhach,0) as tienkhach,isnull(gxd,0) as gxd,"
+            f" convert(datetime,baogiaid) as mabaogia,isnull(hesoid,0) as cpqlid,isnull(hosoid,0) as hosoid"
+            f" From {self.schema}.qt qt"
+            f" Where (qt.maqt='{self.maqt}' And datalength(qt.madot)>0)"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -271,10 +268,10 @@ class RptQtgt:
 
     def qtoc_xd(self):
         sql = (
-            f'Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0),'
-            f' isnull(qt.giavl,0),isnull(qt.gianc,0),isnull(qt.giamtc,0)'
-            f' From dbo.chiphi cp RIGHT JOIN {self.schema}.qt31 qt ON cp.chiphiid=qt.chiphiid'
-            f' Where (qt.maqt="{self.maqt}" And datalength(cp.chiphiid)>0) Order By qt.maqtgt'
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+            f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt31 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And datalength(cp.chiphiid)>0) Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -295,11 +292,11 @@ class RptQtgt:
 
     def qtoc_vt(self):
         sql = (
-            f'Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0),'
-            f' isnull(qt.giavl,0),isnull(qt.gianc,0),isnull(qt.giamtc,0)'
-            f' From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid'
-            f' Where (qt.maqt="{self.maqt}" And cp.mapl1 Like 'VT % ' And datalength(cp.chiphiid)>0)'
-            f' Order By qt.maqtgt'
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+            f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0)"
+            f" Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -320,11 +317,11 @@ class RptQtgt:
 
     def qtoc_vl(self):
         sql = (
-            f'Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0),'
-            f' isnull(qt.giavl,0),isnull(qt.gianc,0),isnull(qt.giamtc,0)'
-            f' From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid'
-            f' Where (qt.maqt="{self.maqt}" And cp.mapl1 Like 'VL % ' And datalength(cp.chiphiid)>0)'
-            f' Order By qt.maqtgt'
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+            f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%' And datalength(cp.chiphiid)>0)"
+            f" Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -345,10 +342,10 @@ class RptQtgt:
 
     def qton_xd(self):
         sql = (
-            f'Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0),'
-            f' isnull(qt.giavl,0),isnull(qt.gianc,0),isnull(qt.giamtc,0)'
-            f' From dbo.chiphi cp RIGHT JOIN {self.schema}.qt33 qt ON cp.chiphiid=qt.chiphiid'
-            f' Where (qt.maqt="{self.maqt}" And datalength(cp.chiphiid)>0) Order By qt.maqtgt'
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+            f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt33 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And datalength(cp.chiphiid)>0) Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -369,11 +366,11 @@ class RptQtgt:
 
     def qton_vt(self):
         sql = (
-            f'Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0),'
-            f' isnull(qt.giavl,0),isnull(qt.gianc,0),isnull(qt.giamtc,0)'
-            f' From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid'
-            f' Where (qt.maqt="{self.maqt}" And cp.mapl1 Like 'VT % ' And datalength(cp.chiphiid)>0)'
-            f' Order By qt.maqtgt'
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+            f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0)"
+            f" Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -394,11 +391,11 @@ class RptQtgt:
 
     def qton_vl(self):
         sql = (
-            f'Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0),'
-            f' isnull(qt.giavl,0),isnull(qt.gianc,0),isnull(qt.giamtc,0)'
-            f' From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid'
-            f' Where (qt.maqt="{self.maqt}" And cp.mapl1 Like 'VL % ' And datalength(cp.chiphiid)>0)'
-            f' Order By qt.maqtgt'
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+            f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%' And datalength(cp.chiphiid)>0)"
+            f" Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -419,41 +416,41 @@ class RptQtgt:
 
     def tlmd(self):
         sql = (
-            f'Select cp.chiphiid,cp.diengiai as mota,cp.dvt,'
-            f' isnull(qt.sl1,0) as sl_oc,isnull(qt.sl2,0) as sl_on,isnull(qt.dongia,0) as gia'
-            f' From dbo.chiphi cp RIGHT JOIN {self.schema}.qt35 qt ON cp.chiphiid=qt.chiphiid'
-            f' Where (qt.maqt="{self.maqt}" And cp.mapl1 Like "TL%" And datalength(cp.chiphiid)>0)'
-            f' Order By qt.maqtgt'
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,"
+            f" isnull(qt.sl1,0) as sl_oc,isnull(qt.sl2,0) as sl_on,isnull(qt.dongia,0) as gia"
+            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt35 qt ON cp.chiphiid=qt.chiphiid"
+            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%' And datalength(cp.chiphiid)>0)"
+            f" Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
         # tinh tien
-        for cp in dl.copy():
+        cptl = []
+        for cp in dl:
             if self.cpqlid >= 20200827:
                 cp['tien_oc'] = lamtronso(cp['sl_oc'] * cp['gia'], 0)
                 cp['tien_on'] = lamtronso(cp['sl_on'] * cp['gia'], 0)
             else:
                 cp['tien_oc'] = lamtronso(cp['sl_oc'] * cp['gia']/1000, 0)*1000
                 cp['tien_on'] = lamtronso(cp['sl_on'] * cp['gia']/1000, 0)*1000
-            if (cp['tien_oc']+cp['tien_on']) > 0:
+            if (cp['tien_oc']+cp['tien_on']+cp['sl_oc']+cp['sl_on']) > 0:
                 self.ocztl += cp['tien_oc']
                 self.onztl += cp['tien_on']
-            else:
-                del dl[cp]
-        self.cptl = dl
+                cptl.append(cp)
+        self.cptl = cptl
         # test
-        for cp in dl:
+        for cp in cptl:
             print(f"cptl={cp}")
 
     def get_chiphiquanly(self):
         sql = (
-            f'Select top 1 1 as vl,isnull(heso_nc,0) as nc,isnull(heso_mtc,0) as mtc,'
-            f' isnull(heso_ttpk,0) as tructiepkhac,isnull(giantiepkhac,0),'
-            f' isnull(heso_cpchung,0) as chung,isnull(heso_thunhaptt,0) as thutinhtruoc,'
-            f' isnull(heso_khaosat,0) as khaosat,isnull(heso_thietke,0) as thietke,isnull(heso_gstc,0) as giamsat'
-            f' From dbo.hesochiphi Where hesoid={self.cpqlid}'
+            f"Select top 1 1 as vl,isnull(heso_nc,0) as nc,isnull(heso_mtc,0) as mtc,"
+            f" isnull(heso_ttpk,0) as tructiepkhac,isnull(giantiepkhac,0) as giantiepkhac,"
+            f" isnull(heso_cpchung,0) as chung,isnull(heso_thunhaptt,0) as thutinhtruoc,"
+            f" isnull(heso_khaosat,0) as khaosat,isnull(heso_thietke,0) as thietke,isnull(heso_gstc,0) as giamsat"
+            f" From dbo.hesochiphi Where hesoid={self.cpqlid}"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -533,7 +530,7 @@ class RptQtgt:
             self.maubaocao = 'on'
         # test
         if self.gxd != self.congtrinh:
-            self.tieude = f'GTGT sai do Gxd-Gxdct={self.gxd-self.congtrinh}'
+            self.tieude = f"GTGT sai do Gxd-Gxdct={self.gxd-self.congtrinh}"
 
 
 class Phui_20200721:
@@ -799,8 +796,8 @@ def test_phui():
 
 
 def test_RptQtgt():
-    kq = RptQtgt('pkh', '2020gmmp464001')
+    kq = RptQtgt('pkh', '2020gmmp494001')
     print(vars(kq))
 
 
-test_RptQtgt()
+#test_RptQtgt()
