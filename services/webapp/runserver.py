@@ -12,8 +12,7 @@ import tornado.escape
 import tornado.websocket
 
 import comps
-from ttdl import Maychu
-from ttxl import runsql
+from ttxl.reports import qtgt, qtvt
 
 # tornado.locale.set_default_locale('vi_VI')
 
@@ -68,35 +67,38 @@ class Frm_Qtgt(WebBase):
 class Rpt_Qtgt(WebBase):
     def get(self, schema):
         schema = schema.lower()
-        if schema=="qlmltđ":
-            schema="qlmltd"
-        if schema in ['pkh','qlmlq2', 'qlmlq9', 'qlmltd']:
-            sql = (
-                f"Select qt.maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON dot.madot=qt.madot"
-                f" Where (dot.inok<>0 And qt.inok<>0) Order By dot.madot,qt.tt,qt.lastupdate"
-            )
-            dl = runsql(sql)
-            print(f"server dl={dl}")
-            if (dl != None and len(dl) > 0):
-                dsmaqt = []
-                for r in dl:
-                    dsmaqt.append(r['maqt'])
-            else:
-                dsmaqt = ['pkh001', 'pkh002']
-            print(f"dsmaqt={dsmaqt}")
-            self.render("reports/qtgt/main.html", dsmaqt=dsmaqt,
+        if schema == "qlmltđ":
+            schema = "qlmltd"
+        if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            dulieuin = qtvt.dulieuin()
+            print(f"dulieuin qtgt={dulieuin}")
+            self.render("reports/qtgt/main.html", dsmaqt=dulieuin,
                         schema=schema, error=None)
         else:
             self.render("errors/404.html", error=None)
 
+
+class Rpt_Qtvt(WebBase):
+    def get(self, schema):
+        schema = schema.lower()
+        if schema == "qlmltđ":
+            schema = "qlmltd"
+        if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            dulieuin = qtvt.dulieuin()
+            print(f"dulieuin qtvt={dulieuin}")
+            self.render("reports/qtvt/main.html", dulieuin=dulieuin,
+                        schema=schema, error=None)
+        else:
+            self.render("errors/404.html", error=None)
 
 
 class WebApp(web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
-            (r"/cntd/pkh/qtgt", Frm_Qtgt),
+            (r"/([^/]+)/forms/qtgt", Frm_Qtgt),
             (r"/([^/]+)/reports/qtgt", Rpt_Qtgt),
+            (r"/([^/]+)/reports/qtvt", Rpt_Qtvt),
             #(r"/qlmlt%C4%91/reports/qtgt", Rpt_Qtgt),
         ]
         settings = dict(
@@ -105,6 +107,7 @@ class WebApp(web.Application):
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             ui_modules={
                 "FrmQtgt_Ongnganh": comps.FrmQtgt_Ongnganh,
+                "RptKyduyet3": hoasy.reports.base.RptKyduyet3,
                 "RptQtgt_Quochuy": comps.RptQtgt_Quochuy,
                 "RptQtgt_Tieude": comps.RptQtgt_Tieude,
                 "RptQtgt_ChiphiTieudebang": comps.RptQtgt_ChiphiTieudebang,
@@ -120,8 +123,12 @@ class WebApp(web.Application):
                 "RptQtgt_Tlmd2": comps.RptQtgt_Tlmd2,
                 "RptQtgt_Kettoan": comps.RptQtgt_Kettoan,
                 "RptQtgt_Footer": comps.RptQtgt_Footer,
-                "RptKyduyet2": comps.RptKyduyet2,
-                "RptKyduyet3": comps.RptKyduyet3,
+                "RptQtgtKyduyet2": comps.RptKyduyet2,
+                "RptQtgtKyduyet3": comps.RptKyduyet3,
+                "RptQtvt_Quochuy": hoasy.reports.qtvt.RptQtvt_Quochuy,
+                "RptQtvt_Tieude": hoasy.reports.qtvt.RptQtvt_Tieude,
+                "RptQtvt_Cpvt": hoasy.reports.qtvt.RptQtvt_Cpvt,
+                "RptQtvt_Chungtu": hoasy.reports.qtvt.RptQtvt_Chungtu,
             },
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",

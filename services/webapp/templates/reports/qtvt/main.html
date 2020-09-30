@@ -7,17 +7,33 @@
 
   <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
   <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
-  <link rel="stylesheet" href="{{static_url('css/reports/qtgt.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/reports/qtvt.css')}}" type="text/css">
 </head>
 
 <body>
+  {% from ttxl.reports import RptQtvt %}
   <div id="vungin" data-dulieuin='["2020GMMP001","2020GMMP001"]'>
-    <div id="dot_madot">
-
+    {% for madot in dulieuin %}
+    <div id="qtvt_{{madot}}">
+      {% set qtvt = RptQtvt(schema,madot) %}
+      <div class="A4doc">
+        <div class="trangin trang1">
+          {% module RptQtvt_Quochuy(qtvt.dvtc, qtvt.ngaylap) %}
+          {% module RptQtvt_Tieude(qtvt.tieude, qtvt.congtac, qtvt.sodot) %}
+          {% module RptQtvt_Cpvt(qtvt.cpvt) %}
+          {% module RptQtvt_Chungtu(qtvt.phieuxuat, qtvt.phieunhap) %}
+          {% module RptKyduyet3(qtvt.duyet,qtvt.kiemtra, qtvt.lapbang) %}
+        </div>
+      </div>
     </div>
+    {% end %}
   </div>
 
   {#--script--#}
+  <script type="text/javascript" src="{{static_url('js/base.js')}}"></script>
+  {#--script--
+  <script type="text/javascript" src="{{static_url('js/reports/qtvt/boss.js')}}"></script>
+  #}
 
 </body>
 

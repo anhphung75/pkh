@@ -1,0 +1,47 @@
+html, body {
+  /* "Open Sans Condensed", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", "Open Sans", sans-serif */
+  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
+  font-size: 8pt;
+}
+
+.trangin {
+  margin-left: 20pt;
+  margin-right: 20pt;
+  margin-top: 20pt;
+  margin-bottom: 20pt;
+  line-height: 1.05;
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+.quochuy {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
+}
+
+.tieude {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content)/minmax(0, 1fr) max-content max-content minmax(0, 1fr);
+}
+
+.bang {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content) / 15fr 65fr 215fr 40fr 40fr 40fr 40fr 40fr 60fr;
+}
+
+.pnx {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr;
+}
+
+.chuky2 {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content) / 1fr 1fr;
+}
+
+.chuky3 {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr;
+}
