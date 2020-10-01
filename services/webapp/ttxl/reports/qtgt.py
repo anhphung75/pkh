@@ -100,9 +100,15 @@ class Dulieu:
         self.congtrinh = 0
         self.congtrinhtruocthue = 0
         self.thuecongtrinh = 0
-        self.get_qtgt()
+        self.duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
+                      'nhanvien': 'Nguyễn Công Minh'}
+        self.kiemtra = {'pbd': 'KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
+                        'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
+        self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
+                        'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
+        self.load_data()
 
-    def get_qtgt(self):
+    def load_data(self):
         self.tbl_qtgt()
         self.tbl_hoso()
         self.tbl_dot()
@@ -183,10 +189,26 @@ class Dulieu:
             return
         dl = dl[0]
         self.dvtc = dl['dvtc']
+        if self.dvtcid == 2:
+            self.kyhieudvtc = "CNTĐ-QLMLQ2"
+            self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN 2',
+                            'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Ngọc Quý'}
+        elif self.dvtcid == 3:
+            self.kyhieudvtc = "CNTĐ-QLMLQ9"
+            self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN 9',
+                            'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Bùi Quang Thiên Chương'}
+        elif self.dvtcid == 4:
+            self.kyhieudvtc = "CNTĐ-QLMLTĐ"
+            self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
+                            'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
+        else:
+            self.kyhieudvtc = "CNTĐ-KHVTTH"
+            self.lapbang = {'pbd': 'PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
+                            'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
+            self.kiemtra = {}
         # test
         for cp in dl:
             print(f"dvtc={dl[cp]}")
-        self.dvtc = dl['dvtc']
 
     def qtoc_xd(self):
         sql = (
@@ -470,11 +492,10 @@ def dulieuin(schema):
         for r in dl:
             dulieu.append(r['maqt'])
         data["dulieuin"] = dulieu
-        qtgt = {}
+        dl = {}
         for maqt in dulieu:
-            dl = vars(Dulieu(schema, maqt))
-            qtgt[maqt] = dl
-        data["qtgt"] = qtgt
+            dl[maqt] = Dulieu(schema, maqt)
+        data["qtgt"] = dl
         return data
     except:
         return data

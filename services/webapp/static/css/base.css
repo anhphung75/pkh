@@ -228,6 +228,12 @@ html, body {
   height: 100vh;
 }
 
+.keep {
+  -webkit-column-break-inside: avoid;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+
 .A4doc {
   width: 210mm;
   height: 297mm;

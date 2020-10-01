@@ -102,7 +102,7 @@ class Dulieu:
 
 
 def dulieuin(schema):
-    data = {"schema": schema, "dulieuin": [], "qtvt": {}}
+    data = {"schema": schema, "dulieuin": [], "qtvl": {}}
     try:
         sql = (
             f"Select madot From {schema}.dot"
@@ -116,11 +116,10 @@ def dulieuin(schema):
         for r in dl:
             dulieu.append(r['madot'])
         data["dulieuin"] = dulieu
-        qtvt = {}
+        dl = {}
         for madot in dulieu:
-            dl = vars(Dulieu(schema, madot))
-            qtvt[madot] = dl
-        data["qtvt"] = qtvt
+            dl[madot] = Dulieu(schema, madot)
+        data["qtvt"] = dl
         return data
     except:
         return data

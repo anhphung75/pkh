@@ -7,184 +7,131 @@
 
   <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
   <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
-  <link rel="stylesheet" href="{{static_url('css/reports/qtgt.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/reports/dl.css')}}" type="text/css">
 </head>
 
 <body>
-  {% from ttxl import RptQtgt %}
-  {% for maqt in dsmaqt %}
-  <div id="qtgt:{{maqt}}">
-    {% set qtgt = RptQtgt(schema,maqt) %}
-    {% if qtgt.maubaocao == 'on' %}
-    {% set pages=1 %}
-    <div class="A4doc">
-      <div class="trangin trang1">
-        {% set page=1 %}
-        {% module RptQtgt_Quochuy(qtgt.dvtc, qtgt.ngaylap) %}
-        {% module RptQtgt_Tieude(qtgt.tieude, qtgt.sohoso, qtgt.sodot, qtgt.khachhang, qtgt.diachigandhn) %}
-        <main>
-          {% module RptQtgt_ChiphiTieudebang() %}
-          {% set stt = 0 %}
-          {% for cp in qtgt.on_cpxd %}
-          {% set uid=f"cpxd{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
+  <div id="vungin" data-dulieuin='["2020GMMP001","2020GMMP001"]'>
+    {% for maqt in dulieuin %}
+    {% set dl=qtgt[maqt] %}
+    <div id="qtgt:{{maqt}}">
+      {% if dl.maubaocao == 'on' %}
+      {% set pages=1 %}
+      <div class="A4doc">
+        <div class="trangin trang1">
+          {% set page=1 %}
+          {% module RptQtgt_Quochuy(dl.dvtc, dl.ngaylap) %}
+          {% module RptQtgt_Tieude(dl.tieude, dl.sohoso, dl.sodot, dl.khachhang, dl.diachigandhn) %}
+          <main>
+            {% module RptQtgt_PhuiTieude() %}
+            {% module RptQtgt_OngnganhCpxd(dl.on_cpxd) %}
+            {% module RptQtgt_OngnganhCpxd(dl.on_cpvt) %}
+            {% module RptQtgt_OngnganhCpxd(dl.on_cpvl) %}
+            {% module RptQtgt_ChiphiDandong() %}
+            {% module RptQtgt_PhuiTong(dl.onzvl,dl.onznc,dl.onzmtc) %}
+          </main>
+          {% if dl.cpqlid>=20200721 %}
+          {% module RptQtgt_Cpql_Nd68_2019(dl.maubaocao, dl.vl, dl.nc, dl.mtc, dl.tructiepkhac, dl.chung, dl.giantiepkhac, dl.thutinhtruoc, dl.khaosat, dl.thietke, dl.giamsat, dl.onzvlncmtc, dl.ontructiepkhac, dl.ontructiep, dl.onchung, dl.ongiantiepkhac, dl.ongiantiep, dl.ongiaxaydung, dl.onthutinhtruoc, dl.onxaydungtruocthue, dl.onkhaosatthietke, dl.ongiamsat, dl.ontuvan, dl.ontongxaydungtruocthue, dl.onthuetongxaydung, dl.ontongxaydung, dl.oncongtrinh, dl.xaydung, dl.tailap, dl.congtrinh, dl.congtrinhtruocthue, dl.thuecongtrinh, dl.cptl) %}
+          {% else %}
+          {% module RptQtgt_Cpql_Nd32_2015(dl.maubaocao, dl.vl, dl.nc, dl.mtc, dl.tructiepkhac, dl.chung, dl.giantiepkhac, dl.thutinhtruoc, dl.khaosat, dl.thietke, dl.giamsat, dl.onzvlncmtc, dl.ontructiepkhac, dl.ontructiep, dl.onchung, dl.ongiantiepkhac, dl.ongiantiep, dl.ongiaxaydung, dl.onthutinhtruoc, dl.onxaydungtruocthue, dl.onkhaosatthietke, dl.ongiamsat, dl.ontuvan, dl.ontongxaydungtruocthue, dl.onthuetongxaydung, dl.ontongxaydung, dl.oncongtrinh, dl.xaydung, dl.tailap, dl.congtrinh, dl.congtrinhtruocthue, dl.thuecongtrinh, dl.cptl) %}
           {% end %}
-          {% if len(qtgt.on_cpvt) > 0 %}
-          {% module RptQtgt_ChiphiTieude('Vật tư cấp mới:') %}
-          {% for cp in qtgt.on_cpvt %}
-          {% set uid=f"cpvt{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% end %}
-          {% if len(qtgt.on_cpvl) > 0 %}
-          {% module RptQtgt_ChiphiTieude('Vật liệu xây dựng:') %}
-          {% for cp in qtgt.on_cpvl %}
-          {% set uid=f"cpvl{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% end %}
-          {% module RptQtgt_ChiphiDandong() %}
-          {% module RptQtgt_ChiphiTong(qtgt.onzvl,qtgt.onznc,qtgt.onzmtc) %}
-        </main>
-        {% module RptQtgt_Cpql_20200721(qtgt.maubaocao, qtgt.vl, qtgt.nc, qtgt.mtc, qtgt.tructiepkhac, qtgt.chung, qtgt.giantiepkhac, qtgt.thutinhtruoc, qtgt.khaosat, qtgt.thietke, qtgt.giamsat, qtgt.onzvlncmtc, qtgt.ontructiepkhac, qtgt.ontructiep, qtgt.onchung, qtgt.ongiantiepkhac, qtgt.ongiantiep, qtgt.ongiaxaydung, qtgt.onthutinhtruoc, qtgt.onxaydungtruocthue, qtgt.onkhaosatthietke, qtgt.ongiamsat, qtgt.ontuvan, qtgt.ontongxaydungtruocthue, qtgt.onthuetongxaydung, qtgt.ontongxaydung, qtgt.oncongtrinh, qtgt.xaydung, qtgt.tailap, qtgt.congtrinh, qtgt.congtrinhtruocthue, qtgt.thuecongtrinh, qtgt.cptl) %}
-        {% module RptKyduyet3(qtgt.dvtc,qtgt.tiencty, qtgt.tienkhach) %}
-        {% module RptQtgt_Footer(qtgt.mabaogia, qtgt.tt, page, pages) %}
+          <div class="keep w100">
+            {% module RptQtgt_Kettoan(dl.tiencty, dl.tienkhach) %}
+            {% module RptKyduyet3(dl.duyet,dl.kiemtra,dl.lapbang) %}
+          </div>
+          {% module RptQtgt_Footer(dl.mabaogia, dl.tt, page, pages) %}
+        </div>
       </div>
-    </div>
-    {% elif qtgt.maubaocao == 'oc' %}
-    {% set pages=2 %}
-    <div class="A4doc">
-      <div class="trangin trang1">
-        {% set page=1 %}
-        {% module RptQtgt_Quochuy(qtgt.dvtc, qtgt.ngaylap) %}
-        {% module RptQtgt_Tieude(qtgt.tieude, qtgt.sohoso, qtgt.sodot, qtgt.khachhang, qtgt.diachigandhn) %}
-        <main>
-          {% set stt = 0 %}
-          {# phan ong cai #}
-          {% module RptQtgt_ChiphiTieudebang() %}
-          {% for cp in qtgt.oc_cpxd %}
-          {% set uid=f"cpxd{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% if len(qtgt.oc_cpvt) > 0 %}
-          {% module RptQtgt_ChiphiTieude('Vật tư cấp mới:') %}
-          {% for cp in qtgt.oc_cpvt %}
-          {% set uid=f"cpvt{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% end %}
-          {% if len(qtgt.oc_cpvl) > 0 %}
-          {% module RptQtgt_ChiphiTieude('Vật liệu xây dựng:') %}
-          {% for cp in qtgt.oc_cpvl %}
-          {% set uid=f"cpvl{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% end %}
-          {% module RptQtgt_ChiphiDandong() %}
-          {% module RptQtgt_ChiphiTong(qtgt.oczvl,qtgt.ocznc,qtgt.oczmtc) %}
-        </main>
-        {% module RptQtgt_Footer(qtgt.mabaogia, qtgt.tt, page, pages) %}
+      {% elif dl.maubaocao == 'oc' %}
+      {% set pages=2 %}
+      <div class="A4doc">
+        <div class="trangin trang1">
+          {% set page=1 %}
+          {% module RptQtgt_Quochuy(dl.dvtc, dl.ngaylap) %}
+          {% module RptQtgt_Tieude(dl.tieude, dl.sohoso, dl.sodot, dl.khachhang, dl.diachigandhn) %}
+          <main>
+            {% module RptQtgt_PhuiTieude() %}
+            {% module RptQtgt_OngcaiCpxd(dl.oc_cpxd) %}
+            {% module RptQtgt_OngcaiCpxd(dl.oc_cpvt) %}
+            {% module RptQtgt_OngcaiCpxd(dl.oc_cpvl) %}
+            {% module RptQtgt_ChiphiDandong() %}
+            {% module RptQtgt_PhuiTong(dl.oczvl,dl.ocznc,dl.oczmtc) %}
+          </main>
+          {% module RptQtgt_Footer(dl.mabaogia, dl.tt, page, pages) %}
+        </div>
       </div>
-    </div>
-    <div class="A4doc">
-      <div class="trangin trang2">
-        {% set page +=1 %}
-        {% module RptQtgt_Tieude(qtgt.tieude, qtgt.sohoso, qtgt.sodot, qtgt.khachhang, qtgt.diachigandhn) %}
-        {% module RptQtgt_Cpql_20200721(qtgt.maubaocao, qtgt.vl, qtgt.nc, qtgt.mtc, qtgt.tructiepkhac, qtgt.chung, qtgt.giantiepkhac, qtgt.thutinhtruoc, qtgt.khaosat, qtgt.thietke, qtgt.giamsat, qtgt.oczvlncmtc, qtgt.octructiepkhac, qtgt.octructiep, qtgt.occhung, qtgt.ocgiantiepkhac, qtgt.ocgiantiep, qtgt.ocgiaxaydung, qtgt.octhutinhtruoc, qtgt.ocxaydungtruocthue, qtgt.ockhaosatthietke, qtgt.ocgiamsat, qtgt.octuvan, qtgt.octongxaydungtruocthue, qtgt.octhuetongxaydung, qtgt.octongxaydung, qtgt.occongtrinh,
-          qtgt.xaydung, qtgt.tailap, qtgt.congtrinh, qtgt.congtrinhtruocthue, qtgt.thuecongtrinh, qtgt.cptl) %}
-        {% module RptKyduyet3(qtgt.dvtc,qtgt.tiencty, qtgt.tienkhach) %}
-        <main></main>
-        {% module RptQtgt_Footer(qtgt.mabaogia, qtgt.tt, page, pages) %}
+      <div class="A4doc">
+        <div class="trangin trang2">
+          {% set page +=1 %}
+          {% module RptQtgt_Tieude(dl.tieude, dl.sohoso, dl.sodot, dl.khachhang, dl.diachigandhn) %}
+          {% if dl.cpqlid>=20200721 %}
+          {% module RptQtgt_Cpql_Nd68_2019(dl.maubaocao, dl.vl, dl.nc, dl.mtc, dl.tructiepkhac, dl.chung, dl.giantiepkhac, dl.thutinhtruoc, dl.khaosat, dl.thietke, dl.giamsat, dl.oczvlncmtc, dl.octructiepkhac, dl.octructiep, dl.occhung, dl.ocgiantiepkhac, dl.ocgiantiep, dl.ocgiaxaydung, dl.octhutinhtruoc, dl.ocxaydungtruocthue, dl.ockhaosatthietke, dl.ocgiamsat, dl.octuvan, dl.octongxaydungtruocthue, dl.octhuetongxaydung, dl.octongxaydung, dl.occongtrinh,
+          dl.xaydung, dl.tailap, dl.congtrinh, dl.congtrinhtruocthue, dl.thuecongtrinh, dl.cptl) %}
+          {% else %}
+          {% module RptQtgt_Cpql_Nd32_2015(dl.maubaocao, dl.vl, dl.nc, dl.mtc, dl.tructiepkhac, dl.chung, dl.giantiepkhac, dl.thutinhtruoc, dl.khaosat, dl.thietke, dl.giamsat, dl.oczvlncmtc, dl.octructiepkhac, dl.octructiep, dl.occhung, dl.ocgiantiepkhac, dl.ocgiantiep, dl.ocgiaxaydung, dl.octhutinhtruoc, dl.ocxaydungtruocthue, dl.ockhaosatthietke, dl.ocgiamsat, dl.octuvan, dl.octongxaydungtruocthue, dl.octhuetongxaydung, dl.octongxaydung, dl.occongtrinh,
+            dl.xaydung, dl.tailap, dl.congtrinh, dl.congtrinhtruocthue, dl.thuecongtrinh, dl.cptl) %}
+          {% end %}
+          <div class="keep w100">
+            {% module RptQtgt_Kettoan(dl.tiencty, dl.tienkhach) %}
+            {% module RptKyduyet3(dl.duyet,dl.kiemtra,dl.lapbang) %}
+          </div>
+          <main></main>
+          {% module RptQtgt_Footer(dl.mabaogia, dl.tt, page, pages) %}
+        </div>
       </div>
-    </div>
-    {% else %}
-    {% set pages=2 %}
-    <div class="A4doc">
-      <div class="trangin trang1">
-        {% module RptQtgt_Quochuy(qtgt.dvtc, qtgt.ngaylap) %}
-        {% module RptQtgt_Tieude(qtgt.tieude, qtgt.sohoso, qtgt.sodot, qtgt.khachhang, qtgt.diachigandhn) %}
-        {% set page=1 %}
-        <main>
-          {% set stt = 0 %}
-          {# phan ong cai #}
-          {% module RptQtgt_ChiphiTieudebang() %}
-          {% for cp in qtgt.oc_cpxd %}
-          {% set uid=f"cpxd{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% if len(qtgt.oc_cpvt) > 0 %}
-          {% module RptQtgt_ChiphiTieude('Vật tư cấp mới:') %}
-          {% for cp in qtgt.oc_cpvt %}
-          {% set uid=f"cpvt{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% end %}
-          {% if len(qtgt.oc_cpvl) > 0 %}
-          {% module RptQtgt_ChiphiTieude('Vật liệu xây dựng:') %}
-          {% for cp in qtgt.oc_cpvl %}
-          {% set uid=f"cpvl{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% end %}
-          {% module RptQtgt_ChiphiDandong() %}
-          {% module RptQtgt_ChiphiTong(qtgt.oczvl,qtgt.ocznc,qtgt.oczmtc) %}
-          {# phan ong nganh #}
-          {% module RptQtgt_ChiphiTieudebang() %}
-          {% for cp in qtgt.on_cpxd %}
-          {% set uid=f"cpxd{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% if len(qtgt.on_cpvt) > 0 %}
-          {% module RptQtgt_ChiphiTieude('Vật tư cấp mới:') %}
-          {% for cp in qtgt.on_cpvt %}
-          {% set uid=f"cpvt{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% end %}
-          {% if len(qtgt.on_cpvl) > 0 %}
-          {% module RptQtgt_ChiphiTieude('Vật liệu xây dựng:') %}
-          {% for cp in qtgt.on_cpvl %}
-          {% set uid=f"cpvl{stt:03}"%}
-          {% set stt += 1 %}
-          {% module RptQtgt_ChiphiNoidung(uid, cp['mota'], cp['dvt'], cp['soluong'], cp['giavl'], cp['gianc'], cp['giamtc'], cp['tienvl'], cp['tiennc'], cp['tienmtc']) %}
-          {% end %}
-          {% end %}
-          {% module RptQtgt_ChiphiTong(qtgt.onzvl,qtgt.onznc,qtgt.onzmtc) %}
-        </main>
-        {% module RptQtgt_Footer(qtgt.mabaogia, qtgt.tt, page, pages) %}
+      {% else %}
+      {% set pages=2 %}
+      <div class="A4doc">
+        <div class="trangin trang1">
+          {% module RptQtgt_Quochuy(dl.dvtc, dl.ngaylap) %}
+          {% module RptQtgt_Tieude(dl.tieude, dl.sohoso, dl.sodot, dl.khachhang, dl.diachigandhn) %}
+          {% set page=1 %}
+          <main>
+            {% module RptQtgt_PhuiTieude() %}
+            {% module RptQtgt_OngcaiCpxd(dl.oc_cpxd) %}
+            {% module RptQtgt_OngcaiCpxd(dl.oc_cpvt) %}
+            {% module RptQtgt_OngcaiCpxd(dl.oc_cpvl) %}
+            {% module RptQtgt_ChiphiDandong() %}
+            {% module RptQtgt_PhuiTong(dl.oczvl,dl.ocznc,dl.oczmtc) %}
+            {% module RptQtgt_PhuiTieude() %}
+            {% module RptQtgt_OngnganhCpxd(dl.on_cpxd) %}
+            {% module RptQtgt_OngnganhCpxd(dl.on_cpvt) %}
+            {% module RptQtgt_OngnganhCpxd(dl.on_cpvl) %}
+            {% module RptQtgt_ChiphiDandong() %}
+            {% module RptQtgt_PhuiTong(dl.onzvl,dl.onznc,dl.onzmtc) %}
+          </main>
+          {% module RptQtgt_Footer(dl.mabaogia, dl.tt, page, pages) %}
+        </div>
       </div>
-    </div>
-    {% set page +=1 %}
-    <div class="A4doc">
-      <div class="trangin trang2">
-        {% module RptQtgt_Tieude(qtgt.tieude, qtgt.sohoso, qtgt.sodot, qtgt.khachhang, qtgt.diachigandhn) %}
-        {% module RptQtgt_Cpql2_20200721(qtgt.maubaocao, qtgt.vl, qtgt.nc, qtgt.mtc, qtgt.tructiepkhac, qtgt.chung, qtgt.giantiepkhac, qtgt.thutinhtruoc, qtgt.khaosat, qtgt.thietke, qtgt.giamsat,
-          qtgt.oczvlncmtc, qtgt.octructiepkhac, qtgt.octructiep, qtgt.occhung, qtgt.ocgiantiepkhac, qtgt.ocgiantiep, qtgt.ocgiaxaydung, qtgt.octhutinhtruoc, qtgt.ocxaydungtruocthue, qtgt.ockhaosatthietke, qtgt.ocgiamsat, qtgt.octuvan, qtgt.octongxaydungtruocthue, qtgt.octhuetongxaydung, qtgt.octongxaydung, qtgt.ocztl,qtgt.occongtrinh,
-          qtgt.onzvlncmtc, qtgt.ontructiepkhac, qtgt.ontructiep, qtgt.onchung, qtgt.ongiantiepkhac, qtgt.ongiantiep, qtgt.ongiaxaydung, qtgt.onthutinhtruoc, qtgt.onxaydungtruocthue, qtgt.onkhaosatthietke, qtgt.ongiamsat, qtgt.ontuvan, qtgt.ontongxaydungtruocthue, qtgt.onthuetongxaydung, qtgt.ontongxaydung, qtgt.onztl,qtgt.oncongtrinh,
-          qtgt.xaydung, qtgt.tailap, qtgt.congtrinh, qtgt.congtrinhtruocthue, qtgt.thuecongtrinh, qtgt.cptl) %}
-        {% module RptKyduyet3(qtgt.dvtc,qtgt.tiencty, qtgt.tienkhach) %}
-        <main></main>
-        {% module RptQtgt_Footer(qtgt.mabaogia, qtgt.tt, page, pages) %}
+      {% set page +=1 %}
+      <div class="A4doc">
+        <div class="trangin trang2">
+          {% module RptQtgt_Tieude(dl.tieude, dl.sohoso, dl.sodot, dl.khachhang, dl.diachigandhn) %}
+          {% if dl.cpqlid>=20200721 %}
+          {% module RptQtgt_Cpql2_Nd68_2019(dl.maubaocao, dl.vl, dl.nc, dl.mtc, dl.tructiepkhac, dl.chung, dl.giantiepkhac, dl.thutinhtruoc, dl.khaosat, dl.thietke, dl.giamsat,
+          dl.oczvlncmtc, dl.octructiepkhac, dl.octructiep, dl.occhung, dl.ocgiantiepkhac, dl.ocgiantiep, dl.ocgiaxaydung, dl.octhutinhtruoc, dl.ocxaydungtruocthue, dl.ockhaosatthietke, dl.ocgiamsat, dl.octuvan, dl.octongxaydungtruocthue, dl.octhuetongxaydung, dl.octongxaydung, dl.ocztl,dl.occongtrinh,
+          dl.onzvlncmtc, dl.ontructiepkhac, dl.ontructiep, dl.onchung, dl.ongiantiepkhac, dl.ongiantiep, dl.ongiaxaydung, dl.onthutinhtruoc, dl.onxaydungtruocthue, dl.onkhaosatthietke, dl.ongiamsat, dl.ontuvan, dl.ontongxaydungtruocthue, dl.onthuetongxaydung, dl.ontongxaydung, dl.onztl,dl.oncongtrinh,
+          dl.xaydung, dl.tailap, dl.congtrinh, dl.congtrinhtruocthue, dl.thuecongtrinh, dl.cptl) %}
+          {% else %}
+          {% module RptQtgt_Cpql2_Nd32_2015(dl.maubaocao, dl.vl, dl.nc, dl.mtc, dl.tructiepkhac, dl.chung, dl.giantiepkhac, dl.thutinhtruoc, dl.khaosat, dl.thietke, dl.giamsat,
+            dl.oczvlncmtc, dl.octructiepkhac, dl.octructiep, dl.occhung, dl.ocgiantiepkhac, dl.ocgiantiep, dl.ocgiaxaydung, dl.octhutinhtruoc, dl.ocxaydungtruocthue, dl.ockhaosatthietke, dl.ocgiamsat, dl.octuvan, dl.octongxaydungtruocthue, dl.octhuetongxaydung, dl.octongxaydung, dl.ocztl,dl.occongtrinh,
+            dl.onzvlncmtc, dl.ontructiepkhac, dl.ontructiep, dl.onchung, dl.ongiantiepkhac, dl.ongiantiep, dl.ongiaxaydung, dl.onthutinhtruoc, dl.onxaydungtruocthue, dl.onkhaosatthietke, dl.ongiamsat, dl.ontuvan, dl.ontongxaydungtruocthue, dl.onthuetongxaydung, dl.ontongxaydung, dl.onztl,dl.oncongtrinh,
+            dl.xaydung, dl.tailap, dl.congtrinh, dl.congtrinhtruocthue, dl.thuecongtrinh, dl.cptl) %}
+          {% end %}
+          <div class="keep w100">
+            {% module RptQtgt_Kettoan(dl.tiencty, dl.tienkhach) %}
+            {% module RptKyduyet3(dl.duyet,dl.kiemtra,dl.lapbang) %}
+          </div>
+          <main></main>
+          {% module RptQtgt_Footer(dl.mabaogia, dl.tt, page, pages) %}
+        </div>
       </div>
+      {% end %}
     </div>
     {% end %}
   </div>
-  {% end %}
-
   {#--script--#}
   <script type="text/javascript" src="{{static_url('js/base.js')}}"></script>
-  <script type="text/javascript" src="{{static_url('js/reports/qtgt/hoasy.js')}}"></script>
 </body>
 
 </html>

@@ -13,15 +13,15 @@
 <body>
   <div id="vungin" data-dulieuin='["2020GMMP001","2020GMMP001"]'>
     {% for madot in dulieuin %}
+    {% set dl=qtvt[madot] %}
     <div id="qtvt_{{madot}}">
       <div class="A4doc">
         <div class="trangin trang1">
-          {% set dl=qtvt[madot] %}
-          {% module RptQtvt_Quochuy(dl['dvtc'], dl['kyhieudvtc'],dl['ngaylap']) %}
-          {% module RptQtvt_Tieude(dl['tieude'], dl['congtac']) %}
-          {% module RptQtvt_Cpvt(dl['cpvt']) %}
-          {% module RptQtvt_Chungtu(dl['phieuxuat'], dl['phieunhap']) %}
-          {% module RptKyduyet3(dl['duyet'],dl['kiemtra'], dl['lapbang']) %}
+          {% module RptQtvt_Quochuy(dl.dvtc, dl.kyhieudvtc,dl.ngaylap) %}
+          {% module RptQtvt_Tieude(dl.tieude, dl.congtac) %}
+          {% module RptQtvt_Cpvt(dl.cpvt) %}
+          {% module RptQtvt_Chungtu(dl.phieuxuat,dl.phieunhap) %}
+          {% module RptKyduyet3(dl.duyet,dl.kiemtra,dl.lapbang) %}
         </div>
       </div>
     </div>

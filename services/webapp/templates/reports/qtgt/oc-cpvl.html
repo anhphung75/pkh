@@ -1,0 +1,43 @@
+{% if len(cpvl)>0 %}
+<div class="grid bang">
+  {# Tiêu đề #}
+  <div class="l fb fu bl">Vật liệu xây dựng:</div>
+  <div class="bl"></div>
+  <div class="bl"></div>
+  <div class="bl"></div>
+  <div class="bl"></div>
+  <div class="bl"></div>
+  <div class="bl"></div>
+  <div class="bl"></div>
+  <div class="brl"></div>
+  {# Nội dung #}
+  {% for cp in cpvl %}
+  {% set uid=f"oc-cpvl-{cpvl.index(cp):03}" %}
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')" class="bl l oc-cpvl {{uid}}">
+    {{cp["mota"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')" class="bl c oc-cpvl {{uid}}">
+    {{cp["dvt"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r sl wb oc-cpvl {{uid}}">
+    {{cp["soluong"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r vl wb oc-cpvl {{uid}}">
+    {{cp["giavl"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r nc wb oc-cpvl {{uid}}">
+    {{cp["gianc"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r mtc wb oc-cpvl {{uid}}">
+    {{cp["giamtc"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r vl wb oc-cpvl {{uid}}">
+    {{cp["tienvl"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r nc wb oc-cpvl {{uid}}">
+    {{cp["tiennc"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="brl r mtc wb oc-cpvl {{uid}}">
+    {{cp["tienmtc"]}}</div>
+  {% end %}
+</div>
+{% end %}
