@@ -8,19 +8,19 @@ class Quochuy(web.UIModule):
         ngaylap = f"{ngaylap}"
         ngaylap = f"Thủ Đức, ngày {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
         return self.render_string(
-            "reports/qtvt/quochuy.html",
+            "reports/qtvl/quochuy.html",
             dvtc=dvtc, kyhieudvtc=kyhieudvtc, ngaylap=ngaylap)
 
 
 class Tieude(web.UIModule):
     def render(self, tieude="BẢNG QUYẾT TOÁN VẬT TƯ", congtac=''):
         return self.render_string(
-            "reports/qtvt/tieude.html",
+            "reports/qtvl/tieude.html",
             tieude=tieude, congtac=congtac)
 
 
-class Cpvt(web.UIModule):
-    def render(self, cpvt=[]):
+class Cpvl(web.UIModule):
+    def render(self, cpvl=[]):
         # format number
         for cp in cpvt:
             cp['tt'] = f"{cp['tt']:02}"
@@ -29,12 +29,12 @@ class Cpvt(web.UIModule):
             cp['tainhap'] = tachhangso(cp['tainhap'], 3)
             cp['bosung'] = tachhangso(cp['bosung'], 3)
         return self.render_string(
-            "reports/qtvt/chiphi.html",
+            "reports/qtvl/chiphi.html",
             cpvt=cpvt)
 
 
 class Chungtu(web.UIModule):
     def render(self, phieuxuat="", phieunhap=""):
         return self.render_string(
-            "reports/qtvt/chungtu.html",
+            "reports/qtvl/chungtu.html",
             phieuxuat=phieuxuat, phieunhap=phieunhap)

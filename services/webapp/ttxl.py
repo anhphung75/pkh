@@ -3,7 +3,7 @@ import decimal
 import arrow
 
 #from sqlalchemy import func, desc
-from ttdl import Maychu
+from ttdl import Maychu, run_mssql
 from utils import lamtronso
 
 
@@ -800,4 +800,3 @@ def test_RptQtgt():
     print(vars(kq))
 
 
-#test_RptQtgt()

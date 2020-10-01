@@ -404,4 +404,4 @@ def spQtgt(schema="web"):
 
 
 # spQtgt("qlmlq2")
-lamtronso()
+#lamtronso()

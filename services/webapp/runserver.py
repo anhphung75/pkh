@@ -12,7 +12,12 @@ import tornado.escape
 import tornado.websocket
 
 import comps
-from ttxl.reports import qtgt, qtvt
+from ttdl import Maychu
+from ttxl.reports import qtgt, qtvt,qtvl
+from hoasy.reports import base as rptbase
+#from hoasy.reports import qtgt as rptqtgt
+from hoasy.reports import qtvt as rptqtvt
+from hoasy.reports import qtvl as rptqtvl
 
 # tornado.locale.set_default_locale('vi_VI')
 
@@ -70,10 +75,11 @@ class Rpt_Qtgt(WebBase):
         if schema == "qlmltđ":
             schema = "qlmltd"
         if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
-            dulieuin = qtvt.dulieuin()
-            print(f"dulieuin qtgt={dulieuin}")
-            self.render("reports/qtgt/main.html", dsmaqt=dulieuin,
-                        schema=schema, error=None)
+            data = qtgt.dulieuin(schema)
+            print(f"dulieuin={data.dulieuin}")
+            print(f"qtgt={data.qtgt}")
+            self.render("reports/qtgt/main.html", error=None,
+                        dulieuin=data['dulieuin'], qtgt=data['qtgt'])
         else:
             self.render("errors/404.html", error=None)
 
@@ -84,10 +90,22 @@ class Rpt_Qtvt(WebBase):
         if schema == "qlmltđ":
             schema = "qlmltd"
         if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
-            dulieuin = qtvt.dulieuin()
-            print(f"dulieuin qtvt={dulieuin}")
-            self.render("reports/qtvt/main.html", dulieuin=dulieuin,
-                        schema=schema, error=None)
+            data = qtvt.dulieuin(schema)
+            self.render("reports/qtvt/main.html", error=None,
+                        dulieuin=data['dulieuin'], qtvt=data['qtvt'])
+        else:
+            self.render("errors/404.html", error=None)
+
+
+class Rpt_Qtvl(WebBase):
+    def get(self, schema):
+        schema = schema.lower()
+        if schema == "qlmltđ":
+            schema = "qlmltd"
+        if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            data = qtvl.dulieuin(schema)
+            self.render("reports/qtvl/main.html", error=None,
+                        dulieuin=data['dulieuin'], qtvl=data['qtvl'])
         else:
             self.render("errors/404.html", error=None)
 
@@ -99,6 +117,7 @@ class WebApp(web.Application):
             (r"/([^/]+)/forms/qtgt", Frm_Qtgt),
             (r"/([^/]+)/reports/qtgt", Rpt_Qtgt),
             (r"/([^/]+)/reports/qtvt", Rpt_Qtvt),
+            (r"/([^/]+)/reports/qtvl", Rpt_Qtvl),
             #(r"/qlmlt%C4%91/reports/qtgt", Rpt_Qtgt),
         ]
         settings = dict(
@@ -107,7 +126,7 @@ class WebApp(web.Application):
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             ui_modules={
                 "FrmQtgt_Ongnganh": comps.FrmQtgt_Ongnganh,
-                "RptKyduyet3": hoasy.reports.base.RptKyduyet3,
+                "RptKyduyet3": rptbase.RptKyduyet3,
                 "RptQtgt_Quochuy": comps.RptQtgt_Quochuy,
                 "RptQtgt_Tieude": comps.RptQtgt_Tieude,
                 "RptQtgt_ChiphiTieudebang": comps.RptQtgt_ChiphiTieudebang,
@@ -125,10 +144,13 @@ class WebApp(web.Application):
                 "RptQtgt_Footer": comps.RptQtgt_Footer,
                 "RptQtgtKyduyet2": comps.RptKyduyet2,
                 "RptQtgtKyduyet3": comps.RptKyduyet3,
-                "RptQtvt_Quochuy": hoasy.reports.qtvt.RptQtvt_Quochuy,
-                "RptQtvt_Tieude": hoasy.reports.qtvt.RptQtvt_Tieude,
-                "RptQtvt_Cpvt": hoasy.reports.qtvt.RptQtvt_Cpvt,
-                "RptQtvt_Chungtu": hoasy.reports.qtvt.RptQtvt_Chungtu,
+                "RptQtvt_Quochuy": rptqtvt.Quochuy,
+                "RptQtvt_Tieude": rptqtvt.Tieude,
+                "RptQtvt_Cpvt": rptqtvt.Cpvt,
+                "RptQtvt_Chungtu": rptqtvt.Chungtu,
+                "RptQtvl_Quochuy": rptqtvl.Quochuy,
+                "RptQtvl_Tieude": rptqtvl.Tieude,
+                "RptQtvl_Cpvl": rptqtvl.Cpvl,
             },
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",

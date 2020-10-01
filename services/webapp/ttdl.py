@@ -1,7 +1,8 @@
 import os
 import sys
 import datetime
-import json
+import decimal
+import arrow
 #from utils.thoigian import stodate, datetos
 from sqlalchemy import create_engine, ForeignKey, inspect
 from sqlalchemy import Column, Sequence, func, desc
@@ -61,7 +62,7 @@ class Maychu():
             #    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
             # cnnstr = f"mssql+pyodbc:///?odbc_connect={params}"
             # cnnstr = f"sqlite:///:memory:"
-            engine = create_engine(self.cnnstr, echo=True)
+            engine = create_engine(self.cnnstr, echo=False)
             engine.execution_options(isolation_level="AUTOCOMMIT")
         except:
             return None
@@ -82,9 +83,9 @@ class Maychu():
             sql += f" Where table_schema='{schema}'"
         sql += f" Order by table_catalog, table_schema, table_type, table_name;"
         try:
-            data = self.core().execute(sql)
-            #rawdata = Api.raw2listjson(data)
-            print(str(data))
+            kq = self.core().execute(sql)
+            for row in kq:
+                print(dict(row))
         except:
             pass
 
@@ -106,7 +107,6 @@ def run_mssql(sql=''):
         for row in kq:
             dl = dict(row)
             for k in dl.copy():
-                #print(f"dl[{k}]={dl[k]} type={type(dl[k])}")
                 if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
                     if k == 'lastupdate':
                         dl[k] = int(arrow.get(dl[k]).float_timestamp * 1000)
@@ -121,3 +121,4 @@ def run_mssql(sql=''):
         return data
     except:
         return None
+

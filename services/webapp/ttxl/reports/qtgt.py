@@ -1,29 +1,8 @@
-import datetime
-import arrow
-
-#from sqlalchemy import func, desc
 from ttdl import run_mssql
-from utils import lamtronso
+from utils import Tien, tachhangso, lamtronso
 
 
-def dulieuin(schema):
-    try:
-        sql = (
-            f"Select qt.maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON dot.madot=qt.madot"
-            f" Where (dot.inok<>0 And qt.inok<>0) Order By dot.madot,qt.tt,qt.lastupdate"
-        )
-        dl = run_mssql(sql)
-        if ((dl == None) or (len(dl) < 1)):
-            return ['pkh001', 'pkh002']
-        data = []
-        for r in dl:
-            data.append(r['maqt'])
-        return data
-    except:
-        return []
-
-
-class RptQtgt:
+class Dulieu:
     def __init__(self, schema='qlmltd', maqt=''):
         self.schema = schema
         self.maqt = maqt
@@ -145,7 +124,7 @@ class RptQtgt:
             f" From {self.schema}.qt qt"
             f" Where (qt.maqt='{self.maqt}' And datalength(qt.madot)>0)"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -168,7 +147,7 @@ class RptQtgt:
             f"Select top 1 sohoso, diachikhachhang as diachigandhn, khachhang From dbo.hoso"
             f" Where (hosoid='{self.hosoid}')"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -184,7 +163,7 @@ class RptQtgt:
             f"Select top 1 sodot, isnull(nhathauid,0) as dvtcid From dbo.dot"
             f" Where (madot='{self.madot}')"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -199,7 +178,7 @@ class RptQtgt:
             f"Select top 1 ten as dvtc From dbo.nhathau"
             f" Where (nhathauid='{self.dvtcid}')"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -216,7 +195,7 @@ class RptQtgt:
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt31 qt ON cp.chiphiid=qt.chiphiid"
             f" Where (qt.maqt='{self.maqt}' And datalength(cp.chiphiid)>0) Order By qt.maqtgt"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -241,7 +220,7 @@ class RptQtgt:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -266,7 +245,7 @@ class RptQtgt:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -290,7 +269,7 @@ class RptQtgt:
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt33 qt ON cp.chiphiid=qt.chiphiid"
             f" Where (qt.maqt='{self.maqt}' And datalength(cp.chiphiid)>0) Order By qt.maqtgt"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -315,7 +294,7 @@ class RptQtgt:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -340,7 +319,7 @@ class RptQtgt:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -365,7 +344,7 @@ class RptQtgt:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -395,7 +374,7 @@ class RptQtgt:
             f" isnull(heso_khaosat,0) as khaosat,isnull(heso_thietke,0) as thietke,isnull(heso_gstc,0) as giamsat"
             f" From dbo.hesochiphi Where hesoid={self.cpqlid}"
         )
-        dl = runsql(sql)
+        dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -474,3 +453,28 @@ class RptQtgt:
         # test
         if self.gxd != self.congtrinh:
             self.tieude = f"GTGT sai do Gxd-Gxdct={self.gxd-self.congtrinh}"
+
+
+def dulieuin(schema):
+    data = {"schema": schema, "dulieuin": [], "qtgt": {}}
+    try:
+        sql = (
+            f"Select maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON qt.madot=dot.madot"
+            f" Where (dot.inok<>0 And qt.inok<>0 And datalength(qt.madot)>0)"
+            f" Order By qt.madot,qt.tt,qt.lastupdate"
+        )
+        dl = run_mssql(sql)
+        if ((dl == None) or (len(dl) < 1)):
+            return data
+        dulieu = []
+        for r in dl:
+            dulieu.append(r['maqt'])
+        data["dulieuin"] = dulieu
+        qtgt = {}
+        for maqt in dulieu:
+            dl = vars(Dulieu(schema, maqt))
+            qtgt[maqt] = dl
+        data["qtgt"] = qtgt
+        return data
+    except:
+        return data
