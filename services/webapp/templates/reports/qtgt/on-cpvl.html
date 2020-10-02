@@ -1,6 +1,5 @@
 {% if len(cpvl)>0 %}
 <div class="grid bang">
-  {# Tiêu đề #}
   <div class="l fb fu bl">Vật liệu xây dựng:</div>
   <div class="bl"></div>
   <div class="bl"></div>
@@ -10,7 +9,6 @@
   <div class="bl"></div>
   <div class="bl"></div>
   <div class="brl"></div>
-  {# Nội dung #}
   {% for cp in cpvl %}
   {% set uid=f"on-cpvl-{cpvl.index(cp):03}" %}
   <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')" class="bl l on-cpvl {{uid}}">

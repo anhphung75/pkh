@@ -24,10 +24,10 @@ class Cpvt(web.UIModule):
         # format number
         for cp in cpvt:
             cp['tt'] = f"{cp['tt']:02}"
-            cp['thuccap'] = tachhangso(cp['thuccap'], 3)
-            cp['sudung'] = tachhangso(cp['sudung'], 3)
-            cp['tainhap'] = tachhangso(cp['tainhap'], 3)
-            cp['bosung'] = tachhangso(cp['bosung'], 3)
+            cp['thuccap'] = tachhangso(cp['thuccap'], 1)
+            cp['sudung'] = tachhangso(cp['sudung'], 1)
+            cp['tainhap'] = tachhangso(cp['tainhap'], 1)
+            cp['bosung'] = tachhangso(cp['bosung'], 1)
         return self.render_string(
             "reports/qtvt/chiphi.html",
             cpvt=cpvt)

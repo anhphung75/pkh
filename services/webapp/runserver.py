@@ -15,7 +15,7 @@ import comps
 from ttdl import Maychu
 from ttxl.reports import qtgt, qtvt,qtvl
 from hoasy.reports import base as rptbase
-#from hoasy.reports import qtgt as rptqtgt
+from hoasy.reports import qtgt as rptqtgt
 from hoasy.reports import qtvt as rptqtvt
 from hoasy.reports import qtvl as rptqtvl
 
@@ -76,8 +76,6 @@ class Rpt_Qtgt(WebBase):
             schema = "qlmltd"
         if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
             data = qtgt.dulieuin(schema)
-            print(f"dulieuin={data.dulieuin}")
-            print(f"qtgt={data.qtgt}")
             self.render("reports/qtgt/main.html", error=None,
                         dulieuin=data['dulieuin'], qtgt=data['qtgt'])
         else:

@@ -188,9 +188,24 @@ class Kettoan(web.UIModule):
             tienkhach=tienkhach, tienkhachso=tienkhachso, tienkhachchu=tienkhachchu, tienkhachtruocthue=tienkhachtruocthue, thuekhach=thuekhach)
 
 
+class Footer(web.UIModule):
+    def render(self, cpqlid=20200721, mabaogia=20200721, stt=1, page=1, pages=1):
+        # format so:
+        mabaogia = f"{mabaogia}"
+        if cpqlid >= 20200721:
+            nghidinh = "NĐ68-2019"
+        else:
+            nghidinh = "NĐ32-2015"
+        lzone = f"QT-{nghidinh} ({mabaogia[-2:]}-{mabaogia[-4:-2]}-{mabaogia[:-4]})"
+        rzone = f"TT-{stt:02}- Trang: {page:01}/{pages:01}"
+        return self.render_string(
+            "reports/qtgt/footer.html",
+            lzone=lzone, rzone=rzone)
+
+
 class Cpql_Nd32_2015(web.UIModule):
     def render(self, maubaocao='on', vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
-               thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0,
+               thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0, cpvl=0, cpnc=0, cpmtc=0,
                cpzvlncmtc=0, cptructiepkhac=0, cptructiep=0, cpchung=0, cpgiantiepkhac=0, cpgiantiep=0,
                cpgiaxaydung=0, cpthutinhtruoc=0, cpxaydungtruocthue=0, cpkhaosatthietke=0, cpgiamsat=0, cptuvan=0, cptongxaydungtruocthue=0, cpthuetongxaydung=0, cptongxaydung=0, cpcongtrinh=0,
                xaydung=0, tailap=0, congtrinh=0, congtrinhtruocthue=0, thuecongtrinh=0, cptl=[]):
@@ -202,6 +217,9 @@ class Cpql_Nd32_2015(web.UIModule):
         giamsat = f"{tachhangso(giamsat*100,3)}%"
         thietke = tachhangso(thietke, 1)
         # markup chiphi
+        cpvl = tachhangso(cpvl, 0)
+        cpnc = tachhangso(cpnc, 0)
+        cpmtc = tachhangso(cpmtc, 0)
         cpzvlncmtc = tachhangso(cpzvlncmtc, 0)
         cptructiepkhac = tachhangso(cptructiepkhac, 0)
         cptructiep = tachhangso(cptructiep, 0)
@@ -226,7 +244,7 @@ class Cpql_Nd32_2015(web.UIModule):
         return self.render_string(
             "reports/qtgt/cpql-nd32-2015.html", maubaocao=maubaocao,
             vl=vl, nc=nc, mtc=mtc, tructiepkhac=tructiepkhac, chung=chung, giantiepkhac=giantiepkhac,
-            thutinhtruoc=thutinhtruoc, khaosat=khaosat, thietke=thietke, giamsat=giamsat,
+            thutinhtruoc=thutinhtruoc, khaosat=khaosat, thietke=thietke, giamsat=giamsat, cpvl=cpvl, cpnc=cpnc, cpmtc=cpmtc,
             cpzvlncmtc=cpzvlncmtc, cptructiepkhac=cptructiepkhac, cptructiep=cptructiep, cpchung=cpchung, cpgiantiepkhac=cpgiantiepkhac, cpgiantiep=cpgiantiep, cpgiaxaydung=cpgiaxaydung,
             cpthutinhtruoc=cpthutinhtruoc, cpxaydungtruocthue=cpxaydungtruocthue, cpkhaosatthietke=cpkhaosatthietke, cpgiamsat=cpgiamsat, cptuvan=cptuvan, cptongxaydungtruocthue=cptongxaydungtruocthue,
             cpthuetongxaydung=cpthuetongxaydung, cptongxaydung=cptongxaydung, cpcongtrinh=cpcongtrinh,
@@ -236,10 +254,10 @@ class Cpql_Nd32_2015(web.UIModule):
 
 class Cpql2_Nd32_2015(web.UIModule):
     def render(self, maubaocao='o2', vl=0, nc=0, mtc=0, tructiepkhac=0, chung=0, giantiepkhac=0,
-               thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0,
+               thutinhtruoc=0, khaosat=0, thietke=0, giamsat=0, ocvl=0, ocnc=0, ocmtc=0,
                oczvlncmtc=0, octructiepkhac=0, octructiep=0, occhung=0, ocgiantiepkhac=0, ocgiantiep=0,
                ocgiaxaydung=0, octhutinhtruoc=0, ocxaydungtruocthue=0, ockhaosatthietke=0, ocgiamsat=0, octuvan=0, octongxaydungtruocthue=0, octhuetongxaydung=0, octongxaydung=0, ocztl=0, occongtrinh=0,
-               onzvlncmtc=0, ontructiepkhac=0, ontructiep=0, onchung=0, ongiantiepkhac=0, ongiantiep=0,
+               onvl=0, onnc=0, onmtc=0, onzvlncmtc=0, ontructiepkhac=0, ontructiep=0, onchung=0, ongiantiepkhac=0, ongiantiep=0,
                ongiaxaydung=0, onthutinhtruoc=0, onxaydungtruocthue=0, onkhaosatthietke=0, ongiamsat=0, ontuvan=0, ontongxaydungtruocthue=0, onthuetongxaydung=0, ontongxaydung=0, onztl=0, oncongtrinh=0,
                xaydung=0, tailap=0, congtrinh=0, congtrinhtruocthue=0, thuecongtrinh=0, cptl=[]):
         # markup heso
@@ -250,6 +268,9 @@ class Cpql2_Nd32_2015(web.UIModule):
         giamsat = f"{tachhangso(giamsat*100,3)}%"
         thietke = tachhangso(thietke, 1)
         # markup chiphi
+        ocvl = tachhangso(ocvl, 0)
+        ocnc = tachhangso(ocnc, 0)
+        ocmtc = tachhangso(ocmtc, 0)
         oczvlncmtc = tachhangso(oczvlncmtc, 0)
         octructiepkhac = tachhangso(octructiepkhac, 0)
         octructiep = tachhangso(octructiep, 0)
@@ -267,6 +288,9 @@ class Cpql2_Nd32_2015(web.UIModule):
         octongxaydung = tachhangso(octongxaydung, 0)
         occongtrinh = tachhangso(occongtrinh, 0)
         ocztl = tachhangso(ocztl, 0)
+        onvl = tachhangso(onvl, 0)
+        onnc = tachhangso(onnc, 0)
+        onmtc = tachhangso(onmtc, 0)
         onzvlncmtc = tachhangso(onzvlncmtc, 0)
         ontructiepkhac = tachhangso(ontructiepkhac, 0)
         ontructiep = tachhangso(ontructiep, 0)
@@ -292,11 +316,11 @@ class Cpql2_Nd32_2015(web.UIModule):
         return self.render_string(
             "reports/qtgt/cpql2-nd32-2015.html", maubaocao=maubaocao,
             vl=vl, nc=nc, mtc=mtc, tructiepkhac=tructiepkhac, chung=chung, giantiepkhac=giantiepkhac,
-            thutinhtruoc=thutinhtruoc, khaosat=khaosat, thietke=thietke, giamsat=giamsat,
+            thutinhtruoc=thutinhtruoc, khaosat=khaosat, thietke=thietke, giamsat=giamsat, ocvl=ocvl, ocnc=ocnc, ocmtc=ocmtc,
             oczvlncmtc=oczvlncmtc, octructiepkhac=octructiepkhac, octructiep=octructiep, occhung=occhung, ocgiantiepkhac=ocgiantiepkhac, ocgiantiep=ocgiantiep, ocgiaxaydung=ocgiaxaydung,
             octhutinhtruoc=octhutinhtruoc, ocxaydungtruocthue=ocxaydungtruocthue, ockhaosatthietke=ockhaosatthietke, ocgiamsat=ocgiamsat, octuvan=octuvan, octongxaydungtruocthue=octongxaydungtruocthue,
             octhuetongxaydung=octhuetongxaydung, octongxaydung=octongxaydung, ocztl=ocztl, occongtrinh=occongtrinh,
-            onzvlncmtc=onzvlncmtc, ontructiepkhac=ontructiepkhac, ontructiep=ontructiep, onchung=onchung, ongiantiepkhac=ongiantiepkhac, ongiantiep=ongiantiep, ongiaxaydung=ongiaxaydung,
+            onvl=onvl, onnc=onnc, onmtc=onmtc, onzvlncmtc=onzvlncmtc, ontructiepkhac=ontructiepkhac, ontructiep=ontructiep, onchung=onchung, ongiantiepkhac=ongiantiepkhac, ongiantiep=ongiantiep, ongiaxaydung=ongiaxaydung,
             onthutinhtruoc=onthutinhtruoc, onxaydungtruocthue=onxaydungtruocthue, onkhaosatthietke=onkhaosatthietke, ongiamsat=ongiamsat, ontuvan=ontuvan, ontongxaydungtruocthue=ontongxaydungtruocthue,
             onthuetongxaydung=onthuetongxaydung, ontongxaydung=ontongxaydung,
             onztl=onztl, oncongtrinh=oncongtrinh,

@@ -1,6 +1,7 @@
 import datetime
 import decimal
 import arrow
+import json
 
 #from sqlalchemy import func, desc
 from ttdl import Maychu, run_mssql
@@ -536,23 +537,27 @@ class RptQtgt:
 class Phui_20200721:
     def __init__(self, phui):
         # phui=[{macptl,dai,rong,sau}]
-        dl = []
-        for cp in phui:
-            if not cp['dai']:
-                cp['dai'] = 0
-            if not cp['rong']:
-                cp['rong'] = 0
-            if not cp['sau']:
-                cp['sau'] = 0
-            cp['dientich'] = cp['dai']*cp['rong']
-            cp['chuvi'] = (cp['dai']+cp['rong'])*2
-            cp['thetich'] = cp['dai']*cp['rong']*cp['sau']
-            if cp['thetich'] > 0:
-                dl.append(cp)
-        self.phui = dl
+        self.phui = phui
+        self.cat_matnhua_btxm_gach = 0
+        self.dao_boc_matnhua_thucong = 0
+        self.dao_boc_btxm_thucong = 0
+        self.pha_do_nen_gach = 0
+        self.dao_phui_dat_cap3_thucong = 0
+        self.dao_phui_dat_cap2_thucong = 0
+        self.cong_traicat = 0
+        self.cong_traican_dadam4x6 = 0
+        self.dao_boc_gach_vua = 0
+        self.vanchuyen_dat_cap3_thucong = 0
+        self.vanchuyen_dat_cap2_thucong = 0
+        self.cpxd = []
+        self.cpvl = []
+        self.catsanlap = 0
+        self.dadam4x6 = 0
+        self.luoicatbeton365mm = 0
         self.tinhphui()
 
     def tinhphui(self):
+        self.tinh_phui_hinhhoc()
         self.tinh_cat_matnhua_btxm_gach()
         self.tinh_dao_boc_matnhua_thucong()
         self.tinh_dao_boc_btxm_thucong()
@@ -566,6 +571,22 @@ class Phui_20200721:
         self.tinh_vanchuyen_dat_cap2_thucong()
         self.tinh_cpxd()
         self.tinh_cpvl()
+
+    def tinh_phui_hinhhoc(self):
+        dl = []
+        for cp in self.phui:
+            if not cp['dai']:
+                cp['dai'] = 0
+            if not cp['rong']:
+                cp['rong'] = 0
+            if not cp['sau']:
+                cp['sau'] = 0
+            cp['dientich'] = cp['dai']*cp['rong']
+            cp['chuvi'] = (cp['dai']+cp['rong'])*2
+            cp['thetich'] = cp['dai']*cp['rong']*cp['sau']
+            if cp['thetich'] > 0:
+                dl.append(cp)
+        self.phui = dl
 
     def tinh_cat_matnhua_btxm_gach(self):
         kl = 0
@@ -720,8 +741,11 @@ class Phui_20200721:
                 heso = 0.1
             else:
                 heso = 0
-            kl += cp['dientich'] * heso
-        self.cong_traican_dadam4x6 = lamtronso(kl*heso, 3)
+            kl += (cp['dientich'] * heso)
+            print(f"cong dadam ={kl}")
+        print(f"cong_traican_dadam4x6 kl={kl} x heso={heso}")
+        self.cong_traican_dadam4x6 = lamtronso(kl, 3)
+        print(f"cong_traican_dadam4x6 ={self.cong_traican_dadam4x6}")
 
     def tinh_dao_boc_gach_vua(self):
         kl = 0
@@ -786,13 +810,15 @@ class Phui_20200721:
 def test_phui():
     phui = [{'macptl': 'nhua_10cm', 'dai': 0.5, 'rong': 0.5, 'sau': 1},
             {'macptl': 'nhua_12cm', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'nhua_10cm', 'dai': 1, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'nhua_10cm', 'dai': 5, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachterrazzo', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'hem_btxm', 'dai': 1, 'rong': 0.3, 'sau': 0.6}
+            {'macptl': 'hem_btxm', 'dai': 0, 'rong': 0.3, 'sau': 0.6}
             ]
-    kq = Phui_20200721(phui)
-    print(vars(kq))
+    kq = vars(Phui_20200721(phui))
+    del kq['cpxd']
+    del kq['cpvl']
+    print(json.dumps(kq, indent=4, sort_keys=False))
 
 
 def test_RptQtgt():
@@ -800,3 +826,4 @@ def test_RptQtgt():
     print(vars(kq))
 
 
+test_phui()
