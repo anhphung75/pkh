@@ -694,7 +694,7 @@ class Phui_20200721:
             elif cp['macptl'] in ['duong_daxanh', 'duong_datda']:
                 heso = cp['sau'] - 0.35
             elif cp['macptl'] in ['le_datda', 'le_datthuong']:
-                heso = 0.35
+                heso = cp['sau'] - 0.35
             elif cp['macptl'] in ['le_dagranit']:
                 heso = cp['sau'] - 0.2
             elif cp['macptl'] in ['le_gachterrazzo']:
@@ -810,10 +810,12 @@ class Phui_20200721:
 def test_phui():
     phui = [{'macptl': 'nhua_10cm', 'dai': 0.5, 'rong': 0.5, 'sau': 1},
             {'macptl': 'nhua_12cm', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'nhua_10cm', 'dai': 5, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'nhua_10cm', 'dai': 5.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachterrazzo', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'hem_btxm', 'dai': 0, 'rong': 0.3, 'sau': 0.6}
+            {'macptl': 'hem_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_ximang', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_datthuong', 'dai': 2.0, 'rong': 0.3, 'sau': 0.6}
             ]
     kq = vars(Phui_20200721(phui))
     del kq['cpxd']

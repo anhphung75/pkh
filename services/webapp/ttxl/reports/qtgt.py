@@ -166,7 +166,7 @@ class Dulieu:
 
     def tbl_dot(self):
         sql = (
-            f"Select top 1 sodot, isnull(nhathauid,0) as dvtcid From dbo.dot"
+            f"Select top 1 sodot, isnull(nhathauid,0) as dvtcid From {self.schema}.dot"
             f" Where (madot='{self.madot}')"
         )
         dl = run_mssql(sql)
@@ -201,6 +201,12 @@ class Dulieu:
             self.kyhieudvtc = "CNTĐ-QLMLTĐ"
             self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
                             'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
+        elif self.dvtcid == 11:
+            self.kyhieudvtc = "CNTĐ-PKT"
+            self.lapbang = {'pbd': 'PHÒNG KỸ THUẬT',
+                            'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Nguyễn Hồng Phương'}
+            self.kiemtra = {}
+            self.tieude = "BẢNG GIÁ GẮN MỚI ĐỒNG HỒ NƯỚC (ĐIỀU CHỈNH)"
         else:
             self.kyhieudvtc = "CNTĐ-KHVTTH"
             self.lapbang = {'pbd': 'PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
@@ -482,7 +488,8 @@ def dulieuin(schema):
     try:
         sql = (
             f"Select maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON qt.madot=dot.madot"
-            f" Where (dot.inok<>0 And qt.inok<>0 And datalength(qt.madot)>0)"
+            f" Where (dot.inok<>0 And qt.inok<>0 And datalength(qt.madot)>0"
+            f" And (qt.tinhtrang like 'ok%' or qt.tinhtrang like 'fin%'))"
             f" Order By qt.madot,qt.tt,qt.lastupdate"
         )
         dl = run_mssql(sql)

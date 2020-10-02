@@ -106,6 +106,7 @@ def dulieuin(schema):
         sql = (
             f"Select madot From {schema}.dot"
             f" Where (inok<>0 And datalength(madot)>0)"
+            f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
             f" Order By madot,lastupdate"
         )
         dl = run_mssql(sql)
