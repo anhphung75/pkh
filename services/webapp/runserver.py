@@ -124,6 +124,7 @@ class WebApp(web.Application):
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             ui_modules={
                 "FrmQtgt_Ongnganh": comps.FrmQtgt_Ongnganh,
+                "RptQuochuy": rptbase.RptQuochuy,
                 "RptKyduyet3": rptbase.RptKyduyet3,
                 "RptQtgt_Quochuy": rptqtgt.Quochuy,
                 "RptQtgt_Tieude": rptqtgt.Tieude,

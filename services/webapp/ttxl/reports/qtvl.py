@@ -6,33 +6,34 @@ class Dulieu:
     def __init__(self, schema='qlmltd', madot=''):
         self.schema = schema
         self.madot = madot
-        self.tieude = "BẢNG QUYẾT TOÁN VẬT TƯ"
+        self.tieude = "BẢNG QUYẾT TOÁN VẬT LIỆU"
         self.sodot = ""
         self.congtac = ""
         self.ngaylap = 99990101
         self.dvtcid = 0
         self.dvtc = "PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP"
-        self.kyhieudvtc = "CNTĐ-KHVTTH"
-        self.phieunhap = ""
-        self.phieuxuat = ""
-        self.cpvt = []
+        self.ngayganmin = 0
+        self.ngayganmax = 0
+        self.dsmaqt=[]
+        self.cpvl = []
         self.duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
                       'nhanvien': 'Nguyễn Công Minh'}
         self.kiemtra = {'pbd': 'KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
                         'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
         self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
                         'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
-        self.get_qtvt()
+        self.get_qtvl()
 
-    def get_qtvt(self):
+    def get_qtvl(self):
         self.tbl_dot()
+        self.tbl_qtgt()
         self.tbl_donvithicong()
-        self.tbl_qtvt()
+        self.tinh_cpvl()
+        self.tinh_ong()
 
     def tbl_dot(self):
         sql = (
-            f"Select top 1 sodot, ngaylap, isnull(nhathauid,0) as dvtcid,"
-            f" isnull(sophieunhap,'') as phieunhap,isnull(sophieuxuat,'') as phieuxuat"
+            f"Select top 1 sodot, ngaylap, isnull(nhathauid,0) as dvtcid"
             f" From {self.schema}.dot"
             f" Where (madot='{self.madot}')"
         )
@@ -43,12 +44,28 @@ class Dulieu:
         self.sodot = dl["sodot"]
         self.congtac = f" Gắn mới đồng hồ nước đợt {self.sodot.upper()}"
         self.ngaylap = dl["ngaylap"]
-        self.phieunhap = dl["phieunhap"]
-        self.phieuxuat = dl["phieuxuat"]
         self.dvtcid = dl["dvtcid"]
         # test
         for cp in dl:
             print(f"dot {cp}={dl[cp]}")
+
+    def tbl_qtgt(self):
+        sql = (
+            f"Select maqt, ngaygan"
+            f" From {self.schema}.qt"
+            f" Where (madot='{self.madot}' And datalength(ngaygan)>0"
+            f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
+            f" Order By ngaygan"
+        )
+        dl = run_mssql(sql)
+        if ((dl == None) or (len(dl) < 1)):
+            return
+        for r in dl:
+            self.dsmaqt.append(r["maqt"])
+        self.ngayganmin = dl[0]
+        self.ngayganmax = dl[-1]
+        # test
+        print(f"qtgt dl={dl}")
 
     def tbl_donvithicong(self):
         sql = (
@@ -61,19 +78,15 @@ class Dulieu:
         dl = dl[0]
         self.dvtc = dl['dvtc']
         if self.dvtcid == 2:
-            self.kyhieudvtc = "CNTĐ-QLMLQ2"
             self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN 2',
                             'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Ngọc Quý'}
         elif self.dvtcid == 3:
-            self.kyhieudvtc = "CNTĐ-QLMLQ9"
             self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN 9',
                             'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Bùi Quang Thiên Chương'}
         elif self.dvtcid == 4:
-            self.kyhieudvtc = "CNTĐ-QLMLTĐ"
             self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
                             'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
         else:
-            self.kyhieudvtc = "CNTĐ-KHVTTH"
             self.lapbang = {'pbd': 'PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
                             'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
             self.kiemtra = {}
@@ -82,19 +95,46 @@ class Dulieu:
             print(f"dvtc={dl[cp]}")
         self.dvtc = dl['dvtc']
 
-    def tbl_qtvt(self):
+    def tinh_cpvl(self):
+        chiphi={}
         sql = (
-            f"Select isnull(tt,0) as tt, isnull(mavattu,'') as mavattu, isnull(tenvattu,'') as motacpvt,"
-            f" isnull(dvt,'') as dvt, isnull(soluongcap,0) as thuccap,isnull(soluongsudung,0) as sudung,"
-            f" isnull(soluongtainhap,0) as tainhap,isnull(soluongbosung,0) as bosung,"
-            f" isnull(ghichu,'') as ghichu"
-            f" From {self.schema}.qtvt"
-            f" Where (madot='{self.madot}' And datalength(chiphiid)>0) Order By maqtvt"
+            f"Select cp.chiphiid,cp.motachiphi,cp.dvt,cp.soluong,"
+            f" hs.hosoid,hs.sohoso,hs.khachhang,hs.diachigandhn"
+            f" FROM ("
+            f"Select qt32.chiphiid, sum(qt32.soluong) as soluong, qt32.giavl as gia, qt.tt, qt.hosoid"
+            f" From {schema}.qt qt RIGHT JOIN {schema}.qt32 qt32 ON qt.maqt=qt32.maqt"
+            f" RIGHT JOIN dbo.chiphi c on qt32.chiphiid=c.chiphiid"
+            f" Where (qt.madot='{self.madot}' And c.mapl1 Like 'VL%'"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%'))"
+            f" Group By qt32.chiphiid, qt.tt, qt.hosoid"
+            f" UNION Select qt34.chiphiid, sum(qt34.soluong), qt34.giavl, qt.tt, qt.hosoid"
+            f" From {schema}.qt qt RIGHT JOIN {schema}.qt34 qt34 ON qt.maqt=qt34.maqt"
+            f" RIGHT JOIN dbo.chiphi c on qt32.chiphiid=c.chiphiid"
+            f" Where (qt.madot='{self.madot}' And cp.mapl1 Like 'VL%'"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%'))"
+            f" Group By qt34.chiphiid, qt.tt, qt.hosoid"
+            f" UNION Select qt31.chiphiid, sum(qt31.soluong), qt31.giavl, qt.tt, qt.hosoid"
+            f" From {schema}.qt qt RIGHT JOIN {schema}.qt31 qt31 ON qt.maqt=qt31.maqt"
+            f" RIGHT JOIN dbo.chiphi c on qt32.chiphiid=c.chiphiid"
+            f" Where (qt.madot='{self.madot}' And cp.mapl1 Like 'VL%'"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%'))"
+            f" Group By qt31.chiphiid, qt.tt, qt.hosoid"
+            f" UNION Select qt32.chiphiid, sum(qt32.soluong), qt32.giavl, qt.tt, qt.hosoid"
+            f" From {schema}.qt qt RIGHT JOIN {schema}.qt32 qt32 ON qt.maqt=qt32.maqt"
+            f" RIGHT JOIN dbo.chiphi c on qt32.chiphiid=c.chiphiid"
+            f" Where (qt.madot='{self.madot}' And cp.mapl1 Like 'VL%'"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%'))"
+            f" Group By qt32.chiphiid, qt.tt, qt.hosoid"
+            f" ) AS cp"
+            f" LEFT JOIN dbo.hoso hs ON cp.hosoid=hs.hosoid"
+            f" Order By cp.chiphiid, cp.tt"
         )
         dl = run_mssql(sql)
-        print(f"cpvt dl={dl}")
-        if ((dl == None) or (len(dl) < 1)):
-            return
+        if ((dl != None) or (len(dl) > 1)):
+            for cp in dl:
+                chiphi[cp["chiphiid"]]=cp['soluong']
+
+
         self.cpvt = dl
         # test
         for cp in dl:
