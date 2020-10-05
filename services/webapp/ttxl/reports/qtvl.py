@@ -8,14 +8,14 @@ class Dulieu:
         self.madot = madot
         self.tieude = "BẢNG QUYẾT TOÁN VẬT LIỆU"
         self.sodot = ""
-        self.congtac = ""
         self.ngaylap = 99990101
         self.dvtcid = 0
         self.dvtc = "PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP"
-        self.ngayganmin = 0
-        self.ngayganmax = 0
-        self.dsmaqt=[]
-        self.cpvl = []
+        self.ngaygandau = 0
+        self.ngaygancuoi = 0
+        self.hoso = {}
+        self.cpvl = {}
+        self.cpong = {}
         self.duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
                       'nhanvien': 'Nguyễn Công Minh'}
         self.kiemtra = {'pbd': 'KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
@@ -26,10 +26,10 @@ class Dulieu:
 
     def get_qtvl(self):
         self.tbl_dot()
-        self.tbl_qtgt()
         self.tbl_donvithicong()
+        self.tinh_hoso()
         self.tinh_cpvl()
-        self.tinh_ong()
+        self.tinh_cpong()
 
     def tbl_dot(self):
         sql = (
@@ -45,27 +45,6 @@ class Dulieu:
         self.congtac = f" Gắn mới đồng hồ nước đợt {self.sodot.upper()}"
         self.ngaylap = dl["ngaylap"]
         self.dvtcid = dl["dvtcid"]
-        # test
-        for cp in dl:
-            print(f"dot {cp}={dl[cp]}")
-
-    def tbl_qtgt(self):
-        sql = (
-            f"Select maqt, ngaygan"
-            f" From {self.schema}.qt"
-            f" Where (madot='{self.madot}' And datalength(ngaygan)>0"
-            f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
-            f" Order By ngaygan"
-        )
-        dl = run_mssql(sql)
-        if ((dl == None) or (len(dl) < 1)):
-            return
-        for r in dl:
-            self.dsmaqt.append(r["maqt"])
-        self.ngayganmin = dl[0]
-        self.ngayganmax = dl[-1]
-        # test
-        print(f"qtgt dl={dl}")
 
     def tbl_donvithicong(self):
         sql = (
@@ -90,62 +69,258 @@ class Dulieu:
             self.lapbang = {'pbd': 'PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
                             'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
             self.kiemtra = {}
-        # test
-        for cp in dl:
-            print(f"dvtc={dl[cp]}")
-        self.dvtc = dl['dvtc']
+
+    def tinh_hoso(self):
+        sql = (
+            f"Select r.ngaygan,r.hosoid,h.sohoso,h.khachhang,h.diachikhachhang"
+            f" From {self.schema}.qt r RIGHT JOIN dbo.hoso h ON r.hosoid=h.hosoid"
+            f" Where (madot='{self.madot}' And datalength(ngaygan)>0"
+            f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
+            f" Order By ngaygan"
+        )
+        dl = run_mssql(sql)
+        if ((dl == None) or (len(dl) < 1)):
+            return
+        for r in dl:
+            self.hoso[r["hosoid"]] = {
+                "sohoso": r["sohoso"], "khachhang": r["khachhang"], "diachigandhn": r["diachikhachhang"]}
+        self.ngaygandau = dl[0]
+        self.ngaygancuoi = dl[-1]
 
     def tinh_cpvl(self):
-        chiphi={}
+        tam = {}
         sql = (
-            f"Select cp.chiphiid,cp.motachiphi,cp.dvt,cp.soluong,"
-            f" hs.hosoid,hs.sohoso,hs.khachhang,hs.diachigandhn"
-            f" FROM ("
-            f"Select qt32.chiphiid, sum(qt32.soluong) as soluong, qt32.giavl as gia, qt.tt, qt.hosoid"
-            f" From {schema}.qt qt RIGHT JOIN {schema}.qt32 qt32 ON qt.maqt=qt32.maqt"
-            f" RIGHT JOIN dbo.chiphi c on qt32.chiphiid=c.chiphiid"
-            f" Where (qt.madot='{self.madot}' And c.mapl1 Like 'VL%'"
-            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%'))"
-            f" Group By qt32.chiphiid, qt.tt, qt.hosoid"
-            f" UNION Select qt34.chiphiid, sum(qt34.soluong), qt34.giavl, qt.tt, qt.hosoid"
-            f" From {schema}.qt qt RIGHT JOIN {schema}.qt34 qt34 ON qt.maqt=qt34.maqt"
-            f" RIGHT JOIN dbo.chiphi c on qt32.chiphiid=c.chiphiid"
-            f" Where (qt.madot='{self.madot}' And cp.mapl1 Like 'VL%'"
-            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%'))"
-            f" Group By qt34.chiphiid, qt.tt, qt.hosoid"
-            f" UNION Select qt31.chiphiid, sum(qt31.soluong), qt31.giavl, qt.tt, qt.hosoid"
-            f" From {schema}.qt qt RIGHT JOIN {schema}.qt31 qt31 ON qt.maqt=qt31.maqt"
-            f" RIGHT JOIN dbo.chiphi c on qt32.chiphiid=c.chiphiid"
-            f" Where (qt.madot='{self.madot}' And cp.mapl1 Like 'VL%'"
-            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%'))"
-            f" Group By qt31.chiphiid, qt.tt, qt.hosoid"
-            f" UNION Select qt32.chiphiid, sum(qt32.soluong), qt32.giavl, qt.tt, qt.hosoid"
-            f" From {schema}.qt qt RIGHT JOIN {schema}.qt32 qt32 ON qt.maqt=qt32.maqt"
-            f" RIGHT JOIN dbo.chiphi c on qt32.chiphiid=c.chiphiid"
-            f" Where (qt.madot='{self.madot}' And cp.mapl1 Like 'VL%'"
-            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%'))"
-            f" Group By qt32.chiphiid, qt.tt, qt.hosoid"
-            f" ) AS cp"
-            f" LEFT JOIN dbo.hoso hs ON cp.hosoid=hs.hosoid"
-            f" Order By cp.chiphiid, cp.tt"
+            f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
+            f" From {schema}.qt32 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" Where qt.madot='{self.madot}' And r.soluong>0"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
         )
         dl = run_mssql(sql)
         if ((dl != None) or (len(dl) > 1)):
-            for cp in dl:
-                chiphi[cp["chiphiid"]]=cp['soluong']
+            for r in dl:
+                k = (r["chiphiid"], r["giavl"], r["hosoid"])
+                if k in tam:
+                    tam[k] += r['soluong']
+                else:
+                    tam[k] = r['soluong']
+        sql = (
+            f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
+            f" From {schema}.qt34 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" Where qt.madot='{self.madot}' And r.soluong>0"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            for r in dl:
+                k = (r["chiphiid"], r["giavl"], r["hosoid"])
+                if k in tam:
+                    tam[k] += r['soluong']
+                else:
+                    tam[k] = r['soluong']
+        sql = (
+            f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
+            f" From {schema}.qt31 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" Where qt.madot='{self.madot}' And r.soluong>0"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            for r in dl:
+                k = (r["chiphiid"], r["giavl"], r["hosoid"])
+                if k in tam:
+                    tam[k] += r['soluong']
+                else:
+                    tam[k] = r['soluong']
+        sql = (
+            f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
+            f" From {schema}.qt33 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" Where qt.madot='{self.madot}' And r.soluong>0"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            for r in dl:
+                k = (r["chiphiid"], r["giavl"], r["hosoid"])
+                if k in tam:
+                    tam[k] += r['soluong']
+                else:
+                    tam[k] = r['soluong']
+        dl = ()
+        for k in tam:
+            (chiphiid, giavl, hosoid) = k
+            if chiphiid not in dl:
+                dl += (str(chiphiid),)
+        sql = (
+            f"Select chiphiid, diengiai as mota, dvt"
+            f" From dbo.chiphi"
+            f" Where chiphiid In {dl}"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            chiphi = {}
+            for r in dl:
+                chiphi[r["chiphiid"]] = {"mota": r["mota"], "dvt": r["dvt"]}
+        dl = {}
+        for k in tam:
+            soluong = tam[k]
+            (chiphiid, giavl, hosoid) = k
+            k = (chiphiid, giavl)
+            if k in dl:
+                dl[k]["zsoluong"] += soluong
+                dl[k]["hoso"].append({
+                    "sohoso": self.hoso[hosoid]["sohoso"],
+                    "khachhang": self.hoso[hosoid]["khachhang"],
+                    "diachigandhn": self.hoso[hosoid]["diachigandhn"],
+                    "soluong": soluong,
+                    "gia": giavl,
+                    "tien": lamtronso(soluong*giavl, 0)})
+            else:
+                dl[k] = {}
+                dl[k]["mota"] = chiphi[chiphiid]["mota"]
+                dl[k]["dvt"] = chiphi[chiphiid]["dvt"]
+                dl[k]["zsoluong"] = soluong
+                dl[k]["gia"] = giavl
+                dl[k]["ztien"] = 0
+                dl[k]["hoso"] = [{
+                    "sohoso": self.hoso[hosoid]["sohoso"],
+                    "khachhang":self.hoso[hosoid]["khachhang"],
+                    "diachigandhn":self.hoso[hosoid]["diachigandhn"],
+                    "soluong":soluong,
+                    "gia":giavl,
+                    "tien": lamtronso(soluong*giavl, 0)
+                }]
+        for k in dl:
+            for r in dl[k]["hoso"]:
+                dl[k]["ztien"] += r["tien"]
+        tam = []
+        for k in dl:
+            tam.append(dl[k])
+        self.cpvl = tam
 
-
-        self.cpvt = dl
-        # test
-        for cp in dl:
-            print(f"cpvt={cp}")
+    def tinh_cpong(self):
+        tam = {}
+        sql = (
+            f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
+            f" From {schema}.qt32 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" Where qt.madot='{self.madot}' And r.soluong>0"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            for r in dl:
+                k = (r["chiphiid"], r["giavl"], r["hosoid"])
+                if k in tam:
+                    tam[k] += r['soluong']
+                else:
+                    tam[k] = r['soluong']
+        sql = (
+            f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
+            f" From {schema}.qt34 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" Where qt.madot='{self.madot}' And r.soluong>0"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            for r in dl:
+                k = (r["chiphiid"], r["giavl"], r["hosoid"])
+                if k in tam:
+                    tam[k] += r['soluong']
+                else:
+                    tam[k] = r['soluong']
+        sql = (
+            f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
+            f" From {schema}.qt31 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" Where qt.madot='{self.madot}' And r.soluong>0"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            for r in dl:
+                k = (r["chiphiid"], r["giavl"], r["hosoid"])
+                if k in tam:
+                    tam[k] += r['soluong']
+                else:
+                    tam[k] = r['soluong']
+        sql = (
+            f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
+            f" From {schema}.qt33 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" Where qt.madot='{self.madot}' And r.soluong>0"
+            f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            for r in dl:
+                k = (r["chiphiid"], r["giavl"], r["hosoid"])
+                if k in tam:
+                    tam[k] += r['soluong']
+                else:
+                    tam[k] = r['soluong']
+        dl = ()
+        for k in tam:
+            (chiphiid, giavl, hosoid) = k
+            if chiphiid not in dl:
+                dl += (str(chiphiid),)
+        sql = (
+            f"Select chiphiid, diengiai as mota, dvt"
+            f" From dbo.chiphi"
+            f" Where chiphiid In {dl}"
+        )
+        dl = run_mssql(sql)
+        if ((dl != None) or (len(dl) > 1)):
+            chiphi = {}
+            for r in dl:
+                chiphi[r["chiphiid"]] = {"mota": r["mota"], "dvt": r["dvt"]}
+        dl = {}
+        for k in tam:
+            soluong = tam[k]
+            (chiphiid, giavl, hosoid) = k
+            k = (chiphiid, giavl)
+            if k in dl:
+                dl[k]["zsoluong"] += soluong
+                dl[k]["hoso"].append({
+                    "sohoso": self.hoso[hosoid]["sohoso"],
+                    "khachhang": self.hoso[hosoid]["khachhang"],
+                    "diachigandhn": self.hoso[hosoid]["diachigandhn"],
+                    "soluong": soluong,
+                    "gia": giavl,
+                    "tien": lamtronso(soluong*giavl, 0)})
+            else:
+                dl[k] = {}
+                dl[k]["mota"] = chiphi[chiphiid]["mota"]
+                dl[k]["dvt"] = chiphi[chiphiid]["dvt"]
+                dl[k]["zsoluong"] = soluong
+                dl[k]["gia"] = giavl
+                dl[k]["ztien"] = 0
+                dl[k]["hoso"] = [{
+                    "sohoso": self.hoso[hosoid]["sohoso"],
+                    "khachhang":self.hoso[hosoid]["khachhang"],
+                    "diachigandhn":self.hoso[hosoid]["diachigandhn"],
+                    "soluong":soluong,
+                    "gia":giavl,
+                    "tien": lamtronso(soluong*giavl, 0)
+                }]
+        for k in dl:
+            for r in dl[k]["hoso"]:
+                dl[k]["ztien"] += r["tien"]
+        tam = []
+        for k in dl:
+            tam.append(dl[k])
+        self.cpong = tam
 
 
 def dulieuin(schema):
     data = {"schema": schema, "dulieuin": [], "qtvl": {}}
     try:
         sql = (
-            f"Select madot From {schema}.dot"
+            f"Select top 100 madot From {schema}.dot"
             f" Where (inok<>0 And datalength(madot)>0)"
             f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
             f" Order By madot,lastupdate"
@@ -160,7 +335,7 @@ def dulieuin(schema):
         dl = {}
         for madot in dulieu:
             dl[madot] = Dulieu(schema, madot)
-        data["qtvt"] = dl
+        data["qtvl"] = dl
         return data
     except:
         return data

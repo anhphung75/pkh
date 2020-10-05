@@ -26,14 +26,14 @@ html, body {
   grid: auto-flow minmax(1rem, max-content)/minmax(0, 1fr) max-content max-content minmax(0, 1fr);
 }
 
-.bang {
+.chiphi {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / 15fr 65fr 215fr 40fr 40fr 40fr 40fr 40fr 60fr;
+  grid: auto-flow minmax(1rem, max-content) / 15fr 385fr 30fr 40fr 40fr 45fr;
 }
 
-.pnx {
+.hoso {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content)/max-content 1fr;
+  grid: auto-flow minmax(1rem, max-content) / 5fr 15fr 60fr 120fr 230fr 40fr 40fr 45fr;
 }
 
 .chuky2 {

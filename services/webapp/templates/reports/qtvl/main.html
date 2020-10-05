@@ -7,20 +7,30 @@
 
   <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
   <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
-  <link rel="stylesheet" href="{{static_url('css/reports/qtvt.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/reports/qtvl.css')}}" type="text/css">
 </head>
 
 <body>
   <div id="vungin" data-dulieuin='["2020GMMP001","2020GMMP001"]'>
     {% for madot in dulieuin %}
-    <div id="qtvt_{{madot}}">
+    {% set tt0=1 %}
+    <div id="qtvl_{{madot}}">
       <div class="A4doc">
         <div class="trangin trang1">
-          {% set dl=qtvt[madot] %}
-          {% module RptQtvt_Quochuy(dl['dvtc'], dl['kyhieudvtc'],dl['ngaylap']) %}
-          {% module RptQtvt_Tieude(dl['tieude'], dl['congtac']) %}
-          {% module RptQtvt_Cpvt(dl['cpvt']) %}
-          {% module RptQtvt_Chungtu(dl['phieuxuat'], dl['phieunhap']) %}
+          {% set dl=qtvl[madot] %}
+          {% module Rpt_Quochuy(dl['ngaylap']) %}
+          {% module RptQtvl_Tieude(dl['tieude']) %}
+          {% module RptQtvl_TieudeCpvlHoso() %}
+          {% for cp in dl["cpvl"] %}
+          {% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %}
+          {% module RptQtvl_Hoso(f"cpvl-{tt0}", cp["hoso"]) %}
+          {% set tt0+=1 %}
+          {% end %}
+          {% for cp in dl["cpong"] %}
+          {% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %}
+          {% module RptQtvl_Hoso(f"cpong-{tt0}",cp["hoso"]) %}
+          {% set tt0+=1 %}
+          {% end %}
           {% module RptKyduyet3(dl['duyet'],dl['kiemtra'], dl['lapbang']) %}
         </div>
       </div>
