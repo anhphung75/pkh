@@ -62,7 +62,7 @@ class Maychu():
             #    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
             # cnnstr = f"mssql+pyodbc:///?odbc_connect={params}"
             # cnnstr = f"sqlite:///:memory:"
-            engine = create_engine(self.cnnstr, echo=False)
+            engine = create_engine(self.cnnstr, echo=True)
             engine.execution_options(isolation_level="AUTOCOMMIT")
         except:
             return None

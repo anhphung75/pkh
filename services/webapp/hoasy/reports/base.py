@@ -12,14 +12,14 @@ class Quochuy(web.UIModule):
             ngaylap=ngaylap)
 
 
-class RptKyduyet2(web.UIModule):
+class Kyduyet2(web.UIModule):
     def render(self, duyet={}, lapbang={}):
         return self.render_string(
             "reports/kyduyet2.html",
             duyet=duyet, lapbang=lapbang)
 
 
-class RptKyduyet3(web.UIModule):
+class Kyduyet3(web.UIModule):
     def render(self, duyet={}, kiemtra={}, lapbang={}):
         return self.render_string(
             "reports/kyduyet3.html",

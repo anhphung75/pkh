@@ -551,6 +551,7 @@ class Phui_20200721:
         self.vanchuyen_dat_cap2_thucong = 0
         self.cpxd = []
         self.cpvl = []
+        self.cptl = []
         self.catsanlap = 0
         self.dadam4x6 = 0
         self.luoicatbeton365mm = 0
@@ -571,6 +572,7 @@ class Phui_20200721:
         self.tinh_vanchuyen_dat_cap2_thucong()
         self.tinh_cpxd()
         self.tinh_cpvl()
+        self.tinh_cptl()
 
     def tinh_phui_hinhhoc(self):
         dl = []
@@ -742,10 +744,7 @@ class Phui_20200721:
             else:
                 heso = 0
             kl += (cp['dientich'] * heso)
-            print(f"cong dadam ={kl}")
-        print(f"cong_traican_dadam4x6 kl={kl} x heso={heso}")
         self.cong_traican_dadam4x6 = lamtronso(kl, 3)
-        print(f"cong_traican_dadam4x6 ={self.cong_traican_dadam4x6}")
 
     def tinh_dao_boc_gach_vua(self):
         kl = 0
@@ -761,7 +760,6 @@ class Phui_20200721:
             else:
                 heso = 0
             kl += cp['dientich'] * heso
-            print(f"dao_boc_gach_vua[{cp['macptl']}]={cp['dientich'] * heso}")
         self.dao_boc_gach_vua = lamtronso(kl, 3)
 
     def tinh_vanchuyen_dat_cap3_thucong(self):
@@ -770,7 +768,7 @@ class Phui_20200721:
         kl += self.dao_boc_btxm_thucong
         kl += self.dao_boc_gach_vua
         self.vanchuyen_dat_cap3_thucong = lamtronso(
-            kl, 3) - self.dat_cap3_khongvanchuyen
+            kl - self.dat_cap3_khongvanchuyen, 3)
 
     def tinh_vanchuyen_dat_cap2_thucong(self):
         kl = self.dao_phui_dat_cap2_thucong
@@ -778,20 +776,26 @@ class Phui_20200721:
 
     def tinh_cpxd(self):
         cpxd = []
-        cpxd.append({'macpxd': '01', 'soluong': self.cat_matnhua_btxm_gach})
-        cpxd.append({'macpxd': '02', 'soluong': self.dao_boc_matnhua_thucong})
-        cpxd.append({'macpxd': '03', 'soluong': self.dao_boc_btxm_thucong})
-        cpxd.append({'macpxd': '04', 'soluong': self.pha_do_nen_gach})
+        cpxd.append({'macpxd': '01', "mota": "cat_matnhua_btxm_gach",
+                     'soluong': self.cat_matnhua_btxm_gach})
+        cpxd.append({'macpxd': '02', "mota": "dao_boc_matnhua_thucong",
+                     'soluong': self.dao_boc_matnhua_thucong})
+        cpxd.append({'macpxd': '03', "mota": "dao_boc_btxm_thucong",
+                     'soluong': self.dao_boc_btxm_thucong})
+        cpxd.append({'macpxd': '04', "mota": "pha_do_nen_gach",
+                     'soluong': self.pha_do_nen_gach})
         cpxd.append(
-            {'macpxd': '05', 'soluong': self.dao_phui_dat_cap3_thucong})
+            {'macpxd': '05', "mota": "dao_phui_dat_cap3_thucong", 'soluong': self.dao_phui_dat_cap3_thucong})
         cpxd.append(
-            {'macpxd': '06', 'soluong': self.dao_phui_dat_cap2_thucong})
+            {'macpxd': '06', "mota": "dao_phui_dat_cap2_thucong", 'soluong': self.dao_phui_dat_cap2_thucong})
         cpxd.append(
-            {'macpxd': '07', 'soluong': self.vanchuyen_dat_cap3_thucong})
+            {'macpxd': '07', "mota": "vanchuyen_dat_cap3_thucong", 'soluong': self.vanchuyen_dat_cap3_thucong})
         cpxd.append(
-            {'macpxd': '08', 'soluong': self.vanchuyen_dat_cap2_thucong})
-        cpxd.append({'macpxd': '09', 'soluong': self.cong_traicat})
-        cpxd.append({'macpxd': '10', 'soluong': self.cong_traican_dadam4x6})
+            {'macpxd': '08', "mota": "vanchuyen_dat_cap2_thucong", 'soluong': self.vanchuyen_dat_cap2_thucong})
+        cpxd.append({'macpxd': '09', "mota": "cong_traicat",
+                     'soluong': self.cong_traicat})
+        cpxd.append({'macpxd': '10', "mota": "cong_traican_dadam4x6",
+                     'soluong': self.cong_traican_dadam4x6})
         self.cpxd = cpxd
 
     def tinh_cpvl(self):
@@ -802,25 +806,48 @@ class Phui_20200721:
         dm = 0.0035 + 0.0025
         self.luoicatbeton365mm = lamtronso(self.cat_matnhua_btxm_gach*dm, 3)
         cpvl = []
-        cpvl.append({'macpvl': '01', 'soluong': self.catsanlap})
-        cpvl.append({'macpvl': '02', 'soluong': self.dadam4x6})
+        cpvl.append({'macpvl': '01', "mota": "catsanlap",
+                     'soluong': self.catsanlap})
+        cpvl.append({'macpvl': '02', "mota": "dadam4x6",
+                     'soluong': self.dadam4x6})
         self.cpvl = cpvl
+
+    def tinh_cptl(self):
+        dl = {}
+        for phui in self.phui:
+            if phui["macptl"] in dl:
+                dl[phui["macptl"]]["soluong"] += phui["dientich"]
+            else:
+                dl[phui["macptl"]] = {}
+                dl[phui["macptl"]]["macptl"] = phui["macptl"]
+                dl[phui["macptl"]]["mota"] = phui["macptl"]
+                dl[phui["macptl"]]["soluong"] = phui["dientich"]
+        tam = []
+        for phui in dl:
+            tam.append(dl[phui])
+        self.cptl = tam
 
 
 def test_phui():
-    phui = [{'macptl': 'nhua_10cm', 'dai': 0.5, 'rong': 0.5, 'sau': 1},
+    phui = [{'macptl': 'hem_btxm', 'dai': 0.5, 'rong': 0.5, 'sau': 1},
             {'macptl': 'nhua_12cm', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'nhua_10cm', 'dai': 5.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'nhua_10cm', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachterrazzo', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'hem_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'hem_btxm', 'dai': 2.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_ximang', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_datthuong', 'dai': 2.0, 'rong': 0.3, 'sau': 0.6}
+            {'macptl': 'le_datthuong', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6}
             ]
     kq = vars(Phui_20200721(phui))
-    del kq['cpxd']
-    del kq['cpvl']
-    print(json.dumps(kq, indent=4, sort_keys=False))
+    for cp in kq['cpxd']:
+        print(f"cpxd={cp}")
+    print(f"---------oOo---------")
+    for cp in kq['cpvl']:
+        print(f"cpvl={cp}")
+    print(f"---------oOo---------")
+    for cp in kq['cptl']:
+        print(f"cptl={cp}")
 
 
 def test_RptQtgt():

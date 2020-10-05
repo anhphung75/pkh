@@ -8,7 +8,7 @@ from ttdl import Maychu, run_mssql
 from utils import lamtronso
 
 
-class Phui_Nd68_2019:
+class Phui_20200721:
     def __init__(self, phui):
         # phui=[{macptl,dai,rong,sau}]
         self.phui = phui
@@ -25,6 +25,7 @@ class Phui_Nd68_2019:
         self.vanchuyen_dat_cap2_thucong = 0
         self.cpxd = []
         self.cpvl = []
+        self.cptl = []
         self.catsanlap = 0
         self.dadam4x6 = 0
         self.luoicatbeton365mm = 0
@@ -45,6 +46,7 @@ class Phui_Nd68_2019:
         self.tinh_vanchuyen_dat_cap2_thucong()
         self.tinh_cpxd()
         self.tinh_cpvl()
+        self.tinh_cptl()
 
     def tinh_phui_hinhhoc(self):
         dl = []
@@ -252,20 +254,26 @@ class Phui_Nd68_2019:
 
     def tinh_cpxd(self):
         cpxd = []
-        cpxd.append({'macpxd': '01', 'soluong': self.cat_matnhua_btxm_gach})
-        cpxd.append({'macpxd': '02', 'soluong': self.dao_boc_matnhua_thucong})
-        cpxd.append({'macpxd': '03', 'soluong': self.dao_boc_btxm_thucong})
-        cpxd.append({'macpxd': '04', 'soluong': self.pha_do_nen_gach})
+        cpxd.append({'macpxd': '01', "mota": "cat_matnhua_btxm_gach",
+                     'soluong': self.cat_matnhua_btxm_gach})
+        cpxd.append({'macpxd': '02', "mota": "dao_boc_matnhua_thucong",
+                     'soluong': self.dao_boc_matnhua_thucong})
+        cpxd.append({'macpxd': '03', "mota": "dao_boc_btxm_thucong",
+                     'soluong': self.dao_boc_btxm_thucong})
+        cpxd.append({'macpxd': '04', "mota": "pha_do_nen_gach",
+                     'soluong': self.pha_do_nen_gach})
         cpxd.append(
-            {'macpxd': '05', 'soluong': self.dao_phui_dat_cap3_thucong})
+            {'macpxd': '05', "mota": "dao_phui_dat_cap3_thucong", 'soluong': self.dao_phui_dat_cap3_thucong})
         cpxd.append(
-            {'macpxd': '06', 'soluong': self.dao_phui_dat_cap2_thucong})
+            {'macpxd': '06', "mota": "dao_phui_dat_cap2_thucong", 'soluong': self.dao_phui_dat_cap2_thucong})
         cpxd.append(
-            {'macpxd': '07', 'soluong': self.vanchuyen_dat_cap3_thucong})
+            {'macpxd': '07', "mota": "vanchuyen_dat_cap3_thucong", 'soluong': self.vanchuyen_dat_cap3_thucong})
         cpxd.append(
-            {'macpxd': '08', 'soluong': self.vanchuyen_dat_cap2_thucong})
-        cpxd.append({'macpxd': '09', 'soluong': self.cong_traicat})
-        cpxd.append({'macpxd': '10', 'soluong': self.cong_traican_dadam4x6})
+            {'macpxd': '08', "mota": "vanchuyen_dat_cap2_thucong", 'soluong': self.vanchuyen_dat_cap2_thucong})
+        cpxd.append({'macpxd': '09', "mota": "cong_traicat",
+                     'soluong': self.cong_traicat})
+        cpxd.append({'macpxd': '10', "mota": "cong_traican_dadam4x6",
+                     'soluong': self.cong_traican_dadam4x6})
         self.cpxd = cpxd
 
     def tinh_cpvl(self):
@@ -276,9 +284,23 @@ class Phui_Nd68_2019:
         dm = 0.0035 + 0.0025
         self.luoicatbeton365mm = lamtronso(self.cat_matnhua_btxm_gach*dm, 3)
         cpvl = []
-        cpvl.append({'macpvl': '01', 'soluong': self.catsanlap})
-        cpvl.append({'macpvl': '02', 'soluong': self.dadam4x6})
+        cpvl.append({'macpvl': '01', "mota": "catsanlap",
+                     'soluong': self.catsanlap})
+        cpvl.append({'macpvl': '02', "mota": "dadam4x6",
+                     'soluong': self.dadam4x6})
         self.cpvl = cpvl
+
+    def tinh_cptl(self):
+        dl = {}
+        for phui in self.phui:
+            if phui["macptl"] in dl:
+                dl[phui["macptl"]] += phui["dientich"]
+            else:
+                dl[phui["macptl"]] = phui["dientich"]
+        tam = []
+        for phui in dl:
+            tam.append(dl[phui])
+        self.cptl = tam
 
 
 def test_phui():
@@ -289,7 +311,7 @@ def test_phui():
             {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'hem_btxm', 'dai': 0, 'rong': 0.3, 'sau': 0.6}
             ]
-    kq = vars(Phui_Nd68_2019(phui))
-    del kq['cpxd']
-    del kq['cpvl']
-    print(json.dumps(kq, indent=4, sort_keys=False))
+    kq = vars(Phui_20200721(phui))
+    print(json.dumps(kq['cpxd'], indent=4, sort_keys=False))
+    print(json.dumps(kq['cpvl'], indent=4, sort_keys=False))
+    print(json.dumps(kq['cptl'], indent=4, sort_keys=False))

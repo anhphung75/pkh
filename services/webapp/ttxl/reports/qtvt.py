@@ -104,8 +104,8 @@ def dulieuin(schema):
     data = {"schema": schema, "dulieuin": [], "qtvt": {}}
     try:
         sql = (
-            f"Select madot From {schema}.dot"
-            f" Where (inok<>0 And datalength(madot)>0)"
+            f"Select top 100 madot From {schema}.dot"
+            f" Where (inok<>0 And datalength(madot)>0"
             f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
             f" Order By madot,lastupdate"
         )

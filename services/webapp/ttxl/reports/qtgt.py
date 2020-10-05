@@ -487,7 +487,7 @@ def dulieuin(schema):
     data = {"schema": schema, "dulieuin": [], "qtgt": {}}
     try:
         sql = (
-            f"Select maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON qt.madot=dot.madot"
+            f"Select top 100 maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON qt.madot=dot.madot"
             f" Where (dot.inok<>0 And qt.inok<>0 And datalength(qt.madot)>0"
             f" And (qt.tinhtrang like 'ok%' or qt.tinhtrang like 'fin%'))"
             f" Order By qt.madot,qt.tt,qt.lastupdate"

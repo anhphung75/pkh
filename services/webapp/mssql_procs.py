@@ -340,10 +340,16 @@ def tinh_tamqt(schema="web"):
         f" slong= Isnull((Select sum(sl) From {schema}.tamthqt01"
         f" Where tinhtrang='Moi' AND phanloai='Ong'),0),"
         # tong hop cat
-        f" slcat= Isnull((Select sum(sl) From {schema}.tamthqt01"
-        f" Where tinhtrang='Moi' AND phanloai='Cat20200827'),0),"
-        f" tiencat= Isnull((Select sum(vl) From {schema}.tamthqt01"
-        f" Where tinhtrang='Moi' AND phanloai='Cat20200827'),0);")
+        f" slcat= Case When @Hesoid>=20200827"
+        f" Then Isnull((Select sum(sl) From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Cat20200827'),0)"
+        f" Else Isnull((Select sum(sl) From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Cat'),0) End,"
+        f" tiencat= Case When @Hesoid>=20200827"
+        f" Then Isnull((Select sum(vl) From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Cat20200827'),0)"
+        f" Else Isnull((Select sum(vl) From {schema}.tamthqt01"
+        f" Where tinhtrang='Moi' AND phanloai='Cat'),0) End;")
     sql += (
         f" If @Baogiaid>0 Update {schema}.tamqt SET baogiaid=@Baogiaid;"
         f" If @Hesoid>0 Update {schema}.tamqt SET hesoid=@Hesoid;")
@@ -403,5 +409,5 @@ def spQtgt(schema="web"):
     tinhlai_dotqt(schema)
 
 
-# spQtgt("qlmlq2")
+#spQtgt("qlmlq2")
 #lamtronso()
