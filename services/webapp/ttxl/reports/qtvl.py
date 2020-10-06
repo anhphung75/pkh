@@ -42,7 +42,6 @@ class Dulieu:
             return
         dl = dl[0]
         self.sodot = dl["sodot"]
-        self.congtac = f" Gắn mới đồng hồ nước đợt {self.sodot.upper()}"
         self.ngaylap = dl["ngaylap"]
         self.dvtcid = dl["dvtcid"]
 
@@ -84,20 +83,20 @@ class Dulieu:
         for r in dl:
             self.hoso[r["hosoid"]] = {
                 "sohoso": r["sohoso"], "khachhang": r["khachhang"], "diachigandhn": r["diachikhachhang"]}
-        self.ngaygandau = dl[0]
-        self.ngaygancuoi = dl[-1]
+        self.ngaygandau = dl[0]["ngaygan"]
+        self.ngaygancuoi = dl[-1]["ngaygan"]
 
     def tinh_cpvl(self):
         tam = {}
         sql = (
             f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
-            f" From {schema}.qt32 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" From {self.schema}.qt32 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
                 if k in tam:
@@ -106,13 +105,13 @@ class Dulieu:
                     tam[k] = r['soluong']
         sql = (
             f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
-            f" From {schema}.qt34 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" From {self.schema}.qt34 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
                 if k in tam:
@@ -121,13 +120,13 @@ class Dulieu:
                     tam[k] = r['soluong']
         sql = (
             f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
-            f" From {schema}.qt31 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" From {self.schema}.qt31 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
                 if k in tam:
@@ -136,31 +135,36 @@ class Dulieu:
                     tam[k] = r['soluong']
         sql = (
             f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
-            f" From {schema}.qt33 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" From {self.schema}.qt33 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
                 if k in tam:
                     tam[k] += r['soluong']
                 else:
                     tam[k] = r['soluong']
-        dl = ()
+        dl = []
         for k in tam:
             (chiphiid, giavl, hosoid) = k
-            if chiphiid not in dl:
-                dl += (str(chiphiid),)
+            sid = str(chiphiid)
+            if sid not in dl:
+                dl.append(sid)
+        if len(dl) == 1:
+            dl = f"('{dl[0]}')"
+        else:
+            dl = tuple(dl)
         sql = (
             f"Select chiphiid, diengiai as mota, dvt"
             f" From dbo.chiphi"
             f" Where chiphiid In {dl}"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             chiphi = {}
             for r in dl:
                 chiphi[r["chiphiid"]] = {"mota": r["mota"], "dvt": r["dvt"]}
@@ -200,18 +204,20 @@ class Dulieu:
         for k in dl:
             tam.append(dl[k])
         self.cpvl = tam
+        # test
+        print(f"cpvl={self.cpvl}")
 
     def tinh_cpong(self):
         tam = {}
         sql = (
             f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
-            f" From {schema}.qt32 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" From {self.schema}.qt32 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
                 if k in tam:
@@ -220,13 +226,13 @@ class Dulieu:
                     tam[k] = r['soluong']
         sql = (
             f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
-            f" From {schema}.qt34 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" From {self.schema}.qt34 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
                 if k in tam:
@@ -235,13 +241,13 @@ class Dulieu:
                     tam[k] = r['soluong']
         sql = (
             f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
-            f" From {schema}.qt31 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" From {self.schema}.qt31 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
                 if k in tam:
@@ -250,31 +256,36 @@ class Dulieu:
                     tam[k] = r['soluong']
         sql = (
             f"Select r.chiphiid, r.giavl, qt.hosoid, r.soluong"
-            f" From {schema}.qt33 r LEFT JOIN {schema}.qt qt ON qt.maqt=r.maqt"
+            f" From {self.schema}.qt33 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
                 if k in tam:
                     tam[k] += r['soluong']
                 else:
                     tam[k] = r['soluong']
-        dl = ()
+        dl = []
         for k in tam:
             (chiphiid, giavl, hosoid) = k
-            if chiphiid not in dl:
-                dl += (str(chiphiid),)
+            sid = str(chiphiid)
+            if sid not in dl:
+                dl.append(sid)
+        if len(dl) == 1:
+            dl = f"('{dl[0]}')"
+        else:
+            dl = tuple(dl)
         sql = (
             f"Select chiphiid, diengiai as mota, dvt"
             f" From dbo.chiphi"
             f" Where chiphiid In {dl}"
         )
         dl = run_mssql(sql)
-        if ((dl != None) or (len(dl) > 1)):
+        if ((dl != None) and (len(dl) > 0)):
             chiphi = {}
             for r in dl:
                 chiphi[r["chiphiid"]] = {"mota": r["mota"], "dvt": r["dvt"]}
@@ -321,7 +332,7 @@ def dulieuin(schema):
     try:
         sql = (
             f"Select top 100 madot From {schema}.dot"
-            f" Where (inok<>0 And datalength(madot)>0)"
+            f" Where (inok<>0 And datalength(madot)>0"
             f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
             f" Order By madot,lastupdate"
         )

@@ -18,20 +18,24 @@
       <div class="A4doc">
         <div class="trangin trang1">
           {% set dl=qtvl[madot] %}
-          {% module Rpt_Quochuy(dl['ngaylap']) %}
-          {% module RptQtvl_Tieude(dl['tieude']) %}
-          {% module RptQtvl_TieudeCpvlHoso() %}
-          {% for cp in dl["cpvl"] %}
-          {% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %}
-          {% module RptQtvl_Hoso(f"cpvl-{tt0}", cp["hoso"]) %}
-          {% set tt0+=1 %}
-          {% end %}
-          {% for cp in dl["cpong"] %}
-          {% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %}
-          {% module RptQtvl_Hoso(f"cpong-{tt0}",cp["hoso"]) %}
-          {% set tt0+=1 %}
-          {% end %}
-          {% module RptKyduyet3(dl['duyet'],dl['kiemtra'], dl['lapbang']) %}
+          <div class="vungxem">
+            vung xem dl={{vars(dl)}}
+            dl.ngaylap = {{dl.ngaylap}}
+          </div>
+          {#% module RptQuochuy(dl.ngaylap) %#}
+          {#% module RptQtvl_Tieude(dl.tieude) %#}
+          {#% module RptQtvl_TieudeCpvlHoso() %#}
+          {#% for cp in dl.cpvl %#}
+          {#% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %#}
+          {#% module RptQtvl_Hoso(f"cpvl-{tt0}", cp["hoso"]) %#}
+          {#% set tt0+=1 %#}
+          {#% end %#}
+          {#% for cp in dl.cpong %#}
+          {#% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %#}
+          {#% module RptQtvl_Hoso(f"cpong-{tt0}",cp["hoso"]) %#}
+          {#% set tt0+=1 %}
+          {#% end %#}
+          {#% module RptKyduyet3(dl.duyet,dl.kiemtra, dl.lapbang) %#}
         </div>
       </div>
     </div>
