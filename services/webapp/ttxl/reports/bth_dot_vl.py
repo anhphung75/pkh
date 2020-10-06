@@ -6,7 +6,7 @@ class Dulieu:
     def __init__(self, schema='qlmltd', madot=''):
         self.schema = schema
         self.madot = madot
-        self.tieude = "BẢNG QUYẾT TOÁN VẬT LIỆU"
+        self.tieude = "BẢNG TỔNG HỢP VẬT LIỆU"
         self.sodot = ""
         self.ngaylap = 99990101
         self.dvtcid = 0
@@ -275,7 +275,7 @@ class Dulieu:
 
 
 def dulieuin(schema):
-    data = {"schema": schema, "dulieuin": [], "qtvl": {}}
+    data = {"schema": schema, "dulieuin": [], "bth_dot_vl": {}}
     try:
         sql = (
             f"Select top 100 madot From {schema}.dot"
@@ -293,7 +293,7 @@ def dulieuin(schema):
         dl = {}
         for madot in dulieu:
             dl[madot] = Dulieu(schema, madot)
-        data["qtvl"] = dl
+        data["bth_dot_vl"] = dl
         print(f"data={data}")
         return data
     except:

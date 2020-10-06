@@ -38,3 +38,11 @@ class Chungtu(web.UIModule):
         return self.render_string(
             "reports/qtvt/chungtu.html",
             phieuxuat=phieuxuat, phieunhap=phieunhap)
+
+
+class Dot(web.UIModule):
+    def render(self, madot="", ttdl={}):
+        uid = f"qtvt_{madot}"
+        return self.render_string(
+            "reports/qtvt/rpt-1dot.html",
+            uid=uid, ttdl=ttdl)

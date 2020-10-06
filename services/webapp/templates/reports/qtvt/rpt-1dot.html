@@ -1,0 +1,13 @@
+<div id="{{uid}}">
+  <div class="A4doc">
+    <div class="trangin trang1">
+      {% module RptQtvt_Quochuy(ttdl.dvtc, ttdl.kyhieudvtc,ttdl.ngaylap) %}
+      <header>
+        {% module RptQtvt_Tieude(ttdl.tieude, ttdl.congtac) %}
+      </header>
+      {% module RptQtvt_Cpvt(ttdl.cpvt) %}
+      {% module RptQtvt_Chungtu(ttdl.phieuxuat,ttdl.phieunhap) %}
+      {% module RptKyduyet3(ttdl.duyet,ttdl.kiemtra,ttdl.lapbang) %}
+    </div>
+  </div>
+</div>

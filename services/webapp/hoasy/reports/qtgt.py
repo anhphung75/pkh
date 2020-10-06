@@ -558,3 +558,35 @@ class Cpql2_20200721(web.UIModule):
             onztl=onztl, oncongtrinh=oncongtrinh,
             xaydung=xaydung, tailap=tailap, congtrinh=congtrinh, congtrinhtruocthue=congtrinhtruocthue,
             thuecongtrinh=thuecongtrinh, cptl=cptl)
+
+
+class HosoOngnganh(web.UIModule):
+    def render(self, maqt="", ttdl={}):
+        uid = f"qtgt_{maqt}"
+        return self.render_string(
+            "reports/qtgt/rpt-ongnganh.html",
+            uid=uid, ttdl=ttdl)
+
+
+class HosoOngcai(web.UIModule):
+    def render(self, maqt="", ttdl={}):
+        uid = f"qtgt_{maqt}"
+        return self.render_string(
+            "reports/qtgt/rpt-ongcai.html",
+            uid=uid, ttdl=ttdl)
+
+
+class Hoso2Phui(web.UIModule):
+    def render(self, maqt="", ttdl={}):
+        uid = f"qtgt_{maqt}"
+        return self.render_string(
+            "reports/qtgt/rpt-2phui.html",
+            uid=uid, ttdl=ttdl)
+
+
+class Hoso(web.UIModule):
+    def render(self, maqt="", ttdl={}):
+        uid = f"qtgt_{maqt}"
+        return self.render_string(
+            "reports/qtgt/rpt-1hoso.html",
+            uid=uid, ttdl=ttdl)

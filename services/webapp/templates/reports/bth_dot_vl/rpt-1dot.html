@@ -1,0 +1,32 @@
+<div id="{{uid}}">
+  {% set tt0=1 %}
+  <div class="A4doc">
+    <div class="trangin trang1">
+      {% module RptQuochuy(ttdl.ngaylap) %}
+      <header>
+        {% module RptBthVl_Tieude(ttdl.tieude,ttdl.sodot,ttdl.ngaygandau,ttdl.ngaygancuoi) %}
+        {% module RptBthVl_TieudeCpvlHoso() %}
+      </header>
+      <main>
+        {% for cp in ttdl.cpvl %}
+        {% module RptBthVl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %}
+        {% module RptBthVl_Hoso(f"cpvl-{tt0}", cp["hoso"]) %}
+        {% set tt0+=1 %}
+        {% end %}
+
+        {% for cp in ttdl.cpong %}
+        {% module RptBthVl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %}
+        {% module RptBthVl_Hoso(f"cpong-{tt0}",cp["hoso"]) %}
+        {% set tt0+=1 %}
+        {% end %}
+        <div class="grid hoso h1px">
+          <div class="l h1px b0"></div>
+          <div class="l h1px bt" style="grid-area:1/2/2/9"></div>
+        </div>
+      </main>
+      <footer>
+        {% module RptKyduyet3(ttdl.duyet,ttdl.kiemtra, ttdl.lapbang) %}
+      </footer>
+    </div>
+  </div>
+</div>

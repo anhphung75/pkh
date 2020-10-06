@@ -7,13 +7,13 @@
 
   <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
   <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
-  <link rel="stylesheet" href="{{static_url('css/reports/qtvt.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/reports/bth_dot_vl.css')}}" type="text/css">
 </head>
 
 <body>
   <div id="vungin" data-dulieuin='["2020GMMP001","2020GMMP001"]'>
     {% for madot in dulieuin %}
-    {% module RptQtvt_1Dot(madot, qtvt[madot]) %}
+      {% module RptBthVl_1Dot(madot,bht_dot_vl[madot]) %}
     {% end %}
   </div>
 

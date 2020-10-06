@@ -11,13 +11,14 @@ import logging
 import tornado.escape
 import tornado.websocket
 
-import comps
 from ttdl import Maychu
-from ttxl.reports import qtgt, qtvt, qtvl
+from ttxl.reports import dutoan, qtgt, qtvt
+from ttxl.reports import bth_dot_vl
 from hoasy.reports import base as rptbase
+from hoasy.reports import dutoan as rptdutoan
 from hoasy.reports import qtgt as rptqtgt
 from hoasy.reports import qtvt as rptqtvt
-from hoasy.reports import qtvl as rptqtvl
+from hoasy.reports import bth_dot_vl as rptbthvl
 
 # tornado.locale.set_default_locale('vi_VI')
 
@@ -69,12 +70,25 @@ class Frm_Qtgt(WebBase):
         self.render("forms/qtgt/main.html", error=None)
 
 
+class Rpt_Dutoan(WebBase):
+    def get(self, schema):
+        schema = schema.lower()
+        if schema == "qlmltđ":
+            schema = "qlmltd"
+        if schema in ['pkt', 'pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            data = qtgt.dulieuin(schema)
+            self.render("reports/dutoan/main.html", error=None,
+                        dulieuin=data['dulieuin'], dutoan=data['qtgt'])
+        else:
+            self.render("errors/404.html", error=None)
+
+
 class Rpt_Qtgt(WebBase):
     def get(self, schema):
         schema = schema.lower()
         if schema == "qlmltđ":
             schema = "qlmltd"
-        if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+        if schema in ['pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
             data = qtgt.dulieuin(schema)
             self.render("reports/qtgt/main.html", error=None,
                         dulieuin=data['dulieuin'], qtgt=data['qtgt'])
@@ -87,7 +101,7 @@ class Rpt_Qtvt(WebBase):
         schema = schema.lower()
         if schema == "qlmltđ":
             schema = "qlmltd"
-        if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+        if schema in ['pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
             data = qtvt.dulieuin(schema)
             self.render("reports/qtvt/main.html", error=None,
                         dulieuin=data['dulieuin'], qtvt=data['qtvt'])
@@ -95,15 +109,15 @@ class Rpt_Qtvt(WebBase):
             self.render("errors/404.html", error=None)
 
 
-class Rpt_Qtvl(WebBase):
+class Rpt_BthDotVl(WebBase):
     def get(self, schema):
         schema = schema.lower()
         if schema == "qlmltđ":
             schema = "qlmltd"
-        if schema in ['pkh', 'qlmlq2', 'qlmlq9', 'qlmltd']:
-            data = qtvl.dulieuin(schema)
-            self.render("reports/qtvl/main.html", error=None,
-                        dulieuin=data['dulieuin'], qtvl=data['qtvl'])
+        if schema in ['pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            data = bth_dot_vl.dulieuin(schema)
+            self.render("reports/bth_dot_vl/main.html", error=None,
+                        dulieuin=data['dulieuin'], bth_dot_vl=data['bth_dot_vl'])
         else:
             self.render("errors/404.html", error=None)
 
@@ -113,9 +127,10 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/([^/]+)/forms/qtgt", Frm_Qtgt),
+            (r"/([^/]+)/reports/dutoan", Rpt_Dutoan),
             (r"/([^/]+)/reports/qtgt", Rpt_Qtgt),
             (r"/([^/]+)/reports/qtvt", Rpt_Qtvt),
-            (r"/([^/]+)/reports/qtvl", Rpt_Qtvl),
+            (r"/([^/]+)/reports/tonghop/dotvl", Rpt_BthDotVl),
             #(r"/qlmlt%C4%91/reports/qtgt", Rpt_Qtgt),
         ]
         settings = dict(
@@ -126,6 +141,15 @@ class WebApp(web.Application):
                 "FrmQtgt_Ongnganh": comps.FrmQtgt_Ongnganh,
                 "RptQuochuy": rptbase.Quochuy,
                 "RptKyduyet3": rptbase.Kyduyet3,
+                "RptDutoan_1Hoso": rptdutoan.Hoso,
+                "RptDutoan_Ongnganh": rptdutoan.HosoOngnganh,
+                "RptDutoan_Ongcai": rptdutoan.HosoOngcai,
+                "RptDutoan_2Phui": rptdutoan.Hoso2Phui,
+                "RptDutoan_Footer": rptdutoan.Footer,
+                "RptQtgt_1Hoso": rptqtgt.Hoso,
+                "RptQtgt_Ongnganh": rptqtgt.HosoOngnganh,
+                "RptQtgt_Ongcai": rptqtgt.HosoOngcai,
+                "RptQtgt_2Phui": rptqtgt.Hoso2Phui,
                 "RptQtgt_Quochuy": rptqtgt.Quochuy,
                 "RptQtgt_Tieude": rptqtgt.Tieude,
                 "RptQtgt_PhuiTieude": rptqtgt.PhuiTieude,
@@ -147,14 +171,16 @@ class WebApp(web.Application):
                 "RptQtgt_Tlmd2": rptqtgt.Tlmd2,
                 "RptQtgt_Kettoan": rptqtgt.Kettoan,
                 "RptQtgt_Footer": rptqtgt.Footer,
+                "RptQtvt_1Dot": rptqtvt.Dot,
                 "RptQtvt_Quochuy": rptqtvt.Quochuy,
                 "RptQtvt_Tieude": rptqtvt.Tieude,
                 "RptQtvt_Cpvt": rptqtvt.Cpvt,
                 "RptQtvt_Chungtu": rptqtvt.Chungtu,
-                "RptQtvl_Tieude": rptqtvl.Tieude,
-                "RptQtvl_TieudeCpvlHoso": rptqtvl.TieudeCpvlHoso,
-                "RptQtvl_Cpvl": rptqtvl.Cpvl,
-                "RptQtvl_Hoso": rptqtvl.Hoso,
+                "RptBthVl_1Dot": rptbthvl.Dot,
+                "RptBthVl_Tieude": rptbthvl.Tieude,
+                "RptBthVl_TieudeCpvlHoso": rptbthvl.TieudeCpvlHoso,
+                "RptBthVl_Cpvl": rptbthvl.Cpvl,
+                "RptBthVl_Hoso": rptbthvl.Hoso,
             },
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",

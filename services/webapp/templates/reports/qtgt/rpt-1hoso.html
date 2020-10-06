@@ -1,0 +1,7 @@
+{% if ttdl.maubaocao == 'on' %}
+  {% module RptQtgt_Ongnganh(maqt, ttdl) %}
+{% elif ttdl.maubaocao == 'oc' %}
+  {% module RptQtgt_Ongncai(maqt, ttdl) %}
+{% else %}
+  {% module RptQtgt_2Phui(maqt, ttdl) %}
+{% end %}

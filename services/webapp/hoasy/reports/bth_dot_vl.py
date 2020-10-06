@@ -3,19 +3,19 @@ from utils import tachhangso
 
 
 class Tieude(web.UIModule):
-    def render(self, tieude="BẢNG QUYẾT TOÁN VẬT LIỆU", sodot="", ngaygandau="", ngaygancuoi=""):
+    def render(self, tieude="BẢNG TỔNG HỢP VẬT LIỆU", sodot="", ngaygandau="", ngaygancuoi=""):
         dau = f"{ngaygandau}"
         cuoi = f"{ngaygancuoi}"
         tieude1 = f"ĐỢT {sodot.upper()} (Ngày gắn {dau[-2:]}/{dau[-4:-2]}/{dau[:-4]} - {cuoi[-2:]}/{cuoi[-4:-2]}/{cuoi[:-4]})"
         return self.render_string(
-            "reports/qtvl/tieude.html",
+            "reports/bth_dot_vl/tieude.html",
             tieude=tieude, tieude1=tieude1)
 
 
 class TieudeCpvlHoso(web.UIModule):
     def render(self):
         return self.render_string(
-            "reports/qtvl/tieude-cpvl-hoso.html")
+            "reports/bth_dot_vl/tieude-cpvl-hoso.html")
 
 
 class Cpvl(web.UIModule):
@@ -26,7 +26,7 @@ class Cpvl(web.UIModule):
         gia = tachhangso(gia, 0)
         tien = tachhangso(tien, 0)
         return self.render_string(
-            "reports/qtvl/chiphi.html",
+            "reports/bth_dot_vl/chiphi.html",
             tt=tt, mota=mota, dvt=dvt, soluong=soluong, gia=gia, tien=tien)
 
 
@@ -39,5 +39,13 @@ class Hoso(web.UIModule):
             cp['gia'] = tachhangso(cp['gia'], 0)
             cp['tien'] = tachhangso(cp['tien'], 0)
         return self.render_string(
-            "reports/qtvl/hoso.html",
+            "reports/bth_dot_vl/hoso.html",
             uid=uid, hoso=hoso)
+
+
+class Dot(web.UIModule):
+    def render(self, madot="", ttdl={}):
+        uid = f"bth_dot_vl_{madot}"
+        return self.render_string(
+            "reports/bth_dot_vl/rpt-1dot.html",
+            uid=uid, ttdl=ttdl)
