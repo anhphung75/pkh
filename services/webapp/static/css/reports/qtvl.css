@@ -28,12 +28,12 @@ html, body {
 
 .chiphi {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / 15fr 385fr 30fr 40fr 40fr 45fr;
+  grid: auto-flow minmax(1rem, max-content) / 15fr 380fr 30fr 45fr 40fr 45fr;
 }
 
 .hoso {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / 5fr 15fr 60fr 120fr 230fr 40fr 40fr 45fr;
+  grid: auto-flow minmax(1rem, max-content) / 15fr 15fr 60fr 120fr 215fr 45fr 40fr 45fr;
 }
 
 .chuky2 {

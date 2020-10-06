@@ -13,7 +13,7 @@ import tornado.websocket
 
 import comps
 from ttdl import Maychu
-from ttxl.reports import qtgt, qtvt,qtvl
+from ttxl.reports import qtgt, qtvt, qtvl
 from hoasy.reports import base as rptbase
 from hoasy.reports import qtgt as rptqtgt
 from hoasy.reports import qtvt as rptqtvt

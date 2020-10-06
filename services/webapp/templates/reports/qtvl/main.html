@@ -13,29 +13,41 @@
 <body>
   <div id="vungin" data-dulieuin='["2020GMMP001","2020GMMP001"]'>
     {% for madot in dulieuin %}
+    {% set dl=qtvl[madot] %}
     {% set tt0=1 %}
     <div id="qtvl_{{madot}}">
       <div class="A4doc">
         <div class="trangin trang1">
-          {% set dl=qtvl[madot] %}
-          <div class="vungxem">
-            vung xem dl={{vars(dl)}}
-            dl.ngaylap = {{dl.ngaylap}}
-          </div>
-          {#% module RptQuochuy(dl.ngaylap) %#}
-          {#% module RptQtvl_Tieude(dl.tieude) %#}
-          {#% module RptQtvl_TieudeCpvlHoso() %#}
-          {#% for cp in dl.cpvl %#}
-          {#% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %#}
-          {#% module RptQtvl_Hoso(f"cpvl-{tt0}", cp["hoso"]) %#}
-          {#% set tt0+=1 %#}
-          {#% end %#}
-          {#% for cp in dl.cpong %#}
-          {#% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %#}
-          {#% module RptQtvl_Hoso(f"cpong-{tt0}",cp["hoso"]) %#}
-          {#% set tt0+=1 %}
-          {#% end %#}
-          {#% module RptKyduyet3(dl.duyet,dl.kiemtra, dl.lapbang) %#}
+          {% module RptQuochuy(dl.ngaylap) %}
+          <header>
+            {% module RptQtvl_Tieude(dl.tieude,dl.sodot,dl.ngaygandau,dl.ngaygancuoi) %}
+            {% module RptQtvl_TieudeCpvlHoso() %}
+          </header>
+          <main>
+            {% for cp in dl.cpvl %}
+            {% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %}
+            {% module RptQtvl_Hoso(f"cpvl-{tt0}", cp["hoso"]) %}
+            {% set tt0+=1 %}
+            {% end %}
+            {% for cp in dl.cpong %}
+            {% module RptQtvl_Cpvl(tt0,cp["mota"],cp["dvt"],cp["zsoluong"],cp["gia"],cp["ztien"]) %}
+            {% module RptQtvl_Hoso(f"cpong-{tt0}",cp["hoso"]) %}
+            {% set tt0+=1 %}
+            {% end %}
+            <div class="grid hoso h1px">
+              <div class="l h1px b0"></div>
+              <div class="l h1px bt"></div>
+              <div class="l h1px bt"></div>
+              <div class="l h1px bt"></div>
+              <div class="l h1px bt"></div>
+              <div class="l h1px bt"></div>
+              <div class="l h1px bt"></div>
+              <div class="l h1px bt"></div>
+            </div>
+          </main>
+          <footer>
+            {% module RptKyduyet3(dl.duyet,dl.kiemtra, dl.lapbang) %}
+          </footer>
         </div>
       </div>
     </div>
