@@ -145,8 +145,6 @@ class Dulieu:
         self.plgia = dl['plgia']
         self.cpqlid = dl['cpqlid']
         self.hesoid = self.cpqlid
-        # test
-        print(f"qtgt dl={dl}")
 
     def tbl_hoso(self):
         sql = (
@@ -160,9 +158,6 @@ class Dulieu:
         self.sohoso = dl['sohoso']
         self.diachigandhn = dl['diachigandhn']
         self.khachhang = dl['khachhang']
-        # test
-        for cp in dl:
-            print(f"hoso={dl[cp]}")
 
     def tbl_dot(self):
         sql = (
@@ -175,9 +170,6 @@ class Dulieu:
         dl = dl[0]
         self.sodot = dl["sodot"]
         self.dvtcid = dl["dvtcid"]
-        # test
-        for cp in dl:
-            print(f"dot {cp}={dl[cp]}")
 
     def tbl_donvithicong(self):
         sql = (
@@ -212,9 +204,6 @@ class Dulieu:
             self.lapbang = {'pbd': 'PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
                             'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
             self.kiemtra = {}
-        # test
-        for cp in dl:
-            print(f"dvtc={dl[cp]}")
 
     def qtoc_xd(self):
         sql = (
@@ -236,9 +225,6 @@ class Dulieu:
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
         self.oc_cpxd = dl
-        # test
-        for cp in dl:
-            print(f"oc_cpxd={cp}")
 
     def qtoc_vt(self):
         sql = (
@@ -261,9 +247,6 @@ class Dulieu:
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
         self.oc_cpvt = dl
-        # test
-        for cp in dl:
-            print(f"oc_cpvt={cp}")
 
     def qtoc_vl(self):
         sql = (
@@ -286,9 +269,6 @@ class Dulieu:
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
         self.oc_cpvl = dl
-        # test
-        for cp in dl:
-            print(f"oc_cpvl={cp}")
 
     def qton_xd(self):
         sql = (
@@ -310,9 +290,6 @@ class Dulieu:
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
         self.on_cpxd = dl
-        # test
-        for cp in dl:
-            print(f"on_cpxd={cp}")
 
     def qton_vt(self):
         sql = (
@@ -335,9 +312,6 @@ class Dulieu:
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
         self.on_cpvt = dl
-        # test
-        for cp in dl:
-            print(f"on_cpvt={cp}")
 
     def qton_vl(self):
         sql = (
@@ -360,9 +334,6 @@ class Dulieu:
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
         self.on_cpvl = dl
-        # test
-        for cp in dl:
-            print(f"on_cpvl={cp}")
 
     def tlmd(self):
         sql = (
@@ -390,9 +361,6 @@ class Dulieu:
                 self.onztl += cp['tien_on']
                 cptl.append(cp)
         self.cptl = cptl
-        # test
-        for cp in cptl:
-            print(f"cptl={cp}")
 
     def get_chiphiquanly(self):
         sql = (
@@ -485,13 +453,13 @@ class Dulieu:
 
 def dulieuin(schema):
     data = {"schema": schema, "dulieuin": [], "qtgt": {}}
+    sql = (
+        f"Select top 100 maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON qt.madot=dot.madot"
+        f" Where (dot.inok<>0 And qt.inok<>0 And datalength(qt.madot)>0"
+        f" And (qt.tinhtrang like 'ok%' or qt.tinhtrang like 'fin%'))"
+        f" Order By qt.madot,qt.tt,qt.lastupdate"
+    )
     try:
-        sql = (
-            f"Select top 100 maqt From {schema}.qt qt LEFT JOIN {schema}.dot dot ON qt.madot=dot.madot"
-            f" Where (dot.inok<>0 And qt.inok<>0 And datalength(qt.madot)>0"
-            f" And (qt.tinhtrang like 'ok%' or qt.tinhtrang like 'fin%'))"
-            f" Order By qt.madot,qt.tt,qt.lastupdate"
-        )
         dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return data
@@ -499,10 +467,13 @@ def dulieuin(schema):
         for r in dl:
             dulieu.append(r['maqt'])
         data["dulieuin"] = dulieu
-        dl = {}
-        for maqt in dulieu:
-            dl[maqt] = Dulieu(schema, maqt)
-        data["qtgt"] = dl
-        return data
     except:
         return data
+    dl = {}
+    for maqt in dulieu:
+        try:
+            dl[maqt] = Dulieu(schema, maqt)
+        except:
+            pass
+    data["qtgt"] = dl
+    return data

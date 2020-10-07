@@ -11,8 +11,8 @@ class Dulieu:
         self.ngaylap = 99990101
         self.dvtcid = 0
         self.dvtc = "PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP"
-        self.ngaygandau = 0
-        self.ngaygancuoi = 0
+        self.ngaygandau = 99990101
+        self.ngaygancuoi = 99990101
         self.hoso = {}
         self.cpvl = {}
         self.cpong = {}
@@ -114,7 +114,6 @@ class Dulieu:
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
         )
         dl = run_mssql(sql)
-        print(f"test union dl={dl}")
         if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
@@ -142,44 +141,45 @@ class Dulieu:
             chiphi = {}
             for r in dl:
                 chiphi[r["chiphiid"]] = {"mota": r["mota"], "dvt": r["dvt"]}
-        dl = {}
-        for k in tam:
-            soluong = tam[k]
-            (chiphiid, giavl, hosoid) = k
-            k = (chiphiid, giavl)
-            if k in dl:
-                dl[k]["zsoluong"] += soluong
-                dl[k]["hoso"].append({
-                    "sohoso": self.hoso[hosoid]["sohoso"],
-                    "khachhang": self.hoso[hosoid]["khachhang"],
-                    "diachigandhn": self.hoso[hosoid]["diachigandhn"],
-                    "soluong": soluong,
-                    "gia": giavl,
-                    "tien": lamtronso(soluong*giavl, 0)})
-            else:
-                dl[k] = {}
-                dl[k]["mota"] = chiphi[chiphiid]["mota"]
-                dl[k]["dvt"] = chiphi[chiphiid]["dvt"]
-                dl[k]["zsoluong"] = soluong
-                dl[k]["gia"] = giavl
-                dl[k]["ztien"] = 0
-                dl[k]["hoso"] = [{
-                    "sohoso": self.hoso[hosoid]["sohoso"],
-                    "khachhang":self.hoso[hosoid]["khachhang"],
-                    "diachigandhn":self.hoso[hosoid]["diachigandhn"],
-                    "soluong":soluong,
-                    "gia":giavl,
-                    "tien": lamtronso(soluong*giavl, 0)
-                }]
-        for k in dl:
-            for r in dl[k]["hoso"]:
-                dl[k]["ztien"] += r["tien"]
-        tam = []
-        for k in dl:
-            tam.append(dl[k])
-        self.cpvl = tam
-        # test
-        print(f"cpvl={self.cpvl}")
+        try:
+            dl = {}
+            for k in tam:
+                soluong = tam[k]
+                (chiphiid, giavl, hosoid) = k
+                k = (chiphiid, giavl)
+                if k in dl:
+                    dl[k]["zsoluong"] += soluong
+                    dl[k]["hoso"].append({
+                        "sohoso": self.hoso[hosoid]["sohoso"],
+                        "khachhang": self.hoso[hosoid]["khachhang"],
+                        "diachigandhn": self.hoso[hosoid]["diachigandhn"],
+                        "soluong": soluong,
+                        "gia": giavl,
+                        "tien": lamtronso(soluong*giavl, 0)})
+                else:
+                    dl[k] = {}
+                    dl[k]["mota"] = chiphi[chiphiid]["mota"]
+                    dl[k]["dvt"] = chiphi[chiphiid]["dvt"]
+                    dl[k]["zsoluong"] = soluong
+                    dl[k]["gia"] = giavl
+                    dl[k]["ztien"] = 0
+                    dl[k]["hoso"] = [{
+                        "sohoso": self.hoso[hosoid]["sohoso"],
+                        "khachhang":self.hoso[hosoid]["khachhang"],
+                        "diachigandhn":self.hoso[hosoid]["diachigandhn"],
+                        "soluong":soluong,
+                        "gia":giavl,
+                        "tien": lamtronso(soluong*giavl, 0)
+                    }]
+            for k in dl:
+                for r in dl[k]["hoso"]:
+                    dl[k]["ztien"] += r["tien"]
+            tam = []
+            for k in dl:
+                tam.append(dl[k])
+            self.cpvl = tam
+        except:
+            pass
 
     def tinh_cpong(self):
         tam = {}
@@ -236,53 +236,56 @@ class Dulieu:
             chiphi = {}
             for r in dl:
                 chiphi[r["chiphiid"]] = {"mota": r["mota"], "dvt": r["dvt"]}
-        dl = {}
-        for k in tam:
-            soluong = tam[k]
-            (chiphiid, giavl, hosoid) = k
-            k = (chiphiid, giavl)
-            if k in dl:
-                dl[k]["zsoluong"] += soluong
-                dl[k]["hoso"].append({
-                    "sohoso": self.hoso[hosoid]["sohoso"],
-                    "khachhang": self.hoso[hosoid]["khachhang"],
-                    "diachigandhn": self.hoso[hosoid]["diachigandhn"],
-                    "soluong": soluong,
-                    "gia": giavl,
-                    "tien": lamtronso(soluong*giavl, 0)})
-            else:
-                dl[k] = {}
-                dl[k]["mota"] = chiphi[chiphiid]["mota"]
-                dl[k]["dvt"] = chiphi[chiphiid]["dvt"]
-                dl[k]["zsoluong"] = soluong
-                dl[k]["gia"] = giavl
-                dl[k]["ztien"] = 0
-                dl[k]["hoso"] = [{
-                    "sohoso": self.hoso[hosoid]["sohoso"],
-                    "khachhang":self.hoso[hosoid]["khachhang"],
-                    "diachigandhn":self.hoso[hosoid]["diachigandhn"],
-                    "soluong":soluong,
-                    "gia":giavl,
-                    "tien": lamtronso(soluong*giavl, 0)
-                }]
-        for k in dl:
-            for r in dl[k]["hoso"]:
-                dl[k]["ztien"] += r["tien"]
-        tam = []
-        for k in dl:
-            tam.append(dl[k])
-        self.cpong = tam
+        try:
+            dl = {}
+            for k in tam:
+                soluong = tam[k]
+                (chiphiid, giavl, hosoid) = k
+                k = (chiphiid, giavl)
+                if k in dl:
+                    dl[k]["zsoluong"] += soluong
+                    dl[k]["hoso"].append({
+                        "sohoso": self.hoso[hosoid]["sohoso"],
+                        "khachhang": self.hoso[hosoid]["khachhang"],
+                        "diachigandhn": self.hoso[hosoid]["diachigandhn"],
+                        "soluong": soluong,
+                        "gia": giavl,
+                        "tien": lamtronso(soluong*giavl, 0)})
+                else:
+                    dl[k] = {}
+                    dl[k]["mota"] = chiphi[chiphiid]["mota"]
+                    dl[k]["dvt"] = chiphi[chiphiid]["dvt"]
+                    dl[k]["zsoluong"] = soluong
+                    dl[k]["gia"] = giavl
+                    dl[k]["ztien"] = 0
+                    dl[k]["hoso"] = [{
+                        "sohoso": self.hoso[hosoid]["sohoso"],
+                        "khachhang":self.hoso[hosoid]["khachhang"],
+                        "diachigandhn":self.hoso[hosoid]["diachigandhn"],
+                        "soluong":soluong,
+                        "gia":giavl,
+                        "tien": lamtronso(soluong*giavl, 0)
+                    }]
+            for k in dl:
+                for r in dl[k]["hoso"]:
+                    dl[k]["ztien"] += r["tien"]
+            tam = []
+            for k in dl:
+                tam.append(dl[k])
+            self.cpong = tam
+        except:
+            pass
 
 
 def dulieuin(schema):
     data = {"schema": schema, "dulieuin": [], "bth_dot_vl": {}}
+    sql = (
+        f"Select top 100 madot From {schema}.dot"
+        f" Where (inok<>0 And datalength(madot)>0"
+        f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
+        f" Order By madot,lastupdate"
+    )
     try:
-        sql = (
-            f"Select top 100 madot From {schema}.dot"
-            f" Where (inok<>0 And datalength(madot)>0"
-            f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
-            f" Order By madot,lastupdate"
-        )
         dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return data
@@ -290,11 +293,13 @@ def dulieuin(schema):
         for r in dl:
             dulieu.append(r['madot'])
         data["dulieuin"] = dulieu
-        dl = {}
-        for madot in dulieu:
-            dl[madot] = Dulieu(schema, madot)
-        data["bth_dot_vl"] = dl
-        print(f"data={data}")
-        return data
     except:
         return data
+    dl = {}
+    for madot in dulieu:
+        try:
+            dl[madot] = Dulieu(schema, madot)
+        except:
+            pass
+    data["bth_dot_vl"] = dl
+    return data

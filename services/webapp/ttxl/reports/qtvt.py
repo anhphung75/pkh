@@ -46,9 +46,6 @@ class Dulieu:
         self.phieunhap = dl["phieunhap"]
         self.phieuxuat = dl["phieuxuat"]
         self.dvtcid = dl["dvtcid"]
-        # test
-        for cp in dl:
-            print(f"dot {cp}={dl[cp]}")
 
     def tbl_donvithicong(self):
         sql = (
@@ -77,9 +74,6 @@ class Dulieu:
             self.lapbang = {'pbd': 'PHÒNG KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
                             'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Phạm Phi Hải'}
             self.kiemtra = {}
-        # test
-        for cp in dl:
-            print(f"dvtc={dl[cp]}")
 
     def tbl_qtvt(self):
         sql = (
@@ -95,20 +89,17 @@ class Dulieu:
         if ((dl == None) or (len(dl) < 1)):
             return
         self.cpvt = dl
-        # test
-        for cp in dl:
-            print(f"cpvt={cp}")
 
 
 def dulieuin(schema):
     data = {"schema": schema, "dulieuin": [], "qtvt": {}}
+    sql = (
+        f"Select top 100 madot From {schema}.dot"
+        f" Where (inok<>0 And datalength(madot)>0"
+        f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
+        f" Order By madot,lastupdate"
+    )
     try:
-        sql = (
-            f"Select top 100 madot From {schema}.dot"
-            f" Where (inok<>0 And datalength(madot)>0"
-            f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
-            f" Order By madot,lastupdate"
-        )
         dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return data
@@ -116,10 +107,13 @@ def dulieuin(schema):
         for r in dl:
             dulieu.append(r['madot'])
         data["dulieuin"] = dulieu
-        dl = {}
-        for madot in dulieu:
-            dl[madot] = Dulieu(schema, madot)
-        data["qtvt"] = dl
-        return data
     except:
         return data
+    dl = {}
+    for madot in dulieu:
+        try:
+            dl[madot] = Dulieu(schema, madot)
+        except:
+            pass
+    data["qtvt"] = dl
+    return data
