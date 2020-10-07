@@ -2,9 +2,9 @@
   {% set pages=1 %}
   <div class="A4doc">
     <div class="trangin trang1">
+      {% module RptDutoan_Quochuy(ttdl.ngaylap) %}
       <header>
         {% set page=1 %}
-        {% module RptQtgt_Quochuy(ttdl.dvtc, ttdl.ngaylap) %}
         {% module RptQtgt_Tieude(ttdl.tieude, ttdl.sohoso, ttdl.sodot, ttdl.khachhang, ttdl.diachigandhn) %}
       </header>
       <main>

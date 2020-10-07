@@ -561,24 +561,21 @@ class Cpql2_20200721(web.UIModule):
 
 
 class HosoOngnganh(web.UIModule):
-    def render(self, maqt="", ttdl={}):
-        uid = f"qtgt_{maqt}"
+    def render(self, uid="", ttdl={}):
         return self.render_string(
             "reports/qtgt/rpt-ongnganh.html",
             uid=uid, ttdl=ttdl)
 
 
 class HosoOngcai(web.UIModule):
-    def render(self, maqt="", ttdl={}):
-        uid = f"qtgt_{maqt}"
+    def render(self, uid="", ttdl={}):
         return self.render_string(
             "reports/qtgt/rpt-ongcai.html",
             uid=uid, ttdl=ttdl)
 
 
 class Hoso2Phui(web.UIModule):
-    def render(self, maqt="", ttdl={}):
-        uid = f"qtgt_{maqt}"
+    def render(self, uid="", ttdl={}):
         return self.render_string(
             "reports/qtgt/rpt-2phui.html",
             uid=uid, ttdl=ttdl)

@@ -1,7 +1,7 @@
 {% if ttdl.maubaocao == 'on' %}
-  {% module RptDutoan_Ongnganh(maqt, ttdl) %}
+  {% module RptDutoan_Ongnganh(uid, ttdl) %}
 {% elif ttdl.maubaocao == 'oc' %}
-  {% module RptDutoan_Ongncai(maqt, ttdl) %}
+  {% module RptDutoan_Ongncai(uid, ttdl) %}
 {% else %}
-  {% module RptDutoan_2Phui(maqt, ttdl) %}
+  {% module RptDutoan_2Phui(uid, ttdl) %}
 {% end %}

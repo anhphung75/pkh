@@ -11,8 +11,9 @@ import logging
 import tornado.escape
 import tornado.websocket
 
+import comps
 from ttdl import Maychu
-from ttxl.reports import dutoan, qtgt, qtvt
+from ttxl.reports import qtgt, qtvt
 from ttxl.reports import bth_dot_vl
 from hoasy.reports import base as rptbase
 from hoasy.reports import dutoan as rptdutoan
@@ -145,6 +146,7 @@ class WebApp(web.Application):
                 "RptDutoan_Ongnganh": rptdutoan.HosoOngnganh,
                 "RptDutoan_Ongcai": rptdutoan.HosoOngcai,
                 "RptDutoan_2Phui": rptdutoan.Hoso2Phui,
+                "RptDutoan_Quochuy": rptdutoan.Quochuy,
                 "RptDutoan_Footer": rptdutoan.Footer,
                 "RptQtgt_1Hoso": rptqtgt.Hoso,
                 "RptQtgt_Ongnganh": rptqtgt.HosoOngnganh,

@@ -13,12 +13,11 @@
 <body>
   <div id="vungin" data-dulieuin='["2020GMMP001","2020GMMP002"]'>
     {% for maqt in dulieuin %}
-      {% module RptQtgt_1Hoso(maqt, dutoan[maqt]) %}
+      {% module RptDutoan_1Hoso(maqt, dutoan[maqt]) %}
     {% end %}
   </div>
   {#--script--#}
   <script type="text/javascript" src="{{static_url('js/base.js')}}"></script>
-  <script type="text/javascript" src="{{static_url('js/reports/qtgt/boss.js')}}"></script>
 </body>
 
 </html>
