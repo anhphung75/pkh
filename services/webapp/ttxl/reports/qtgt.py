@@ -126,7 +126,7 @@ class Dulieu:
         sql = (
             f"Select top 1 madot,ngaylap,isnull(plgia,'dutoan') as plgia,isnull(tt,1) as tt,"
             f" isnull(dautucty,0) as tiencty, isnull(dautukhach,0) as tienkhach,isnull(gxd,0) as gxd,"
-            f" convert(datetime,baogiaid) as mabaogia,isnull(hesoid,0) as cpqlid,isnull(hosoid,0) as hosoid"
+            f" convert(datetime,baogiaid-2) as mabaogia,isnull(hesoid,0) as cpqlid,isnull(hosoid,0) as hosoid"
             f" From {self.schema}.qt qt"
             f" Where (qt.maqt='{self.maqt}' And datalength(qt.madot)>0)"
         )
@@ -193,6 +193,11 @@ class Dulieu:
             self.kyhieudvtc = "CNTĐ-QLMLTĐ"
             self.lapbang = {'pbd': 'ĐỘI QLMLCN QUẬN THỦ ĐỨC',
                             'chucvu': 'ĐỘI TRƯỞNG', 'nhanvien': 'Nguyễn Văn Tùng'}
+        elif self.dvtcid == 13:
+            self.kyhieudvtc = "CNTĐ-PKD"
+            self.lapbang = {'pbd': 'PHÒNG KINH DOANH',
+                            'chucvu': 'TRƯỞNG PHÒNG', 'nhanvien': 'Lại Văn Cường'}
+            self.kiemtra = {}
         elif self.dvtcid == 11:
             self.kyhieudvtc = "CNTĐ-PKT"
             self.lapbang = {'pbd': 'PHÒNG KỸ THUẬT',
