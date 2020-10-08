@@ -366,6 +366,9 @@ class Dulieu:
                 self.onztl += cp['tien_on']
                 cptl.append(cp)
         self.cptl = cptl
+        # test
+        for cp in cptl:
+            print(f"cptl={cp}")
 
     def get_chiphiquanly(self):
         sql = (

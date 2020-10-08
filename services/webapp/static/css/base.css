@@ -241,16 +241,12 @@ html, body {
 }
 
 .A4doc {
-  width: 210mm;
-  height: 297mm;
   display: flex;
   break-after: always;
   background: green;
 }
 
 .A4ngang {
-  width: 297mm;
-  height: 210mm;
   display: flex;
   break-after: always;
 }

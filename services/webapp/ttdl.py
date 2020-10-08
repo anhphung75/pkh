@@ -121,4 +121,3 @@ def run_mssql(sql=''):
         return data
     except:
         return None
-

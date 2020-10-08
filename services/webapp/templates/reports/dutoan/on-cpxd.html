@@ -1,0 +1,33 @@
+{% if len(cpxd)>0 %}
+<div class="grid bang">
+  {# Nội dung #}
+  {% for cp in cpxd %}
+  {% set uid=f"on-cpxd-{cpxd.index(cp):03}" %}
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')" class="bl l on-cpxd {{uid}}">
+    {{cp["mota"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')" class="bl c on-cpxd {{uid}}">
+    {{cp["dvt"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r sl wb on-cpxd {{uid}}">
+    {{cp["soluong"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r vl wb on-cpxd {{uid}}">
+    {{cp["giavl"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r nc wb on-cpxd {{uid}}">
+    {{cp["gianc"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r mtc wb on-cpxd {{uid}}">
+    {{cp["giamtc"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r vl wb on-cpxd {{uid}}">
+    {{cp["tienvl"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="bl r nc wb on-cpxd {{uid}}">
+    {{cp["tiennc"]}}</div>
+  <div onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"
+    class="brl r mtc wb on-cpxd {{uid}}">
+    {{cp["tienmtc"]}}</div>
+  {% end %}
+</div>
+{% end %}

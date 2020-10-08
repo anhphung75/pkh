@@ -133,16 +133,16 @@ class ChiphiDandong(web.UIModule):
 
 
 class Tlmd(web.UIModule):
-    def render(self, cptl):
+    def render(self, cptl, maubaocao="on"):
         # markup cptl
         for cp in cptl:
-            for k in ['sl_on', 'sl_oc']:
-                if k in cp:
-                    cp['soluong'] = tachhangso(cp[k], 3)
-            for k in ['tien_on', 'tien_oc']:
-                if k in cp:
-                    cp['tien'] = tachhangso(cp[k], 0)
             cp['gia'] = tachhangso(cp['gia'], 0)
+            if "oc" in maubaocao:
+                cp['soluong'] = tachhangso(cp["sl_oc"], 3)
+                cp['tien'] = tachhangso(cp["tien_oc"], 0)
+            else:
+                cp['soluong'] = tachhangso(cp["sl_on"], 3)
+                cp['tien'] = tachhangso(cp["tien_on"], 0)
         return self.render_string(
             "reports/qtgt/tlmd.html",
             cptl=cptl)
@@ -151,14 +151,12 @@ class Tlmd(web.UIModule):
 class Tlmd2(web.UIModule):
     def render(self, cptl):
         # markup cptl
-        print(f"Tlmd2 cptl={cptl}")
         for cp in cptl:
-            for k in ['sl_on', 'sl_oc']:
-                if k in cp:
-                    cp[k] = tachhangso(cp[k], 3)
-            for k in ['gia', 'tien_on', 'tien_oc']:
-                if k in cp:
-                    cp[k] = tachhangso(cp[k], 0)
+            cp['gia'] = tachhangso(cp['gia'], 0)
+            cp['tien_oc'] = tachhangso(cp["tien_oc"], 0)
+            cp['tien_on'] = tachhangso(cp["tien_on"], 0)
+            cp['sl_oc'] = tachhangso(cp["sl_oc"], 3)
+            cp['sl_on'] = tachhangso(cp["sl_on"], 3)
         return self.render_string(
             "reports/qtgt/tlmd2.html",
             cptl=cptl)

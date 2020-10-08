@@ -13,7 +13,7 @@ import tornado.websocket
 
 import comps
 from ttdl import Maychu
-from ttxl.reports import qtgt, qtvt
+from ttxl.reports import dutoan, qtgt, qtvt
 from ttxl.reports import bth_dot_vl
 from hoasy.reports import base as rptbase
 from hoasy.reports import dutoan as rptdutoan
@@ -77,9 +77,9 @@ class Rpt_Dutoan(WebBase):
         if schema == "qlmltđ":
             schema = "qlmltd"
         if schema in ['pkt', 'pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
-            data = qtgt.dulieuin(schema)
+            data = dutoan.dulieuin(schema)
             self.render("reports/dutoan/main.html", error=None,
-                        dulieuin=data['dulieuin'], dutoan=data['qtgt'])
+                        dulieuin=data['dulieuin'], dutoan=data['dutoan'])
         else:
             self.render("errors/404.html", error=None)
 
@@ -147,6 +147,22 @@ class WebApp(web.Application):
                 "RptDutoan_Ongcai": rptdutoan.HosoOngcai,
                 "RptDutoan_2Phui": rptdutoan.Hoso2Phui,
                 "RptDutoan_Quochuy": rptdutoan.Quochuy,
+                "RptDutoan_Tieude": rptdutoan.Tieude,
+                "RptDutoan_PhuiTieude": rptdutoan.PhuiTieude,
+                "RptDutoan_PhuiTong": rptdutoan.PhuiTong,
+                "RptDutoan_OcCpxd": rptdutoan.OcCpxd,
+                "RptDutoan_OcCpvt": rptdutoan.OcCpvt,
+                "RptDutoan_OcCpvl": rptdutoan.OcCpvl,
+                "RptDutoan_OnCpxd": rptdutoan.OnCpxd,
+                "RptDutoan_OnCpvt": rptdutoan.OnCpvt,
+                "RptDutoan_OnCpvl": rptdutoan.OnCpvl,
+                "RptDutoan_Tlmd": rptdutoan.Tlmd,
+                "RptDutoan_Tlmd2": rptdutoan.Tlmd2,
+                "RptDutoan_Cpql_Nd32_2015": rptdutoan.Cpql_Nd32_2015,
+                "RptDutoan_Cpql2_Nd32_2015": rptdutoan.Cpql2_Nd32_2015,
+                "RptDutoan_Cpql_Nd68_2019": rptdutoan.Cpql_Nd68_2019,
+                "RptDutoan_Cpql2_Nd68_2019": rptdutoan.Cpql2_Nd68_2019,
+                "RptDutoan_Kettoan": rptdutoan.Kettoan,
                 "RptDutoan_Footer": rptdutoan.Footer,
                 "RptQtgt_1Hoso": rptqtgt.Hoso,
                 "RptQtgt_Ongnganh": rptqtgt.HosoOngnganh,

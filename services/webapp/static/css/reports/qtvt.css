@@ -1,7 +1,6 @@
 html, body {
   /* "Open Sans Condensed", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", "Open Sans", sans-serif */
   font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
-  font-size: 8pt;
 }
 
 .trangin {
@@ -44,4 +43,27 @@ html, body {
 .chuky3 {
   width: 100%;
   grid: auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr;
+}
+
+@media print {
+  *, *:before, *:after {
+    box-sizing: border-box;
+    background-color: transparent;
+    color: black;
+    font-size: 8pt;
+  }
+}
+
+@media screen {
+  *, *:before, *:after {
+    font-size: 8pt;
+  }
+  .A4doc {
+    width: 210mm;
+    height: 297mm;
+  }
+  .A4ngang {
+    width: 297mm;
+    height: 210mm;
+  }
 }
