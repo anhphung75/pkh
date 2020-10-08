@@ -20,19 +20,14 @@ html, body {
   grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
 }
 
-.tieude {
+.bth-dot-qtgt {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content)/minmax(0, 1fr) max-content max-content minmax(0, 1fr);
+  grid: auto-flow minmax(1rem, max-content) / repeat(max-content, 3) 1fr;
 }
 
-.chiphi {
+.kettoan-bth-dot-qtgt {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / 15fr 380fr 30fr 45fr 40fr 45fr;
-}
-
-.hoso {
-  width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / 15fr 15fr 60fr 120fr 215fr 45fr 40fr 45fr;
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr;
 }
 
 .chuky2 {

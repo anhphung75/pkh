@@ -14,11 +14,13 @@ import tornado.websocket
 import comps
 from ttdl import Maychu
 from ttxl.reports import dutoan, qtgt, qtvt
+from ttxl.reports import bth_dot_qtgt
 from ttxl.reports import bth_dot_vl
 from hoasy.reports import base as rptbase
 from hoasy.reports import dutoan as rptdutoan
 from hoasy.reports import qtgt as rptqtgt
 from hoasy.reports import qtvt as rptqtvt
+from hoasy.reports import bth_dot_qtgt as rptbthqtgt
 from hoasy.reports import bth_dot_vl as rptbthvl
 
 # tornado.locale.set_default_locale('vi_VI')
@@ -110,6 +112,19 @@ class Rpt_Qtvt(WebBase):
             self.render("errors/404.html", error=None)
 
 
+class Rpt_BthDotQtgt(WebBase):
+    def get(self, schema):
+        schema = schema.lower()
+        if schema == "qlmltđ":
+            schema = "qlmltd"
+        if schema in ['pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            data = bth_dot_qtgt.dulieuin(schema)
+            self.render("reports/bth_dot_qtgt/main.html", error=None,
+                        dulieuin=data['dulieuin'], bth_dot_qtgt=data['bth_dot_qtgt'])
+        else:
+            self.render("errors/404.html", error=None)
+
+
 class Rpt_BthDotVl(WebBase):
     def get(self, schema):
         schema = schema.lower()
@@ -131,6 +146,7 @@ class WebApp(web.Application):
             (r"/([^/]+)/reports/dutoan", Rpt_Dutoan),
             (r"/([^/]+)/reports/qtgt", Rpt_Qtgt),
             (r"/([^/]+)/reports/qtvt", Rpt_Qtvt),
+            (r"/([^/]+)/reports/tonghop/dotqtgt", Rpt_BthDotQtgt),
             (r"/([^/]+)/reports/tonghop/dotvl", Rpt_BthDotVl),
             #(r"/qlmlt%C4%91/reports/qtgt", Rpt_Qtgt),
         ]
@@ -194,11 +210,13 @@ class WebApp(web.Application):
                 "RptQtvt_Tieude": rptqtvt.Tieude,
                 "RptQtvt_Cpvt": rptqtvt.Cpvt,
                 "RptQtvt_Chungtu": rptqtvt.Chungtu,
+                "RptBthQtgt_1Dot": rptbthqtgt.Dot,
                 "RptBthVl_1Dot": rptbthvl.Dot,
                 "RptBthVl_Tieude": rptbthvl.Tieude,
                 "RptBthVl_TieudeCpvlHoso": rptbthvl.TieudeCpvlHoso,
                 "RptBthVl_Cpvl": rptbthvl.Cpvl,
                 "RptBthVl_Hoso": rptbthvl.Hoso,
+
             },
             xsrf_cookies=True,
             cookie_secret="__TODO:_GENERATE_YOUR_OWN_RANDOM_VALUE_HERE__",

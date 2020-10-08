@@ -1,0 +1,78 @@
+<div id="{{uid}}">
+  {% set tt0=1 %}
+  <div class="A4doc">
+    <div class="trangin trang1">
+      {% module RptQuochuy(ttdl.ngaylap) %}
+      <header class="c u fb f5 b0 w100 hov1 tieude-{{uid}}" contenteditable="true">
+        BẢNG TỔNG HỢP QUYẾT TOÁN
+      </header>
+      <div class="grid bth-dot-qtgt">
+        <div class="l u fb">CÔNG TÁC:</div>
+        <div class="l hov1" style="grid-area:1/2/2/5" contenteditable="true">
+          Lắp đặt mạng cấp nước và gắn mới ĐHN khách hàng
+        </div>
+      </div>
+      <div class="grid bth-dot-qtgt">
+        <div class="l u fb">SỐ ĐỢT:</div>
+        <div class="l u" style="grid-area:1/2/2/5">{{ttdl.sodot}}</div>
+      </div>
+      <div class="grid bth-dot-qtgt">
+        <div class="l u fb">NGÀY THI CÔNG:</div>
+        <div class="l" style="grid-area:1/2/2/5">{{ttdl.ngaythicong}}</div>
+      </div>
+      <div class="grid bth-dot-qtgt">
+        <div class="l u fb">NGÀY HOÀN CÔNG:</div>
+        <div class="l" style="grid-area:1/2/2/5">{{ttdl.ngayhoancong}}</div>
+      </div>
+      <div class="grid bth-dot-qtgt">
+        <div class="l u fb">ĐỊA ĐIỂM:</div>
+        <div class="l" style="grid-area:1/2/2/5">{{ttdl.khuvuc}}</div>
+      </div>
+      <div class="grid bth-dot-qtgt">
+        <div class="l u fb">TỔNG HỒ SƠ:</div>
+        <div class="l" style="grid-area:1/2/2/5">{{f"{ttdl.zhoso:02}"}}</div>
+      </div>
+      <div class="grid bth-dot-qtgt hov">
+        <div></div>
+        <div class="l">Trong đó:</div>
+        <div class="l">- Số hộ gắn ĐHN:</div>
+        <div class="r">{{f"{ttdl.zthicong:02}"}}</div>
+      </div>
+      {% if ztrongai>0 %}
+      <div class="grid bth-dot-qtgt hov">
+        <div></div>
+        <div class="l"></div>
+        <div class="l">- Số hộ trở ngại:</div>
+        <div class="r">{{f"{ttdl.ztrongai:02}"}}</div>
+      </div>
+      {% end %}
+      {% if zchualam>0 %}
+      <div class="grid bth-dot-qtgt hov">
+        <div></div>
+        <div class="l"></div>
+        <div class="l">- Số hộ chưa thi công:</div>
+        <div class="r">{{f"{ttdl.zchualam:02}"}}</div>
+      </div>
+      {% end %}
+      <div class="grid kettoan-bth-dot-qtgt hov">
+        <div class="l">Kết toán chi phí gắn ĐHN miễn phí:</div>
+        <div class="r">{{ztiencty}}</div>
+      </div>
+      <div class="grid kettoan-bth-dot-qtgt hov">
+        <div class="l">Kết toán chi phí khách hàng đầu tư:</div>
+        <div class="r">{{ztienkhach}}</div>
+      </div>
+      <div class="grid kettoan-bth-dot-qtgt hov">
+        <div class="l">Quyết toán chi phí lắp đặt ống cái, ống ngánh + ĐHN (miễn phí):</div>
+        <div class="r u fb">{{ktso}}</div>
+      </div>
+      <div class="grid kettoan-bth-dot-qtgt hov" style="margin-top: 6pt">
+        <div class="l i fu">Bằng chữ:&nbsp;</div>
+        <div class="l fb">{{ktchu}}</div>
+      </div>
+      <footer>
+        {% module RptKyduyet3(ttdl.duyet,ttdl.kiemtra, ttdl.lapbang) %}
+      </footer>
+    </div>
+  </div>
+</div>
