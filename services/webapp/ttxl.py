@@ -544,6 +544,7 @@ class Phui_20200721:
         self.pha_do_nen_gach = 0
         self.dao_phui_dat_cap3_thucong = 0
         self.dao_phui_dat_cap2_thucong = 0
+        self.dat_cap3_sudunglai=0
         self.cong_traicat = 0
         self.cong_traican_dadam4x6 = 0
         self.dao_boc_gach_vua = 0
@@ -660,7 +661,7 @@ class Phui_20200721:
 
     def tinh_dao_phui_dat_cap3_thucong(self):
         kl = 0
-        self.dat_cap3_khongvanchuyen = 0
+        self.dat_cap3_sudunglai = 0
         for cp in self.phui:
             if cp['macptl'] in ['nhua_12cm']:
                 heso = 0.25
@@ -672,7 +673,7 @@ class Phui_20200721:
                 heso = 0.35
             elif cp['macptl'] in ['le_datda', 'le_datthuong']:
                 heso = 0.35
-                self.dat_cap3_khongvanchuyen = lamtronso(cp['dientich']*0.1, 3)
+                self.dat_cap3_sudunglai += lamtronso(cp['dientich']*0.1, 3)
             elif cp['macptl'] in ['le_gachterrazzo', 'le_dagranit']:
                 heso = 0.1
             elif cp['macptl'] in ['le_gachmen']:
@@ -787,7 +788,7 @@ class Phui_20200721:
         kl += self.dao_boc_btxm_thucong
         kl += self.dao_boc_gach_vua
         self.vanchuyen_dat_cap3_thucong = lamtronso(
-            kl - self.dat_cap3_khongvanchuyen, 3)
+            kl - self.dat_cap3_sudunglai, 3)
 
     def tinh_vanchuyen_dat_cap2_thucong(self):
         kl = self.dao_phui_dat_cap2_thucong
@@ -848,20 +849,21 @@ class Phui_20200721:
 
 
 def test_phui():
-    phui = [{'macptl': 'le_datthuong', 'dai': 0.8, 'rong': 0.5, 'sau': 1.0},
-            {'macptl': 'nhua_12cm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+    phui = [{'macptl': 'nhua_12cm', 'dai': 0.5, 'rong': 0.5, 'sau': 1.0},
+            {'macptl': 'nhua_12cm', 'dai': 1.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'nhua_10cm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachterrazzo', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachmen', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'hem_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'hem_btxm', 'dai': 4.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_btxm', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_ximang', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_datthuong', 'dai': 2.0, 'rong': 0.3, 'sau': 0.6}
+            {'macptl': 'le_datthuong', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6}
             ]
     kq = vars(Phui_20200721(phui))
     for cp in kq['cpxd']:
         print(f"cpxd={cp}")
+    print(f"cpxd=dat_cap3_sudunglai={kq['dat_cap3_sudunglai']}")
     print(f"---------oOo---------")
     for cp in kq['cpvl']:
         print(f"cpvl={cp}")

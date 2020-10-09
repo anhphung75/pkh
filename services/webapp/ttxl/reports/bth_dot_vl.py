@@ -293,13 +293,13 @@ def dulieuin(schema):
         for r in dl:
             dulieu.append(r['madot'])
         data["dulieuin"] = dulieu
+        dl = {}
+        for madot in dulieu:
+            try:
+                dl[madot] = Dulieu(schema, madot)
+            except:
+                pass
+        data["bth_dot_vl"] = dl
+        return data
     except:
         return data
-    dl = {}
-    for madot in dulieu:
-        try:
-            dl[madot] = Dulieu(schema, madot)
-        except:
-            pass
-    data["bth_dot_vl"] = dl
-    return data

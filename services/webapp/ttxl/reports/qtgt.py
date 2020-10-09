@@ -475,13 +475,13 @@ def dulieuin(schema):
         for r in dl:
             dulieu.append(r['maqt'])
         data["dulieuin"] = dulieu
+        dl = {}
+        for maqt in dulieu:
+            try:
+                dl[maqt] = Dulieu(schema, maqt)
+            except:
+                pass
+        data["qtgt"] = dl
+        return data
     except:
         return data
-    dl = {}
-    for maqt in dulieu:
-        try:
-            dl[maqt] = Dulieu(schema, maqt)
-        except:
-            pass
-    data["qtgt"] = dl
-    return data

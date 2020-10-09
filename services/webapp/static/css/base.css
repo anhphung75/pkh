@@ -77,6 +77,10 @@ html, body {
   font-stretch: ultra-condensed;
 }
 
+.f-3 {
+  font-size: calc( 1rem - 3pt);
+}
+
 .f-2 {
   font-size: calc( 1rem - 2pt);
 }
@@ -109,16 +113,48 @@ html, body {
   font-size: calc( 1rem + 6pt);
 }
 
+.f7 {
+  font-size: calc( 1rem + 7pt);
+}
+
+.f8 {
+  font-size: calc( 1rem + 8pt);
+}
+
+.f9 {
+  font-size: calc( 1rem + 9pt);
+}
+
 /* chieu cao */
 
 .c3 {
   height: calc( 1rem + 3pt);
   padding-top: 2pt;
+  padding-bottom: 2pt;
 }
 
 .c6 {
   height: calc( 1rem + 6pt);
   padding-top: 3pt;
+  padding-bottom: 3pt;
+}
+
+.c9 {
+  height: calc( 1rem + 9pt);
+  padding-top: 3pt;
+  padding-bottom: 3pt;
+}
+
+.c12 {
+  height: calc( 1rem + 12pt);
+  padding-top: 3pt;
+  padding-bottom: 3pt;
+}
+
+.c18 {
+  height: calc( 1rem + 18pt);
+  padding-top: 3pt;
+  padding-bottom: 3pt;
 }
 
 .h1px {

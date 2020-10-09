@@ -4,11 +4,11 @@ html, body {
 }
 
 .trangin {
-  margin-left: 20pt;
-  margin-right: 20pt;
-  margin-top: 20pt;
-  margin-bottom: 20pt;
-  line-height: 1.05;
+  margin-left: 50pt;
+  margin-right: 50pt;
+  margin-top: 50pt;
+  margin-bottom: 50pt;
+  line-height: 1.25;
   flex: 1 1 0%;
   display: flex;
   flex-direction: column;
@@ -20,9 +20,14 @@ html, body {
   grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
 }
 
+.khung-bth-dot-qtgt {
+  margin-left: 20pt;
+  margin-right: 20pt;
+}
+
 .bth-dot-qtgt {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / repeat(max-content, 3) 1fr;
+  grid: auto-flow minmax(1rem, max-content) / 120fr 50fr 90fr 235fr;
 }
 
 .kettoan-bth-dot-qtgt {

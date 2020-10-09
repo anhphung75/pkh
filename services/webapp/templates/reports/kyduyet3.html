@@ -1,28 +1,27 @@
-{% set caoky='60pt' %}
 {% if len(kiemtra)>0 %}
 <div class="grid chuky3" style="margin-top:3pt">
   <div class="c u fb f2">DUYỆT</div>
   <div class="c u fb f2">KIỂM TRA</div>
   <div class="c u fb f2">THÀNH LẬP</div>
-  <div class="c u">{{duyet['pbd']}}</div>
-  <div class="c u">{{kiemtra['pbd']}}</div>
-  <div class="c u">{{lapbang['pbd']}}</div>
-  <div class="c u">{{duyet['chucvu']}}</div>
-  <div class="c u">{{kiemtra['chucvu']}}</div>
-  <div class="c u">{{lapbang['chucvu']}}</div>
-  <div class="c fb f2" style="margin-top:{{caoky}}">{{duyet['nhanvien']}}</div>
-  <div class="c fb f2" style="margin-top:{{caoky}}">{{kiemtra['nhanvien']}}</div>
-  <div class="c fb f2" style="margin-top:{{caoky}}">{{lapbang['nhanvien']}}</div>
+  <div class="c u f1">{{duyet['pbd']}}</div>
+  <div class="c u f1">{{kiemtra['pbd']}}</div>
+  <div class="c u f1">{{lapbang['pbd']}}</div>
+  <div class="c u f1">{{duyet['chucvu']}}</div>
+  <div class="c u f1">{{kiemtra['chucvu']}}</div>
+  <div class="c u f1">{{lapbang['chucvu']}}</div>
+  <div class="c fb f2 hov1" style="margin-top:60pt" contenteditable="true">{{duyet['nhanvien']}}</div>
+  <div class="c fb f2 hov1" style="margin-top:60pt" contenteditable="true">{{kiemtra['nhanvien']}}</div>
+  <div class="c fb f2 hov1" style="margin-top:60pt" contenteditable="true">{{lapbang['nhanvien']}}</div>
 </div>
 {% else %}
 <div class="grid chuky2" style="margin-top:3pt">
   <div class="c u fb f2">DUYỆT</div>
   <div class="c u fb f2">THÀNH LẬP</div>
-  <div class="c u">{{duyet['pbd']}}</div>
-  <div class="c u">{{lapbang['pbd']}}</div>
-  <div class="c u">{{duyet['chucvu']}}</div>
-  <div class="c u">{{lapbang['chucvu']}}</div>
-  <div class="c fb f2" style="margin-top:{{caoky}}">{{duyet['nhanvien']}}</div>
-  <div class="c fb f2" style="margin-top:{{caoky}}">{{lapbang['nhanvien']}}</div>
+  <div class="c u f1">{{duyet['pbd']}}</div>
+  <div class="c u f1">{{lapbang['pbd']}}</div>
+  <div class="c u f1">{{duyet['chucvu']}}</div>
+  <div class="c u f1">{{lapbang['chucvu']}}</div>
+  <div class="c fb f2 hov1" style="margin-top:60pt" contenteditable="true">{{duyet['nhanvien']}}</div>
+  <div class="c fb f2 hov1" style="margin-top:60pt" contenteditable="true">{{lapbang['nhanvien']}}</div>
 </div>
 {% end %}

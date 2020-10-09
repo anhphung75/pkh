@@ -2,14 +2,14 @@ import datetime
 import arrow
 import decimal
 from ttxl.reports import dutoan, qtvt, qtgt
-from ttxl.reports import bth_dot_vl
+from ttxl.reports import bth_dot_vl,bth_dot_qtgt
 
 
 # test
 schema = "pkh"
 madot="2020GMMP622"
 maqt = "2020GMMP622001"
-kq = dutoan.Dulieu(schema, maqt)
+kq = bth_dot_qtgt.Dulieu(schema, madot)
 print(f"kq={vars(kq)}")
-dl = dutoan.dulieuin(schema)
+dl = bth_dot_qtgt.dulieuin(schema)
 print(f"dl={dl}")

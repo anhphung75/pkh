@@ -2,73 +2,88 @@
   {% set tt0=1 %}
   <div class="A4doc">
     <div class="trangin trang1">
-      {% module RptQuochuy(ttdl.ngaylap) %}
-      <header class="c u fb f5 b0 w100 hov1 tieude-{{uid}}" contenteditable="true">
-        BẢNG TỔNG HỢP QUYẾT TOÁN
-      </header>
-      <div class="grid bth-dot-qtgt">
-        <div class="l u fb">CÔNG TÁC:</div>
-        <div class="l hov1" style="grid-area:1/2/2/5" contenteditable="true">
-          Lắp đặt mạng cấp nước và gắn mới ĐHN khách hàng
+      <header class="grid quochuy">
+        <div>
+          <div class="c u fb f2">CÔNG TY CỔ PHẦN CẤP NƯỚC THỦ ĐỨC</div>
+          <div class="c fb f2">08- Khổng Tử- P.Bình Thọ- Q.Thủ Đức</div>
+          <div class="c f-2">---------oOo---------</div>
         </div>
-      </div>
-      <div class="grid bth-dot-qtgt">
-        <div class="l u fb">SỐ ĐỢT:</div>
-        <div class="l u" style="grid-area:1/2/2/5">{{ttdl.sodot}}</div>
-      </div>
-      <div class="grid bth-dot-qtgt">
-        <div class="l u fb">NGÀY THI CÔNG:</div>
-        <div class="l" style="grid-area:1/2/2/5">{{ttdl.ngaythicong}}</div>
-      </div>
-      <div class="grid bth-dot-qtgt">
-        <div class="l u fb">NGÀY HOÀN CÔNG:</div>
-        <div class="l" style="grid-area:1/2/2/5">{{ttdl.ngayhoancong}}</div>
-      </div>
-      <div class="grid bth-dot-qtgt">
-        <div class="l u fb">ĐỊA ĐIỂM:</div>
-        <div class="l" style="grid-area:1/2/2/5">{{ttdl.khuvuc}}</div>
-      </div>
-      <div class="grid bth-dot-qtgt">
-        <div class="l u fb">TỔNG HỒ SƠ:</div>
-        <div class="l" style="grid-area:1/2/2/5">{{f"{ttdl.zhoso:02}"}}</div>
-      </div>
-      <div class="grid bth-dot-qtgt hov">
         <div></div>
-        <div class="l">Trong đó:</div>
-        <div class="l">- Số hộ gắn ĐHN:</div>
-        <div class="r">{{f"{ttdl.zthicong:02}"}}</div>
+        <div>
+          <div class="c u fb f2">CỘNG HOÀ XÃ HỘI CHỦ NGHĨA VIỆT NAM</div>
+          <div class="c fb f2">Độc lập - Tự do - Hạnh phúc</div>
+          <div class="c f-2">---------oOo---------</div>
+          <div class="r ngaylap f2 hov1" contenteditable="true">{{ngaylap}}</div>
+        </div>
+      </header>
+      <div class="c u fb f8 b0 w100 hov1 tieude-{{uid}}" contenteditable="true" style="margin-top:20pt;margin-bottom:20pt;">
+        BẢNG TỔNG HỢP QUYẾT TOÁN
       </div>
-      {% if ztrongai>0 %}
-      <div class="grid bth-dot-qtgt hov">
-        <div></div>
-        <div class="l"></div>
-        <div class="l">- Số hộ trở ngại:</div>
-        <div class="r">{{f"{ttdl.ztrongai:02}"}}</div>
-      </div>
-      {% end %}
-      {% if zchualam>0 %}
-      <div class="grid bth-dot-qtgt hov">
-        <div></div>
-        <div class="l"></div>
-        <div class="l">- Số hộ chưa thi công:</div>
-        <div class="r">{{f"{ttdl.zchualam:02}"}}</div>
-      </div>
-      {% end %}
-      <div class="grid kettoan-bth-dot-qtgt hov">
-        <div class="l">Kết toán chi phí gắn ĐHN miễn phí:</div>
-        <div class="r">{{ztiencty}}</div>
-      </div>
-      <div class="grid kettoan-bth-dot-qtgt hov">
-        <div class="l">Kết toán chi phí khách hàng đầu tư:</div>
-        <div class="r">{{ztienkhach}}</div>
-      </div>
-      <div class="grid kettoan-bth-dot-qtgt hov">
-        <div class="l">Quyết toán chi phí lắp đặt ống cái, ống ngánh + ĐHN (miễn phí):</div>
-        <div class="r u fb">{{ktso}}</div>
-      </div>
-      <div class="grid kettoan-bth-dot-qtgt hov" style="margin-top: 6pt">
-        <div class="l i fu">Bằng chữ:&nbsp;</div>
-        <div class="l fb">{{ktchu}}</div>
+      <div class="khung-bth-dot-qtgt">
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l u fb f2">CÔNG TÁC:</div>
+          <div class="l f2 hov1" style="grid-area:1/2/2/5" contenteditable="true">
+            Lắp đặt mạng cấp nước và gắn mới ĐHN khách hàng
+          </div>
+        </div>
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l u fb f2">SỐ ĐỢT:</div>
+          <div class="l u f2" style="grid-area:1/2/2/5">{{ttdl.sodot}}</div>
+        </div>
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l u fb f2">NGÀY THI CÔNG:</div>
+          <div class="l f2" style="grid-area:1/2/2/5">{{ttdl.ngaythicong}}</div>
+        </div>
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l u fb f2">NGÀY HOÀN CÔNG:</div>
+          <div class="l f2" style="grid-area:1/2/2/5">{{ttdl.ngayhoancong}}</div>
+        </div>
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l u fb f2">ĐỊA ĐIỂM:</div>
+          <div class="l f2" style="grid-area:1/2/2/5">{{ttdl.khuvuc}}</div>
+        </div>
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l u fb f2">TỔNG HỒ SƠ:</div>
+          <div class="l f2" style="grid-area:1/2/2/5">{{f"{ttdl.zhoso:02}"}}</div>
+        </div>
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l"></div>
+          <div class="l f1">Trong đó:</div>
+          <div class="l f1">- Số hộ gắn ĐHN:</div>
+          <div class="l f1">{{f"{ttdl.zthicong:02}"}}</div>
+        </div>
+        {% if ttdl.ztrongai>0 %}
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l"></div>
+          <div class="l"></div>
+          <div class="l f1">- Số hộ trở ngại:</div>
+          <div class="l f1">{{f"{ttdl.ztrongai:02}"}}</div>
+        </div>
+        {% end %}
+        {% if ttdl.zchualam>0 %}
+        <div class="grid bth-dot-qtgt hov">
+          <div class="l"></div>
+          <div class="l"></div>
+          <div class="l f1">- Số hộ chưa thi công:</div>
+          <div class="l f1">{{f"{ttdl.zchualam:02}"}}</div>
+        </div>
+        {% end %}
+        <div class="grid kettoan-bth-dot-qtgt hov" style="margin-top: 10pt">
+          <div class="l f2">Kết toán chi phí gắn ĐHN miễn phí:</div>
+          <div class="r f2">{{ztiencty}}</div>
+        </div>
+        <div class="grid kettoan-bth-dot-qtgt hov">
+          <div class="l f2">Kết toán chi phí khách hàng đầu tư:</div>
+          <div class="r f2">{{ztienkhach}}</div>
+        </div>
+        <div class="grid kettoan-bth-dot-qtgt hov">
+          <div class="l f2">Quyết toán chi phí lắp đặt ống cái, ống ngánh + ĐHN (miễn phí):</div>
+          <div class="r u fb f2">{{ktso}}</div>
+        </div>
+        <div class="grid kettoan-bth-dot-qtgt hov" style="margin-top: 10pt">
+          <div class="l i fu f2">Bằng chữ:&nbsp;</div>
+          <div class="l fb f2">{{ktchu}}</div>
+        </div>
       </div>
       <footer>
         {% module RptKyduyet3(ttdl.duyet,ttdl.kiemtra, ttdl.lapbang) %}

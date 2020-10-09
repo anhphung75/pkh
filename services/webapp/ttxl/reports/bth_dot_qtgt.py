@@ -55,7 +55,7 @@ class Dulieu:
 
     def tbl_dot(self):
         sql = (
-            f"Select top 1 sodot, ngaylap, isnull(nhathauid,0) as dvtcid,"
+            f"Select top 1 sodot, ngaylap, khuvuc,isnull(nhathauid,0) as dvtcid,"
             f" isnull(dautucty,0) as tiencty,isnull(dautukhach,0) as tienkhach"
             f" From {self.schema}.dot"
             f" Where (madot='{self.madot}')"
@@ -63,10 +63,10 @@ class Dulieu:
         dl = run_mssql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
-        dl = dl[0]
-        self.sodot = dl["sodot"]
-        self.ngaylap = dl["ngaylap"]
-        self.dvtcid = dl["dvtcid"]
+        self.sodot = dl[0]["sodot"]
+        self.ngaylap = dl[0]["ngaylap"]
+        self.dvtcid = dl[0]["dvtcid"]
+        self.khuvuc = dl[0]["khuvuc"]
 
     def tbl_qtgt(self):
         sql = (
@@ -81,12 +81,12 @@ class Dulieu:
         ngayhoancong = {}
         ngaythicong = {}
         for r in dl:
-            self.zgxd += dl['gxd']
-            self.ztiencty += dl['tiencty']
-            self.ztienkhach += dl['tienkhach']
-            self.zthicong += dl['thicong']
+            self.zgxd += r['gxd']
+            self.ztiencty += r['tiencty']
+            self.ztienkhach += r['tienkhach']
+            self.zthicong += r['thicong']
             try:
-                ntn = f"{dl['ngaygan']}"
+                ntn = f"{r['ngaygan']}"
                 ngay = ntn[-2:]
                 thang = ntn[-4:-2]
                 nam = ntn[:-4]
@@ -100,7 +100,7 @@ class Dulieu:
             except:
                 pass
             try:
-                ntn = f"{dl['ngayhoancong']}"
+                ntn = f"{r['ngayhoancong']}"
                 ngay = ntn[-2:]
                 thang = ntn[-4:-2]
                 nam = ntn[:-4]
@@ -182,13 +182,13 @@ def dulieuin(schema):
         for r in dl:
             dulieu.append(r['madot'])
         data["dulieuin"] = dulieu
+        dl = {}
+        for madot in dulieu:
+            try:
+                dl[madot] = Dulieu(schema, madot)
+            except:
+                pass
+        data["bth_dot_qtgt"] = dl
+        return data
     except:
         return data
-    dl = {}
-    for madot in dulieu:
-        try:
-            dl[madot] = Dulieu(schema, madot)
-        except:
-            pass
-    data["bth_dot_qtgt"] = dl
-    return data
