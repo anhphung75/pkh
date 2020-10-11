@@ -1,0 +1,35 @@
+.combobox {
+  position: relative;
+  display: inline-block;
+}
+
+.box-options {
+  position: absolute;
+  z-index: 99;
+  border-style: solid;
+  border-color: #d4d4d4;
+  border-width: 0 1px 0 1px;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+  /*width: 12cm;*/
+}
+
+.box-options div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff;
+  border-style: solid;
+  border-color: #d4d4d4;
+  border-width: 1px 0 1px 0;
+}
+
+.box-options div:hover {
+  background-color: #e9e9e9;
+}
+
+.box-options div.active {
+  background-color: DodgerBlue !important;
+  color: #ffffff;
+}
