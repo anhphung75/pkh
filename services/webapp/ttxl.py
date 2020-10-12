@@ -849,14 +849,14 @@ class Phui_20200721:
 
 
 def test_phui():
-    phui = [{'macptl': 'nhua_12cm', 'dai': 0.5, 'rong': 0.5, 'sau': 1.0},
+    phui = [{'macptl': 'nhua_12cm', 'dai': 0.8, 'rong': 0.5, 'sau': 1.0},
             {'macptl': 'nhua_12cm', 'dai': 1.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'nhua_10cm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachterrazzo', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachmen', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'hem_btxm', 'dai': 4.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_btxm', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'hem_btxm', 'dai': 5.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_ximang', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_datthuong', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6}
             ]

@@ -11,6 +11,8 @@ function combobox(inp, arr) {
     a.setAttribute("id", this.id + "_box_options");
     a.setAttribute("class", "box-options");
     this.parentNode.appendChild(a);
+    this.parentNode.style.position = "relative";
+    this.parentNode.style.display = "inline-block";
     /*for each item in the array...*/
     s = stim.toLowerCase();
     for (i = 0; i < arr.length; i++) {
