@@ -54,26 +54,27 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
         f" BEGIN TRY")
     # load tamdulieu xep lai tt
     sql += (
-        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,soluong,ghichu,lastupdate"
+        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,abs(isnull(soluong,0),ghichu,lastupdate"
         f" INTO #tamdulieu"
         f" FROM {schema}.tamqt3{qt3x}"
         f" WHERE chiphiid>0"
         f" ORDER BY tt,chiphiid;")
     sql += (
         f" UPDATE s SET"
-        f" s.tt=r.id,s.chiphiid=r.chiphiid,s.soluong=r.soluong,s.ghichu=r.ghichu,"
+        f" s.tt=r.id,s.chiphiid=r.chiphiid,s.ghichu=r.ghichu,"
+        f" s.soluong=dbo.lamtronso(r.soluong,3),"
         f" s.maqt=(Select Top 1 maqt From {schema}.tamqt),"
         f" s.maqtgt=(Case When r.id<10 Then CONCAT(maqt,{qt3x}0,r.id) Else CONCAT(maqt,{qt3x},r.id) End),"
         f" s.lastupdate=Isnull(r.lastupdate,getdate()),"
-        f" s.giavl=(Select Top 1 Isnull(bg.giavl,0) From dbo.baogiachiphi bg"
+        f" s.giavl=dbo.lamtronso((Select Top 1 Isnull(bg.giavl,0) From dbo.baogiachiphi bg"
         f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=r.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
-        f" Order By baogiaid DESC),"
-        f" s.gianc=(Select Top 1 Isnull(bg.gianc,0) From dbo.baogiachiphi bg"
+        f" Order By baogiaid DESC),3),"
+        f" s.gianc=dbo.lamtronso((Select Top 1 Isnull(bg.gianc,0) From dbo.baogiachiphi bg"
         f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=r.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
-        f" Order By baogiaid DESC),"
-        f" s.giamtc=(Select Top 1 Isnull(bg.giamtc,0) From dbo.baogiachiphi bg"
+        f" Order By baogiaid DESC),3),"
+        f" s.giamtc=dbo.lamtronso((Select Top 1 Isnull(bg.giamtc,0) From dbo.baogiachiphi bg"
         f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=r.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
-        f" Order By baogiaid DESC)"
+        f" Order By baogiaid DESC),3)"
         f" FROM {schema}.tamqt3{qt3x} s INNER JOIN #tamdulieu r ON s.chiphiid=r.chiphiid;")
     sql += (f" DELETE FROM {schema}.tamqt3{qt3x} WHERE tt Not In (Select id From #tamdulieu Where id>0);")
     sql += (
@@ -105,20 +106,21 @@ def tinh_tamqt35(schema="web"):
         f" BEGIN TRY")
     # load tamdulieu
     sql += (
-        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,sl1,sl2,ghichu,lastupdate"
+        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,abs(isnull(sl1,0)),abs(isnull(sl2,0)),ghichu,lastupdate"
         f" INTO #tamdulieu"
         f" FROM {schema}.tamqt35"
         f" WHERE chiphiid>0"
         f" ORDER BY tt,chiphiid;")
     sql += (
         f" UPDATE s SET"
-        f" s.tt=r.id,s.chiphiid=r.chiphiid,s.sl1=r.sl1,s.sl2=r.sl2,s.ghichu=r.ghichu,"
+        f" s.tt=r.id,s.chiphiid=r.chiphiid,s.ghichu=r.ghichu,"
+        f" s.sl1=dbo.lamtronso(r.sl1,3),s.sl2=dbo.lamtronso(r.sl2,3),"
         f" s.maqt=(Select Top 1 maqt From {schema}.tamqt),"
         f" s.maqtgt=(Case When r.id<10 Then CONCAT(maqt,50,r.id) Else CONCAT(maqt,5,r.id) End),"
         f" s.lastupdate=Isnull(r.lastupdate,getdate()),"
-        f" s.dongia=(Select Top 1 isnull(bg.gia,0) From dbo.baogiachiphi bg"
+        f" s.dongia=dbo.lamtronso((Select Top 1 isnull(bg.gia,0) From dbo.baogiachiphi bg"
         f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=r.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
-        f" Order By baogiaid DESC)"
+        f" Order By baogiaid DESC),3)"
         f" FROM {schema}.tamqt35 s INNER JOIN #tamdulieu r ON s.chiphiid=r.chiphiid")
     sql += (f" DELETE FROM {schema}.tamqt35 WHERE tt Not In (Select id From #tamdulieu Where id>0);")
     sql += (
