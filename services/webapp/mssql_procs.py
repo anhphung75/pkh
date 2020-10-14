@@ -54,7 +54,7 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
         f" BEGIN TRY")
     # load tamdulieu xep lai tt
     sql += (
-        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,abs(isnull(soluong,0),ghichu,lastupdate"
+        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,abs(isnull(soluong,0)) as soluong,ghichu,lastupdate"
         f" INTO #tamdulieu"
         f" FROM {schema}.tamqt3{qt3x}"
         f" WHERE chiphiid>0"
@@ -106,7 +106,7 @@ def tinh_tamqt35(schema="web"):
         f" BEGIN TRY")
     # load tamdulieu
     sql += (
-        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,abs(isnull(sl1,0)),abs(isnull(sl2,0)),ghichu,lastupdate"
+        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,abs(isnull(sl1,0)) as sl1,abs(isnull(sl2,0)) as sl2,ghichu,lastupdate"
         f" INTO #tamdulieu"
         f" FROM {schema}.tamqt35"
         f" WHERE chiphiid>0"
