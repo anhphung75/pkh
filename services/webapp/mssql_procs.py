@@ -35,7 +35,95 @@ def lamtronso(schema="dbo"):
         pass
 
 
+def giavl(schema="dbo"):
+    # init prog
+    sql = (f"CREATE FUNCTION {schema}.giavl AS ")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"ALTER FUNCTION {schema}.giavl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+        f" Returns decimal(38,9) AS BEGIN"
+        f" Declare @Kq decimal(38,0)=0.0;"
+        f" Select Top 1 @Kq=Abs(Isnull(giavl,0)) as gia From dbo.baogiachiphi"
+        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+        f" Order By baogiaid DESC;"
+        f" RETURN @Kq; END;")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+
+
+def gianc(schema="dbo"):
+    # init prog
+    sql = (f"CREATE FUNCTION {schema}.gianc AS ")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"ALTER FUNCTION {schema}.gianc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+        f" Returns decimal(38,9) AS BEGIN"
+        f" Declare @Kq decimal(38,0)=0.0;"
+        f" Select Top 1 @Kq=Abs(Isnull(gianc,0)) as gia From dbo.baogiachiphi"
+        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+        f" Order By baogiaid DESC;"
+        f" RETURN @Kq; END;")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+
+
+def giamtc(schema="dbo"):
+    # init prog
+    sql = (f"CREATE FUNCTION {schema}.giamtc AS ")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"ALTER FUNCTION {schema}.giamtc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+        f" Returns decimal(38,9) AS BEGIN"
+        f" Declare @Kq decimal(38,0)=0.0;"
+        f" Select Top 1 @Kq=Abs(Isnull(giamtc,0)) as gia From dbo.baogiachiphi"
+        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+        f" Order By baogiaid DESC;"
+        f" RETURN @Kq; END;")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+
+
+def giatl(schema="dbo"):
+    # init prog
+    sql = (f"CREATE FUNCTION {schema}.giatl AS ")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"ALTER FUNCTION {schema}.giatl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+        f" Returns decimal(38,9) AS BEGIN"
+        f" Declare @Kq decimal(38,0)=0.0;"
+        f" Select Top 1 @Kq=Abs(Isnull(gia,0)) as gia From dbo.baogiachiphi"
+        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+        f" Order By baogiaid DESC;"
+        f" RETURN @Kq; END;")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
 # proc
+
+
 def creat_tinh_tamqt3x(schema="web", qt3x=1):
     # init prog
     if qt3x not in [1, 2, 3, 4]:
@@ -54,29 +142,39 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
         f" BEGIN TRY")
     # load tamdulieu xep lai tt
     sql += (
-        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,abs(isnull(soluong,0)) as soluong,ghichu,lastupdate"
+        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,ghichu,"
+        f" isnull(lastupdate,getdate()) as lastupdate,abs(isnull(soluong,0)) as soluong,"
+        f" abs(isnull(giavl,0)) as giavl,abs(isnull(gianc,0)) as gianc,abs(isnull(giamtc,0)) as giamtc"
         f" INTO #tamdulieu"
         f" FROM {schema}.tamqt3{qt3x}"
         f" WHERE chiphiid>0"
         f" ORDER BY tt,chiphiid;")
+    # tinh toan lai gia
+    sql += (
+        f" UPDATE #tamdulieu SET"
+        f" giavl=dbo.giavl(chiphiid,@Baogiaid,@Plgia),"
+        f" gianc=dbo.gianc(chiphiid,@Baogiaid,@Plgia),"
+        f" giamtc=dbo.giamtc(chiphiid,@Baogiaid,@Plgia)"
+        f" WHERE chiphiid>0;")
+    # lam tron
+    sql += (
+        f" UPDATE #tamdulieu SET"
+        f" soluong=dbo.lamtronso(soluong,4),"
+        f" giavl=dbo.lamtronso(giavl,3),"
+        f" gianc=dbo.lamtronso(gianc,3),"
+        f" giamtc=dbo.lamtronso(giamtc,3)"
+        f" WHERE chiphiid>0;"
+        # test
+        f" Select 'qt35 tamdulieu' as test,* from #tamdulieu;")
     sql += (
         f" UPDATE s SET"
-        f" s.tt=r.id,s.chiphiid=r.chiphiid,s.ghichu=r.ghichu,"
-        f" s.soluong=dbo.lamtronso(r.soluong,3),"
         f" s.maqt=(Select Top 1 maqt From {schema}.tamqt),"
         f" s.maqtgt=(Case When r.id<10 Then CONCAT(maqt,{qt3x}0,r.id) Else CONCAT(maqt,{qt3x},r.id) End),"
-        f" s.lastupdate=Isnull(r.lastupdate,getdate()),"
-        f" s.giavl=dbo.lamtronso((Select Top 1 Isnull(bg.giavl,0) From dbo.baogiachiphi bg"
-        f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=r.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
-        f" Order By baogiaid DESC),3),"
-        f" s.gianc=dbo.lamtronso((Select Top 1 Isnull(bg.gianc,0) From dbo.baogiachiphi bg"
-        f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=r.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
-        f" Order By baogiaid DESC),3),"
-        f" s.giamtc=dbo.lamtronso((Select Top 1 Isnull(bg.giamtc,0) From dbo.baogiachiphi bg"
-        f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=r.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
-        f" Order By baogiaid DESC),3)"
+        f" s.tt=r.id,s.chiphiid=r.chiphiid,s.ghichu=r.ghichu,s.lastupdate=r.lastupdate,"
+        f" s.soluong=r.soluong,s.giavl=r.giavl,s.gianc=r.gianc,s.giamtc=r.giamtc"
         f" FROM {schema}.tamqt3{qt3x} s INNER JOIN #tamdulieu r ON s.chiphiid=r.chiphiid;")
     sql += (f" DELETE FROM {schema}.tamqt3{qt3x} WHERE tt Not In (Select id From #tamdulieu Where id>0);")
+    # tinh tien
     sql += (
         f" UPDATE {schema}.tamqt3{qt3x} SET"
         f" trigiavl=dbo.lamtronso(soluong*giavl,0),"
@@ -104,24 +202,36 @@ def tinh_tamqt35(schema="web"):
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
         f" BEGIN TRY")
-    # load tamdulieu
+    # load tamdulieu xep lai tt
     sql += (
-        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,abs(isnull(sl1,0)) as sl1,abs(isnull(sl2,0)) as sl2,ghichu,lastupdate"
+        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,ghichu,"
+        f" isnull(lastupdate,getdate()) as lastupdate,abs(isnull(dongia,0)) as gia,"
+        f" abs(isnull(sl1,0)) as sl1,abs(isnull(sl2,0)) as sl2"
         f" INTO #tamdulieu"
         f" FROM {schema}.tamqt35"
         f" WHERE chiphiid>0"
         f" ORDER BY tt,chiphiid;")
+    # tinh toan lai gia
+    sql += (
+        f" UPDATE #tamdulieu SET"
+        f" gia=dbo.giatl(chiphiid,@Baogiaid,@Plgia)"
+        f" WHERE chiphiid>0;")
+    # lam tron
+    sql += (
+        f" UPDATE #tamdulieu SET"
+        f" sl1=dbo.lamtronso(sl1,3),"
+        f" sl2=dbo.lamtronso(sl2,3),"
+        f" gia=dbo.lamtronso(gia,3)"
+        f" WHERE chiphiid>0;"
+        # test
+        f" Select 'qt35 tamdulieu' as test,* from #tamdulieu;")
     sql += (
         f" UPDATE s SET"
-        f" s.tt=r.id,s.chiphiid=r.chiphiid,s.ghichu=r.ghichu,"
-        f" s.sl1=dbo.lamtronso(r.sl1,3),s.sl2=dbo.lamtronso(r.sl2,3),"
         f" s.maqt=(Select Top 1 maqt From {schema}.tamqt),"
         f" s.maqtgt=(Case When r.id<10 Then CONCAT(maqt,50,r.id) Else CONCAT(maqt,5,r.id) End),"
-        f" s.lastupdate=Isnull(r.lastupdate,getdate()),"
-        f" s.dongia=dbo.lamtronso((Select Top 1 isnull(bg.gia,0) From dbo.baogiachiphi bg"
-        f" Where (bg.plgia=@Plgia) AND (bg.chiphiid=r.chiphiid) AND (bg.baogiaid<=@Baogiaid)"
-        f" Order By baogiaid DESC),3)"
-        f" FROM {schema}.tamqt35 s INNER JOIN #tamdulieu r ON s.chiphiid=r.chiphiid")
+        f" s.tt=r.id,s.chiphiid=r.chiphiid,s.ghichu=r.ghichu,s.lastupdate=r.lastupdate,"
+        f" s.sl1=r.sl1,s.sl2=r.sl2,s.dongia=r.gia"
+        f" FROM {schema}.tamqt35 s INNER JOIN #tamdulieu r ON s.chiphiid=r.chiphiid;")
     sql += (f" DELETE FROM {schema}.tamqt35 WHERE tt Not In (Select id From #tamdulieu Where id>0);")
     sql += (
         f" UPDATE {schema}.tamqt35 SET"
@@ -365,6 +475,10 @@ def tinhlai_dotqt(schema="web"):
 
 def spQtgt(schema="web"):
     lamtronso()
+    giavl()
+    gianc()
+    giamtc()
+    giatl()
     creat_tinh_tamqt3x(schema, 1)
     creat_tinh_tamqt3x(schema, 2)
     creat_tinh_tamqt3x(schema, 3)
@@ -375,5 +489,5 @@ def spQtgt(schema="web"):
     tinhlai_dotqt(schema)
 
 
-spQtgt("web")
+spQtgt("pkh")
 # lamtronso()
