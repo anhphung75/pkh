@@ -24,7 +24,7 @@ def lamtronso(schema="dbo"):
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @So decimal(38,0)=0.0, @Lech decimal(38,9)=0.0, @Kq decimal(38,9)=0.0;"
         f" If @Phanle<0 or @Phanle>8 RETURN @Sothapphan;"
-        f" SET @So=CAST(@Sothapphan*Power(10,@Phanle+1) AS int);"
+        f" SET @So=CAST(@Sothapphan*Power(10,@Phanle+1) AS bigint);"
         f" SET @Lech=@So % 10;"
         f" IF @Lech>=5 SET @So=@So+5;"
         f" SET @Kq= round(@So/Power(10,@Phanle+1),@Phanle,1);"
@@ -46,10 +46,11 @@ def giavl(schema="dbo"):
     sql = (
         f"ALTER FUNCTION {schema}.giavl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,0)=0.0;"
-        f" Select Top 1 @Kq=Abs(Isnull(giavl,0)) as gia From dbo.baogiachiphi"
+        f" Declare @Kq decimal(38,9)=0.0;"
+        f" Select Top 1 @Kq=Isnull(giavl,0.0) From dbo.baogiachiphi"
         f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
         f" Order By baogiaid DESC;"
+        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
         f" RETURN @Kq; END;")
     try:
         db.core().execute(sql)
@@ -68,10 +69,11 @@ def gianc(schema="dbo"):
     sql = (
         f"ALTER FUNCTION {schema}.gianc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,0)=0.0;"
-        f" Select Top 1 @Kq=Abs(Isnull(gianc,0)) as gia From dbo.baogiachiphi"
+        f" Declare @Kq decimal(38,9)=0.0;"
+        f" Select Top 1 @Kq=Isnull(gianc,0.0) From dbo.baogiachiphi"
         f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
         f" Order By baogiaid DESC;"
+        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
         f" RETURN @Kq; END;")
     try:
         db.core().execute(sql)
@@ -90,10 +92,11 @@ def giamtc(schema="dbo"):
     sql = (
         f"ALTER FUNCTION {schema}.giamtc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,0)=0.0;"
-        f" Select Top 1 @Kq=Abs(Isnull(giamtc,0)) as gia From dbo.baogiachiphi"
+        f" Declare @Kq decimal(38,9)=0.0;"
+        f" Select Top 1 @Kq=Isnull(giamtc,0.0) From dbo.baogiachiphi"
         f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
         f" Order By baogiaid DESC;"
+        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
         f" RETURN @Kq; END;")
     try:
         db.core().execute(sql)
@@ -112,10 +115,11 @@ def giatl(schema="dbo"):
     sql = (
         f"ALTER FUNCTION {schema}.giatl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,0)=0.0;"
-        f" Select Top 1 @Kq=Abs(Isnull(gia,0)) as gia From dbo.baogiachiphi"
+        f" Declare @Kq decimal(38,9)=0.0;"
+        f" Select Top 1 @Kq=Isnull(gia,0.0) From dbo.baogiachiphi"
         f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
         f" Order By baogiaid DESC;"
+        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
         f" RETURN @Kq; END;")
     try:
         db.core().execute(sql)
@@ -142,7 +146,7 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
         f" BEGIN TRY")
     # load tamdulieu xep lai tt
     sql += (
-        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,ghichu,"
+        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,isnull(ghichu,'') as ghichu,"
         f" isnull(lastupdate,getdate()) as lastupdate,abs(isnull(soluong,0)) as soluong,"
         f" abs(isnull(giavl,0)) as giavl,abs(isnull(gianc,0)) as gianc,abs(isnull(giamtc,0)) as giamtc"
         f" INTO #tamdulieu"
@@ -204,7 +208,7 @@ def tinh_tamqt35(schema="web"):
         f" BEGIN TRY")
     # load tamdulieu xep lai tt
     sql += (
-        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,ghichu,"
+        f" SELECT IDENTITY(INT, 1, 1) AS id,chiphiid,isnull(ghichu,'') as ghichu,"
         f" isnull(lastupdate,getdate()) as lastupdate,abs(isnull(dongia,0)) as gia,"
         f" abs(isnull(sl1,0)) as sl1,abs(isnull(sl2,0)) as sl2"
         f" INTO #tamdulieu"
