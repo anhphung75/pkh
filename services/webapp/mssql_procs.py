@@ -22,7 +22,7 @@ def lamtronso(schema="dbo"):
     sql = (
         f"ALTER FUNCTION {schema}.lamtronso(@Sothapphan decimal(38,9), @Phanle int=0)"
         f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @So decimal(38,0)=0.0, @Lech decimal(38,9)=0.0, @Kq decimal(38,9)=0.0;"
+        f" Declare @So decimal(38,9)=0.0, @Lech decimal(38,9)=0.0, @Kq decimal(38,9)=0.0;"
         f" If @Phanle<0 or @Phanle>8 RETURN @Sothapphan;"
         f" SET @So=CAST(@Sothapphan*Power(10,@Phanle+1) AS bigint);"
         f" SET @Lech=@So % 10;"
