@@ -11,11 +11,11 @@ import logging
 import tornado.escape
 import tornado.websocket
 
-import comps
 from ttdl import Maychu
 from ttxl.reports import dutoan, qtgt, qtvt
 from ttxl.reports import bth_dot_qtgt
 from ttxl.reports import bth_dot_vl
+from hoasy.forms import qtgt as frmqtgt
 from hoasy.reports import base as rptbase
 from hoasy.reports import dutoan as rptdutoan
 from hoasy.reports import qtgt as rptqtgt
@@ -68,8 +68,15 @@ class MainHandler(WebBase):
         self.render("base_vuejs3.html", error=None)
 
 
+class Frm_Hoso(WebBase):
+    def get(self, schema):
+        schema = schema.lower()
+        self.render("forms/hoso/main.html", error=None)
+
+
 class Frm_Qtgt(WebBase):
-    def get(self):
+    def get(self, schema):
+        schema = schema.lower()
         self.render("forms/qtgt/main.html", error=None)
 
 
@@ -142,6 +149,7 @@ class WebApp(web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
+            (r"/([^/]+)/forms/hoso", Frm_Hoso),
             (r"/([^/]+)/forms/qtgt", Frm_Qtgt),
             (r"/([^/]+)/reports/dutoan", Rpt_Dutoan),
             (r"/([^/]+)/reports/qtgt", Rpt_Qtgt),
@@ -155,7 +163,7 @@ class WebApp(web.Application):
             template_path=os.path.join(os.path.dirname(__file__), "templates"),
             static_path=os.path.join(os.path.dirname(__file__), "static"),
             ui_modules={
-                "FrmQtgt_Ongnganh": comps.FrmQtgt_Ongnganh,
+                "FrmQtgt_Ongnganh": frmqtgt.Ongnganh,
                 "RptQuochuy": rptbase.Quochuy,
                 "RptKyduyet3": rptbase.Kyduyet3,
                 "RptDutoan_1Hoso": rptdutoan.Hoso,
