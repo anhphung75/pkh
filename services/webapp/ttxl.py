@@ -602,7 +602,7 @@ class Phui_20200721:
                 pass
             elif cp['macptl'] in ['le_datda', 'le_datthuong']:
                 pass
-            elif cp['macptl'] in ['le_gachterrazzo', 'le_dagranit', 'le_gachmen']:
+            elif cp['macptl'] in ['le_gachterrazzo', 'le_dagranit', 'le_gachmen','le_gachtau']:
                 kl += cp['chuvi']
             elif cp['macptl'] in ['le_gachconsau', 'le_gachhinhsin']:
                 kl += cp['chuvi']
@@ -621,7 +621,7 @@ class Phui_20200721:
         for cp in self.phui:
             if cp['macptl'] in ['le_dagranit', 'le_gachterrazzo']:
                 kl += cp['dientich']
-            elif cp['macptl'] in ['le_gachmen']:
+            elif cp['macptl'] in ['le_gachmen','le_gachtau']:
                 kl += cp['dientich']
             elif cp['macptl'] in ['le_gachconsau', 'le_gachhinhsin']:
                 kl += cp['dientich']
@@ -652,7 +652,7 @@ class Phui_20200721:
                 heso = 0.1
             elif cp['macptl'] in ['le_dagranit', 'le_gachterrazzo']:
                 heso = 0.05
-            elif cp['macptl'] in ['le_gachmen']:
+            elif cp['macptl'] in ['le_gachmen','le_gachtau']:
                 heso = 0.05
             else:
                 heso = 0
@@ -676,7 +676,7 @@ class Phui_20200721:
                 self.dat_cap3_sudunglai += lamtronso(cp['dientich']*0.1, 3)
             elif cp['macptl'] in ['le_gachterrazzo', 'le_dagranit']:
                 heso = 0.1
-            elif cp['macptl'] in ['le_gachmen']:
+            elif cp['macptl'] in ['le_gachmen','le_gachtau']:
                 heso = 0.1
             elif cp['macptl'] in ['le_gachconsau', 'le_gachhinhsin']:
                 heso = 0
@@ -706,7 +706,7 @@ class Phui_20200721:
                 heso = 0.350
             elif cp['macptl'] in ['le_dagranit']:
                 heso = 0.20
-            elif cp['macptl'] in ['le_gachterrazzo']:
+            elif cp['macptl'] in ['le_gachterrazzo','le_gachtau']:
                 heso = 0.195
             elif cp['macptl'] in ['le_gachmen']:
                 heso = 0.175
@@ -749,7 +749,7 @@ class Phui_20200721:
                 heso = 0.25
             elif cp['macptl'] in ['le_gachterrazzo', 'le_dagranit']:
                 heso = 0.1
-            elif cp['macptl'] in ['le_gachmen']:
+            elif cp['macptl'] in ['le_gachmen','le_gachtau']:
                 heso = 0.1
             elif cp['macptl'] in ['le_gachconsau', 'le_gachhinhsin']:
                 heso = 0
@@ -767,7 +767,7 @@ class Phui_20200721:
     def tinh_dao_boc_gach_vua(self):
         kl = 0
         for cp in self.phui:
-            if cp['macptl'] in ['le_gachterrazzo', 'le_dagranit']:
+            if cp['macptl'] in ['le_gachterrazzo', 'le_dagranit','le_gachtau']:
                 heso = 0.03 + 0.015
             elif cp['macptl'] in ['le_gachmen']:
                 heso = 0.01 + 0.015
@@ -849,17 +849,17 @@ class Phui_20200721:
 
 
 def test_phui():
-    phui = [{'macptl': 'le_gachhinhsin', 'dai': 0.5, 'rong': 0.5, 'sau': 1.0},
+    phui = [{'macptl': 'le_ximang', 'dai': 0.5, 'rong': 0.5, 'sau': 1.0},
             {'macptl': 'nhua_12cm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'nhua_10cm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachterrazzo', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_gachhinhsin', 'dai': 2.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_gachmen', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_gachtau', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_gachhinhsin', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_gachmen', 'dai': 4.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_gachtau', 'dai': 4.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'hem_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_ximang', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_ximang', 'dai': 2.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_datthuong', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6}
             ]
     kq = vars(Phui_20200721(phui))

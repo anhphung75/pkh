@@ -1,4 +1,4 @@
-{% extends "../../base_vuejs3.html" %}
+{% extends "../../base_nunjucks.html" %}
 
 {% block webapp %}
   <div class="c w100 nam">
@@ -12,12 +12,14 @@
     </select>
   </div>
   <div class="stim w100">
-    <input type="text" class="w100" placeholder="Tìm không phân biệt chữ hoa, chữ thường" id="stim" onkeyup="stim_keyup()" style="background-image:url({{static_url('images/searchicon.png')}})">
+    <input type="text" class="w100"
+    placeholder="Tìm không phân biệt chữ hoa, chữ thường" id="stim"
+    onkeyup="stim_keyup(this)" style="background-image:url({{static_url('images/searchicon.png')}})">
     <div class="w100">
-      <button type="button" onclick="clearTags">
+      <button type="button" onclick="clear_otim()">
         <i class="fa fa-trash"></i>
       </button>
-      <div class="flex" id="view-otim">
+      <div class="flex ba" id="view-otim">
         <button type="button" onclick="del_element(this.id)" id="">
           <i class="fa fa-trash"></i>
         </button>
@@ -30,5 +32,5 @@
 <link rel="stylesheet" href="{{static_url('css/forms/hoso.css')}}" type="text/css">
 {% end %}
 {% block js %}
-<script type="text/javascript" src="{{static_url('js/forms/hoso/master.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/forms/hoso/main.js')}}"></script>
 {% end %}

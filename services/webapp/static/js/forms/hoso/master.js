@@ -1,12 +1,12 @@
-import { getCookie } from "./../utils/web.js";
-import { any2obj } from "./../utils/dulieu.js";
+import { getCookie } from "./../../utils/web.js";
+import { any2obj } from "./../../utils/dulieu.js";
 let cty = getCookie('macongty') || 'Cntd';
 let pbd = getCookie('madvtc') || '';
 const csdl = cty + "_" + pbd;
-const None = null, w;
+const None = null;
 let xuongkysu = "./kysu.js", kysu = [];
 let xuonghoasy = "./hoasy.js", hoasy = [];
-let dulieu
+let dulieu,w;
 
 let otim = {
   "namlamviec": 2020,
@@ -15,8 +15,22 @@ let otim = {
   "ma":{"hoso":"","dvtc":"","dot":"","qtgt":""},
 };
 
-function stim_keyup(ev) {
-  return
+function stim_keyup(e) {
+  console.log("event.key=", e.key, " event.keyCode=", e.keyCode, " event.code=", e.code);
+  console.log("e.value=", e.value, " e.target.value=", e.target.value);
+  if (e.code === 'Insert' && this.stim.length > 0) {
+
+    //this.add_otim()
+  };
+  if (e.code === 'Enter' && this.stim.length > 0) {
+    //this.add_otim()
+  };
+  if (e.code === 'ArrowDown') {
+    return
+  };
+  if (e.code === 'ArrowUp') {
+    return
+  };
 }
 
 function clear_otim() {
