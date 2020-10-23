@@ -105,7 +105,7 @@ class Dulieu:
                 thang = ntn[-4:-2]
                 nam = ntn[:-4]
                 if nam in ngayhoancong:
-                    if thang in ngaythicong[nam]:
+                    if thang in ngayhoancong[nam]:
                         ngayhoancong[nam][thang][ngay] = 0
                     else:
                         ngayhoancong[nam][thang] = {ngay: 0}

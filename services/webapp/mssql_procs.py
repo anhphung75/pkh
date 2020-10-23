@@ -163,7 +163,7 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
     # lam tron
     sql += (
         f" UPDATE #tamdulieu SET"
-        f" soluong=dbo.lamtronso(soluong,4),"
+        f" soluong=dbo.lamtronso(soluong,6),"
         f" giavl=dbo.lamtronso(giavl,3),"
         f" gianc=dbo.lamtronso(gianc,3),"
         f" giamtc=dbo.lamtronso(giamtc,3)"
