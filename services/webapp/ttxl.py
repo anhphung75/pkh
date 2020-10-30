@@ -854,12 +854,13 @@ def test_phui():
             {'macptl': 'nhua_10cm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachterrazzo', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_gachhinhsin', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_gachmen', 'dai': 4.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_gachtau', 'dai': 4.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_gachconsau', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_gachmen', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_gachtau', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'duong_datda', 'dai': 0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'hem_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_btxm', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
-            {'macptl': 'le_ximang', 'dai': 2.0, 'rong': 0.3, 'sau': 0.6},
+            {'macptl': 'le_ximang', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6},
             {'macptl': 'le_datthuong', 'dai': 0.0, 'rong': 0.3, 'sau': 0.6}
             ]
     kq = vars(Phui_20200721(phui))
