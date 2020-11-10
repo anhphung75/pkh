@@ -249,7 +249,7 @@ html, body {
   background-color: lightgreen;
 }
 
-.hide {
+.hide, .an, .dau, .che {
   display: none;
 }
 
