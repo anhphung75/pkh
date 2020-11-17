@@ -144,6 +144,17 @@ class Rpt_BthDotVl(WebBase):
         else:
             self.render("errors/404.html", error=None)
 
+class Rpt_BthDotKlVl(WebBase):
+    def get(self, schema):
+        schema = schema.lower()
+        if schema == "qlmltđ":
+            schema = "qlmltd"
+        if schema in ['pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            data = bth_dot_vl.dulieuin(schema)
+            self.render("reports/bth_dot_klvl/main.html", error=None,
+                        dulieuin=data['dulieuin'], bth_dot_vl=data['bth_dot_vl'])
+        else:
+            self.render("errors/404.html", error=None)
 
 class WebApp(web.Application):
     def __init__(self):
@@ -156,6 +167,7 @@ class WebApp(web.Application):
             (r"/([^/]+)/reports/qtvt", Rpt_Qtvt),
             (r"/([^/]+)/reports/tonghop/dotqtgt", Rpt_BthDotQtgt),
             (r"/([^/]+)/reports/tonghop/dotvl", Rpt_BthDotVl),
+            (r"/([^/]+)/reports/tonghop/dotklvl", Rpt_BthDotKlVl),
             #(r"/qlmlt%C4%91/reports/qtgt", Rpt_Qtgt),
         ]
         settings = dict(
@@ -219,11 +231,16 @@ class WebApp(web.Application):
                 "RptQtvt_Cpvt": rptqtvt.Cpvt,
                 "RptQtvt_Chungtu": rptqtvt.Chungtu,
                 "RptBthQtgt_1Dot": rptbthqtgt.Dot,
-                "RptBthVl_1Dot": rptbthvl.Dot,
                 "RptBthVl_Tieude": rptbthvl.Tieude,
+                "RptBthVl_1Dot": rptbthvl.Dot,
                 "RptBthVl_TieudeCpvlHoso": rptbthvl.TieudeCpvlHoso,
                 "RptBthVl_Cpvl": rptbthvl.Cpvl,
                 "RptBthVl_Hoso": rptbthvl.Hoso,
+                "RptBthKlVl_Tieude": rptbthvl.Tieude0,
+                "RptBthKlVl_1Dot": rptbthvl.Dot0,
+                "RptBthKlVl_TieudeCpvlHoso": rptbthvl.TieudeCpvl0Hoso0,
+                "RptBthKlVl_Cpvl": rptbthvl.Cpvl0,
+                "RptBthKlVl_Hoso": rptbthvl.Hoso0,
 
             },
             xsrf_cookies=True,

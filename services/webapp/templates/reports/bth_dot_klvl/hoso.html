@@ -1,0 +1,16 @@
+<div class="grid hoso">
+  {% for cp in hoso %}
+  {% set _uid=f"{uid}-hoso-{cp['tt']}" %}
+  <div class="l {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')"></div>
+  <div class="c bl {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
+    {{cp["tt"]}}</div>
+  <div class="l u bl {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
+    {{cp["sohoso"]}}</div>
+  <div class="l u bl {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
+    {{cp["khachhang"]}}</div>
+  <div class="l bl {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
+    {{cp["diachigandhn"]}}</div>
+  <div class="r brl {{_uid}}" onmouseover="hover_class_in('{{_uid}}')" onmouseout="hover_class_out('{{_uid}}')">
+    {{cp["soluong"]}}</div>
+  {% end %}
+</div>

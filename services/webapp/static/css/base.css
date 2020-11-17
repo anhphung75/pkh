@@ -34,6 +34,7 @@ html, body {
 
 .c {
   text-align: center;
+  top: 50%;
   padding: 1pt;
 }
 

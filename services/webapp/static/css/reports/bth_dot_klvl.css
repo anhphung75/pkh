@@ -1,0 +1,69 @@
+html, body {
+  /* "Open Sans Condensed", "UVN Tin Tuc Hep Them", "UVN Tin Tuc Hep", "Open Sans", sans-serif */
+  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
+}
+
+.trangin {
+  margin-left: 20pt;
+  margin-right: 20pt;
+  margin-top: 20pt;
+  margin-bottom: 20pt;
+  line-height: 1.05;
+  flex: 1 1 0%;
+  display: flex;
+  flex-direction: column;
+  background: white;
+}
+
+.quochuy {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content)/max-content 1fr max-content;
+}
+
+.tieude {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content)/minmax(0, 1fr) max-content max-content minmax(0, 1fr);
+}
+
+.chiphi {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content) / 15fr 465fr 30fr 45fr;
+}
+
+.hoso {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content) / 15fr 15fr 60fr 120fr 300fr 45fr;
+}
+
+.chuky2 {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content) / 1fr 1fr;
+}
+
+.chuky3 {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr;
+}
+
+@media print {
+  *, *:before, *:after {
+    box-sizing: border-box;
+    background-color: transparent;
+    color: black;
+    font-size: 8pt;
+  }
+}
+
+@media screen {
+  *, *:before, *:after {
+    font-size: 8pt;
+  }
+  .A4doc {
+    width: 210mm;
+    height: 297mm;
+  }
+  .A4ngang {
+    width: 297mm;
+    height: 210mm;
+  }
+}

@@ -3,7 +3,7 @@
 {% block webapp %}
 <div class="c w100 nam">
   <label for="namlamviec" class="u fb f7">HỒ SƠ KHÁCH HÀNG NĂM</label>
-  <select id="namlamviec" class="u fb f7" onchange="otim.namlamviec=this.value">
+  <select id="namlamviec" class="u fb f7">
     <option value="2021">2021</option>
     <option value="2020" selected>2020</option>
     <option value="2019">2019</option>
@@ -15,18 +15,16 @@
   {% set url_img=static_url('images/searchicon.png') %}
   <input type="text" class="w100" placeholder="tìm không phân biệt chữ hoa, chữ thường" id="stim"
     style="background-image:url({{url_img}})">
-  <div class="w100">
-    <button type="button">
+  <div class="flex w100 ba">
+    <button type="button" id="clear-otim">
       <i class="fa fa-trash"></i>
     </button>
+    <div class="l" id="view-otim">
+      
+    </div>
   </div>
-  <div class="flex ba" id="view-otim">
-    <button type="button" id="">
-      <i class="fa fa-trash"></i>
-    </button>
+  <div id="info">
   </div>
-</div>
-<div id="info">
 </div>
 {% end %}
 
