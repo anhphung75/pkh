@@ -21,27 +21,32 @@ html = """
   };
 </script>"""
 
+
 def fibonacci():
     a, b = 0, 1
     while True:
         yield a
         a, b = b, a + b
 
+
 class DataSource(object):
     """Generic object for producing data to feed to clients."""
+
     def __init__(self, initial_data=None):
         self._data = initial_data
-    
+
     @property
     def data(self):
         return self._data
-        
+
     @data.setter
     def data(self, new_data):
         self._data = new_data
 
+
 class EventSource(web.RequestHandler):
     """Basic handler for server-sent events."""
+
     def initialize(self, source):
         """The ``source`` parameter is a string that is updated with
         new data. The :class:`EventSouce` instance will continuously
@@ -70,21 +75,24 @@ class EventSource(web.RequestHandler):
             else:
                 yield gen.sleep(0.005)
 
+
 class MainHandler(web.RequestHandler):
     def get(self):
         self.write(html)
+
 
 if __name__ == "__main__":
     options.parse_command_line()
 
     generator = fibonacci()
     publisher = DataSource(next(generator))
+
     def get_next():
         publisher.data = next(generator)
         print(publisher.data)
     checker = PeriodicCallback(lambda: get_next(), 1000.)
     checker.start()
-    
+
     app = web.Application(
         [
             (r'/', MainHandler),

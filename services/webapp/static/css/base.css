@@ -1,14 +1,18 @@
 @charset "UTF-8";
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
   background-color: transparent;
   color: black;
 }
 
-@import url('./font_Opensans.css');
-@import url('./font_UVNTintuc.css');
-html, body {
-  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
+@import url("./font_Opensans.css");
+@import url("./font_UVNTintuc.css");
+html,
+body {
+  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep",
+    "UVN Tin Tuc Hep Them", sans-serif;
   /* font-size: 16pt; */
   margin: 0;
   border: 0;
@@ -79,81 +83,81 @@ html, body {
 }
 
 .f-3 {
-  font-size: calc( 1rem - 3pt);
+  font-size: calc(1rem - 3pt);
 }
 
 .f-2 {
-  font-size: calc( 1rem - 2pt);
+  font-size: calc(1rem - 2pt);
 }
 
 .f-1 {
-  font-size: calc( 1rem - 1pt);
+  font-size: calc(1rem - 1pt);
 }
 
 .f1 {
-  font-size: calc( 1rem + 1pt);
+  font-size: calc(1rem + 1pt);
 }
 
 .f2 {
-  font-size: calc( 1rem + 2pt);
+  font-size: calc(1rem + 2pt);
 }
 
 .f3 {
-  font-size: calc( 1rem + 3pt);
+  font-size: calc(1rem + 3pt);
 }
 
 .f4 {
-  font-size: calc( 1rem + 4pt);
+  font-size: calc(1rem + 4pt);
 }
 
 .f5 {
-  font-size: calc( 1rem + 5pt);
+  font-size: calc(1rem + 5pt);
 }
 
 .f6 {
-  font-size: calc( 1rem + 6pt);
+  font-size: calc(1rem + 6pt);
 }
 
 .f7 {
-  font-size: calc( 1rem + 7pt);
+  font-size: calc(1rem + 7pt);
 }
 
 .f8 {
-  font-size: calc( 1rem + 8pt);
+  font-size: calc(1rem + 8pt);
 }
 
 .f9 {
-  font-size: calc( 1rem + 9pt);
+  font-size: calc(1rem + 9pt);
 }
 
 /* chieu cao */
 
 .c3 {
-  height: calc( 1rem + 3pt);
+  height: calc(1rem + 3pt);
   padding-top: 2pt;
   padding-bottom: 2pt;
 }
 
 .c6 {
-  height: calc( 1rem + 6pt);
+  height: calc(1rem + 6pt);
   padding-top: 3pt;
   padding-bottom: 3pt;
 }
 
 .c9 {
-  height: calc( 1rem + 9pt);
+  height: calc(1rem + 9pt);
   padding-top: 3pt;
   padding-bottom: 3pt;
 }
 
 .c12 {
-  height: calc( 1rem + 12pt);
+  height: calc(1rem + 12pt);
   padding-top: 3pt;
   padding-bottom: 3pt;
 }
 
 .c18 {
-  height: calc( 1rem + 18pt);
+  height: calc(1rem + 18pt);
   padding-top: 3pt;
   padding-bottom: 3pt;
 }
@@ -178,7 +182,8 @@ html, body {
   border: 0;
 }
 
-.ba, .btrbl {
+.ba,
+.btrbl {
   border: 1px solid black;
 }
 
@@ -250,7 +255,10 @@ html, body {
   background-color: lightgreen;
 }
 
-.hide, .an, .dau, .che {
+.hide,
+.an,
+.dau,
+.che {
   display: none;
 }
 
@@ -303,7 +311,9 @@ html, body {
 }
 
 @media print {
-  *, *:before, *:after {
+  *,
+  *:before,
+  *:after {
     box-sizing: border-box;
     background-color: transparent;
     color: black;
