@@ -3,7 +3,7 @@
 {% block webapp %}
 <div class="c w100 nam">
   <label for="namlamviec" class="u fb f7">HỒ SƠ KHÁCH HÀNG NĂM</label>
-  <select id="namlamviec" class="u fb f7">
+  <select id="namlamviec" class="u fb f7" data-nam="2020">
     <option value="2021">2021</option>
     <option value="2020" selected>2020</option>
     <option value="2019">2019</option>
@@ -26,6 +26,7 @@
   <div id="info">
   </div>
 </div>
+<div id="table"></div>
 {% end %}
 
 {% block css %}
@@ -33,6 +34,7 @@
 {% end %}
 
 {% block py %}
-<script type="text/python" id="base_tam" src="{{static_url('py/forms/hoso/tam.py')}}"></script>
-<script type="text/python" class="webworker" id="base:xac" src="{{static_url('py/forms/hoso/xac.py')}}"></script>
+<script type="text/python" id="hoso_tam" src="{{static_url('py/forms/hoso/tam.py')}}"></script>
+<script type="text/python" id="hoso:hon" src="{{static_url('py/forms/hoso/hon.py')}}" class="webworker"></script>
+<script type="text/python" id="hoso_xac" src="{{static_url('py/forms/hoso/xac.py')}}"></script>
 {% end %}
