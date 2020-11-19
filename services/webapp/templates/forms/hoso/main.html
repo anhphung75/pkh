@@ -1,4 +1,4 @@
-{% extends "../../base_brython.html" %}
+{% extends "../../base_d3.html" %}
 
 {% block webapp %}
 <div class="c w100 nam">
@@ -33,8 +33,7 @@
 <link rel="stylesheet" href="{{static_url('css/forms/hoso.css')}}" type="text/css">
 {% end %}
 
-{% block py %}
-<script type="text/python" id="hoso_tam" src="{{static_url('py/forms/hoso/tam.py')}}"></script>
-<script type="text/python" id="hoso:hon" src="{{static_url('py/forms/hoso/hon.py')}}" class="webworker"></script>
-<script type="text/python" id="hoso_xac" src="{{static_url('py/forms/hoso/xac.py')}}"></script>
+{% block js %}
+<script type="text/javascript" src="{{static_url('js/forms/hoso/xac.js')}}"></script>
+<script type="text/javascript" src="{{static_url('js/forms/hoso/hon.js')}}"></script>
 {% end %}

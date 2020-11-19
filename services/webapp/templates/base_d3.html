@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='vi'>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
+  <link rel="stylesheet" href="{{static_url('css/fontawesome.5.11.2.all.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
+  {% block cdn %}{% end %}
+  {% block css %}{% end %}
+</head>
+
+<body>
+  <div id="trangxem" class="l w100">
+    <div class="row h-100 m-0 p-0">
+      <div id="logo" class="container h-100 m-0 p-0 col-auto bg-dark">
+        <nav class="navbar navbar-expand navbar-dark bg-dark m-0 p-0">
+          <a class="navbar-brand" href="#">
+            <img src="{{ static_url('favicon.png')}}" height="30" alt="logo">
+          </a>
+          {% module xsrf_form_html() %}
+        </nav>
+        {% block logo %}{% end %}
+      </div>
+      {% block menu %}{% end %}
+      <div id="app" class="l">
+        {% block webapp %}{% end %}
+      </div>
+    </div>
+  </div>
+  <!-- script  -->
+  <script type="text/javascript" src="{{static_url('js/refs/d3.min.js')}}"></script>
+  {% block js %}{% end %}
+  {% block py %}{% end %}
+</body>
+
+</html>

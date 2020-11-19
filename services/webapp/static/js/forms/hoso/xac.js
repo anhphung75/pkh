@@ -1,14 +1,14 @@
 //tao option bang hoso:
 function tao_banghoso() {
-    let bang = document.getElementById("banghoso");
-    // add row by nam, load hidden
-    let dong = document.createElement("div");
-    let dulieu = { "utcid": "111222" };
-    let madot = "", maqt = "", mahoso = "";
-    dong.setAttribute("id", "hoso" + mahoso);
-    dong.classList.add("che", "hoso", madot, maqt);
+  let bang = document.getElementById("banghoso");
+  // add row by nam, load hidden
+  let dong = document.createElement("div");
+  let dulieu = { "utcid": "111222" };
+  let madot = "", maqt = "", mahoso = "";
+  dong.setAttribute("id", "hoso" + mahoso);
+  dong.classList.add("che", "hoso", madot, maqt);
 
-    bang.appendChild(dong);
+  bang.appendChild(dong);
 };
 
 function up_dot(madot) {
@@ -24,19 +24,108 @@ function up_dot(madot) {
       }
     }
     //gan vao data-options cua ctl
-    let r=kq.kq;
-    let zone=document.querySelectorAll('#banghoso .hoso.' + madot);
+    let r = kq.kq;
+    let zone = document.querySelectorAll('#banghoso .hoso.' + madot);
     //loop
-    let i=0;
+    let i = 0;
     while (zone[i]) {
       try {
-        let cell=zone[i]
+        let cell = zone[i]
         i++;
       }
-      catch(err) {
+      catch (err) {
         break;
       }
     }
   }
 }
 
+let namlamviec = "2020", otim = [namlamviec,];
+
+
+function moi_otim(s) {
+  s = s.trim().toLowerCase() || "";
+  if (s.length < 1 || otim.indexOf(s) > -1) {
+    return;
+  }
+  otim.push(s);
+  view_otim();
+}
+
+function xoa_otim(s) {
+  s = s.trim().toLowerCase() || "";
+  otim = otim.filter(i => i !== s);
+  view_otim();
+}
+
+function info() {
+  d3.select("#info")
+    .text(otim)
+}
+
+
+
+d3.select("#stim")
+  .on("keydown", function (ev) {
+    let s = this.value.trim().toLowerCase();
+    switch (ev.keyCode) {
+      case 13:
+        moi_otim(this.value);
+        break;
+      case 45:
+        moi_otim(this.value);
+        this.value = "";
+        break;
+      default:
+        console.log("press key=", ev.code, " code=", ev.keyCode)
+    }
+  })
+  .on("input", function () {
+    console.log("oninput stim=", this.value)
+
+  })
+  .on("change", function () {
+    console.log("onchange stim=", this.value)
+  })
+
+function view_otim() {
+  d3.select("#view-otim")
+    .selectAll("button")
+    .data(otim)
+    .enter().append("button")
+    .text(d => d)
+    .attr("class", "l")
+    .attr("paddingLeft", "1em")
+    .style("color", "red")
+    .on("click", function (ev) {
+      let s = this.textContent || this.innerText;
+      this.remove();
+      xoa_otim(s);
+    })
+    .on("mouseout", function (ev) {
+      this.style.textDecoration = "none";
+    })
+    .on("mouseover", function (ev) {
+      this.style.textDecoration = "line-through";
+      console.log("btn mouseover=", ev.target);
+      d3.select("#info")
+        .text(otim)
+    })
+}
+
+d3.select("#clear-otim")
+  .on("click", function (ev) {
+    console.log("btn clear otim=", ev.target);
+    otim = [namlamviec,];
+    view_otim();
+  })
+
+d3.select("#namlamviec")
+  .on("change", function doinam() {
+    if (namlamviec == this.value) { return }
+    xoa_otim(namlamviec);
+    namlamviec = this.value;
+    moi_otim(namlamviec);
+    console.log("namlamviec=", namlamviec);
+    info();
+  })
