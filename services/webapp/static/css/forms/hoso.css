@@ -7,3 +7,33 @@
   border: none;
   border-bottom: 1px solid #ddd;
 }
+
+.grid.hoso {
+  width: 100%;
+  /*grid: auto-flow minmax(1rem, max-content)/1fr */
+  grid-template-columns: 7fr 3fr;
+  grid-template-rows: auto;
+  grid-template-areas: "hoso scan" "stim stim" "ketqua ketqua";
+}
+
+#view-hoso {
+  grid-area: hoso;
+}
+
+#view-scan {
+  grid-area: scan;
+}
+
+#view-stim {
+  grid-area: stim;
+}
+
+#view-ketqua {
+  grid-area: ketqua;
+  height: 80vh;
+}
+
+.grid.bang1 {
+  width: 100%;
+  grid: auto-flow minmax(1rem, max-content)/repeat(4, minmax(max-content, 1fr)) 5fr repeat(4, minmax(max-content, 1fr));
+}

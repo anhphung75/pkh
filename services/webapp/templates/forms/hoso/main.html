@@ -1,6 +1,8 @@
 {% extends "../../base_d3.html" %}
 
 {% block webapp %}
+<div id="info">
+</div>
 <div class="c w100 nam">
   <label for="namlamviec" class="u fb f7">HỒ SƠ KHÁCH HÀNG NĂM</label>
   <select id="namlamviec" class="u fb f7" data-nam="2020">
@@ -11,22 +13,33 @@
     <option value="2017">2017</option>
   </select>
 </div>
-<div class="stim w100">
-  {% set url_img=static_url('images/searchicon.png') %}
-  <input type="text" class="w100" placeholder="tìm không phân biệt chữ hoa, chữ thường" id="stim"
-    style="background-image:url({{url_img}})">
-  <div class="flex w100 ba">
-    <button type="button" id="clear-otim">
-      <i class="fa fa-trash"></i>
-    </button>
-    <div class="l" id="view-otim">
-      
+
+<div class="grid hoso ba">
+  <div id="view-hoso" class="l">
+    ho os duoc chon
+  </div>
+
+  <div id="view-scan" class="r">
+    file scan
+  </div>
+
+  <div id="view-stim" class="w100">
+    {% set url_img=static_url('images/searchicon.png') %}
+    <input type="text" class="w100" placeholder="tìm không phân biệt chữ hoa, chữ thường" id="stim"
+      style="background-image:url({{url_img}})">
+    <div class="flex w100 ba">
+      <button type="button" id="clear-otim">
+        <i class="fa fa-trash"></i>
+      </button>
+      <div class="l" id="view-otim">
+      </div>
     </div>
   </div>
-  <div id="info">
+
+  <div id="view-ketqua" class="w100" data-hon="{{static_url('js/forms/hoso/hon.js')}}">
+    view-stim
   </div>
 </div>
-<div id="table"></div>
 {% end %}
 
 {% block css %}

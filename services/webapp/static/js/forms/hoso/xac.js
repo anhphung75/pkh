@@ -79,6 +79,71 @@ function view_otim() {
       d3.select("#info").text(otim);
     });
 }
+function loopjs(){
+  let i = 1;
+  while (true) {
+    try {
+      //command
+      i++;
+    }
+    catch (err) {
+      break;
+    }
+  }
+}
+function view_ketqua(bang = 1) {
+  d3.select("#view-ketqua").selectAll("*").remove();
+  bang = parseInt(bang) || 1;
+  console.log("view_ketqua bang=", bang);
+  //gan tieu de
+  let tieude = [];
+  switch (bang) {
+    case 2:
+      tieude = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      break;
+    case 3:
+      tieude = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      break;
+    default:
+      bang = 1;
+      tieude = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+  }
+  d3.select("#view-ketqua")
+    .append("div")
+    .attr("class", "grid w100 bang" + bang)
+    .style("background-color", "#d1e5f0")
+    .on("mouseover", function (ev) {
+      console.log("view_ketqua bang", bang, " rec=", ev.target);
+    })
+    .selectAll("div")
+    .data(tieude)
+    .enter()
+    .append("div")
+    .text((d) => d)
+    .attr("class", (d) => "c ba fb hov cot" + tieude.indexOf(d))
+    .style("color", "magenta")
+    .on("click", function (ev) {
+      //sort
+    });
+  //gan noidung
+  let dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];;
+  rec = d3.select("#view-ketqua")
+    .append("div")
+    .attr("class", "grid w100 bang" + bang)
+    .on("mouseover", function (ev) {
+      console.log("view_ketqua bang", bang, " rec=", ev.target);
+    })
+    .selectAll("div")
+    .data(dulieu)
+    .enter()
+    .append("div")
+    .text((d) => d)
+    .attr("class", (d) => "l ba hov cot" + dulieu.indexOf(d))
+    .on("click", function (ev) {
+      //sort
+    });
+
+}
 
 function info() {
   d3.select("#info").text(otim);
@@ -87,8 +152,9 @@ function info() {
 //main
 let namlamviec = "2020",
   otim = [namlamviec],
-  w=[];
-let hon = new Worker("./hon.js");
+  w = [];
+
+let hon = new Worker(document.getElementById("view-ketqua").dataset.hon);
 
 d3.select("#stim")
   .on("keydown", function (ev) {
@@ -104,7 +170,23 @@ d3.select("#stim")
         view_otim();
         break;
       default:
-        console.log("press key=", ev.code, " code=", ev.keyCode);
+        //che cac rows ko thoa
+        hon.postMessage("post from xac");
+        hon.onmessage = (e) => {
+          let kq = any2obj(e.data);
+          try {
+            if (kq.cv == 0) {
+              self.terminate();
+              if ("err" in kq) {
+                console.log("err=", kq.err);
+              }
+            }
+            console.log("post from hon=", kq);
+          } catch (err) {
+            console.log("err on hon=", err);
+          }
+        }
+
     }
   })
   .on("input", function () {
@@ -120,14 +202,16 @@ d3.select("#clear-otim").on("click", function (ev) {
   view_otim();
 });
 
-d3.select("#namlamviec").on("change", function doinam() {
-  if (namlamviec == this.value) {
-    return;
-  }
-  xoa_otim(namlamviec);
-  namlamviec = this.value;
-  moi_otim(namlamviec);
-  view_otim();
-  console.log("namlamviec=", namlamviec);
-  info();
-});
+d3.select("#namlamviec")
+  .on("change", function doinam() {
+    if (namlamviec == this.value) {
+      return;
+    }
+    xoa_otim(namlamviec);
+    namlamviec = this.value;
+    moi_otim(namlamviec);
+    view_otim();
+    view_ketqua(1);
+    console.log("namlamviec=", namlamviec);
+    info();
+  });
