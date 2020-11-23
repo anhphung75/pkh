@@ -1,3 +1,74 @@
+class Hoso {
+  constructor(nam) {
+    this.nam = nam;
+    this.bang = 1;
+    console.log("class Hoso nam=", this.nam, " bang=", this.bang);
+  }
+
+  tieude(bang = 1) {
+    bang = parseInt(bang) || 1;
+    let dulieu = [];
+    switch (bang) {
+      case 2:
+        this.bang = bang;
+        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        break;
+      case 3:
+        this.bang = bang;
+        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        break;
+      default:
+        this.bang = 1;
+        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+    }
+    let zone = d3.select("div[id='ketqua:tieude']")
+    zone.attr("class", "grid w100 ba hov bang" + bang).style("background-color", "#d1e5f0")
+      .on("mouseover", function (ev) {
+        console.log("ketqua:tieude bang", this.bang, " rec=", ev.target);
+      });
+    zone.selectAll("*").remove();
+    zone.selectAll("div")
+      .data(dulieu).enter()
+      .append("div")
+      .text((d) => d)
+      .attr("class", (d) => "c bl fb cot" + dulieu.indexOf(d))
+      .style("color", "magenta")
+      .on("click", function (ev) {
+        //sort
+      });
+  }
+  noidung() {
+    let dulieu = [];
+    switch (this.bang) {
+      case 2:
+        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        break;
+      case 3:
+        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        break;
+      default:
+        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+    }
+    d3.select("#ketqua-noidung")
+      .append("div")
+      .attr("class", "grid w100 hov bang" + this.bang)
+      //.style("background-color", "#d1e5f0")
+      .on("mouseover", function (ev) {
+        console.log("ketqua-noidung bang", this.bang, " rec=", ev.target);
+      })
+      .selectAll("div")
+      .data(dulieu)
+      .enter()
+      .append("div")
+      .text((d) => d)
+      .attr("class", (d) => "l bl cot" + dulieu.indexOf(d))
+      .style("color", "magenta")
+      .on("click", function (ev) {
+        //sort
+      });
+  }
+}
+
 //tao option bang hoso:
 function tao_banghoso() {
   let bang = document.getElementById("banghoso");
@@ -79,7 +150,7 @@ function view_otim() {
       d3.select("#info").text(otim);
     });
 }
-function loopjs(){
+function loopjs() {
   let i = 1;
   while (true) {
     try {
@@ -108,13 +179,14 @@ function view_ketqua(bang = 1) {
       bang = 1;
       tieude = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
   }
-  d3.select("#view-ketqua")
+  d3.select("#ketqua:tieude")
     .append("div")
     .attr("class", "grid w100 bang" + bang)
     .style("background-color", "#d1e5f0")
     .on("mouseover", function (ev) {
       console.log("view_ketqua bang", bang, " rec=", ev.target);
-    })
+    });
+  d3.select("#ketqua:tieude")
     .selectAll("div")
     .data(tieude)
     .enter()
@@ -211,7 +283,9 @@ d3.select("#namlamviec")
     namlamviec = this.value;
     moi_otim(namlamviec);
     view_otim();
-    view_ketqua(1);
+    let xem = new Hoso(namlamviec);
+    xem.tieude(1);
+    xem.noidung();
     console.log("namlamviec=", namlamviec);
     info();
   });
