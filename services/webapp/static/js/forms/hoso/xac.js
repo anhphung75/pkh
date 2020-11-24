@@ -2,11 +2,14 @@ class Hoso {
   constructor(nam) {
     this.nam = nam;
     this.bang = 1;
+    this.tieude = [];
+    this.textloc = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+    this.scanloc = []
     console.log("class Hoso nam=", this.nam, " bang=", this.bang);
   }
 
-  tieude(bang = 1) {
-    bang = parseInt(bang) || 1;
+  tieu_de(bang = 1) {
+    bang = parseInt(bang) || this.bang;
     let dulieu = [];
     switch (bang) {
       case 2:
@@ -21,6 +24,7 @@ class Hoso {
         this.bang = 1;
         dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
     }
+    this.tieude = [...dulieu];
     let zone = d3.select("div[id='ketqua:tieude']")
     zone.attr("class", "grid w100 ba hov bang" + bang).style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
@@ -63,6 +67,48 @@ class Hoso {
       .text((d) => d)
       .attr("class", (d) => "l bl cot" + dulieu.indexOf(d))
       .style("color", "magenta")
+      .on("click", function (ev) {
+        //sort
+      });
+  }
+  hoso() {
+    let dulieu = [];
+    switch (this.bang) {
+      case 2:
+        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+        break;
+      case 3:
+        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+        break;
+      default:
+        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+    }
+    this.textloc = [{crud:"nd crud"},{uctid:"nd utcid"}];
+    let curid = 0;
+    d3.select("div[id='view:hoso']")
+      .attr("class", "grid view-hoso w100 hov bang")
+      //.style("background-color", "#d1e5f0")
+      .on("mouseover", function (ev) {
+        console.log("view:hoso", this.bang, " rec=", ev.target);
+      })
+      .selectAll("div")
+      .data(this.textloc)
+      .enter()
+      .append("div")
+      .text((d) => {
+        curid = this.tieude.indexOf(d);
+        return d;
+      })
+      .attr("class", (d) => "l bl cot" + curid)
+      .style("color", "magenta")
+      .on("click", function (ev) {
+        //sort
+      })
+      .join("div")
+      .append("div")
+      .text(this.textloc[curid])
+      .attr("class", "l bl cot" + curid)
+      .style("color", "green")
       .on("click", function (ev) {
         //sort
       });
@@ -284,8 +330,9 @@ d3.select("#namlamviec")
     moi_otim(namlamviec);
     view_otim();
     let xem = new Hoso(namlamviec);
-    xem.tieude(1);
+    xem.tieu_de(1);
     xem.noidung();
+    xem.hoso();
     console.log("namlamviec=", namlamviec);
     info();
   });
