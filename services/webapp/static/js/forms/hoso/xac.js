@@ -1,54 +1,37 @@
-var any2obj = (sdata) => {
+function any2obj(sdata) {
   try {
-    if (typeof sdata === 'string') {
+    if (typeof sdata === "string") {
       let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
       sdata = data.replace(/'/g, '"');
       return JSON.parse(sdata);
     }
   } catch (err) {
-    return { "err": sdata };
+    return { err: err, kq: sdata };
   }
-};
-
-var ga = { "csdl": "pkh", "namlamviec": new Date().getFullYear().toString(), "otim": [] };
+}
 
 class Otim {
   constructor() {
-    d3.select("#clear-otim").on("click", function (ev) {
-      console.log("btn clear otim=", ev.target);
-      ga['otim'] = [ga['namlamviec']];
-      this.xem();
-    });
-    this.clear();
+    this.don();
   }
 
-  clear() {
-    ga['otim'] = [ga['namlamviec']];
+  don() {
+    ga["otim"] = [ga["namlamviec"]];
     this.xem();
   }
 
   moi(s) {
     s = s.trim().toLowerCase() || "";
-    if (s.length < 1 || ga['otim'].indexOf(s) > -1) {
+    if (s.length < 1 || ga["otim"].indexOf(s) > -1) {
       return;
     }
-    ga['otim'].push(s);
+    ga["otim"].push(s);
     this.xem();
   }
 
   xoa(s) {
     s = s.trim().toLowerCase() || "";
-    ga['otim'] = ga['otim'].filter((i) => i !== s);
-    this.xem();
-  }
-
-  sua(s) {
-    s = s.trim().toLowerCase() || "";
-    if (s.length < 1 || ga['otim'].indexOf(s) > -1) {
-      return;
-    }
-    ga['otim'].pop();
-    ga['otim'].push(s);
+    ga["otim"] = ga["otim"].filter((i) => i !== s);
     this.xem();
   }
 
@@ -56,7 +39,7 @@ class Otim {
     d3.select("div[id='view:otim']").selectAll("*").remove();
     d3.select("div[id='view:otim']")
       .selectAll("button")
-      .data(ga['otim'])
+      .data(ga["otim"])
       .enter()
       .append("button")
       .text((d) => d)
@@ -74,10 +57,12 @@ class Otim {
         this.style.textDecoration = "line-through";
         console.log("btn mouseover=", ev.target);
       });
-    d3.select("#info").text(ga['otim']);
+    this.info();
+  }
+  info() {
+    d3.select("#info").text(JSON.stringify(ga));
   }
 }
-
 
 class Hoso {
   constructor() {
@@ -92,25 +77,59 @@ class Hoso {
     switch (bang) {
       case 2:
         this.bang = bang;
-        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        dulieu = [
+          "crud",
+          "utcid",
+          "sodot",
+          "khachhang",
+          "diachi",
+          "ngaythietke",
+          "ngaylendot",
+          "ngaythicong",
+          "ngaytrongai",
+        ];
         break;
       case 3:
         this.bang = bang;
-        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        dulieu = [
+          "crud",
+          "utcid",
+          "sodot",
+          "khachhang",
+          "diachi",
+          "ngaythietke",
+          "ngaylendot",
+          "ngaythicong",
+          "ngaytrongai",
+        ];
         break;
       default:
         this.bang = 1;
-        dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        dulieu = [
+          "crud",
+          "utcid",
+          "sodot",
+          "khachhang",
+          "diachi",
+          "ngaythietke",
+          "ngaylendot",
+          "ngaythicong",
+          "ngaytrongai",
+        ];
     }
     this.tieude = [...dulieu];
-    let zone = d3.select("div[id='ketqua:tieude']")
-    zone.attr("class", "grid w100 ba hov bang" + bang).style("background-color", "#d1e5f0")
+    let zone = d3.select("div[id='ketqua:tieude']");
+    zone
+      .attr("class", "grid w100 ba hov bang" + bang)
+      .style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
         console.log("ketqua:tieude bang", this.bang, " rec=", ev.target);
       });
     zone.selectAll("*").remove();
-    zone.selectAll("div")
-      .data(dulieu).enter()
+    zone
+      .selectAll("div")
+      .data(dulieu)
+      .enter()
       .append("div")
       .text((d) => d)
       .attr("class", (d) => "c bl fb cot" + dulieu.indexOf(d))
@@ -121,35 +140,15 @@ class Hoso {
   }
 
   tat() {
-    console.log("Hoso tat() sub Tim().clear();");
-    new Otim().clear();
-    d3.select("#namlamviec")
-      .on("change", function () {
-        let nam = this.value;
-        if (ga['namlamviec'] == nam) {
-          return;
-        }
-        switch (nam) {
-          case Number.isInteger(nam):
-            ga['namlamviec'] = nam.toString();
-            break;
-          case "":
-          case "all":
-          case "tat":
-            ga['namlamviec'] = ""
-            break;
-          default:
-            ga['namlamviec'] = new Date().getFullYear().toString();
-        }
-        console.log("namlamviec onchange Tim().clear();");
-        new Otim().clear();
-      });
+    console.log("Hoso tat kq=");
     // load json data
-    this.hon.terminate();
-    this.hon.postMessage({ csdl: ga['csdl'], lenh: { "otim": ga['otim'] } });
+    //this.hon.terminate();
+    this.hon.postMessage({ csdl: ga["csdl"], lenh: { otim: ga["otim"] } });
     this.hon.onmessage = (e) => {
       let kq = any2obj(e.data);
+      console.log("tat kq=", JSON.stringify(kq));
       if (kq.cv == 0) {
+        console.log("tat kq.cv=", kq.cv);
         this.hon.terminate();
         if ("err" in kq) {
           console.log("err=", kq.err);
@@ -158,6 +157,7 @@ class Hoso {
       }
       //gan vao data-options cua ctl
       let r = kq.kq;
+      console.log("tat kq=", JSON.stringify(r));
       d3.select("#ketqua-noidung")
         .append("div")
         .attr("class", "grid w100 hov bang" + this.bang)
@@ -184,13 +184,43 @@ class Hoso {
     let dulieu = [];
     switch (this.bang) {
       case 2:
-        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+        dulieu = [
+          "nd crud",
+          "nd utcid",
+          "nd sodot",
+          "nd khachhang",
+          "nd diachi",
+          "nd ngaythietke",
+          "nd ngaylendot",
+          "nd ngaythicong",
+          "nd ngaytrongai",
+        ];
         break;
       case 3:
-        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+        dulieu = [
+          "nd crud",
+          "nd utcid",
+          "nd sodot",
+          "nd khachhang",
+          "nd diachi",
+          "nd ngaythietke",
+          "nd ngaylendot",
+          "nd ngaythicong",
+          "nd ngaytrongai",
+        ];
         break;
       default:
-        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+        dulieu = [
+          "nd crud",
+          "nd utcid",
+          "nd sodot",
+          "nd khachhang",
+          "nd diachi",
+          "nd ngaythietke",
+          "nd ngaylendot",
+          "nd ngaythicong",
+          "nd ngaytrongai",
+        ];
     }
     this.textloc = [{ crud: "nd crud" }, { uctid: "nd utcid" }];
     let curid = 0;
@@ -226,13 +256,43 @@ class Hoso {
     let dulieu = [];
     switch (this.bang) {
       case 2:
-        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+        dulieu = [
+          "nd crud",
+          "nd utcid",
+          "nd sodot",
+          "nd khachhang",
+          "nd diachi",
+          "nd ngaythietke",
+          "nd ngaylendot",
+          "nd ngaythicong",
+          "nd ngaytrongai",
+        ];
         break;
       case 3:
-        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+        dulieu = [
+          "nd crud",
+          "nd utcid",
+          "nd sodot",
+          "nd khachhang",
+          "nd diachi",
+          "nd ngaythietke",
+          "nd ngaylendot",
+          "nd ngaythicong",
+          "nd ngaytrongai",
+        ];
         break;
       default:
-        dulieu = ["nd crud", "nd utcid", "nd sodot", "nd khachhang", "nd diachi", "nd ngaythietke", "nd ngaylendot", "nd ngaythicong", "nd ngaytrongai"];
+        dulieu = [
+          "nd crud",
+          "nd utcid",
+          "nd sodot",
+          "nd khachhang",
+          "nd diachi",
+          "nd ngaythietke",
+          "nd ngaylendot",
+          "nd ngaythicong",
+          "nd ngaytrongai",
+        ];
     }
     this.textloc = [{ crud: "nd crud" }, { uctid: "nd utcid" }];
     let curid = 0;
@@ -265,7 +325,6 @@ class Hoso {
       });
   }
 }
-
 
 //tao option bang hoso:
 function tao_banghoso() {
@@ -310,15 +369,13 @@ function up_dot(madot) {
   };
 }
 
-
 function loopjs() {
   let i = 1;
   while (true) {
     try {
       //command
       i++;
-    }
-    catch (err) {
+    } catch (err) {
       break;
     }
   }
@@ -331,14 +388,44 @@ function view_ketqua(bang = 1) {
   let tieude = [];
   switch (bang) {
     case 2:
-      tieude = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      tieude = [
+        "crud",
+        "utcid",
+        "sodot",
+        "khachhang",
+        "diachi",
+        "ngaythietke",
+        "ngaylendot",
+        "ngaythicong",
+        "ngaytrongai",
+      ];
       break;
     case 3:
-      tieude = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      tieude = [
+        "crud",
+        "utcid",
+        "sodot",
+        "khachhang",
+        "diachi",
+        "ngaythietke",
+        "ngaylendot",
+        "ngaythicong",
+        "ngaytrongai",
+      ];
       break;
     default:
       bang = 1;
-      tieude = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      tieude = [
+        "crud",
+        "utcid",
+        "sodot",
+        "khachhang",
+        "diachi",
+        "ngaythietke",
+        "ngaylendot",
+        "ngaythicong",
+        "ngaytrongai",
+      ];
   }
   d3.select("#ketqua:tieude")
     .append("div")
@@ -359,8 +446,19 @@ function view_ketqua(bang = 1) {
       //sort
     });
   //gan noidung
-  let dulieu = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];;
-  rec = d3.select("#view-ketqua")
+  let dulieu = [
+    "crud",
+    "utcid",
+    "sodot",
+    "khachhang",
+    "diachi",
+    "ngaythietke",
+    "ngaylendot",
+    "ngaythicong",
+    "ngaytrongai",
+  ];
+  rec = d3
+    .select("#view-ketqua")
     .append("div")
     .attr("class", "grid w100 bang" + bang)
     .on("mouseover", function (ev) {
@@ -375,23 +473,49 @@ function view_ketqua(bang = 1) {
     .on("click", function (ev) {
       //sort
     });
-
 }
 
-function info() {
-  d3.select("#info").text(ga);
-}
+//khoi tao
 
-//main
+var ga = {
+  csdl: "pkh",
+  namlamviec: new Date().getFullYear().toString(),
+  otim: [],
+};
+var tim = new Otim();
+var hoso = new Hoso();
+
+d3.select("#namlamviec").on("change", function () {
+  let namchu = this.value.toString();
+  if (ga["namlamviec"] == namchu) {
+    return;
+  }
+  if (/^\d+$/.test(namchu)) {
+    window.ga["namlamviec"] = namchu;
+  } else {
+    switch (namchu) {
+      case "":
+      case "all":
+      case "tat":
+        window.ga["namlamviec"] = "";
+        break;
+      default:
+        window.ga["namlamviec"] = new Date().getFullYear().toString();
+    }
+  }
+  tim.info();
+  tim.don();
+  hoso.tat();
+});
+
 d3.select("#stim")
   .on("keydown", function (ev) {
-    let s = this.value.trim().toLowerCase();
     switch (ev.keyCode) {
-      case 13://enter goto 1st hosoloc
-        new Otim().moi(s);
+      case 13: //enter goto 1st hosoloc
+        window.tim.moi(this.value);
         break;
-      case 45://insert
-        new Otim().moi(s);
+      case 45: //insert
+        window.tim.moi(this.value);
         this.value = "";
         break;
       default:
@@ -399,16 +523,17 @@ d3.select("#stim")
     }
   })
   .on("input", function () {
-    let s = this.value.trim().toLowerCase();
-    console.log("oninput s=", s);
-    new Otim().sua(s);
+    console.log("oninput s=", this.value);
+    window.tim.sua(this.value);
   })
   .on("change", function () {
     console.log("onchange stim=", this.value);
   });
-new Hoso();
-d3.select("#info").text(JSON.stringify(ga));
 
+d3.select("#don-otim").on("click", function (ev) {
+  console.log("btn clear otim=", ev.target);
+  ga["otim"] = [ga["namlamviec"]];
+  window.tim.xem();
+});
 
-
-
+//main

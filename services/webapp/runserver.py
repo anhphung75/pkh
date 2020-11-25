@@ -1,4 +1,5 @@
 import os
+import platform
 import json
 import argparse
 import arrow
@@ -261,8 +262,8 @@ db = None
 
 
 def main():
-    # for win10
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
+    if platform.system()=="windows":
+        asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     # tornado.options.options.logging = None
     # tornado.options.parse_command_line()
