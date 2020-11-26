@@ -1,266 +1,154 @@
-const data_test = {
-  hoso: [
-    {
-      mahoso: "2020hs000001",
-      mahoso0: null,
-      sohoso: "gm03126/20",
-      ngaythietke: "2020-04-05",
-      ngaytaixet: "2020-04-05",
-      ngaygan: "2020-04-05",
-      ngayhoancong: "2020-04-10",
-      ngaytrongai: "2020-04-05",
-      thongbao: null,
-      ghichu: null,
-      //refs
-      madvtc: "2020dvtc001",
-      makhachhang: "2020kh000001",
-    },
-    {
-      mahoso: "2020hs000002",
-      sohoso: "gm03126/21",
-      ngaythietke: "2020-04-05",
-      ngaytaixet: "2020-04-05",
-      ngaygan: "2020-04-05",
-      ngayhoancong: "2020-04-10",
-      ngaytrongai: "2020-04-05",
-      thongbao: null,
-      ghichu: null,
-      //refs
-      madvtc: "2020dvtc001",
-      makhachhang: "2020kh000002",
-    },
-    {
-      mahoso: "2020hs000003",
-      sohoso: "gm03126/22",
-      ngaythietke: "2020-04-05",
-      ngaytaixet: "2020-04-05",
-      ngaygan: "2020-04-05",
-      ngayhoancong: "2020-04-10",
-      ngaytrongai: "2020-04-05",
-      thongbao: null,
-      ghichu: null,
-      //refs
-      madvtc: "2020dvtc002",
-      makhachhang: "2020kh000003",
-    },
-    {
-      mahoso: "2021hs000004",
-      sohoso: "gm03126/21",
-      ngaythietke: "2020-04-05",
-      ngaytaixet: "2020-04-05",
-      ngaygan: "2020-04-05",
-      ngayhoancong: "2020-04-10",
-      ngaytrongai: "2020-04-05",
-      thongbao: "",
-      ghichu: "",
-      //refs
-      madvtc: "2020dvtc003",
-      makhachhang: "2020kh000004",
-    },
-    {
-      mahoso: "2022hs000005",
-      sohoso: "gm03126/22",
-      ngaythietke: "2020-04-05",
-      ngaytaixet: "2020-04-05",
-      ngaygan: "2020-04-05",
-      ngayhoancong: "2020-04-10",
-      ngaytrongai: "2020-04-05",
-      thongbao: "",
-      ghichu: "",
-      //refs
-      madvtc: "2020dvtc001",
-      makhachhang: "2020kh000001",
-    },
-  ],
-  dot: [
-    {
-      madot: "2020GMMP001",
-      madot0: null,
-      sodot: "GMMP 001/20",
-      ngaylendot: "2020-04-05",
-      thongbao: null,
-      ghichu: null,
-      url: "anh01",
-      scan: "anh01",
-    },
-    {
-      madot: "2020GMMP002",
-      madot0: null,
-      sodot: "GMMP 002/20",
-      ngaylendot: "2020-04-05",
-      thongbao: null,
-      ghichu: null,
-      url: "anh02",
-      scan: "anh02",
-    },
-    {
-      madot: "2020GMMP003",
-      madot0: null,
-      sodot: "GMMP 003/20",
-      ngaylendot: "2020-04-05",
-      thongbao: null,
-      ghichu: null,
-      url: "anh03",
-      scan: "anh03",
-    },
-  ],
-  khachhang: [
-    {
-      makhachhang: "2020kh000001",
-      makhachhang0: null,
-      khachhang: "Trần Vân Anh 1",
-      diachi: "124- To Ngoc Van- Q.Td",
-      thongbao: null,
-      ghichu: null,
-    },
-    {
-      makhachhang: "2020kh000002",
-      makhachhang0: null,
-      khachhang: "Trần Quang Vinh 2",
-      diachi: "124- To Ngoc Van- Q.Td",
-      thongbao: null,
-      ghichu: null,
-    },
-    {
-      makhachhang: "2020kh000003",
-      makhachhang0: null,
-      khachhang: "Nguyễn Thị Thanh Tâm",
-      diachi: "124- To Ngoc Van- Q.Td",
-      thongbao: null,
-      ghichu: null,
-    },
-    {
-      makhachhang: "2020kh000004",
-      makhachhang0: null,
-      khachhang: "Quách Thị Trang 2",
-      diachi: "124- To Ngoc Van- Q.Td",
-      thongbao: null,
-      ghichu: null,
-    },
-    {
-      makhachhang: "2020kh000005",
-      makhachhang0: null,
-      khachhang: "Trương Cẩn Phong 4",
-      diachi: "124- To Ngoc Van- Q.Td",
-      thongbao: null,
-      ghichu: null,
-    },
-  ],
-  donvithicong: [
-    {
-      madvtc: "2020dvtc001",
-      madvtc0: "minhtrang",
-      dvtc: "minhtrang",
-      donvi: "Cty Tnhh 1tv Xd Minh Trang",
-      diachi: "8- Khổng Tử",
-      masothue: "0101001",
-      thongbao: null,
-      ghichu: null,
-    },
-    {
-      madvtc: "2020dvtc002",
-      madvtc0: "qlmlq2",
-      dvtc: "qlmlq2",
-      donvi: "qlmlq2",
-      diachi: "8- Khổng Tử",
-      masothue: "0101001",
-      thongbao: null,
-      ghichu: null,
-    },
-    {
-      madvtc: "2020dvtc003",
-      madvtc0: "qlmlq9",
-      dvtc: "qlmlq9",
-      donvi: "qlmlq9",
-      diachi: "8- Khổng Tử",
-      masothue: "0101001",
-      thongbao: null,
-      ghichu: null,
-    },
-    {
-      madvtc: "2020dvtc004",
-      madvtc0: "qlmltđ",
-      dvtc: "qlmltđ",
-      donvi: "Đội quản lý mạng lưới quận Thủ Đức",
-      diachi: "8- Khổng Tử",
-      masothue: "0101001",
-      thongbao: null,
-      ghichu: null,
-    },
-  ],
-  tttt: [
-    {
-      matttt: "2020tttt001",
-      mahoso: "2020hs000001",
-      makhachhang: "2020kh000001",
-      madot: "2020GMMP001",
-      madvtc: "2020dvtc004",
-    },
-    {
-      matttt: "2020tttt002",
-      mahoso: "2020hs000002",
-      makhachhang: "2020kh000002",
-      madot: "2020GMMP001",
-      madvtc: "2020dvtc004",
-    },
-    {
-      matttt: "2020tttt003",
-      mahoso: "2020hs000003",
-      makhachhang: "2020kh000003",
-      madot: "2020GMMP002",
-      madvtc: "2020dvtc002",
-    },
-    {
-      matttt: "2020tttt004",
-      mahoso: "2020hs000004",
-      makhachhang: "2020kh000004",
-      madot: "2020GMMP003",
-      madvtc: "2020dvtc003",
-    },
-    {
-      matttt: "2020tttt005",
-      mahoso: "2020hs000005",
-      makhachhang: "2020kh000005",
-      madot: "2020GMMP003",
-      madvtc: "2020dvtc003",
-    },
-  ],
-};
-function any2obj(sdata) {
-  try {
-    sdata=sdata.toString();
-    let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-    sdata = data.replace(/'/g, '"');
-    data = JSON.parse(sdata);
-    return data;
-  } catch (err) {
-    data = { err: err, kq: sdata };
-    return data;
-  }
-}
+import { delay } from "./../../utils/thoigian.js";
+var loadHsKh = async (csdl, nam) => {
+  let dulieu = {};
+  var suastr = (ss = '') => {
+    try {
+      ss = JSON.stringify(ss);
+      //loai bo 2 space, tabs, newlines
+      ss = ss.replace(/\s\s+/g, ' ');
+      //loai bo 2 space
+      ss = ss.replace(/  +/g, ' ');
+      //thay NumpadSubtract = Minus
+      ss = ss.replace(/-+/g, '-');
+      //loai bo 2 Minus --
+      ss = ss.replace(/--+/g, '-');
+      ss = ss.replace(/, ,/g, ',');
+      ss = ss.replace(/,,+/g, ',');
+      return ss;
+    } catch (err) {
+      return ss.toString();
+    };
 
-//main
-self.onmessage = (e) => {
-  console.log("hon e.data=", JSON.stringify(e.data));
-  let kq = any2obj(e.data);
-  console.log("hon e.kq=", JSON.stringify(kq));
-  let csdl = kq.csdl || "Cntd";
-  let lenh = kq.otim || {};
-  //{ csdl: csdl, lenh: { options_dot: otim } }
+  };
+  var load_songsong = async (mahoso, makhachhang, madot, madvtc) => {
+    console.log('nap(hoso) mahoso=', mahoso);
+    console.log('nap(khachhang) makhachhang=', makhachhang);
+    console.log('nap(dot) madot=', madot);
+    console.log('nap(donvithicong) madvtc=', madvtc);
+
+    await nap('hoso', mahoso);
+    await nap('khachhang', makhachhang);
+    await nap('dot', madot);
+    await nap('donvithicong', madvtc);
+    console.log("Ket thuc Promiseall");
+  };
+  var nap = async (bang, uuid) => {
+    try {
+      let yc = await indexedDB.open(csdl.ten, csdl.sohieu);
+      yc.onsuccess = e => {
+        let ch = e.target.result
+          .transaction(bang, 'readonly')
+          .objectStore(bang)
+          .openCursor(IDBKeyRange.only(uuid));
+        ch.onsuccess = e => {
+          let cursor = e.target.result;
+          if (cursor) {
+            dulieu[bang] = cursor.value;
+          }
+          return true;
+        };
+      };
+    } catch (err) {
+      console.log("err nap bang=",bang, " uuid=", uuid);
+      return null;
+    }
+  };
+  var isData = () => {
+    let bang, k, v, s, ss, ltam = [];
+    let keybo = {
+      status: 0,
+      lastupdate: 0,
+      scan: 0,
+      blob: 0,
+      isedit: 0,
+      isselect: 0,
+    };
+    console.log("isData nam=", JSON.stringify(nam, null, 4));
+    console.log("isData dulieu=", JSON.stringify(dulieu, null, 4));
+    try {
+      for (bang in dulieu) {
+        for (k in bang) {
+          if ((k in keybo) || (bang[k].length < 1)) {
+            delete bang[k];
+          }
+        }
+      }
+      for (bang in dulieu) {
+        v = Object.values(dulieu[bang]);
+        ltam = [...ltam, ...v];
+      }
+      if (ltam.length < 1) { return false; };
+      ss = suastr(ltam);
+      nam = nam.toString();
+      if (ss.indexOf(nam) === -1) {
+        console.log("false isData nam=", nam, " not in ss=", ss);
+        return false;
+      }
+      return true;
+    } catch (err) {
+      console.log("err isData nam=", JSON.stringify(nam, null, 4));
+      console.log("err isData dulieu=", JSON.stringify(dulieu, null, 4));
+      return false;
+    }
+  };
   try {
-    let dulieu = [
-      "nd crud",
-      "nd utcid",
-      "nd sodot",
-      "nd khachhang",
-      "nd diachi",
-      "nd ngaythietke",
-      "nd ngaylendot",
-      "nd ngaythicong",
-      "nd ngaytrongai",
-    ];
-    kq = { cv: 0, kq: dulieu };
-    self.postMessage(kq);
+    let bang = 'tttt';
+    let id = 1;
+    let yc = await indexedDB.open(csdl.ten, csdl.sohieu);
+    yc.onsuccess = e => {
+      let ch = e.target.result
+        .transaction(bang, 'readonly')
+        .objectStore(bang)
+        .openCursor();
+      ch.onsuccess = e => {
+        let cursor = e.target.result;
+        if (cursor) {
+          let matttt = cursor.value.matttt || "";
+          dulieu[bang] = cursor.value;
+          let mahoso = cursor.value.mahoso || "";
+          nap('hoso', mahoso);
+          delay(500);
+          let makhachhang = cursor.value.makhachhang || "";
+          nap('khachhang', makhachhang);
+          delay(500);
+          let madot = cursor.value.madot || "";
+          nap('dot', madot);
+          delay(500);
+          let madvtc = cursor.value.madvtc || "";
+          nap('donvithicong', madvtc);
+          //load_songsong(mahoso, makhachhang, madot, madvtc);
+          delay(500);
+          if (isData()) {
+            console.log('id=', id);
+            console.log({ cv: id, kq: dulieu });
+            self.postMessage({ cv: id, kq: dulieu });
+            id++;
+          } else {
+            let info = 'isData false, matttt= ' + matttt;
+            self.postMessage({ cv: id, kq: dulieu, err: info });
+          }
+          cursor.continue();
+        } else {
+          self.postMessage({ cv: 0, kq: {} });
+        }
+      };
+    };
+  } catch (err) {
+    console.log({ kq: null, status: 'err' });
+    self.postMessage({ cv: 0, kq: {}, err: err });
+  }
+};
+
+//main 
+self.onmessage = (e) => {
+  let kq = e.data;
+  console.log("hon e.kq=", JSON.stringify(kq, null, 4));
+  //{ csdl: csdl, lenh: { options_dot: nam } }
+  try {
+    if (!kq.csdl) {
+      return;
+    }
+    loadHsKh(kq.csdl, kq.nam);
   } catch (err) {
     console.log("err on hon=", err);
   }

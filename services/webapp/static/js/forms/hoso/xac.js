@@ -1,15 +1,5 @@
-function any2obj(sdata) {
-  try {
-    if (typeof sdata === "string") {
-      let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-      sdata = data.replace(/'/g, '"');
-      return JSON.parse(sdata);
-    }
-  } catch (err) {
-    return { err: err, kq: sdata };
-  }
-}
-
+import { taodb, cap1, capn, luu, luun } from "./../../ttdl/db.js";
+import { data_test } from "./../../test/data_test.js";
 class Otim {
   constructor() {
     this.don();
@@ -29,12 +19,6 @@ class Otim {
     this.xem();
   }
 
-  xoa(s) {
-    s = s.trim().toLowerCase() || "";
-    ga["otim"] = ga["otim"].filter((i) => i !== s);
-    this.xem();
-  }
-
   xem() {
     d3.select("div[id='view:otim']").selectAll("*").remove();
     d3.select("div[id='view:otim']")
@@ -48,7 +32,10 @@ class Otim {
       .style("color", "red")
       .on("click", function () {
         let s = this.textContent || this.innerText;
-        this.xoa(s);
+        s = s.trim().toLowerCase() || "";
+        ga["otim"] = ga["otim"].filter((i) => i !== s);
+        this.remove();
+        info();
       })
       .on("mouseout", function (ev) {
         this.style.textDecoration = "none";
@@ -57,16 +44,15 @@ class Otim {
         this.style.textDecoration = "line-through";
         console.log("btn mouseover=", ev.target);
       });
-    this.info();
+    info();
   }
-  info() {
-    d3.select("#info").text(JSON.stringify(ga));
-  }
+
 }
 
 class Hoso {
   constructor() {
-    this.hon = new Worker(document.getElementById("view-ketqua").dataset.hon);
+    this.hon = new Worker(document.getElementById("view-ketqua").dataset.hon,
+      { type: 'module' });
     this.get_tieude(1);
     this.tat();
   }
@@ -76,7 +62,7 @@ class Hoso {
     let dulieu = [];
     switch (bang) {
       case 2:
-        this.bang = bang;
+        ga['bang'] = bang;
         dulieu = [
           "crud",
           "utcid",
@@ -90,7 +76,7 @@ class Hoso {
         ];
         break;
       case 3:
-        this.bang = bang;
+        ga['bang'] = bang;
         dulieu = [
           "crud",
           "utcid",
@@ -104,7 +90,7 @@ class Hoso {
         ];
         break;
       default:
-        this.bang = 1;
+        ga['bang'] = 1;
         dulieu = [
           "crud",
           "utcid",
@@ -123,7 +109,7 @@ class Hoso {
       .attr("class", "grid w100 ba hov bang" + bang)
       .style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
-        console.log("ketqua:tieude bang", this.bang, " rec=", ev.target);
+        console.log("ketqua:tieude bang", ga['bang'], " rec=", ev.target);
       });
     zone.selectAll("*").remove();
     zone
@@ -132,7 +118,7 @@ class Hoso {
       .enter()
       .append("div")
       .text((d) => d)
-      .attr("class", (d) => "c bl fb cot" + dulieu.indexOf(d))
+      .attr("class", (d, id) => "c bl fb wb cot" + id)
       .style("color", "magenta")
       .on("click", function (ev) {
         //sort
@@ -140,40 +126,76 @@ class Hoso {
   }
 
   tat() {
-    console.log("Hoso tat kq=");
     // load json data
-    //this.hon.terminate();
-    this.hon.postMessage({ csdl: ga["csdl"], lenh: { otim: ga["otim"] } });
+    this.hon.postMessage({ csdl: ga["csdl"], nam: ga["namlamviec"] });
     this.hon.onmessage = (e) => {
-      let kq = any2obj(e.data);
-      console.log("tat kq=", JSON.stringify(kq));
+      let kq = e.data;
+      console.log("tat kq=", JSON.stringify(kq, null, 2));
       if (kq.cv == 0) {
         console.log("tat kq.cv=", kq.cv);
         this.hon.terminate();
         if ("err" in kq) {
           console.log("err=", kq.err);
-          return null;
         }
+        return null;
       }
       //gan vao data-options cua ctl
       let r = kq.kq;
-      console.log("tat kq=", JSON.stringify(r));
-      d3.select("#ketqua-noidung")
+      console.log("tat dulieu=", JSON.stringify(r, null, 4));
+      let dulieu = [];
+      switch (ga['bang']) {
+        case 2:
+          dulieu = [
+            "crud",
+            "utcid",
+            "sodot",
+            "khachhang",
+            "diachi",
+            "ngaythietke",
+            "ngaylendot",
+            "ngaythicong",
+            "ngaytrongai",
+          ];
+          break;
+        case 3:
+          dulieu = [
+            "crud",
+            "utcid",
+            "sodot",
+            "khachhang",
+            "diachi",
+            "ngaythietke",
+            "ngaylendot",
+            "ngaythicong",
+            "ngaytrongai",
+          ];
+          break;
+        default:
+          dulieu = [
+            "crud",
+            r.tttt.matttt,
+            r["dot"]["sodot"],
+            r["khachhang"]["khachhang"],
+            r["khachhang"]["diachi"],
+            "ngaythietke",
+            "ngaylendot",
+            "ngaythicong",
+            "ngaytrongai",
+          ];
+      }
+      d3.select("div[id='ketqua:noidung']")
         .append("div")
-        .attr("class", "grid w100 hov bang" + this.bang)
+        .attr("class", "grid w100 hov bang" + ga['bang'])
         //.style("background-color", "#d1e5f0")
         .on("mouseover", function (ev) {
-          console.log("ketqua-noidung bang", this.bang, " rec=", ev.target);
+          console.log("ketqua:noidung bang", ga['bang'], " rec=", ev.target);
         })
         .selectAll("div")
-        .data(r)
+        .data(dulieu)
         .enter()
         .append("div")
         .text((d) => d)
-        .attr("class", (d, i) => {
-          console.log("data d=", d, " i=", i);
-          return "l bl cot" + r.indexOf(d);
-        })
+        .attr("class", (d, id) => "l bl wb cot" + id)
         .style("color", "magenta")
         .on("click", function (ev) {
           //sort
@@ -182,7 +204,7 @@ class Hoso {
   }
   nap(uid = "") {
     let dulieu = [];
-    switch (this.bang) {
+    switch (ga['bang']) {
       case 2:
         dulieu = [
           "nd crud",
@@ -228,7 +250,7 @@ class Hoso {
       .attr("class", "grid view-hoso w100 hov bang")
       //.style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
-        console.log("view:hoso", this.bang, " rec=", ev.target);
+        console.log("view:hoso", ga['bang'], " rec=", ev.target);
       })
       .selectAll("div")
       .data(this.textloc)
@@ -300,7 +322,7 @@ class Hoso {
       .attr("class", "grid view-hoso w100 hov bang")
       //.style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
-        console.log("view:hoso", this.bang, " rec=", ev.target);
+        console.log("view:hoso", ga['bang'], " rec=", ev.target);
       })
       .selectAll("div")
       .data(this.textloc)
@@ -327,47 +349,7 @@ class Hoso {
 }
 
 //tao option bang hoso:
-function tao_banghoso() {
-  let bang = document.getElementById("banghoso");
-  // add row by nam, load hidden
-  let dong = document.createElement("div");
-  let dulieu = { utcid: "111222" };
-  let madot = "",
-    maqt = "",
-    mahoso = "";
-  dong.setAttribute("id", "hoso" + mahoso);
-  dong.classList.add("che", "hoso", madot, maqt);
 
-  bang.appendChild(dong);
-}
-
-function up_dot(madot) {
-  //load dulieu dot
-  let w = new Worker(hon);
-  w.postMessage({ csdl: csdl, lenh: { options_dot: otim } });
-  w.onmessage = (e) => {
-    let kq = any2obj(e.data);
-    if (kq.cv == 0) {
-      w.terminate();
-      if ("err" in kq) {
-        console.log("err=", kq.err);
-      }
-    }
-    //gan vao data-options cua ctl
-    let r = kq.kq;
-    let zone = document.querySelectorAll("#banghoso .hoso." + madot);
-    //loop
-    let i = 0;
-    while (zone[i]) {
-      try {
-        let cell = zone[i];
-        i++;
-      } catch (err) {
-        break;
-      }
-    }
-  };
-}
 
 function loopjs() {
   let i = 1;
@@ -380,110 +362,20 @@ function loopjs() {
     }
   }
 }
-function view_ketqua(bang = 1) {
-  d3.select("#view-ketqua").selectAll("*").remove();
-  bang = parseInt(bang) || 1;
-  console.log("view_ketqua bang=", bang);
-  //gan tieu de
-  let tieude = [];
-  switch (bang) {
-    case 2:
-      tieude = [
-        "crud",
-        "utcid",
-        "sodot",
-        "khachhang",
-        "diachi",
-        "ngaythietke",
-        "ngaylendot",
-        "ngaythicong",
-        "ngaytrongai",
-      ];
-      break;
-    case 3:
-      tieude = [
-        "crud",
-        "utcid",
-        "sodot",
-        "khachhang",
-        "diachi",
-        "ngaythietke",
-        "ngaylendot",
-        "ngaythicong",
-        "ngaytrongai",
-      ];
-      break;
-    default:
-      bang = 1;
-      tieude = [
-        "crud",
-        "utcid",
-        "sodot",
-        "khachhang",
-        "diachi",
-        "ngaythietke",
-        "ngaylendot",
-        "ngaythicong",
-        "ngaytrongai",
-      ];
-  }
-  d3.select("#ketqua:tieude")
-    .append("div")
-    .attr("class", "grid w100 bang" + bang)
-    .style("background-color", "#d1e5f0")
-    .on("mouseover", function (ev) {
-      console.log("view_ketqua bang", bang, " rec=", ev.target);
-    });
-  d3.select("#ketqua:tieude")
-    .selectAll("div")
-    .data(tieude)
-    .enter()
-    .append("div")
-    .text((d) => d)
-    .attr("class", (d) => "c ba fb hov cot" + tieude.indexOf(d))
-    .style("color", "magenta")
-    .on("click", function (ev) {
-      //sort
-    });
-  //gan noidung
-  let dulieu = [
-    "crud",
-    "utcid",
-    "sodot",
-    "khachhang",
-    "diachi",
-    "ngaythietke",
-    "ngaylendot",
-    "ngaythicong",
-    "ngaytrongai",
-  ];
-  rec = d3
-    .select("#view-ketqua")
-    .append("div")
-    .attr("class", "grid w100 bang" + bang)
-    .on("mouseover", function (ev) {
-      console.log("view_ketqua bang", bang, " rec=", ev.target);
-    })
-    .selectAll("div")
-    .data(dulieu)
-    .enter()
-    .append("div")
-    .text((d) => d)
-    .attr("class", (d) => "l ba hov cot" + dulieu.indexOf(d))
-    .on("click", function (ev) {
-      //sort
-    });
-}
+
 
 //khoi tao
-
 var ga = {
-  csdl: "pkh",
+  csdl: { "ten": "pkh", "sohieu": 1 },
   namlamviec: new Date().getFullYear().toString(),
+  bang: 1,
   otim: [],
 };
 var tim = new Otim();
 var hoso = new Hoso();
+function info() {
+  d3.select("#info").text(JSON.stringify(ga, null, 4));
+}
 
 d3.select("#namlamviec").on("change", function () {
   let namchu = this.value.toString();
@@ -491,19 +383,19 @@ d3.select("#namlamviec").on("change", function () {
     return;
   }
   if (/^\d+$/.test(namchu)) {
-    window.ga["namlamviec"] = namchu;
+    ga["namlamviec"] = namchu;
   } else {
     switch (namchu) {
       case "":
       case "all":
       case "tat":
-        window.ga["namlamviec"] = "";
+        ga["namlamviec"] = "";
         break;
       default:
-        window.ga["namlamviec"] = new Date().getFullYear().toString();
+        ga["namlamviec"] = new Date().getFullYear().toString();
     }
   }
-  tim.info();
+  info();
   tim.don();
   hoso.tat();
 });
@@ -512,10 +404,10 @@ d3.select("#stim")
   .on("keydown", function (ev) {
     switch (ev.keyCode) {
       case 13: //enter goto 1st hosoloc
-        window.tim.moi(this.value);
+        tim.moi(this.value);
         break;
       case 45: //insert
-        window.tim.moi(this.value);
+        tim.moi(this.value);
         this.value = "";
         break;
       default:
@@ -524,7 +416,7 @@ d3.select("#stim")
   })
   .on("input", function () {
     console.log("oninput s=", this.value);
-    window.tim.sua(this.value);
+    tim.sua(this.value);
   })
   .on("change", function () {
     console.log("onchange stim=", this.value);
@@ -533,7 +425,9 @@ d3.select("#stim")
 d3.select("#don-otim").on("click", function (ev) {
   console.log("btn clear otim=", ev.target);
   ga["otim"] = [ga["namlamviec"]];
-  window.tim.xem();
+  tim.xem();
 });
 
-//main
+//database
+taodb(ga['csdl']);
+//capn(ga['csdl'], data_test);

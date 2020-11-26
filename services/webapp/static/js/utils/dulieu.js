@@ -6,15 +6,20 @@ var isObjEmpty = (obj) => {
 };
 
 var any2obj = (sdata) => {
-  if (typeof sdata === 'string') {
-    let data = sdata.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
-    sdata = data.replace(/'/g, '"');
-    return JSON.parse(sdata);
+  let data = { kq: sdata };
+  try {
+    let d = JSON.stringify(sdata);
+    d = d.replace(/([a-zA-Z0-9]+?):/g, '"$1":');
+    d = d.replace(/'/g, '"');
+    data['kq'] = JSON.parse(d);
+    return data
+  } catch (err) {
+    data['err'] = err;
+    return data;
   }
-  return sdata;
-};
+}
 
-function lamtronso(solamtron, sole) {
+var lamtronso = (solamtron, sole) => {
   try {
     let so = parseInt(solamtron * 10 ** (sole + 1));
     let lech = so % 10;

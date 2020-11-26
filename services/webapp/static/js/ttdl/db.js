@@ -1,5 +1,5 @@
 import { defaInt, defaStr, defaObj } from "../utils/bien.js";
-import { suaStr } from "../utils/web.js";
+import { suaStr } from "../utils/dulieu.js";
 import { delay } from "../utils/thoigian.js";
 const obang = {
   "tttt": { uid: "matttt", uid0: "matttt0" },
