@@ -1,4 +1,4 @@
-import { delay } from "./../../utils/thoigian.js";
+const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 var loadHsKh = async (csdl, nam) => {
   let dulieu = {};
   var suastr = (ss = '') => {
