@@ -131,7 +131,7 @@ class Hoso {
     this.hon.onmessage = (e) => {
       let kq = e.data;
       console.log("tat kq=", JSON.stringify(kq, null, 2));
-      if (kq.cv == 0) {
+      if (kq.cv < 0) {
         console.log("tat kq.cv=", kq.cv);
         this.hon.terminate();
         if ("err" in kq) {
@@ -142,7 +142,7 @@ class Hoso {
       //gan vao data-options cua ctl
       let r = kq.kq;
       console.log("tat dulieu=", JSON.stringify(r, null, 4));
-      let dulieu = [];
+      let dulieu = [1, 2, 3, 4, 5, 6, 7, 8, 9];
       switch (ga['bang']) {
         case 2:
           dulieu = [
@@ -171,17 +171,15 @@ class Hoso {
           ];
           break;
         default:
-          dulieu = [
-            "crud",
-            r.tttt.matttt,
-            r["dot"]["sodot"],
-            r["khachhang"]["khachhang"],
-            r["khachhang"]["diachi"],
-            "ngaythietke",
-            "ngaylendot",
-            "ngaythicong",
-            "ngaytrongai",
-          ];
+          dulieu[0] = "crud";
+          dulieu[1] = r["tttt"]? r["tttt"]["matttt"]:"";
+          dulieu[2] = r["dot"] ? r["dot"]["sodot"] : "";
+          dulieu[3] = r["khachhang"]?r["khachhang"]["khachhang"]: "";
+          dulieu[4] = r["khachhang"]?r["khachhang"]["diachi"] : "";
+          dulieu[5] = "2020-10-15";
+          dulieu[6] = "2020-10-15";
+          dulieu[7] = "2020-10-15";
+          dulieu[8] = "2020-10-15";
       }
       d3.select("div[id='ketqua:noidung']")
         .append("div")
@@ -429,5 +427,5 @@ d3.select("#don-otim").on("click", function (ev) {
 });
 
 //database
-taodb(ga['csdl']);
+//taodb(ga['csdl']);
 //capn(ga['csdl'], data_test);

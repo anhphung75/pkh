@@ -1,59 +1,95 @@
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
-var loadHsKh = async (csdl, nam) => {
-  let dulieu = {};
-  var suastr = (ss = '') => {
-    try {
-      ss = JSON.stringify(ss);
-      //loai bo 2 space, tabs, newlines
-      ss = ss.replace(/\s\s+/g, ' ');
-      //loai bo 2 space
-      ss = ss.replace(/  +/g, ' ');
-      //thay NumpadSubtract = Minus
-      ss = ss.replace(/-+/g, '-');
-      //loai bo 2 Minus --
-      ss = ss.replace(/--+/g, '-');
-      ss = ss.replace(/, ,/g, ',');
-      ss = ss.replace(/,,+/g, ',');
-      return ss;
-    } catch (err) {
-      return ss.toString();
+
+function suastr(ss = '') {
+  try {
+    ss = JSON.stringify(ss);
+    //loai bo 2 space, tabs, newlines
+    ss = ss.replace(/\s\s+/g, ' ');
+    //loai bo 2 space
+    ss = ss.replace(/  +/g, ' ');
+    //thay NumpadSubtract = Minus
+    ss = ss.replace(/-+/g, '-');
+    //loai bo 2 Minus --
+    ss = ss.replace(/--+/g, '-');
+    ss = ss.replace(/, ,/g, ',');
+    ss = ss.replace(/,,+/g, ',');
+    return ss;
+  } catch (err) {
+    return ss.toString();
+  }
+};
+
+function nap(csdl, bang, uuid) {
+  //try {
+  indexedDB.open(csdl.ten, csdl.sohieu).onsuccess = (e) => {
+    const db = e.target.result;
+    db.transaction(bang, 'readonly').objectStore(bang).openCursor(IDBKeyRange.only(uuid)).onsuccess = (e) => {
+      let cs = e.target.result;
+      if (cs) {
+        dulieu[bang] = cs.value;
+        cs.continue();
+      }
     };
+  }
 
-  };
-  var load_songsong = async (mahoso, makhachhang, madot, madvtc) => {
-    console.log('nap(hoso) mahoso=', mahoso);
-    console.log('nap(khachhang) makhachhang=', makhachhang);
-    console.log('nap(dot) madot=', madot);
-    console.log('nap(donvithicong) madvtc=', madvtc);
+  //} catch (err) {
+  //  console.log("err nap bang=", bang, " uuid=", uuid);
+  // return null;
+  //}
+};
 
-    await nap('hoso', mahoso);
-    await nap('khachhang', makhachhang);
-    await nap('dot', madot);
-    await nap('donvithicong', madvtc);
-    console.log("Ket thuc Promiseall");
-  };
-  var nap = async (bang, uuid) => {
-    try {
-      let yc = await indexedDB.open(csdl.ten, csdl.sohieu);
-      yc.onsuccess = e => {
-        let ch = e.target.result
-          .transaction(bang, 'readonly')
-          .objectStore(bang)
-          .openCursor(IDBKeyRange.only(uuid));
-        ch.onsuccess = e => {
-          let cursor = e.target.result;
-          if (cursor) {
-            dulieu[bang] = cursor.value;
+function load_songsong(csdl, mahoso, makhachhang, madot, madvtc) {
+  console.log('nap(hoso) mahoso=', mahoso);
+  console.log('nap(khachhang) makhachhang=', makhachhang);
+  console.log('nap(dot) madot=', madot);
+  console.log('nap(donvithicong) madvtc=', madvtc);
+  Promise.allSettled([
+    nap(csdl, 'hoso', mahoso),
+    nap(csdl, 'khachhang', makhachhang),
+    nap(csdl, 'dot', madot),
+    nap(csdl, 'donvithicong', madvtc)
+  ])
+  console.log("Ket thuc allSettled");
+};
+
+
+function loadHsKh(csdl, nam) {
+  try {
+    let yc, ch, bang = 'tttt', cs0, cv = 0;
+    indexedDB.open(csdl.ten, csdl.sohieu).onsuccess = (e) => {
+      const db = e.target.result;
+      console.log("yc db=", JSON.stringify(db, null, 4));
+      db.transaction(bang, 'readonly').objectStore(bang).openCursor().onsuccess = (e) => {
+        cs0 = e.target.result;
+        if (cs0) {
+          dulieu[bang] = cs0.value;
+          let mahoso = cs0.value.mahoso || "";
+          let makhachhang = cs0.value.makhachhang || "";
+          let madot = cs0.value.madot || "";
+          let madvtc = cs0.value.madvtc || "";
+          //delay(50000);
+          load_songsong(csdl, mahoso, makhachhang, madot, madvtc);
+          //delay(50000);
+          if (isData()) {
+            console.log({ cv: cv, kq: dulieu });
+            self.postMessage({ cv: cv, kq: dulieu });
+            cv++;
+          } else {
+            let info = 'isData false, matttt= ' + matttt;
+            self.postMessage({ cv: cv, kq: dulieu, err: info });
           }
-          return true;
-        };
-      };
-    } catch (err) {
-      console.log("err nap bang=",bang, " uuid=", uuid);
-      return null;
-    }
-  };
-  var isData = () => {
+          cs0.continue();
+        } else {
+          self.postMessage({ cv: -1, kq: {} });
+        }
+      }
+    };
+  } catch (err) {
+    console.log({ kq: null, status: 'err' });
+    self.postMessage({ cv: -1, kq: {}, err: err });
+  }
+
+  function isData() {
     let bang, k, v, s, ss, ltam = [];
     let keybo = {
       status: 0,
@@ -90,56 +126,11 @@ var loadHsKh = async (csdl, nam) => {
       console.log("err isData dulieu=", JSON.stringify(dulieu, null, 4));
       return false;
     }
-  };
-  try {
-    let bang = 'tttt';
-    let id = 1;
-    let yc = await indexedDB.open(csdl.ten, csdl.sohieu);
-    yc.onsuccess = e => {
-      let ch = e.target.result
-        .transaction(bang, 'readonly')
-        .objectStore(bang)
-        .openCursor();
-      ch.onsuccess = e => {
-        let cursor = e.target.result;
-        if (cursor) {
-          let matttt = cursor.value.matttt || "";
-          dulieu[bang] = cursor.value;
-          let mahoso = cursor.value.mahoso || "";
-          nap('hoso', mahoso);
-          delay(500);
-          let makhachhang = cursor.value.makhachhang || "";
-          nap('khachhang', makhachhang);
-          delay(500);
-          let madot = cursor.value.madot || "";
-          nap('dot', madot);
-          delay(500);
-          let madvtc = cursor.value.madvtc || "";
-          nap('donvithicong', madvtc);
-          //load_songsong(mahoso, makhachhang, madot, madvtc);
-          delay(500);
-          if (isData()) {
-            console.log('id=', id);
-            console.log({ cv: id, kq: dulieu });
-            self.postMessage({ cv: id, kq: dulieu });
-            id++;
-          } else {
-            let info = 'isData false, matttt= ' + matttt;
-            self.postMessage({ cv: id, kq: dulieu, err: info });
-          }
-          cursor.continue();
-        } else {
-          self.postMessage({ cv: 0, kq: {} });
-        }
-      };
-    };
-  } catch (err) {
-    console.log({ kq: null, status: 'err' });
-    self.postMessage({ cv: 0, kq: {}, err: err });
   }
 };
 
-//main 
+//main
+var dulieu = {};
 self.onmessage = (e) => {
   let kq = e.data;
   console.log("hon e.kq=", JSON.stringify(kq, null, 4));
