@@ -13,10 +13,14 @@ import tornado.escape
 import tornado.websocket
 
 from ttdl import Maychu
+from ttxl import api
+
 from ttxl.reports import dutoan, qtgt, qtvt
 from ttxl.reports import bth_dot_qtgt
 from ttxl.reports import bth_dot_vl
+
 from hoasy.forms import qtgt as frmqtgt
+
 from hoasy.reports import base as rptbase
 from hoasy.reports import dutoan as rptdutoan
 from hoasy.reports import qtgt as rptqtgt
@@ -62,6 +66,51 @@ class SseBase(web.RequestHandler):
         """Construct and send a JSON response with appropriate status code."""
         self.set_status(status)
         self.write('data:{}\n\n'.format(utf8data))
+
+
+class Api_Hoso_Rest(ApiBase):
+    def get(self, schema, namhoso=None):
+        schema = schema.lower()
+        if schema == "qlmltđ":
+            schema = "qlmltd"
+        if schema not in ['pkt', 'pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            self.send_response(None)
+        if namhoso in ["", "all", "tat", "gom"]:
+            namhoso = 9999
+        else:
+            try:
+                namhoso = int(namhoso)
+            except:
+                self.send_response(None)
+        #uuid = 'boss{}'.format(int(arrow.utcnow().float_timestamp * 1000))
+        #res = {'id': uuid, 'event': '', 'data': []}
+        data = api.HsKh(schema, namhoso).gom()
+        data = [
+            {'utcid': 11111, 'sohoso': 'gm059365/20', 'khachhang': 'Tran Thi Thu 1',
+                'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', },
+
+            {'utcid': 22222, 'sohoso': 'gm059366/20', 'khachhang': 'Tran Thi Thu 2',
+                'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', },
+
+            {'utcid': 33333, 'sohoso': 'gm059367/20', 'khachhang': 'Tran Thi Thu 4',
+                'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', }
+
+        ]
+        print(f'ApiRest get hoso gom ={data}')
+        # except:
+        #    res['event'] = 'Không có dữ liệu'
+        self.send_response({"info": "gom", "data": data})
+
+    def post(self, namhoso):
+        message = self.request.body
+        parsed = tornado.escape.json_decode(message)
+        # event = parsed['event']
+        data = parsed['data']
+        print('ApiRest post data from client body={}'.format(str(data)))
+        # data = self.get_argument("data")
+
+        # print('ApiRest post data from client namhoso={} id={} event={} data={}'.format(
+        #    namhoso, id, event, str(data)))
 
 
 class MainHandler(WebBase):
@@ -145,6 +194,7 @@ class Rpt_BthDotVl(WebBase):
         else:
             self.render("errors/404.html", error=None)
 
+
 class Rpt_BthDotKlVl(WebBase):
     def get(self, schema):
         schema = schema.lower()
@@ -157,10 +207,12 @@ class Rpt_BthDotKlVl(WebBase):
         else:
             self.render("errors/404.html", error=None)
 
+
 class WebApp(web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
+            (r"/([^/]+)/api/hoso/([^/]+)", Api_Hoso_Rest),
             (r"/([^/]+)/forms/hoso", Frm_Hoso),
             (r"/([^/]+)/forms/qtgt", Frm_Qtgt),
             (r"/([^/]+)/reports/dutoan", Rpt_Dutoan),
@@ -262,7 +314,7 @@ db = None
 
 
 def main():
-    if platform.system()=="windows":
+    if platform.system() == "windows":
         asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
     # tornado.options.options.logging = None

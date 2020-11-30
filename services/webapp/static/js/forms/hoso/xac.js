@@ -394,6 +394,7 @@ d3.select("#namlamviec").on("change", function () {
         ga["namlamviec"] = new Date().getFullYear().toString();
     }
   }
+  api_hoso(namchu);
   info();
   tim.don();
   hoso.tat();
@@ -432,10 +433,13 @@ d3.select("#don-otim").on("click", function (ev) {
 //capn(ga['csdl'], data_test);
 
 function api_hoso(nam) {
-  let api_url = "https://httpbin.org/basic-auth/user/passwd";
-  d3.json(api_url, {
-    headers: new Headers({
-      "Authorization": `Basic ${base64.encode(`${login}:${password}`)}`
-    }),
-  }).then(json => { /* do something */ });
+
+  let api_url = "https://localhost:8888/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+  d3.json(api_url).then(json => { console.log("json from server=", JSON.stringify(json, null, 4)) });
+  //d3.json(api_url, {
+  //  headers: new Headers({
+  //    "Authorization": `Basic ${base64.encode(`${login}:${password}`)}`
+    //"Authorization", "Basic " + btoa(username + ":" + password));
+  //  }),
+  //}).then(json => { /* do something */ });
 }
