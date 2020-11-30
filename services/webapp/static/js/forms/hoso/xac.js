@@ -20,11 +20,11 @@ class Otim {
   }
 
   xem() {
-    d3.select("div[id='view:otim']").selectAll("*").remove();
-    d3.select("div[id='view:otim']")
+    //d3.select("div[id='view:otim']").selectAll("*").remove();
+    let zone = d3.select("div[id='view:otim']")
       .selectAll("button")
-      .data(ga["otim"])
-      .enter()
+      .data(ga["otim"]);
+    zone.enter()
       .append("button")
       .text((d) => d)
       .attr("class", "l b1px")
@@ -44,6 +44,7 @@ class Otim {
         this.style.textDecoration = "line-through";
         console.log("btn mouseover=", ev.target);
       });
+    zone.exit().remove();
     info();
   }
 
@@ -172,10 +173,10 @@ class Hoso {
           break;
         default:
           dulieu[0] = "crud";
-          dulieu[1] = r["tttt"]? r["tttt"]["matttt"]:"";
+          dulieu[1] = r["tttt"] ? r["tttt"]["matttt"] : "";
           dulieu[2] = r["dot"] ? r["dot"]["sodot"] : "";
-          dulieu[3] = r["khachhang"]?r["khachhang"]["khachhang"]: "";
-          dulieu[4] = r["khachhang"]?r["khachhang"]["diachi"] : "";
+          dulieu[3] = r["khachhang"] ? r["khachhang"]["khachhang"] : "";
+          dulieu[4] = r["khachhang"] ? r["khachhang"]["diachi"] : "";
           dulieu[5] = "2020-10-15";
           dulieu[6] = "2020-10-15";
           dulieu[7] = "2020-10-15";
@@ -429,3 +430,12 @@ d3.select("#don-otim").on("click", function (ev) {
 //database
 //taodb(ga['csdl']);
 //capn(ga['csdl'], data_test);
+
+function api_hoso(nam) {
+  let api_url = "https://httpbin.org/basic-auth/user/passwd";
+  d3.json(api_url, {
+    headers: new Headers({
+      "Authorization": `Basic ${base64.encode(`${login}:${password}`)}`
+    }),
+  }).then(json => { /* do something */ });
+}
