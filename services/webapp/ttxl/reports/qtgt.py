@@ -229,6 +229,7 @@ class Dulieu:
             self.oczvl += cp['tienvl']
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
+            cp['soluong'] = lamtronso(cp['soluong'], 3)
         self.oc_cpxd = dl
 
     def qtoc_vt(self):
@@ -251,6 +252,7 @@ class Dulieu:
             self.oczvl += cp['tienvl']
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
+            cp['soluong'] = lamtronso(cp['soluong'], 3)
         self.oc_cpvt = dl
 
     def qtoc_vl(self):
@@ -273,6 +275,7 @@ class Dulieu:
             self.oczvl += cp['tienvl']
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
+            cp['soluong'] = lamtronso(cp['soluong'], 3)
         self.oc_cpvl = dl
 
     def qton_xd(self):
@@ -294,6 +297,7 @@ class Dulieu:
             self.onzvl += cp['tienvl']
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
+            cp['soluong'] = lamtronso(cp['soluong'], 3)
         self.on_cpxd = dl
 
     def qton_vt(self):
@@ -316,6 +320,7 @@ class Dulieu:
             self.onzvl += cp['tienvl']
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
+            cp['soluong'] = lamtronso(cp['soluong'], 3)
         self.on_cpvt = dl
 
     def qton_vl(self):
@@ -338,6 +343,7 @@ class Dulieu:
             self.onzvl += cp['tienvl']
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
+            cp['soluong'] = lamtronso(cp['soluong'], 3)
         self.on_cpvl = dl
 
     def tlmd(self):
