@@ -46,7 +46,8 @@ class WebBase(web.RequestHandler):
 class ApiBase(web.RequestHandler):
     def set_default_headers(self):
         """Set the default response header to be JSON."""
-        self.set_header("Content-Type", 'application/json; charset="utf-8"')
+        #self.set_header("Content-Type", 'application/json; charset="utf-8"')
+        self.set_header("Content-Type", 'application/x-www-form-urlencoded; charset="utf-8"')
         self.set_header("Access-Control-Allow-Origin", "*")
 
     def send_response(self, data, status=200):
