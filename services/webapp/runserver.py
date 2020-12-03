@@ -84,9 +84,9 @@ class Api_Hoso_Rest(ApiBase):
                 self.send_response(None)
         #uuid = 'boss{}'.format(int(arrow.utcnow().float_timestamp * 1000))
         #res = {'id': uuid, 'event': '', 'data': []}
-        data0 = api.HsKh(schema, namhoso)
-        data = data0.gom()
-        data_draft = [
+        #data = api.HsKh(schema, namhoso).gom()
+        
+        data = [
             {'utcid': 11111, 'sohoso': 'gm059365/20', 'khachhang': 'Tran Thi Thu 1',
                 'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', },
 
@@ -97,7 +97,6 @@ class Api_Hoso_Rest(ApiBase):
                 'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', }
 
         ]
-        print(f'ApiRest schema={schema} nam={namhoso} data0={vars(data0)}')
         print(f'ApiRest schema={schema} nam={namhoso} data={data}')
         # except:
         #    res['event'] = 'Không có dữ liệu'

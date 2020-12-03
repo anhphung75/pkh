@@ -435,11 +435,50 @@ d3.select("#don-otim").on("click", function (ev) {
 function api_hoso(nam) {
 
   let api_url = "https://localhost:8888/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
-  d3.json(api_url).then(json => { console.log("json from server=", JSON.stringify(json, null, 4)) });
+  d3.json(api_url,{
+    mode:'cors'
+  }).then(res => { 
+    console.log("res from server=", JSON.stringify(res, null, 4));
+    let dulieu=res.data||{};
+    let flds_be=["uctid","sohoso","khachhang","diachigandhn"];
+    let flds_fe=["uctid","so ho so","khach hang","dia chi"];
+    show_ketqua(dulieu, flds_be, flds_fe);
+   });
   //d3.json(api_url, {
   //  headers: new Headers({
   //    "Authorization": `Basic ${base64.encode(`${login}:${password}`)}`
-    //"Authorization", "Basic " + btoa(username + ":" + password));
+  //"Authorization", "Basic " + btoa(username + ":" + password));
   //  }),
   //}).then(json => { /* do something */ });
+}
+
+function show_ketqua(dulieu, flds_be, flds_fe) {
+  let bang = d3.select("div[id='test']").append("table")
+    .attr("style", "margin-left: 100px"),
+    tieude = table.append("thead"),
+    noidung = table.append("tbody");
+
+  tieude.append("tr")
+    .selectAll("th")
+    .data(flds_fe)
+    .enter()
+    .append("th")
+    .text(function (column) { return column; });
+
+  let rows = noidung.selectAll("tr")
+    .data(dulieu)
+    .enter()
+    .append("tr");
+
+  let cells = rows.selectAll("td")
+    .data(function (row) {
+      return flds_be.map(function (column) {
+        return { column: column, value: row[column] };
+      });
+    })
+    .enter()
+    .append("td")
+    .html(function (d) { return d.value; });
+
+  return bang;
 }
