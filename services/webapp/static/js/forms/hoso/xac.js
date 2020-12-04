@@ -416,7 +416,7 @@ d3.select("#stim")
   })
   .on("input", function () {
     console.log("oninput s=", this.value);
-    tim.sua(this.value);
+    
   })
   .on("change", function () {
     console.log("onchange stim=", this.value);

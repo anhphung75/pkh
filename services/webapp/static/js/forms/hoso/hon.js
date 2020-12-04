@@ -1,3 +1,5 @@
+//importScripts("./../../refs/d3.min.js");
+import "./../../refs/d3.min.js" ;
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
 function suastr(ss = '') {
@@ -129,6 +131,25 @@ function loadHsKh(csdl, nam) {
   }
 };
 
+function api_hoso(csdl,nam) {
+  let api_url = "https://localhost:8888/" + csdl["ten"] + "/api/hoso/" + nam;
+  d3.json(api_url, {
+    mode: 'cors'
+  }).then(res => {
+    console.log("res from server=", JSON.stringify(res, null, 4));
+    let dulieu = res.data || {};
+    let flds_be = ["utcid", "sohoso", "khachhang", "diachigandhn"];
+    let flds_fe = ["utcid", "so ho so", "khach hang", "dia chi"];
+    //show_ketqua(dulieu, flds_be, flds_fe);
+  });
+  //d3.json(api_url, {
+  //  headers: new Headers({
+  //    "Authorization": `Basic ${base64.encode(`${login}:${password}`)}`
+  //"Authorization", "Basic " + btoa(username + ":" + password));
+  //  }),
+  //}).then(json => { /* do something */ });
+}
+
 //main
 var dulieu = {};
 self.onmessage = (e) => {
@@ -139,7 +160,8 @@ self.onmessage = (e) => {
     if (!kq.csdl) {
       return;
     }
-    loadHsKh(kq.csdl, kq.nam);
+    api_hoso(kq.csdl, kq.nam);
+    //loadHsKh(kq.csdl, kq.nam);
   } catch (err) {
     console.log("err on hon=", err);
   }
