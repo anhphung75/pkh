@@ -346,9 +346,9 @@ def main():
     if sercurity_socket:
         ssl_ctx = ssl.create_default_context(ssl.Purpose.CLIENT_AUTH)
         ssl_path = "services/webapp/ssl_cert"
-        print('ssl path={}'.format(os.path.join(ssl_path, "pkh.key")))
-        ssl_ctx.load_cert_chain(os.path.join(ssl_path, "pkh.crt"),
-                                os.path.join(ssl_path, "pkh.key"))
+        print('ssl path={}'.format(os.path.join(ssl_path, "ssl_pem")))
+        ssl_ctx.load_cert_chain(os.path.join(ssl_path, "cntd.local+3.pem"),
+                                os.path.join(ssl_path, "cntd.local+3-key.pem"))
         server = httpserver.HTTPServer(app, ssl_options=ssl_ctx)
     else:
         server = httpserver.HTTPServer(app)
