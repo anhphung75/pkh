@@ -1,5 +1,6 @@
 import { taodb, cap1, capn, luu, luun } from "./../../ttdl/db.js";
 import { data_test } from "./../../test/data_test.js";
+
 class Otim {
   constructor() {
     this.don();
@@ -416,7 +417,7 @@ d3.select("#stim")
   })
   .on("input", function () {
     console.log("oninput s=", this.value);
-    
+
   })
   .on("change", function () {
     console.log("onchange stim=", this.value);
@@ -463,6 +464,7 @@ function show_ketqua(dulieu, flds_be, flds_fe) {
     .data(flds_fe)
     .enter()
     .append("th")
+    .attr("class", "c")
     .text(fld => fld);
 
   bang.append("tbody")
@@ -472,14 +474,10 @@ function show_ketqua(dulieu, flds_be, flds_fe) {
     .append("tr")
     .attr("class", "l hov")
     .selectAll("td")
-    .data(function (row) {
-      return flds_be.map(function (fld) {
-        return { fld: fld, value: row[fld] };
-      });
-    })
+    .data(row => flds_be.map(fld => { return { "fld": fld, "value": row[fld] }; }))
     .enter()
     .append("td")
-    .text(function (d) { return d.value; });
+    .text(d => d.value);
 
   return bang;
 }
