@@ -493,5 +493,5 @@ def spQtgt(schema="web"):
     tinhlai_dotqt(schema)
 
 
-spQtgt("pkh")
+spQtgt("pkd")
 # lamtronso()
