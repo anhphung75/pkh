@@ -125,7 +125,37 @@ def giatl(schema="dbo"):
         db.core().execute(sql)
     except:
         pass
+
+
 # proc
+def baogiathau():
+    sql = (f"CREATE PROC dbo.baogiathau AS")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"ALTER PROC dbo.baogiathau"
+        f" WITH ENCRYPTION AS"
+        f" BEGIN SET NOCOUNT ON"
+        f" BEGIN TRY")
+    sql += (
+        f" UPDATE dbo.baogiachiphi bg SET"
+        f" giavl1 = Case when (SELECT TOP 1 Isnull(koqtt,'') FROM dbo.chiphi cp"
+        f" WHERE (cp.chiphiid=bg.chiphiid)) Like '%VL%' then 0 else giavl end,"
+        f" gianc1 = Case when (SELECT TOP 1 Isnull(koqtt,'') FROM dbo.chiphi cp"
+        f" WHERE (cp.chiphiid=bg.chiphiid)) Like '%NC%' then 0 else giavl end,"
+        f" giamtc1 = Case when (SELECT TOP 1 Isnull(koqtt,'') FROM dbo.chiphi cp"
+        f" WHERE (cp.chiphiid=bg.chiphiid)) Like '%MTC%' then 0 else giavl end,"
+        f" tinhtrang= N'OK-QTT'"
+        f" Isnull(tinhtrang,'') <> N'OK-QTT';")
+    sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+
 
 
 def creat_tinh_tamqt3x(schema="web", qt3x=1):
