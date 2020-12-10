@@ -20,7 +20,7 @@ def lamtronso(schema="dbo"):
         pass
     # main prog
     sql = (
-        f"CREAT FUNCTION {schema}.lamtronso(@Sothapphan decimal(38,9), @Phanle int=0)"
+        f"CREATE FUNCTION {schema}.lamtronso(@Sothapphan decimal(38,9), @Phanle int=0)"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @So decimal(38,9)=0.0, @Lech decimal(38,9)=0.0, @Kq decimal(38,9)=0.0;"
         f" If @Phanle<0 or @Phanle>8 RETURN @Sothapphan;"
@@ -240,6 +240,66 @@ def baogiathau():
         pass
 
 
+def nap_tamqt3x(schema="web", qt3x=1):
+    """
+    BEGIN tran 
+  MERGE pkh.tamqt31 AS s 
+  USING # tamdulieu AS r 
+  ON s.maqtgt = r.maqtgt 
+  WHEN MATCHED THEN UPDATE SET
+ s.maqt = r.maqt,
+ s.maqtgt = r.maqtgt,
+ s.tt = r.tt,
+ s.chiphiid = r.chiphiid,
+ s.soluong = r.soluong,
+ s.giavl = r.giavl,
+ s.gianc = r.gianc,
+ s.giamtc = r.giamtc,
+ s.trigiavl = r.trigiavl,
+ s.trigianc = r.trigianc,
+ s.trigiamtc = r.trigiamtc,
+ - - - qtt s.soluong1 = r.soluong1,
+ s.giavl1 = r.giavl1,
+ s.gianc1 = r.gianc1,
+ s.giamtc1 = r.giamtc1,
+ s.trigiavl1 = r.trigiavl1,
+ s.trigianc1 = r.trigianc1,
+ s.trigiamtc1 = r.trigiamtc1,
+ s.ghichu = r.ghichu,
+ s.lastupdate = ISNULL(r.lastupdate, getdate()) 
+ WHEN NOT MATCHED THEN 
+ INSERT(maqtgt,tt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc,
+  soluong1,
+  giavl1,
+  gianc1,
+  giamtc1,
+  trigiavl1,
+  trigianc1,
+  trigiamtc1,
+  ghichu,
+  lastupdate,
+  maqt)
+VALUES(r.maqtgt,r.tt,r.chiphiid, r.soluong,
+    r.giavl,
+    r.gianc,
+    r.giamtc,
+    r.trigiavl,
+    r.trigianc,
+    r.trigiamtc,
+    r.soluong1,
+    r.giavl1,
+    r.gianc1,
+    r.giamtc1,
+    r.trigiavl1,
+    r.trigianc1,
+    r.trigiamtc1,
+    r.ghichu, ISNULL(r.lastupdate, getdate()),
+    r.maqt) 
+WHEN NOT MATCHED BY SOURCE THEN DELETE; 
+WHILE (@ @TranCount > 0) COMMIT tran; 
+    """
+
+
 def load_tamqt3x(schema="web", qt3x=1):
     # init prog
     if qt3x not in [1, 2, 3, 4, 5]:
@@ -348,9 +408,9 @@ def load_tamqt(schema="web"):
         f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
-        f" BEGIN TRY "
+        f" BEGIN TRY"
         f" DECLARE @Tinhtrang NVARCHAR(50)='', @Maq INT=26, @Baogiaid INT=0,"
-        f" @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'")
+        f" @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan';")
     sql += (
         f" Select Top 1 @Baogiaid=baogiaid From {schema}.qt Where maqt=@Maqt;"
         f" IF LEN(@Baogiaid)<1 Select Top 1 @Baogiaid=baogiaid From dbo.qt Order By baogiaid Desc;"
@@ -359,7 +419,7 @@ def load_tamqt(schema="web"):
         f" Select Top 1 @Plgia=isnull(plgia,'dutoan') From {schema}.qt Where maqt=@Maqt;")
     sql += (
         f" UPDATE s SET"
-        f" s.maqt=@Maqt, s.baogiaid=@Baogiaid, s.hesoid=@Hesoid, plgia=@Plgia"
+        f" s.maqt=@Maqt, s.baogiaid=@Baogiaid, s.hesoid=@Hesoid, s.plgia=@Plgia,"
         f" s.madot=r.madot, s.tt=r.tt, s.hosoid=r.hosoid, s.soho=r.soho,"
         f" s.gxd=r.gxd, s.dautucty=r.dautucty, s.dautukhach=r.dautukhach,"
         f" s.ghichu=.ghichu, s.tinhtrang=r.tinhtrang, s.nguoilap=r.nguoilap,"
@@ -371,7 +431,7 @@ def load_tamqt(schema="web"):
         f" IF @Gxd>0"
         f" Begin SELECT TOP 1 @Mauqt=maqt"
         f" FROM dbo.qt WHERE ((gxd=@Gxd) And (hesoid=@Hesoid)) ORDER BY lastupdate DESC,baogiaid DESC,maqt DESC;"
-        f" If len(@mauqt)<1 SELECT TOP 1 @Mauqt=maqt"
+        f" If len(@Mauqt)<1 SELECT TOP 1 @Mauqt=maqt"
         f" FROM {schema}.qt WHERE ((gxd=@Gxd) And (hesoid=@Hesoid)) ORDER BY lastupdate DESC,baogiaid DESC,maqt DESC;"
         f" End")
     sql += (
@@ -773,4 +833,4 @@ def spQtgt(schema="web"):
 
 
 # spQtgt("pkd")
-load_tamqt3x("pkd", 4)
+load_tamqt("pkd")
