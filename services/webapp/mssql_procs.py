@@ -20,14 +20,14 @@ def lamtronso(schema="dbo"):
         pass
     # main prog
     sql = (
-        f"CREATE FUNCTION {schema}.lamtronso(@Sothapphan decimal(38,9), @Phanle int=0)"
+        f"CREATE FUNCTION {schema}.lamtronso(@Solamtron decimal(38,9), @Sole int=0)"
         f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @So decimal(38,9)=0.0, @Lech decimal(38,9)=0.0, @Kq decimal(38,9)=0.0;"
-        f" If @Phanle<0 or @Phanle>8 RETURN @Sothapphan;"
-        f" SET @So=CAST(@Sothapphan*Power(10,@Phanle+1) AS bigint);"
-        f" SET @Lech=@So % 10;"
-        f" IF @Lech>=5 SET @So=@So+5;"
-        f" SET @Kq= round(@So/Power(10,@Phanle+1),@Phanle,1);"
+        f" Declare @So0 decimal(38,9), @So1 decimal(38,9), @Lech decimal(38,9), @Kq decimal(38,9);"
+        f" If @Sole<0 or @Sole>9 RETURN @Solamtron;"
+        f" SET @So0=Round(@Solamtron,@Sole,1);"
+        f" SET @So1=Round(@Solamtron,@Sole+1,1);"
+        f" SET @Lech=(@So1-@So0)*Power(10,@Sole+1);"
+        f" IF @Lech<5 SET @Kq=@So0 ELSE SET @Kq=Round(@Solamtron,@Sole);"
         f" RETURN @Kq; END;")
     try:
         db.core().execute(sql)

@@ -1,5 +1,6 @@
 import datetime
 import decimal
+import math
 import arrow
 
 
@@ -186,16 +187,20 @@ class Tien():
         return kq
 
 
-def lamtronso(sothapphan=0, phanle=3):
+def lamtronso(solamtron=0, sole=3):
     try:
-        so = int(sothapphan*10**(phanle+1))
-        lech = so % 10
-        if lech >= 5:
-            so += 5
-        somoi = round(so/10**(phanle+1), phanle)
+        if sole > 9 or sole < 0:
+            return solamtron
+        le = 10**(sole)
+        so0 = math.trunc(solamtron * le) / le
+        le = 10**(sole+1)
+        so1 = math.trunc(solamtron * le) / le
+        lech = round((so1-so0) * le)
+        if lech < 5:
+            return so0
+        return round(solamtron, sole)
     except:
-        somoi = 0
-    return somoi
+        return 0
 
 
 def tachhangso(sothapphan=0, phanle=3):

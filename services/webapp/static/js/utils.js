@@ -1,12 +1,15 @@
 function lamtronso(solamtron, sole) {
   try {
-    let so = parseInt(solamtron * 10 ** (sole + 1));
-    let lech = so % 10;
-    if (lech >= 5) {
-      so += 5;
+    let le = Math.pow(10, sole);
+    let so0 = Math.trunc(solamtron * le) / le;
+    le = Math.pow(10, sole + 1);
+    let so1 = Math.trunc(solamtron * le) / le;
+    let lech = Math.round((so1 - so0) * le);
+    if (lech < 5) {
+      return so0;
+    } else {
+      return parseFloat(solamtron.toFixed(sole));
     }
-    so = so / 10 ** (sole + 1);
-    return so.toFixed(sole);
   } catch (error) {
     return 0;
   }
