@@ -22,13 +22,13 @@ def lamtronso(schema="dbo"):
     sql = (
         f"CREATE FUNCTION {schema}.lamtronso(@Solamtron decimal(38,9), @Sole int=0)"
         f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @So0 decimal(38,9), @So1 decimal(38,9), @Lech decimal(38,9), @Kq decimal(38,9);"
+        f" Declare @Them decimal(38,9)=0.0, @Kq decimal(38,9), @Kt decimal(38,9), @Lech decimal(38,9);"
         f" If @Sole<0 or @Sole>9 RETURN @Solamtron;"
-        f" SET @So0=Round(@Solamtron,@Sole,1);"
-        f" SET @So1=Round(@Solamtron,@Sole+1,1);"
-        f" SET @Lech=(@So1-@So0)*Power(10,@Sole+1);"
-        f" IF @Lech<5 SET @Kq=@So0 ELSE SET @Kq=Round(@Solamtron,@Sole);"
-        f" RETURN @Kq; END;")
+        f" SET @Kq=Round(@Solamtron,@Sole,1);"
+        f" SET @Kt=Round(@Solamtron,@Sole+1,1);"
+        f" SET @Lech=(@Kt-@Kq)*Power(10,@Sole+1);"
+        f" IF @Lech>4 SET @Them=1/Power(10,@Sole);"
+        f" RETURN (@Kq + @Them); END;")
     try:
         db.core().execute(sql)
     except:
@@ -406,18 +406,72 @@ def load_tamqt(schema="web"):
     sql = (
         f"CREATE PROC {schema}.load_tamqt"
         f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
-        f" WITH ENCRYPTION AS"
-        f" BEGIN SET NOCOUNT ON"
-        f" BEGIN TRY"
-        f" DECLARE @Tinhtrang NVARCHAR(50)='', @Maq INT=26, @Baogiaid INT=0,"
-        f" @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan';")
+        f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
+        f" DECLARE @Hesoid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan',"
+        f" @Nguon NVARCHAR(50)='{schema}', @Tinhtrang NVARCHAR(50)='', @Maq INT=26")
     sql += (
+        f" IF Isnull(@Gxd,0)>0"
+        f" Begin SELECT TOP 1 @Mauqt=maqt FROM {schema}.qt WHERE gxd=@Gxd"
+        f" ORDER BY lastupdate DESC, baogiaid DESC, hesoid DESC, maqt DESC;"
+        f" IF Len(Isnull(@Mauqt,''))<1 SET @Nguon='dbo';"
+        f" SELECT TOP 1 @Mauqt=maqt FROM dbo.qt WHERE gxd=@Gxd"
+        f" ORDER BY lastupdate DESC, baogiaid DESC, hesoid DESC, maqt DESC;"
+        f" IF Len(Isnull(@Mauqt,''))<1 SET @Mauqt=@Maqt;"
+        f" End;"
+        #f" ELSE IF Len(Isnull(@Mauqt,''))>0"
+        #f" Begin SELECT @Gxd=isnull(gxd,0) FROM @Nguon.qt WHERE maqt=@Mauqt;"
+        #f" IF @Gxd<1 SET @Nguon='dbo'; End"
+        #f" ELSE Begin SET @Mauqt=@Maqt; SELECT @Gxd=isnull(gxd,0) FROM @Nguon.qt WHERE maqt=@Mauqt;"
+        #f" IF @Gxd<1 SET @Nguon='dbo'; End;"
+    )
+    sql0 = (
+        f" IF EXISTS (SELECT * FROM {schema}.tamqt) UPDATE {schema}.tamqt SET maqt=@Mauqt"
+        f" ELSE INSERT INTO {schema}.tamqt(maqt, lastupdate) VALUES(@Mauqt, getdate()); "
+    )
+    sql0 += (
+        f" MERGE {schema}.tamqt AS s USING @Nguon.qt AS r ON (s.maqt=r.maqt)"
+        f" WHEN MATCHED THEN UPDATE SET s.maqt=@maqt,"
+        f" s.baogiaid=CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+        f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+        f" s.hesoid=CASE WHEN r.hesoid>0 THEN r.hesoid"
+        f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+        f" s.plgia=Isnull(r.plgia,@Plgia),"
+        f" s.madot=r.madot,s.hosoid=r.hosoid,s.tt=r.tt,s.soho=r.soho,"
+        f" s.vlcai=r.vlcai,s.nccai=r.nccai,s.mtccai=r.mtccai,s.gxd1kq1=r.gxd1kq1,s.gxd1kq2=r.gxd1kq2,"
+        f" s.vlnganh=r.vlnganh,s.ncnganh=r.ncnganh,s.mtcnganh=r.mtcnganh,s.gxd2kq1=r.gxd2kq1,s.gxd2kq2=r.gxd2kq2,"
+        f" s.gxd=r.gxd,s.dautucty=r.dautucty,s.dautukhach=r.dautukhach,s.ghichu=r.ghichu,s.tinhtrang=r.tinhtrang,"
+        f" s.nguoilap=r.nguoilap,s.ngaylap=r.ngaylap,s.inok=r.inok,s.ngaygan=r.ngaygan,s.ngayhoancong=r.ngayhoancong,"
+        f" s.sodhn=r.ngayhoancong,s.hieudhn=r.hieudhn,s.chisodhn=r.chisodhn,s.madshc=r.madshc,s.hesothauid=r.hesothauid,"
+        f" s.tvlcai=r.tvlcai,s.tnccai=r.tnccai,s.tmtccai=r.tmtccai,s.tvlnganh=r.tvlnganh,s.tncnganh=r.tncnganh,"
+        f" s.tmtcnganh=r.tmtcnganh,s.tgxd1kq1=r.tgxd1kq1,s.tgxd1kq2=r.tgxd1kq2,"
+        f" s.sldh=r.sldh,s.dhn15=r.dhn15,s.dhn25=r.dhn25,s.dhn50=r.dhn50,s.dhn80=r.dhn80,s.dhn100=r.dhn100,"
+        f" s.slong=r.slong,s.ong25=r.ong25,s.ong34=r.ong34,s.ong50=r.ong50,s.ong100=r.ong100,"
+        f" s.ong125=r.ong125,s.ong150=r.ong150,s.ong200=r.ong200,s.ong250=r.ong250,"
+        f" s.slcat=r.slcat,s.tiencat=r.tiencat,s.slcatnhua=r.slcatnhua,s.tiencatnhua=r.tiencatnhua,"
+        f" s.tienvlk=r.tienvlk,s.nc=r.nc,s.tiennc=r.tiennc,s.mtc=r.mtc,s.tienmtc=r.tienmtc,s.cptt=r.cptt,"
+        f" s.cong=r.cong,s.thuevat=r.thuevat,s.trigiaqtt=r.trigiaqtt,s.ghichuqtt=r.ghichuqtt,s.tinhtrangqtt=r.tinhtrangqtt,"
+        f" s.lastupdate=Isnull(r.lastupdate,getdate())"
+        f" WHEN NOT MATCHED BY SOURCE THEN DELETE"
+        f" WHEN NOT MATCHED BY TARGET THEN"
+        f" INSERT (maqt,baogiaid,hesoid,plgia,madot,hosoid,tt,soho,)"
+        f" VALUES (@Maqt,CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+        f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+        f" CASE WHEN r.hesoid>0 THEN r.hesoid"
+        f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+        f" Isnull(r.plgia,@Plgia),r.madot,r.hosoid,r.tt,r.soho"
+        f");"
+    )
+    sql0 += (
+        f" Select Top 1 @Hesoid=hesoid, @Baogiaid=baogiaid, @Plgia=plgia"
+        f" From {schema}.tamqt Where maqt=@Maqt;"
+    )
+    sql0 = (
         f" Select Top 1 @Baogiaid=baogiaid From {schema}.qt Where maqt=@Maqt;"
         f" IF LEN(@Baogiaid)<1 Select Top 1 @Baogiaid=baogiaid From dbo.qt Order By baogiaid Desc;"
         f" Select Top 1 @Hesoid=hesoid From {schema}.qt Where maqt=@Maqt;"
         f" IF LEN(@Hesoid)<1 Select Top 1 @Hesoid=hesoid From dbo.qt Order By baogiaid Desc;"
         f" Select Top 1 @Plgia=isnull(plgia,'dutoan') From {schema}.qt Where maqt=@Maqt;")
-    sql += (
+    sql0 += (
         f" UPDATE s SET"
         f" s.maqt=@Maqt, s.baogiaid=@Baogiaid, s.hesoid=@Hesoid, s.plgia=@Plgia,"
         f" s.madot=r.madot, s.tt=r.tt, s.hosoid=r.hosoid, s.soho=r.soho,"
@@ -427,21 +481,21 @@ def load_tamqt(schema="web"):
         f" s.ngayhoancong=r.ngayhoancong, s.sodhn=r.ngayhoancong, s.hieudhn=r.hieudhn,"
         f" s.chisodhn=r.chisodhn, s.madshc=r.madshc, s.hesothauid=r.hesothauid"
         f" FROM {schema}.tamqt s INNER JOIN {schema}.qt r ON s.maqt=r.maqt;")
-    sql += (
+    sql0 += (
         f" IF @Gxd>0"
         f" Begin SELECT TOP 1 @Mauqt=maqt"
         f" FROM dbo.qt WHERE ((gxd=@Gxd) And (hesoid=@Hesoid)) ORDER BY lastupdate DESC,baogiaid DESC,maqt DESC;"
         f" If len(@Mauqt)<1 SELECT TOP 1 @Mauqt=maqt"
         f" FROM {schema}.qt WHERE ((gxd=@Gxd) And (hesoid=@Hesoid)) ORDER BY lastupdate DESC,baogiaid DESC,maqt DESC;"
         f" End")
-    sql += (
+    sql0 += (
         f" IF LEN(@Mauqt)>0 Begin EXEC {schema}.load_tamqt31 @Maqt, @Mauqt; EXEC {schema}.load_tamqt32 @Maqt, @Mauqt;"
         f" EXEC {schema}.load_tamqt33 @Maqt, @Mauqt; EXEC {schema}.load_tamqt34 @Maqt, @Mauqt;"
         f" EXEC {schema}.load_tamqt35 @Maqt, @Mauqt; End"
         f" ELSE Begin EXEC {schema}.load_tamqt31 @Maqt; EXEC {schema}.load_tamqt32 @Maqt;"
         f" EXEC {schema}.load_tamqt33 @Maqt; EXEC {schema}.load_tamqt34 @Maqt;"
         f" EXEC {schema}.load_tamqt35 @Maqt; End")
-    sql += (
+    sql0 += (
         f" EXEC {schema}.tinh_tamqt31 @Baogiaid, @Hesoid, @Plgia;"
         f" EXEC {schema}.tinh_tamqt32 @Baogiaid, @Hesoid, @Plgia;"
         f" EXEC {schema}.tinh_tamqt33 @Baogiaid, @Hesoid, @Plgia;"

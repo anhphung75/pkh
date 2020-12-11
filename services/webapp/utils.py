@@ -192,13 +192,14 @@ def lamtronso(solamtron=0, sole=3):
         if sole > 9 or sole < 0:
             return solamtron
         le = 10**(sole)
-        so0 = math.trunc(solamtron * le) / le
+        kq = math.trunc(solamtron * le) / le
         le = 10**(sole+1)
-        so1 = math.trunc(solamtron * le) / le
-        lech = round((so1-so0) * le)
-        if lech < 5:
-            return so0
-        return round(solamtron, sole)
+        kt = math.trunc(solamtron * le) / le
+        them = 0
+        lech = round((kt-kq) * le)
+        if lech > 4:
+            them = 1/10**sole
+        return kq+them
     except:
         return 0
 
