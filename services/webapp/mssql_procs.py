@@ -394,6 +394,222 @@ def load_tamqt3x(schema="web", qt3x=1):
     except:
         pass
 
+def tamqt_nap(xac="web"):
+    # init prog
+    sql = (f"DROP PROC {xac}.tamqt_nap")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"CREATE PROC {xac}.tamqt_nap"
+        f" @Maqt NVARCHAR(50)=''"
+        f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY")
+    sql+=(
+        f" MERGE {xac}.tamqt AS s USING {xac}.qt AS r ON (s.maqt=r.maqt)"
+        f" WHEN MATCHED THEN UPDATE SET s.maqt=@maqt,"
+        f" s.baogiaid=CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+        f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+        f" s.hesoid=CASE WHEN r.hesoid>0 THEN r.hesoid"
+        f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+        f" s.plgia=Isnull(r.plgia,'dutoan'),"
+        f" s.madot=r.madot,s.hosoid=r.hosoid,s.tt=r.tt,s.soho=r.soho,"
+        f" s.vlcai=r.vlcai,s.nccai=r.nccai,s.mtccai=r.mtccai,s.gxd1kq1=r.gxd1kq1,s.gxd1kq2=r.gxd1kq2,"
+        f" s.vlnganh=r.vlnganh,s.ncnganh=r.ncnganh,s.mtcnganh=r.mtcnganh,s.gxd2kq1=r.gxd2kq1,s.gxd2kq2=r.gxd2kq2,"
+        f" s.gxd=r.gxd,s.dautucty=r.dautucty,s.dautukhach=r.dautukhach,s.ghichu=r.ghichu,s.tinhtrang=r.tinhtrang,"
+        f" s.nguoilap=r.nguoilap,s.ngaylap=r.ngaylap,s.inok=r.inok,s.ngaygan=r.ngaygan,s.ngayhoancong=r.ngayhoancong,"
+        f" s.sodhn=r.sodhn,s.hieudhn=r.hieudhn,s.chisodhn=r.chisodhn,s.madshc=r.madshc,s.hesothauid=r.hesothauid,"
+        f" s.tvlcai=r.tvlcai,s.tnccai=r.tnccai,s.tmtccai=r.tmtccai,s.tvlnganh=r.tvlnganh,s.tncnganh=r.tncnganh,"
+        f" s.tmtcnganh=r.tmtcnganh,s.tgxd1kq1=r.tgxd1kq1,s.tgxd1kq2=r.tgxd1kq2,"
+        f" s.sldh=r.sldh,s.dhn15=r.dhn15,s.dhn25=r.dhn25,s.dhn50=r.dhn50,s.dhn80=r.dhn80,s.dhn100=r.dhn100,"
+        f" s.slong=r.slong,s.ong25=r.ong25,s.ong34=r.ong34,s.ong50=r.ong50,s.ong100=r.ong100,"
+        f" s.ong125=r.ong125,s.ong150=r.ong150,s.ong200=r.ong200,s.ong250=r.ong250,"
+        f" s.slcat=r.slcat,s.tiencat=r.tiencat,s.slcatnhua=r.slcatnhua,s.tiencatnhua=r.tiencatnhua,"
+        f" s.tienvlk=r.tienvlk,s.nc=r.nc,s.tiennc=r.tiennc,s.mtc=r.mtc,s.tienmtc=r.tienmtc,s.cptt=r.cptt,"
+        f" s.cong=r.cong,s.thuevat=r.thuevat,s.trigiaqtt=r.trigiaqtt,s.ghichuqtt=r.ghichuqtt,s.tinhtrangqtt=r.tinhtrangqtt,"
+        f" s.lastupdate=Isnull(r.lastupdate,getdate())"
+        f" WHEN NOT MATCHED BY SOURCE THEN DELETE"
+        f" WHEN NOT MATCHED BY TARGET THEN"
+        f" INSERT (maqt,baogiaid,hesoid,plgia,madot,hosoid,tt,soho,"
+        f"vlcai,nccai,mtccai,gxd1kq1,gxd1kq2,vlnganh,ncnganh,mtcnganh,gxd2kq1,gxd2kq2,"
+        f"gxd,dautucty,dautukhach,ghichu,tinhtrang,nguoilap,ngaylap,ngaygan,ngayhoancong,"
+        f"sodhn,hieudhn,chisodhn,madshc,hesothauid,"
+        f"tvlcai,tnccai,tmtccai,tvlnganh,tncnganh,tmtcnganh,tgxd1kq1,tgxd1kq2,"
+        f"sldh,dhn15,dhn25,dhn50,dhn80,dhn100,"
+        f"slong,ong25,ong34,ong50,ong100,ong125,ong150,ong200,ong250,"
+        f"slcat,tiencat,slcatnhua,tiencatnhua,tienvlk,nc,tiennc,mtc,tienmtc,"
+        f"cptt,cong,thuevat,trigiaqtt,ghichuqtt,tinhtrangqtt,lastupdate)"
+        f" VALUES (@Maqt,CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+        f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+        f" CASE WHEN r.hesoid>0 THEN r.hesoid"
+        f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+        f"Isnull(r.plgia,'dutoan'),r.madot,r.hosoid,r.tt,r.soho,"
+        f"r.vlcai,r.nccai,r.mtccai,r.gxd1kq1,r.gxd1kq2,r.vlnganh,r.ncnganh,r.mtcnganh,r.gxd2kq1,r.gxd2kq2,"
+        f"r.gxd,r.dautucty,r.dautukhach,r.ghichu,r.tinhtrang,r.nguoilap,r.ngaylap,r.ngaygan,r.ngayhoancong,"
+        f"r.sodhn,r.hieudhn,r.chisodhn,r.madshc,r.hesothauid,"
+        f"r.tvlcai,r.tnccai,r.tmtccai,r.tvlnganh,r.tncnganh,r.tmtcnganh,r.tgxd1kq1,r.tgxd1kq2,"
+        f"r.sldh,r.dhn15,r.dhn25,r.dhn50,r.dhn80,r.dhn100,"
+        f"r.slong,r.ong25,r.ong34,r.ong50,r.ong100,r.ong125,r.ong150,r.ong200,r.ong250,"
+        f"r.slcat,r.tiencat,r.slcatnhua,r.tiencatnhua,r.tienvlk,r.nc,r.tiennc,r.mtc,r.tienmtc,"
+        f"r.cptt,r.cong,r.thuevat,r.trigiaqtt,r.ghichuqtt,r.tinhtrangqtt,Isnull(r.lastupdate,getdate()));")
+    sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+
+def tamqt_napgoc(xac="web"):
+    # init prog
+    sql = (f"DROP PROC {xac}.tamqt_napgoc")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"CREATE PROC {xac}.tamqt_napgoc"
+        f" @Maqt NVARCHAR(50)=''"
+        f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY")
+    sql+=(
+        f" MERGE {xac}.tamqt AS s USING dbo.qt AS r ON (s.maqt=r.maqt)"
+        f" WHEN MATCHED THEN UPDATE SET s.maqt=@maqt,"
+        f" s.baogiaid=CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+        f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+        f" s.hesoid=CASE WHEN r.hesoid>0 THEN r.hesoid"
+        f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+        f" s.plgia=Isnull(r.plgia,'dutoan'),"
+        f" s.madot=r.madot,s.hosoid=r.hosoid,s.tt=r.tt,s.soho=r.soho,"
+        f" s.vlcai=r.vlcai,s.nccai=r.nccai,s.mtccai=r.mtccai,s.gxd1kq1=r.gxd1kq1,s.gxd1kq2=r.gxd1kq2,"
+        f" s.vlnganh=r.vlnganh,s.ncnganh=r.ncnganh,s.mtcnganh=r.mtcnganh,s.gxd2kq1=r.gxd2kq1,s.gxd2kq2=r.gxd2kq2,"
+        f" s.gxd=r.gxd,s.dautucty=r.dautucty,s.dautukhach=r.dautukhach,s.ghichu=r.ghichu,s.tinhtrang=r.tinhtrang,"
+        f" s.nguoilap=r.nguoilap,s.ngaylap=r.ngaylap,s.inok=r.inok,s.ngaygan=r.ngaygan,s.ngayhoancong=r.ngayhoancong,"
+        f" s.sodhn=r.sodhn,s.hieudhn=r.hieudhn,s.chisodhn=r.chisodhn,s.madshc=r.madshc,s.hesothauid=r.hesothauid,"
+        f" s.tvlcai=r.tvlcai,s.tnccai=r.tnccai,s.tmtccai=r.tmtccai,s.tvlnganh=r.tvlnganh,s.tncnganh=r.tncnganh,"
+        f" s.tmtcnganh=r.tmtcnganh,s.tgxd1kq1=r.tgxd1kq1,s.tgxd1kq2=r.tgxd1kq2,"
+        f" s.sldh=r.sldh,s.dhn15=r.dhn15,s.dhn25=r.dhn25,s.dhn50=r.dhn50,s.dhn80=r.dhn80,s.dhn100=r.dhn100,"
+        f" s.slong=r.slong,s.ong25=r.ong25,s.ong34=r.ong34,s.ong50=r.ong50,s.ong100=r.ong100,"
+        f" s.ong125=r.ong125,s.ong150=r.ong150,s.ong200=r.ong200,s.ong250=r.ong250,"
+        f" s.slcat=r.slcat,s.tiencat=r.tiencat,s.slcatnhua=r.slcatnhua,s.tiencatnhua=r.tiencatnhua,"
+        f" s.tienvlk=r.tienvlk,s.nc=r.nc,s.tiennc=r.tiennc,s.mtc=r.mtc,s.tienmtc=r.tienmtc,s.cptt=r.cptt,"
+        f" s.cong=r.cong,s.thuevat=r.thuevat,s.trigiaqtt=r.trigiaqtt,s.ghichuqtt=r.ghichuqtt,s.tinhtrangqtt=r.tinhtrangqtt,"
+        f" s.lastupdate=Isnull(r.lastupdate,getdate())"
+        f" WHEN NOT MATCHED BY SOURCE THEN DELETE"
+        f" WHEN NOT MATCHED BY TARGET THEN"
+        f" INSERT (maqt,baogiaid,hesoid,plgia,madot,hosoid,tt,soho,"
+        f"vlcai,nccai,mtccai,gxd1kq1,gxd1kq2,vlnganh,ncnganh,mtcnganh,gxd2kq1,gxd2kq2,"
+        f"gxd,dautucty,dautukhach,ghichu,tinhtrang,nguoilap,ngaylap,ngaygan,ngayhoancong,"
+        f"sodhn,hieudhn,chisodhn,madshc,hesothauid,"
+        f"tvlcai,tnccai,tmtccai,tvlnganh,tncnganh,tmtcnganh,tgxd1kq1,tgxd1kq2,"
+        f"sldh,dhn15,dhn25,dhn50,dhn80,dhn100,"
+        f"slong,ong25,ong34,ong50,ong100,ong125,ong150,ong200,ong250,"
+        f"slcat,tiencat,slcatnhua,tiencatnhua,tienvlk,nc,tiennc,mtc,tienmtc,"
+        f"cptt,cong,thuevat,trigiaqtt,ghichuqtt,tinhtrangqtt,lastupdate)"
+        f" VALUES (@Maqt,CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+        f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+        f" CASE WHEN r.hesoid>0 THEN r.hesoid"
+        f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+        f"Isnull(r.plgia,'dutoan'),r.madot,r.hosoid,r.tt,r.soho,"
+        f"r.vlcai,r.nccai,r.mtccai,r.gxd1kq1,r.gxd1kq2,r.vlnganh,r.ncnganh,r.mtcnganh,r.gxd2kq1,r.gxd2kq2,"
+        f"r.gxd,r.dautucty,r.dautukhach,r.ghichu,r.tinhtrang,r.nguoilap,r.ngaylap,r.ngaygan,r.ngayhoancong,"
+        f"r.sodhn,r.hieudhn,r.chisodhn,r.madshc,r.hesothauid,"
+        f"r.tvlcai,r.tnccai,r.tmtccai,r.tvlnganh,r.tncnganh,r.tmtcnganh,r.tgxd1kq1,r.tgxd1kq2,"
+        f"r.sldh,r.dhn15,r.dhn25,r.dhn50,r.dhn80,r.dhn100,"
+        f"r.slong,r.ong25,r.ong34,r.ong50,r.ong100,r.ong125,r.ong150,r.ong200,r.ong250,"
+        f"r.slcat,r.tiencat,r.slcatnhua,r.tiencatnhua,r.tienvlk,r.nc,r.tiennc,r.mtc,r.tienmtc,"
+        f"r.cptt,r.cong,r.thuevat,r.trigiaqtt,r.ghichuqtt,r.tinhtrangqtt,Isnull(r.lastupdate,getdate()));")
+    sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+
+def qtgt_nap(xac="web"):
+    # init prog
+    sql = (f"DROP PROC {xac}.qtgt_nap")
+    try:
+        db.core().execute(sql)
+    except:
+        pass
+    # main prog
+    sql = (
+        f"CREATE PROC {xac}.qtgt_nap"
+        f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
+        f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
+        f" DECLARE @Hesoid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan',"
+        f" @Tinhtrang NVARCHAR(50)='',@Napgoc INT=0, @Maq INT=26")
+    sql += (
+        f" IF Len(Isnull(@Mauqt,''))>0"
+        f" Begin SELECT @Gxd=isnull(gxd,0) FROM {xac}.qt WHERE maqt=@Mauqt;"
+        f" IF @Gxd<1 begin SET @Napgoc=1;"
+        f" SELECT @Gxd=isnull(gxd,0) FROM dbo.qt WHERE maqt=@Mauqt;"
+        f" IF @Gxd<1 SET @Napgoc=2;"
+        f" end End"
+        f" ELSE"
+        f" If Isnull(@Gxd,0)>0"
+        f" Begin SELECT TOP 1 @Mauqt=maqt FROM {xac}.qt WHERE gxd=@Gxd"
+        f" ORDER BY lastupdate DESC, hesoid DESC, baogiaid DESC, maqt DESC;"
+        f" IF Len(Isnull(@Mauqt,''))<1 begin SET @Napgoc=1;"
+        f" SELECT TOP 1 @Mauqt=maqt FROM dbo.qt WHERE gxd=@Gxd"
+        f" ORDER BY lastupdate DESC, hesoid DESC, baogiaid DESC, maqt DESC;"
+        f" IF Len(Isnull(@Mauqt,''))<1 SET @Napgoc=2; end End"
+        f" Else"
+        f" Begin SELECT @Gxd=isnull(gxd,0) FROM {xac}.qt WHERE maqt=@Mauqt;"
+        f" IF @Gxd<1 begin SET @Napgoc=1;"
+        f" SELECT @Gxd=isnull(gxd,0) FROM dbo.qt WHERE maqt=@Mauqt;"
+        f" IF @Gxd<1 SET @Napgoc=2;"
+        f" end End;")
+    sql_tinh = (
+        f" Select Top 1 @Hesoid=hesoid, @Baogiaid=baogiaid, @Plgia=plgia"
+        f" From {xac}.tamqt Where maqt=@Maqt;"
+        f" EXEC {xac}.tamqt31_tinh @Hesoid,@Baogiaid,@Plgia;"
+        f" EXEC {xac}.tamqt32_tinh @Hesoid,@Baogiaid,@Plgia;"
+        f" EXEC {xac}.tamqt33_tinh @Hesoid,@Baogiaid,@Plgia;"
+        f" EXEC {xac}.tamqt34_tinh @Hesoid,@Baogiaid,@Plgia;"
+        f" EXEC {xac}.tamqt35_tinh @Hesoid,@Baogiaid,@Plgia;"
+        f" EXEC {xac}.tamqt_tinh @Hesoid,@Baogiaid,@Plgia;")
+    sql0 = (
+        f" IF @Napgoc=2 Begin"
+        f" EXEC {xac}.tamqt_napgoc @Maqt;"
+        #f" EXEC {xac}.tamqt31_napgoc '2020GMMP000';"
+        #f" EXEC {xac}.tamqt32_napgoc '2020GMMP000';"
+        #f" EXEC {xac}.tamqt33_napgoc '2020GMMP000';"
+        #f" EXEC {xac}.tamqt34_napgoc '2020GMMP000';"
+        #f" EXEC {xac}.tamqt35_napgoc '2020GMMP000';"
+        #f"{sql_tinh}"
+        f" End;"
+        f" IF @Napgoc=1 if Len(Isnull(@Mauqt,''))>0"
+        f" Begin EXEC {xac}.tamqt_napgoc @Maqt"
+        #f" EXEC {xac}.tamqt31_napgoc @Mauqt;"
+        #f" EXEC {xac}.tamqt32_napgoc @Mauqt;"
+        #f" EXEC {xac}.tamqt33_napgoc @Mauqt;"
+        #f" EXEC {xac}.tamqt34_napgoc @Mauqt;"
+        #f" EXEC {xac}.tamqt35_napgoc @Mauqt;"
+        #f"{sql_tinh}"
+        f" End;"
+        f" Else Begin EXEC {xac}.tamqt_napgoc @Maqt"
+        #f" EXEC {xac}.tamqt31_napgoc @Maqt;"
+        #f" EXEC {xac}.tamqt32_napgoc @Maqt;"
+        #f" EXEC {xac}.tamqt33_napgoc @Maqt;"
+        #f" EXEC {xac}.tamqt34_napgoc @Maqt;"
+        #f" EXEC {xac}.tamqt35_napgoc @Maqt;"
+        #f"{sql_tinh}"
+        f" End;"
+        f" IF @Napgoc=0 Begin"
+        f" EXEC {xac}.tamqt_nap @Maqt;"
+        #f" EXEC {xac}.tamqt31_nap @Maqt;"
+        #f" EXEC {xac}.tamqt32_nap @Maqt;"
+        #f" EXEC {xac}.tamqt33_nap @Maqt;"
+        #f" EXEC {xac}.tamqt34_nap @Maqt;"
+        #f" EXEC {xac}.tamqt35_nap @Maqt;"
+        #f"{sql_tinh}"
+        f" End;"
+    )
+    sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+    try:
+        db.core().execute(sql)
+    except:
+        pass
 
 def load_tamqt(schema="web"):
     # init prog

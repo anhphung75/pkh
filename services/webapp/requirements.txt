@@ -5,5 +5,4 @@ cffi
 bcrypt
 tornado
 sqlalchemy
-pyodbc
 arrow
