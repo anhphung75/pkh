@@ -156,8 +156,11 @@ class Tien():
             chuc = hangso[h]['chuc']
             donvi = hangso[h]['donvi']
             if (tram+chuc+donvi) > 0:
-                if len(kq) > 0:
+                if tram > 0:
                     kq += f"{chu[tram]} trăm "
+                else:
+                    if len(kq) > 0:
+                        kq += f"{chu[tram]} trăm "
                 if (chuc+donvi) > 0:
                     if chuc == 0:
                         if len(kq) > 0:

@@ -1,4 +1,5 @@
 import "./../../refs/d3.min.js";
+import("d3.min.js");
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -131,12 +132,11 @@ function loadHsKh(csdl, nam) {
   }
 };
 
-function api_hoso(csdl, nam) {
-  let api_url = "https://localhost:8888/" + csdl["ten"] + "/api/hoso/" + nam;
-  d3.json(api_url, {
+function api_hoso(csdl, api) {
+  d3.json(api, {
     mode: 'cors'
   }).then(res => {
-    console.log("res from server=", JSON.stringify(res, null, 4));
+    console.log("webworker api, res from server=", JSON.stringify(res, null, 4));
     let dulieu = res.data || {};
     let flds_be = ["utcid", "sohoso", "khachhang", "diachigandhn"];
     let flds_fe = ["utcid", "so ho so", "khach hang", "dia chi"];
@@ -150,6 +150,27 @@ function api_hoso(csdl, nam) {
   //}).then(json => { /* do something */ });
 }
 
+function api_fetch(csdl, api) {
+  console.log("fetch_api", api);
+  fetch(api, {
+    method: 'GET',
+    mode: 'cors',
+    headers: {
+      //'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    //credentials: "same-origin",
+  })
+    .then(response => {
+      let a = response.json();
+      console.log("webworker api_fetch, res.json() from server=", JSON.stringify(a, null, 4));
+    })
+    .then(data => {
+      console.log(data);
+      console.log("webworker api_fetch, data from server=", JSON.stringify(data, null, 4));
+    });
+
+}
 //main
 var dulieu = {};
 self.onmessage = (e) => {
@@ -160,7 +181,7 @@ self.onmessage = (e) => {
     if (!kq.csdl) {
       return;
     }
-    api_hoso(kq.csdl, kq.nam);
+    api_hoso(kq.csdl, kq.api);
     //loadHsKh(kq.csdl, kq.nam);
   } catch (err) {
     console.log("err on hon=", err);

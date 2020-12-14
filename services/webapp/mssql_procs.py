@@ -11,15 +11,108 @@ db = Maychu("mssql", "pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
 # db.show_views()
 
 
+class Csdl:
+    def __init__(self, xac='pkh'):
+        self.xac = xac
+        self.tao()
+
+    def tao(self):
+        self.tamqt3x(1)
+        self.tamqt3x(2)
+        self.tamqt3x(3)
+        self.tamqt3x(4)
+        self.tamqt3x(5)
+
+    def tamqt(self):
+        try:
+            sql = (f"DROP FUNCTION {self.xac}.tamqt")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE TABLE {self.xac}.tamqt ("
+            f"maqtgt NVARCHAR(50) NULL,"
+            f"tt INT NULL,"
+            f"chiphiid INT NULL DEFAULT 0,")
+        if id in [5]:
+            sql += (
+                f"sl_oc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"sl_on DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"gia DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tien_oc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tien_on DECIMAL(28,6) NULL DEFAULT 0.0,")
+        else:
+            sql += (
+                f"soluong DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"giavl DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"gianc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"giamtc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tienvl DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tiennc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tienmtc DECIMAL(28,6) NULL DEFAULT 0.0,")
+        sql += (
+            f"lastupdate DATETIME NULL DEFAULT NULL,"
+            f"maqt NVARCHAR(50) NULL DEFAULT NULL,"
+            f"mauqtgt NVARCHAR(50) NOT NULL,"
+            f"CONSTRAINT tamqt3{id}_pk PRIMARY KEY (mauqtgt));"
+        )
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def tamqt3x(self, id=1):
+        if id not in [1, 2, 3, 4, 5]:
+            return
+        try:
+            sql=(f"DROP FUNCTION {self.xac}.tamqt3{id}")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql=(
+            f"CREATE TABLE {self.xac}.tamqt3{id} ("
+            f"maqtgt NVARCHAR(50) NULL,"
+            f"tt INT NULL,"
+            f"chiphiid INT NULL DEFAULT 0,")
+        if id in [5]:
+            sql += (
+                f"sl_oc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"sl_on DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"gia DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tien_oc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tien_on DECIMAL(28,6) NULL DEFAULT 0.0,")
+        else:
+            sql += (
+                f"soluong DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"giavl DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"gianc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"giamtc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tienvl DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tiennc DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"tienmtc DECIMAL(28,6) NULL DEFAULT 0.0,")
+        sql += (
+            f"lastupdate DATETIME NULL DEFAULT NULL,"
+            f"maqt NVARCHAR(50) NULL DEFAULT NULL,"
+            f"mauqtgt NVARCHAR(50) NOT NULL,"
+            f"CONSTRAINT tamqt3{id}_pk PRIMARY KEY (mauqtgt));"
+        )
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+
 def lamtronso(schema="dbo"):
     # init prog
-    sql = (f"DROP FUNCTION {schema}.lamtronso")
+    sql=(f"DROP FUNCTION {schema}.lamtronso")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE FUNCTION {schema}.lamtronso(@Solamtron decimal(38,9), @Sole int=0)"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @Them decimal(38,9)=0.0, @Kq decimal(38,9), @Kt decimal(38,9), @Lech decimal(38,9);"
@@ -37,13 +130,13 @@ def lamtronso(schema="dbo"):
 
 def giavl(schema="dbo"):
     # init prog
-    sql = (f"DROP FUNCTION {schema}.giavl")
+    sql=(f"DROP FUNCTION {schema}.giavl")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE FUNCTION {schema}.giavl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @Kq decimal(38,9)=0.0;"
@@ -60,13 +153,13 @@ def giavl(schema="dbo"):
 
 def gianc(schema="dbo"):
     # init prog
-    sql = (f"DROP FUNCTION {schema}.gianc")
+    sql=(f"DROP FUNCTION {schema}.gianc")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE FUNCTION {schema}.gianc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @Kq decimal(38,9)=0.0;"
@@ -83,13 +176,13 @@ def gianc(schema="dbo"):
 
 def giamtc(schema="dbo"):
     # init prog
-    sql = (f"DROP FUNCTION {schema}.giamtc")
+    sql=(f"DROP FUNCTION {schema}.giamtc")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE FUNCTION {schema}.giamtc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @Kq decimal(38,9)=0.0;"
@@ -106,13 +199,13 @@ def giamtc(schema="dbo"):
 
 def giatl(schema="dbo"):
     # init prog
-    sql = (f"DROP FUNCTION {schema}.giatl")
+    sql=(f"DROP FUNCTION {schema}.giatl")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE FUNCTION {schema}.giatl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @Kq decimal(38,9)=0.0;"
@@ -129,13 +222,13 @@ def giatl(schema="dbo"):
 
 def giavl_thau(schema="dbo"):
     # init prog
-    sql = (f"DROP FUNCTION {schema}.giavl_thau")
+    sql=(f"DROP FUNCTION {schema}.giavl_thau")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE FUNCTION {schema}.giavl_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @Kq decimal(38,9)=0.0;"
@@ -152,13 +245,13 @@ def giavl_thau(schema="dbo"):
 
 def gianc_thau(schema="dbo"):
     # init prog
-    sql = (f"DROP FUNCTION {schema}.gianc_thau")
+    sql=(f"DROP FUNCTION {schema}.gianc_thau")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE FUNCTION {schema}.gianc_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @Kq decimal(38,9)=0.0;"
@@ -175,13 +268,13 @@ def gianc_thau(schema="dbo"):
 
 def giamtc_thau(schema="dbo"):
     # init prog
-    sql = (f"DROP FUNCTION {schema}.giamtc_thau")
+    sql=(f"DROP FUNCTION {schema}.giamtc_thau")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE FUNCTION {schema}.giamtc_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
         f" Returns decimal(38,9) AS BEGIN"
         f" Declare @Kq decimal(38,9)=0.0;"
@@ -200,13 +293,13 @@ def giamtc_thau(schema="dbo"):
 
 
 def baogiathau():
-    sql = (f"DROP PROC dbo.baogiathau")
+    sql=(f"DROP PROC dbo.baogiathau")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC dbo.baogiathau"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
@@ -242,10 +335,10 @@ def baogiathau():
 
 def nap_tamqt3x(schema="web", qt3x=1):
     """
-    BEGIN tran 
-  MERGE pkh.tamqt31 AS s 
-  USING # tamdulieu AS r 
-  ON s.maqtgt = r.maqtgt 
+    BEGIN tran
+  MERGE pkh.tamqt31 AS s
+  USING # tamdulieu AS r
+  ON s.maqtgt = r.maqtgt
   WHEN MATCHED THEN UPDATE SET
  s.maqt = r.maqt,
  s.maqtgt = r.maqtgt,
@@ -266,8 +359,8 @@ def nap_tamqt3x(schema="web", qt3x=1):
  s.trigianc1 = r.trigianc1,
  s.trigiamtc1 = r.trigiamtc1,
  s.ghichu = r.ghichu,
- s.lastupdate = ISNULL(r.lastupdate, getdate()) 
- WHEN NOT MATCHED THEN 
+ s.lastupdate = ISNULL(r.lastupdate, getdate())
+ WHEN NOT MATCHED THEN
  INSERT(maqtgt,tt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc,
   soluong1,
   giavl1,
@@ -294,9 +387,9 @@ VALUES(r.maqtgt,r.tt,r.chiphiid, r.soluong,
     r.trigianc1,
     r.trigiamtc1,
     r.ghichu, ISNULL(r.lastupdate, getdate()),
-    r.maqt) 
-WHEN NOT MATCHED BY SOURCE THEN DELETE; 
-WHILE (@ @TranCount > 0) COMMIT tran; 
+    r.maqt)
+WHEN NOT MATCHED BY SOURCE THEN DELETE;
+WHILE (@ @TranCount > 0) COMMIT tran;
     """
 
 
@@ -305,12 +398,12 @@ def load_tamqt3x(schema="web", qt3x=1):
     if qt3x not in [1, 2, 3, 4, 5]:
         return
     try:
-        sql = (f"DROP PROC {schema}.load_tamqt3{qt3x}")
+        sql=(f"DROP PROC {schema}.load_tamqt3{qt3x}")
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {schema}.load_tamqt3{qt3x}"
         f" @Maqt NVARCHAR(50),@Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS"
@@ -394,19 +487,20 @@ def load_tamqt3x(schema="web", qt3x=1):
     except:
         pass
 
+
 def tamqt_nap(xac="web"):
     # init prog
-    sql = (f"DROP PROC {xac}.tamqt_nap")
+    sql=(f"DROP PROC {xac}.tamqt_nap")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {xac}.tamqt_nap"
         f" @Maqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY")
-    sql+=(
+    sql += (
         f" MERGE {xac}.tamqt AS s USING {xac}.qt AS r ON (s.maqt=r.maqt)"
         f" WHEN MATCHED THEN UPDATE SET s.maqt=@maqt,"
         f" s.baogiaid=CASE WHEN r.baogiaid>0 THEN r.baogiaid"
@@ -459,19 +553,20 @@ def tamqt_nap(xac="web"):
     except:
         pass
 
+
 def tamqt_napgoc(xac="web"):
     # init prog
-    sql = (f"DROP PROC {xac}.tamqt_napgoc")
+    sql=(f"DROP PROC {xac}.tamqt_napgoc")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {xac}.tamqt_napgoc"
         f" @Maqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY")
-    sql+=(
+    sql += (
         f" MERGE {xac}.tamqt AS s USING dbo.qt AS r ON (s.maqt=r.maqt)"
         f" WHEN MATCHED THEN UPDATE SET s.maqt=@maqt,"
         f" s.baogiaid=CASE WHEN r.baogiaid>0 THEN r.baogiaid"
@@ -524,15 +619,16 @@ def tamqt_napgoc(xac="web"):
     except:
         pass
 
+
 def qtgt_nap(xac="web"):
     # init prog
-    sql = (f"DROP PROC {xac}.qtgt_nap")
+    sql=(f"DROP PROC {xac}.qtgt_nap")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {xac}.qtgt_nap"
         f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
@@ -559,7 +655,7 @@ def qtgt_nap(xac="web"):
         f" SELECT @Gxd=isnull(gxd,0) FROM dbo.qt WHERE maqt=@Mauqt;"
         f" IF @Gxd<1 SET @Napgoc=2;"
         f" end End;")
-    sql_tinh = (
+    sql_tinh=(
         f" Select Top 1 @Hesoid=hesoid, @Baogiaid=baogiaid, @Plgia=plgia"
         f" From {xac}.tamqt Where maqt=@Maqt;"
         f" EXEC {xac}.tamqt31_tinh @Hesoid,@Baogiaid,@Plgia;"
@@ -568,41 +664,41 @@ def qtgt_nap(xac="web"):
         f" EXEC {xac}.tamqt34_tinh @Hesoid,@Baogiaid,@Plgia;"
         f" EXEC {xac}.tamqt35_tinh @Hesoid,@Baogiaid,@Plgia;"
         f" EXEC {xac}.tamqt_tinh @Hesoid,@Baogiaid,@Plgia;")
-    sql0 = (
+    sql0=(
         f" IF @Napgoc=2 Begin"
         f" EXEC {xac}.tamqt_napgoc @Maqt;"
-        #f" EXEC {xac}.tamqt31_napgoc '2020GMMP000';"
-        #f" EXEC {xac}.tamqt32_napgoc '2020GMMP000';"
-        #f" EXEC {xac}.tamqt33_napgoc '2020GMMP000';"
-        #f" EXEC {xac}.tamqt34_napgoc '2020GMMP000';"
-        #f" EXEC {xac}.tamqt35_napgoc '2020GMMP000';"
-        #f"{sql_tinh}"
+        # f" EXEC {xac}.tamqt31_napgoc '2020GMMP000';"
+        # f" EXEC {xac}.tamqt32_napgoc '2020GMMP000';"
+        # f" EXEC {xac}.tamqt33_napgoc '2020GMMP000';"
+        # f" EXEC {xac}.tamqt34_napgoc '2020GMMP000';"
+        # f" EXEC {xac}.tamqt35_napgoc '2020GMMP000';"
+        # f"{sql_tinh}"
         f" End;"
         f" IF @Napgoc=1 if Len(Isnull(@Mauqt,''))>0"
         f" Begin EXEC {xac}.tamqt_napgoc @Maqt"
-        #f" EXEC {xac}.tamqt31_napgoc @Mauqt;"
-        #f" EXEC {xac}.tamqt32_napgoc @Mauqt;"
-        #f" EXEC {xac}.tamqt33_napgoc @Mauqt;"
-        #f" EXEC {xac}.tamqt34_napgoc @Mauqt;"
-        #f" EXEC {xac}.tamqt35_napgoc @Mauqt;"
-        #f"{sql_tinh}"
+        # f" EXEC {xac}.tamqt31_napgoc @Mauqt;"
+        # f" EXEC {xac}.tamqt32_napgoc @Mauqt;"
+        # f" EXEC {xac}.tamqt33_napgoc @Mauqt;"
+        # f" EXEC {xac}.tamqt34_napgoc @Mauqt;"
+        # f" EXEC {xac}.tamqt35_napgoc @Mauqt;"
+        # f"{sql_tinh}"
         f" End;"
         f" Else Begin EXEC {xac}.tamqt_napgoc @Maqt"
-        #f" EXEC {xac}.tamqt31_napgoc @Maqt;"
-        #f" EXEC {xac}.tamqt32_napgoc @Maqt;"
-        #f" EXEC {xac}.tamqt33_napgoc @Maqt;"
-        #f" EXEC {xac}.tamqt34_napgoc @Maqt;"
-        #f" EXEC {xac}.tamqt35_napgoc @Maqt;"
-        #f"{sql_tinh}"
+        # f" EXEC {xac}.tamqt31_napgoc @Maqt;"
+        # f" EXEC {xac}.tamqt32_napgoc @Maqt;"
+        # f" EXEC {xac}.tamqt33_napgoc @Maqt;"
+        # f" EXEC {xac}.tamqt34_napgoc @Maqt;"
+        # f" EXEC {xac}.tamqt35_napgoc @Maqt;"
+        # f"{sql_tinh}"
         f" End;"
         f" IF @Napgoc=0 Begin"
         f" EXEC {xac}.tamqt_nap @Maqt;"
-        #f" EXEC {xac}.tamqt31_nap @Maqt;"
-        #f" EXEC {xac}.tamqt32_nap @Maqt;"
-        #f" EXEC {xac}.tamqt33_nap @Maqt;"
-        #f" EXEC {xac}.tamqt34_nap @Maqt;"
-        #f" EXEC {xac}.tamqt35_nap @Maqt;"
-        #f"{sql_tinh}"
+        # f" EXEC {xac}.tamqt31_nap @Maqt;"
+        # f" EXEC {xac}.tamqt32_nap @Maqt;"
+        # f" EXEC {xac}.tamqt33_nap @Maqt;"
+        # f" EXEC {xac}.tamqt34_nap @Maqt;"
+        # f" EXEC {xac}.tamqt35_nap @Maqt;"
+        # f"{sql_tinh}"
         f" End;"
     )
     sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
@@ -611,15 +707,16 @@ def qtgt_nap(xac="web"):
     except:
         pass
 
+
 def load_tamqt(schema="web"):
     # init prog
-    sql = (f"DROP PROC {schema}.load_tamqt")
+    sql=(f"DROP PROC {schema}.load_tamqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {schema}.load_tamqt"
         f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
@@ -634,13 +731,13 @@ def load_tamqt(schema="web"):
         f" ORDER BY lastupdate DESC, baogiaid DESC, hesoid DESC, maqt DESC;"
         f" IF Len(Isnull(@Mauqt,''))<1 SET @Mauqt=@Maqt;"
         f" End;"
-        #f" ELSE IF Len(Isnull(@Mauqt,''))>0"
-        #f" Begin SELECT @Gxd=isnull(gxd,0) FROM @Nguon.qt WHERE maqt=@Mauqt;"
-        #f" IF @Gxd<1 SET @Nguon='dbo'; End"
-        #f" ELSE Begin SET @Mauqt=@Maqt; SELECT @Gxd=isnull(gxd,0) FROM @Nguon.qt WHERE maqt=@Mauqt;"
-        #f" IF @Gxd<1 SET @Nguon='dbo'; End;"
+        # f" ELSE IF Len(Isnull(@Mauqt,''))>0"
+        # f" Begin SELECT @Gxd=isnull(gxd,0) FROM @Nguon.qt WHERE maqt=@Mauqt;"
+        # f" IF @Gxd<1 SET @Nguon='dbo'; End"
+        # f" ELSE Begin SET @Mauqt=@Maqt; SELECT @Gxd=isnull(gxd,0) FROM @Nguon.qt WHERE maqt=@Mauqt;"
+        # f" IF @Gxd<1 SET @Nguon='dbo'; End;"
     )
-    sql0 = (
+    sql0=(
         f" IF EXISTS (SELECT * FROM {schema}.tamqt) UPDATE {schema}.tamqt SET maqt=@Mauqt"
         f" ELSE INSERT INTO {schema}.tamqt(maqt, lastupdate) VALUES(@Mauqt, getdate()); "
     )
@@ -681,7 +778,7 @@ def load_tamqt(schema="web"):
         f" Select Top 1 @Hesoid=hesoid, @Baogiaid=baogiaid, @Plgia=plgia"
         f" From {schema}.tamqt Where maqt=@Maqt;"
     )
-    sql0 = (
+    sql0=(
         f" Select Top 1 @Baogiaid=baogiaid From {schema}.qt Where maqt=@Maqt;"
         f" IF LEN(@Baogiaid)<1 Select Top 1 @Baogiaid=baogiaid From dbo.qt Order By baogiaid Desc;"
         f" Select Top 1 @Hesoid=hesoid From {schema}.qt Where maqt=@Maqt;"
@@ -731,12 +828,12 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
     if qt3x not in [1, 2, 3, 4]:
         return
     try:
-        sql = (f"DROP PROC {schema}.tinh_tamqt3{qt3x}")
+        sql=(f"DROP PROC {schema}.tinh_tamqt3{qt3x}")
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {schema}.tinh_tamqt3{qt3x}"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -792,13 +889,13 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
 
 def tinh_tamqt35(schema="web"):
     # init prog
-    sql = (f"DROP PROC {schema}.tinh_tamqt35")
+    sql=(f"DROP PROC {schema}.tinh_tamqt35")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {schema}.tinh_tamqt35"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -851,13 +948,13 @@ def tinh_tamqt35(schema="web"):
 
 def tinh_tamqt3x(schema="web"):
     # init prog
-    sql = (f"DROP PROC {schema}.tinh_tamqt3x")
+    sql=(f"DROP PROC {schema}.tinh_tamqt3x")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {schema}.tinh_tamqt3x"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -880,30 +977,30 @@ def tinh_tamqt3x(schema="web"):
 
 def tinh_tamqt(schema="web"):
     # init prog
-    sql = (f"DROP PROC {schema}.tinh_tamqt")
+    sql=(f"DROP PROC {schema}.tinh_tamqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {schema}.tinh_tamqt"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
         f" BEGIN TRY DECLARE")
     # heso chiphi
-    lds = ["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
+    lds=["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
            "thutinhtruoc", "khaosat", "thietke", "giamsat"]
     for heso in lds:
         sql += f" @{heso} DECIMAL(19,5)=1.0000,"
     # tong ket kinh phi
-    lds = ["tongxaydung", "tailap", "congtrinh", "congtrinhtruocthue",
+    lds=["tongxaydung", "tailap", "congtrinh", "congtrinhtruocthue",
            "thuecongtrinh", "dautucty", "dautukhach", "tratruoc"]
     for chiphi in lds:
         sql += f" @{chiphi} DECIMAL(19,5)=1.0000,"
     # kinh phi chi tiet
-    lds = [
+    lds=[
         "Zvl", "Znc", "Zmtc", "Vl", "Nc", "Mtc", "Zvlncmtc", "Tructiepkhac", "Tructiep", "Giantiep", "Giantiepkhac", "Chung", "Giaxaydung", "Thutinhtruoc", "Xaydungtruocthue", "KhaosatThietke", "Giamsat", "Tongxaydungtruocthue", "Thuetongxaydung", "Tongxaydung", "Tailap", "Thuetailap", "Tailaptruocthue"]
     # phan ong nganh
     for chiphi in lds:
@@ -929,7 +1026,7 @@ def tinh_tamqt(schema="web"):
         f" From {schema}.tamqt34) AS U;"
         f" SELECT @onTailap=Isnull(sum(trigia2),0) From {schema}.tamqt35;")
     # load hesochiphi
-    ods = {"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
+    ods={"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
            "giantiepkhac": "giantiepkhac", "thutinhtruoc": "heso_thunhaptt",
            "khaosat": "heso_khaosat", "thietke": "heso_thietke", "giamsat": "heso_gstc"}
     sql += f" Select "
@@ -937,7 +1034,7 @@ def tinh_tamqt(schema="web"):
         sql += f"@{heso}=Isnull({ods[heso]},0),"
     sql += f"@vl=1.0000 From dbo.hesochiphi Where hesoid=@Hesoid;"
     # tinh chi phi
-    lds = ["on", "oc"]
+    lds=["on", "oc"]
     for phui in lds:
         sql += (
             f" Set @{phui}Vl= dbo.lamtronso(@{phui}Zvl*@vl,0);"
@@ -1040,13 +1137,13 @@ def tinh_tamqt(schema="web"):
 
 def tinhlai_dotqt(schema="web"):
     # init prog
-    sql = (f"DROP PROC {schema}.tinhlai_dotqt")
+    sql=(f"DROP PROC {schema}.tinhlai_dotqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql = (
+    sql=(
         f"CREATE PROC {schema}.tinhlai_dotqt"
         f" @Madot NVARCHAR(MAX)=''"
         f" WITH ENCRYPTION AS"

@@ -33,7 +33,7 @@ class Dulieu:
         self.cpvl = self.dict2list(self.cpvl)
         self.tinh_cpong()
 
-    def dict2list(self,dldict={}):
+    def dict2list(self, dldict={}):
         tam = []
         for k in dldict:
             tam.append(dldict[k])
@@ -97,29 +97,31 @@ class Dulieu:
     def tinh_cpvl(self):
         tam = {}
         sql = (
-            f"Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f"SELECT t.chiphiid, t.giavl, t.hosoid, t.soluong, t.tt"
+            f" FROM (Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt"
             f" From {self.schema}.qt32 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0 And qt.hesoid>=20200827"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt"
             f" From {self.schema}.qt34 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0 And qt.hesoid>=20200827"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt"
             f" From {self.schema}.qt31 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0 And qt.hesoid>=20200827"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0), qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt"
             f" From {self.schema}.qt33 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0 And qt.hesoid>=20200827"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
-            f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')"
+            f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')) as t"
+            f" ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid"
         )
         dl = run_mssql(sql)
         if ((dl != None) and (len(dl) > 0)):
@@ -129,6 +131,7 @@ class Dulieu:
                     tam[k] += r['soluong']
                 else:
                     tam[k] = r['soluong']
+        print(f"tinh cpvl tam={tam}")
         dl = []
         for k in tam:
             (chiphiid, giavl, hosoid) = k
@@ -189,29 +192,31 @@ class Dulieu:
     def tinh_cpvl_nd32(self):
         tam = {}
         sql = (
-            f"Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f"SELECT t.chiphiid, t.giavl, t.hosoid, t.soluong"
+            f" FROM (Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong,qt.tt"
             f" From {self.schema}.qt32 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0 And qt.hesoid<20200827"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Cat' And tinhtrang='Moi')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong,qt.tt"
             f" From {self.schema}.qt34 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0 And qt.hesoid<20200827"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Cat' And tinhtrang='Moi')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong,qt.tt"
             f" From {self.schema}.qt31 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0 And qt.hesoid<20200827"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Cat' And tinhtrang='Moi')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong,qt.tt"
             f" From {self.schema}.qt33 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0 And qt.hesoid<20200827"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
-            f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Cat' And tinhtrang='Moi')"
+            f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Cat' And tinhtrang='Moi')) AS t"
+            f" ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid"
         )
         dl = run_mssql(sql)
         if ((dl != None) and (len(dl) > 0)):
@@ -281,29 +286,31 @@ class Dulieu:
     def tinh_cpong(self):
         tam = {}
         sql = (
-            f"Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f"SELECT t.chiphiid, t.giavl, t.hosoid, t.soluong"
+            f" FROM (Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt"
             f" From {self.schema}.qt32 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong,qt.tt"
             f" From {self.schema}.qt34 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong,qt.tt"
             f" From {self.schema}.qt31 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
 
-            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong"
+            f" UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong,qt.tt"
             f" From {self.schema}.qt33 r LEFT JOIN {self.schema}.qt qt ON qt.maqt=r.maqt"
             f" Where qt.madot='{self.madot}' And r.soluong>0"
             f" And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%')"
-            f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')"
+            f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')) AS t"
+            f" ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid"
         )
         dl = run_mssql(sql)
         if ((dl != None) and (len(dl) > 0)):
@@ -313,6 +320,7 @@ class Dulieu:
                     tam[k] += r['soluong']
                 else:
                     tam[k] = r['soluong']
+        print(f"tinh cpong tam={tam}")
         dl = []
         for k in tam:
             (chiphiid, giavl, hosoid) = k
@@ -400,4 +408,3 @@ def dulieuin(schema):
         return data
     except:
         return data
-

@@ -129,7 +129,9 @@ class Hoso {
 
   tat() {
     // load json data
-    this.hon.postMessage({ csdl: ga["csdl"], nam: ga["namlamviec"] });
+    let api_url = window.location.protocol + "//" + window.location.host;
+    api_url += "/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+    this.hon.postMessage({ csdl: ga["csdl"], api: api_url });
     this.hon.onmessage = (e) => {
       let kq = e.data;
       console.log("tat kq=", JSON.stringify(kq, null, 2));
@@ -435,11 +437,12 @@ d3.select("#don-otim").on("click", function (ev) {
 
 function api_hoso(nam) {
 
-  let api_url = "https://localhost:8888/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+  let api_url = window.location.protocol + "//" + window.location.host + "/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+  console.log("api_url=", api_url);
   d3.json(api_url, {
     mode: 'cors'
   }).then(res => {
-    console.log("res from server=", JSON.stringify(res, null, 4));
+    console.log("main thread res from server=", JSON.stringify(res, null, 4));
     let dulieu = res.data || {};
     let flds_be = ["utcid", "sohoso", "khachhang", "diachigandhn"];
     let flds_fe = ["utcid", "so ho so", "khach hang", "dia chi"];
@@ -457,27 +460,42 @@ function show_ketqua(dulieu, flds_be, flds_fe) {
   let bang = d3.select("div[id='test']")
     .append("table")
     .attr("style", "margin: 0");
-
+  //go bo class hidden
+  d3.select("tbody").selectAll("tr").remove();
+  //tieude
 
   bang.append("thead")
     .selectAll("th")
-    .data(flds_fe)
+    .data(['crud', ...flds_fe])
     .enter()
     .append("th")
     .attr("class", "c")
     .text(fld => fld);
 
-  bang.append("tbody")
+  //row
+  let row = bang.append("tbody")
     .selectAll("tr")
     .data(dulieu)
     .enter()
     .append("tr")
-    .attr("class", "l hov")
-    .selectAll("td")
-    .data(row => flds_be.map(fld => { return { "fld": fld, "value": row[fld] }; }))
+    .attr("class", "l hov");
+
+  //col
+  let col = row.selectAll("td")
+    .data(rec => d3.permute(rec, flds_be))
     .enter()
     .append("td")
-    .text(d => d.value);
-
+    .text(d => d);
+  let crud = row.insert('td', 'td');
+  crud.append('button')
+    .on("click", function () {
+      console.log("button trash click=", this.value);
+    })
+    .html('<i class="fa fa-trash"></i>');
+  crud.append('button')
+    .on("click", function () {
+      console.log("button edit click=", this.value);
+    })
+    .html('<i class="fa fa-edit"></i>');
   return bang;
 }
