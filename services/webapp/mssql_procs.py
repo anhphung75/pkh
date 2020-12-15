@@ -17,45 +17,113 @@ class Csdl:
         self.tao()
 
     def tao(self):
-        self.tamqt3x(1)
-        self.tamqt3x(2)
-        self.tamqt3x(3)
-        self.tamqt3x(4)
-        self.tamqt3x(5)
+        # self.tamqt3x(1)
+        # self.tamqt3x(2)
+        # self.tamqt3x(3)
+        # self.tamqt3x(4)
+        # self.tamqt3x(5)
+        self.tamqt()
 
     def tamqt(self):
         try:
-            sql = (f"DROP FUNCTION {self.xac}.tamqt")
+            sql = (f"DROP TABLE {self.xac}.tamqt")
             db.core().execute(sql)
         except:
             pass
         # main prog
         sql = (
             f"CREATE TABLE {self.xac}.tamqt ("
-            f"maqtgt NVARCHAR(50) NULL,"
+            f"mauqt NVARCHAR(50) NULL,"
+            f"maqt NVARCHAR(50) NOT NULL,"
+            # dot
+            f"madot NVARCHAR(50) NULL,"
+            f"nam INT NULL DEFAULT 0,"
+            f"quy NVARCHAR(50) NULL DEFAULT NULL,"
+            f"plqt NVARCHAR(50) NULL DEFAULT NULL,"
+            f"sodot NVARCHAR(50) NULL DEFAULT NULL,"
+            f"nhathauid INT NULL DEFAULT 0,"
+            # qt
             f"tt INT NULL,"
-            f"chiphiid INT NULL DEFAULT 0,")
-        if id in [5]:
-            sql += (
-                f"sl_oc DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"sl_on DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"gia DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"tien_oc DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"tien_on DECIMAL(28,6) NULL DEFAULT 0.0,")
-        else:
-            sql += (
-                f"soluong DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"giavl DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"gianc DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"giamtc DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"tienvl DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"tiennc DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"tienmtc DECIMAL(28,6) NULL DEFAULT 0.0,")
-        sql += (
+            f"soho INT NULL DEFAULT 0,"
+            f"baogiaid INT NULL DEFAULT 0,"
+            f"hesoid INT NULL DEFAULT 0,"
+            f"vlcai DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"nccai DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"mtccai DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"vlnganh DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ncnganh DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"mtcnganh DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"gxd1kq1 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"gxd1kq2 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"gxd2kq1 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"gxd2kq2 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tca DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tcb DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"gxd DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"dautucty DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"dautukhach DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ghichu NVARCHAR(255) NULL DEFAULT NULL,"
+            f"tinhtrang NVARCHAR(50) NULL DEFAULT NULL,"
+            f"nguoilap NVARCHAR(50) NULL DEFAULT NULL,"
+            f"ngaylap DATETIME NULL DEFAULT NULL,"
+            f"inok BIT NOT NULL DEFAULT 0,"
+            # hoancong
+            f"ngaygan DATETIME NULL DEFAULT NULL,"
+            f"ngayhoancong DATETIME NULL DEFAULT NULL,"
+            f"sodhn NVARCHAR(50) NULL DEFAULT NULL,"
+            f"hieudhn NVARCHAR(50) NULL DEFAULT NULL,"
+            f"chisodhn DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"madshc NVARCHAR(50) NULL DEFAULT NULL,"
+            # qtt
+            f"hesothauid INT NULL DEFAULT 0,"
+            f"tvlcai DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tnccai DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tmtccai DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tvlnganh DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tncnganh DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tmtcnganh DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tgxd1kq1 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tgxd1kq2 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"sldh INT NULL DEFAULT 0,"
+            f"dhn15 INT NULL DEFAULT 0,"
+            f"dhn25 INT NULL DEFAULT 0,"
+            f"dhn50 INT NULL DEFAULT 0,"
+            f"dhn80 INT NULL DEFAULT 0,"
+            f"dhn100 INT NULL DEFAULT 0,"
+            f"slong DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ong25 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ong34 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ong50 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ong100 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ong125 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ong150 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ong200 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ong250 DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"slcat DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tiencat DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"slcatnhua DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tiencatnhua DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tienvlk DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"nc DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tiennc DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"mtc DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"tienmtc DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"cptt DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"cong DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"thuevat DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"trigiaqtt DECIMAL(28,6) NULL DEFAULT 0.0,"
+            f"ghichuqtt NVARCHAR(255) NULL DEFAULT NULL,"
+            f"tinhtrangqtt NVARCHAR(50) NULL DEFAULT NULL,"
+            # hoso
+            f"hosoid INT NULL DEFAULT 0,"
+            f"mahoso NVARCHAR(50) NULL DEFAULT NULL,"
+            f"sohoso NVARCHAR(50) NULL DEFAULT NULL,"
+            f"khachhang NVARCHAR(255) NULL DEFAULT NULL,"
+            f"diachikhachhang NVARCHAR(255) NULL DEFAULT NULL,"
+            f"maq INT NULL DEFAULT 0,"
+            f"maqp INT NULL DEFAULT 0,"
             f"lastupdate DATETIME NULL DEFAULT NULL,"
-            f"maqt NVARCHAR(50) NULL DEFAULT NULL,"
-            f"mauqtgt NVARCHAR(50) NOT NULL,"
-            f"CONSTRAINT tamqt3{id}_pk PRIMARY KEY (mauqtgt));"
+            f"CONSTRAINT {self.xac}_tamqt_pk PRIMARY KEY (maqt));"
         )
         try:
             db.core().execute(sql)
@@ -66,23 +134,23 @@ class Csdl:
         if id not in [1, 2, 3, 4, 5]:
             return
         try:
-            sql=(f"DROP FUNCTION {self.xac}.tamqt3{id}")
+            sql = (f"DROP TABLE {self.xac}.tamqt3{id}")
             db.core().execute(sql)
         except:
             pass
         # main prog
-        sql=(
+        sql = (
             f"CREATE TABLE {self.xac}.tamqt3{id} ("
             f"maqtgt NVARCHAR(50) NULL,"
             f"tt INT NULL,"
             f"chiphiid INT NULL DEFAULT 0,")
         if id in [5]:
             sql += (
-                f"sl_oc DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"sl_on DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"oc_sl DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"on_sl DECIMAL(28,6) NULL DEFAULT 0.0,"
                 f"gia DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"tien_oc DECIMAL(28,6) NULL DEFAULT 0.0,"
-                f"tien_on DECIMAL(28,6) NULL DEFAULT 0.0,")
+                f"oc_tien DECIMAL(28,6) NULL DEFAULT 0.0,"
+                f"on_tien DECIMAL(28,6) NULL DEFAULT 0.0,")
         else:
             sql += (
                 f"soluong DECIMAL(28,6) NULL DEFAULT 0.0,"
@@ -96,7 +164,7 @@ class Csdl:
             f"lastupdate DATETIME NULL DEFAULT NULL,"
             f"maqt NVARCHAR(50) NULL DEFAULT NULL,"
             f"mauqtgt NVARCHAR(50) NOT NULL,"
-            f"CONSTRAINT tamqt3{id}_pk PRIMARY KEY (mauqtgt));"
+            f"CONSTRAINT {self.xac}_tamqt3{id}_pk PRIMARY KEY (mauqtgt));"
         )
         try:
             db.core().execute(sql)
@@ -104,202 +172,533 @@ class Csdl:
             pass
 
 
-def lamtronso(schema="dbo"):
-    # init prog
-    sql=(f"DROP FUNCTION {schema}.lamtronso")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-    # main prog
-    sql=(
-        f"CREATE FUNCTION {schema}.lamtronso(@Solamtron decimal(38,9), @Sole int=0)"
-        f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Them decimal(38,9)=0.0, @Kq decimal(38,9), @Kt decimal(38,9), @Lech decimal(38,9);"
-        f" If @Sole<0 or @Sole>9 RETURN @Solamtron;"
-        f" SET @Kq=Round(@Solamtron,@Sole,1);"
-        f" SET @Kt=Round(@Solamtron,@Sole+1,1);"
-        f" SET @Lech=(@Kt-@Kq)*Power(10,@Sole+1);"
-        f" IF @Lech>4 SET @Them=1/Power(10,@Sole);"
-        f" RETURN (@Kq + @Them); END;")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
+class Qtgt:
+    def __init__(self, xac='pkh'):
+        self.xac = xac
+        self.kho = 'dbo'
+        self.tao()
+
+    def tao(self):
+        self.lamtronso()
+        self.giavl()
+        self.gianc()
+        self.giamtc()
+        self.giatl()
+        # self.tamqt3x(2)
+        # self.tamqt3x(3)
+        # self.tamqt3x(4)
+        # self.tamqt3x(5)
+        self.tamqt_nap()
+
+    def lamtronso(self):
+        try:
+            sql = (f"DROP FUNCTION {self.kho}.lamtronso")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE FUNCTION {self.kho}.lamtronso(@Solamtron decimal(38,9), @Sole int=0)"
+            f" Returns decimal(38,9) AS BEGIN"
+            f" Declare @Them decimal(38,9)=0.0, @Kq decimal(38,9), @Kt decimal(38,9), @Lech decimal(38,9);"
+            f" If @Sole<0 or @Sole>9 RETURN @Solamtron;"
+            f" SET @Kq=Round(@Solamtron,@Sole,1);"
+            f" SET @Kt=Round(@Solamtron,@Sole+1,1);"
+            f" SET @Lech=(@Kt-@Kq)*Power(10,@Sole+1);"
+            f" IF @Lech>4 SET @Them=1/Power(10,@Sole);"
+            f" RETURN (@Kq + @Them); END;")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def giavl(self):
+        try:
+            sql = (f"DROP FUNCTION {self.kho}.giavl")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE FUNCTION {self.kho}.giavl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+            f" Returns decimal(38,9) AS BEGIN"
+            f" Declare @Kq decimal(38,9)=0.0;"
+            f" Select Top 1 @Kq=Isnull(giavl,0.0) From {self.kho}.baogiachiphi"
+            f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+            f" Order By baogiaid DESC;"
+            f" IF @Kq<0 SET @Kq=@Kq*(-1);"
+            f" RETURN @Kq; END;")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def gianc(self):
+        try:
+            sql = (f"DROP FUNCTION {self.kho}.gianc")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE FUNCTION {self.kho}.gianc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+            f" Returns decimal(38,9) AS BEGIN"
+            f" Declare @Kq decimal(38,9)=0.0;"
+            f" Select Top 1 @Kq=Isnull(gianc,0.0) From {self.kho}.baogiachiphi"
+            f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+            f" Order By baogiaid DESC;"
+            f" IF @Kq<0 SET @Kq=@Kq*(-1);"
+            f" RETURN @Kq; END;")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def giamtc(self):
+        try:
+            sql = (f"DROP FUNCTION {self.kho}.giamtc")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE FUNCTION {self.kho}.giamtc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+            f" Returns decimal(38,9) AS BEGIN"
+            f" Declare @Kq decimal(38,9)=0.0;"
+            f" Select Top 1 @Kq=Isnull(giamtc,0.0) From {self.kho}.baogiachiphi"
+            f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+            f" Order By baogiaid DESC;"
+            f" IF @Kq<0 SET @Kq=@Kq*(-1);"
+            f" RETURN @Kq; END;")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def giatl(self):
+        try:
+            sql = (f"DROP FUNCTION {self.kho}.giatl")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE FUNCTION {self.kho}.giatl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+            f" Returns decimal(38,9) AS BEGIN"
+            f" Declare @Kq decimal(38,9)=0.0;"
+            f" Select Top 1 @Kq=Isnull(gia,0.0) From {self.kho}.baogiachiphi"
+            f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+            f" Order By baogiaid DESC;"
+            f" IF @Kq<0 SET @Kq=@Kq*(-1);"
+            f" RETURN @Kq; END;")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def tamqt_nap(self):
+        try:
+            sql = (f"DROP PROC {self.xac}.tamqt_nap")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE PROC {self.xac}.tamqt_nap"
+            f" @Maqt NVARCHAR(50)=''"
+            f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
+            f" IF Len(Isnull(@Maqt,''))<1 RETURN;")
+        sql += (
+            f" Declare @Mauqt NVARCHAR(50)='';"
+            f" SET @Mauqt=@Maqt;")
+        sql += (
+            f" MERGE {self.xac}.tamqt AS s USING {self.xac}.qt AS r ON (s.mauqt=r.mauqt)"
+            f" WHEN MATCHED THEN UPDATE SET s.maqt=@maqt,"
+            f" s.baogiaid=CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+            f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+            f" s.hesoid=CASE WHEN r.hesoid>0 THEN r.hesoid"
+            f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+            f" s.plgia=Isnull(r.plgia,'dutoan'),"
+            f" s.madot=r.madot,s.hosoid=r.hosoid,s.tt=r.tt,s.soho=r.soho,"
+            f" s.vlcai=r.vlcai,s.nccai=r.nccai,s.mtccai=r.mtccai,s.gxd1kq1=r.gxd1kq1,s.gxd1kq2=r.gxd1kq2,"
+            f" s.vlnganh=r.vlnganh,s.ncnganh=r.ncnganh,s.mtcnganh=r.mtcnganh,s.gxd2kq1=r.gxd2kq1,s.gxd2kq2=r.gxd2kq2,"
+            f" s.gxd=r.gxd,s.dautucty=r.dautucty,s.dautukhach=r.dautukhach,s.ghichu=r.ghichu,s.tinhtrang=r.tinhtrang,"
+            f" s.nguoilap=r.nguoilap,s.ngaylap=r.ngaylap,s.inok=r.inok,s.ngaygan=r.ngaygan,s.ngayhoancong=r.ngayhoancong,"
+            f" s.sodhn=r.sodhn,s.hieudhn=r.hieudhn,s.chisodhn=r.chisodhn,s.madshc=r.madshc,s.hesothauid=r.hesothauid,"
+            f" s.tvlcai=r.tvlcai,s.tnccai=r.tnccai,s.tmtccai=r.tmtccai,s.tvlnganh=r.tvlnganh,s.tncnganh=r.tncnganh,"
+            f" s.tmtcnganh=r.tmtcnganh,s.tgxd1kq1=r.tgxd1kq1,s.tgxd1kq2=r.tgxd1kq2,"
+            f" s.sldh=r.sldh,s.dhn15=r.dhn15,s.dhn25=r.dhn25,s.dhn50=r.dhn50,s.dhn80=r.dhn80,s.dhn100=r.dhn100,"
+            f" s.slong=r.slong,s.ong25=r.ong25,s.ong34=r.ong34,s.ong50=r.ong50,s.ong100=r.ong100,"
+            f" s.ong125=r.ong125,s.ong150=r.ong150,s.ong200=r.ong200,s.ong250=r.ong250,"
+            f" s.slcat=r.slcat,s.tiencat=r.tiencat,s.slcatnhua=r.slcatnhua,s.tiencatnhua=r.tiencatnhua,"
+            f" s.tienvlk=r.tienvlk,s.nc=r.nc,s.tiennc=r.tiennc,s.mtc=r.mtc,s.tienmtc=r.tienmtc,s.cptt=r.cptt,"
+            f" s.cong=r.cong,s.thuevat=r.thuevat,s.trigiaqtt=r.trigiaqtt,s.ghichuqtt=r.ghichuqtt,s.tinhtrangqtt=r.tinhtrangqtt,"
+            f" s.lastupdate=Isnull(r.lastupdate,getdate())"
+            f" WHEN NOT MATCHED BY SOURCE THEN DELETE"
+            f" WHEN NOT MATCHED BY TARGET THEN"
+            f" INSERT (maqt,baogiaid,hesoid,plgia,madot,hosoid,tt,soho,"
+            f"vlcai,nccai,mtccai,gxd1kq1,gxd1kq2,vlnganh,ncnganh,mtcnganh,gxd2kq1,gxd2kq2,"
+            f"gxd,dautucty,dautukhach,ghichu,tinhtrang,nguoilap,ngaylap,ngaygan,ngayhoancong,"
+            f"sodhn,hieudhn,chisodhn,madshc,hesothauid,"
+            f"tvlcai,tnccai,tmtccai,tvlnganh,tncnganh,tmtcnganh,tgxd1kq1,tgxd1kq2,"
+            f"sldh,dhn15,dhn25,dhn50,dhn80,dhn100,"
+            f"slong,ong25,ong34,ong50,ong100,ong125,ong150,ong200,ong250,"
+            f"slcat,tiencat,slcatnhua,tiencatnhua,tienvlk,nc,tiennc,mtc,tienmtc,"
+            f"cptt,cong,thuevat,trigiaqtt,ghichuqtt,tinhtrangqtt,lastupdate)"
+            f" VALUES (@Maqt,CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+            f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+            f" CASE WHEN r.hesoid>0 THEN r.hesoid"
+            f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+            f"Isnull(r.plgia,'dutoan'),r.madot,r.hosoid,r.tt,r.soho,"
+            f"r.vlcai,r.nccai,r.mtccai,r.gxd1kq1,r.gxd1kq2,r.vlnganh,r.ncnganh,r.mtcnganh,r.gxd2kq1,r.gxd2kq2,"
+            f"r.gxd,r.dautucty,r.dautukhach,r.ghichu,r.tinhtrang,r.nguoilap,r.ngaylap,r.ngaygan,r.ngayhoancong,"
+            f"r.sodhn,r.hieudhn,r.chisodhn,r.madshc,r.hesothauid,"
+            f"r.tvlcai,r.tnccai,r.tmtccai,r.tvlnganh,r.tncnganh,r.tmtcnganh,r.tgxd1kq1,r.tgxd1kq2,"
+            f"r.sldh,r.dhn15,r.dhn25,r.dhn50,r.dhn80,r.dhn100,"
+            f"r.slong,r.ong25,r.ong34,r.ong50,r.ong100,r.ong125,r.ong150,r.ong200,r.ong250,"
+            f"r.slcat,r.tiencat,r.slcatnhua,r.tiencatnhua,r.tienvlk,r.nc,r.tiennc,r.mtc,r.tienmtc,"
+            f"r.cptt,r.cong,r.thuevat,r.trigiaqtt,r.ghichuqtt,r.tinhtrangqtt,Isnull(r.lastupdate,getdate()));")
+        sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def tamqt_napkho(self):
+        try:
+            sql = (f"DROP PROC {self.xac}.tamqt_napkho")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE PROC {self.xac}.tamqt_napkho"
+            f" @Maqt NVARCHAR(50)=''"
+            f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
+            f" IF Len(Isnull(@Maqt,''))<1 RETURN;")
+        sql += (
+            f" Declare @Mauqt NVARCHAR(50)='';"
+            f" SET @Mauqt=@Maqt;")
+        sql += (
+            f" MERGE {self.xac}.tamqt AS s USING {self.kho}.qt AS r ON (s.mauqt=r.mauqt)"
+            f" WHEN MATCHED THEN UPDATE SET s.maqt=@maqt,"
+            f" s.baogiaid=CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+            f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+            f" s.hesoid=CASE WHEN r.hesoid>0 THEN r.hesoid"
+            f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+            f" s.plgia=Isnull(r.plgia,'dutoan'),"
+            f" s.madot=r.madot,s.hosoid=r.hosoid,s.tt=r.tt,s.soho=r.soho,"
+            f" s.vlcai=r.vlcai,s.nccai=r.nccai,s.mtccai=r.mtccai,s.gxd1kq1=r.gxd1kq1,s.gxd1kq2=r.gxd1kq2,"
+            f" s.vlnganh=r.vlnganh,s.ncnganh=r.ncnganh,s.mtcnganh=r.mtcnganh,s.gxd2kq1=r.gxd2kq1,s.gxd2kq2=r.gxd2kq2,"
+            f" s.gxd=r.gxd,s.dautucty=r.dautucty,s.dautukhach=r.dautukhach,s.ghichu=r.ghichu,s.tinhtrang=r.tinhtrang,"
+            f" s.nguoilap=r.nguoilap,s.ngaylap=r.ngaylap,s.inok=r.inok,s.ngaygan=r.ngaygan,s.ngayhoancong=r.ngayhoancong,"
+            f" s.sodhn=r.sodhn,s.hieudhn=r.hieudhn,s.chisodhn=r.chisodhn,s.madshc=r.madshc,s.hesothauid=r.hesothauid,"
+            f" s.tvlcai=r.tvlcai,s.tnccai=r.tnccai,s.tmtccai=r.tmtccai,s.tvlnganh=r.tvlnganh,s.tncnganh=r.tncnganh,"
+            f" s.tmtcnganh=r.tmtcnganh,s.tgxd1kq1=r.tgxd1kq1,s.tgxd1kq2=r.tgxd1kq2,"
+            f" s.sldh=r.sldh,s.dhn15=r.dhn15,s.dhn25=r.dhn25,s.dhn50=r.dhn50,s.dhn80=r.dhn80,s.dhn100=r.dhn100,"
+            f" s.slong=r.slong,s.ong25=r.ong25,s.ong34=r.ong34,s.ong50=r.ong50,s.ong100=r.ong100,"
+            f" s.ong125=r.ong125,s.ong150=r.ong150,s.ong200=r.ong200,s.ong250=r.ong250,"
+            f" s.slcat=r.slcat,s.tiencat=r.tiencat,s.slcatnhua=r.slcatnhua,s.tiencatnhua=r.tiencatnhua,"
+            f" s.tienvlk=r.tienvlk,s.nc=r.nc,s.tiennc=r.tiennc,s.mtc=r.mtc,s.tienmtc=r.tienmtc,s.cptt=r.cptt,"
+            f" s.cong=r.cong,s.thuevat=r.thuevat,s.trigiaqtt=r.trigiaqtt,s.ghichuqtt=r.ghichuqtt,s.tinhtrangqtt=r.tinhtrangqtt,"
+            f" s.lastupdate=Isnull(r.lastupdate,getdate())"
+            f" WHEN NOT MATCHED BY SOURCE THEN DELETE"
+            f" WHEN NOT MATCHED BY TARGET THEN"
+            f" INSERT (maqt,baogiaid,hesoid,plgia,madot,hosoid,tt,soho,"
+            f"vlcai,nccai,mtccai,gxd1kq1,gxd1kq2,vlnganh,ncnganh,mtcnganh,gxd2kq1,gxd2kq2,"
+            f"gxd,dautucty,dautukhach,ghichu,tinhtrang,nguoilap,ngaylap,ngaygan,ngayhoancong,"
+            f"sodhn,hieudhn,chisodhn,madshc,hesothauid,"
+            f"tvlcai,tnccai,tmtccai,tvlnganh,tncnganh,tmtcnganh,tgxd1kq1,tgxd1kq2,"
+            f"sldh,dhn15,dhn25,dhn50,dhn80,dhn100,"
+            f"slong,ong25,ong34,ong50,ong100,ong125,ong150,ong200,ong250,"
+            f"slcat,tiencat,slcatnhua,tiencatnhua,tienvlk,nc,tiennc,mtc,tienmtc,"
+            f"cptt,cong,thuevat,trigiaqtt,ghichuqtt,tinhtrangqtt,lastupdate)"
+            f" VALUES (@Maqt,CASE WHEN r.baogiaid>0 THEN r.baogiaid"
+            f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
+            f" CASE WHEN r.hesoid>0 THEN r.hesoid"
+            f" ELSE (Select Top 1 hesoid From dbo.hesochiphi Order By hesoid DESC) END,"
+            f"Isnull(r.plgia,'dutoan'),r.madot,r.hosoid,r.tt,r.soho,"
+            f"r.vlcai,r.nccai,r.mtccai,r.gxd1kq1,r.gxd1kq2,r.vlnganh,r.ncnganh,r.mtcnganh,r.gxd2kq1,r.gxd2kq2,"
+            f"r.gxd,r.dautucty,r.dautukhach,r.ghichu,r.tinhtrang,r.nguoilap,r.ngaylap,r.ngaygan,r.ngayhoancong,"
+            f"r.sodhn,r.hieudhn,r.chisodhn,r.madshc,r.hesothauid,"
+            f"r.tvlcai,r.tnccai,r.tmtccai,r.tvlnganh,r.tncnganh,r.tmtcnganh,r.tgxd1kq1,r.tgxd1kq2,"
+            f"r.sldh,r.dhn15,r.dhn25,r.dhn50,r.dhn80,r.dhn100,"
+            f"r.slong,r.ong25,r.ong34,r.ong50,r.ong100,r.ong125,r.ong150,r.ong200,r.ong250,"
+            f"r.slcat,r.tiencat,r.slcatnhua,r.tiencatnhua,r.tienvlk,r.nc,r.tiennc,r.mtc,r.tienmtc,"
+            f"r.cptt,r.cong,r.thuevat,r.trigiaqtt,r.ghichuqtt,r.tinhtrangqtt,Isnull(r.lastupdate,getdate()));")
+        sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def qtgt_nap(self):
+        try:
+            sql = (f"DROP PROC {self.xac}.qtgt_nap")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+
+    def qtgt_tinh(self):
+        try:
+            sql = (f"DROP PROC {self.xac}.qtgt_tinh")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+        f"CREATE PROC {self.xac}.qtgt_tinh"
+        f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
+        f" WITH ENCRYPTION AS"
+        f" BEGIN SET NOCOUNT ON"
+        f" BEGIN TRY DECLARE")
+        # heso chiphi
+        lds = ["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
+            "thutinhtruoc", "khaosat", "thietke", "giamsat"]
+        for heso in lds:
+            sql += f" @{heso} DECIMAL(38,9)=1.0000,"
+        # tong ket kinh phi
+        lds = ["tongxaydung", "tailap", "congtrinh", "congtrinhtruocthue",
+            "thuecongtrinh", "dautucty", "dautukhach", "tratruoc"]
+        for chiphi in lds:
+            sql += f" @{chiphi} DECIMAL(38,9)=1.0000,"
+        # kinh phi chi tiet
+        lds = [
+            "Zvl", "Znc", "Zmtc", "Vl", "Nc", "Mtc", "Zvlncmtc", "Tructiepkhac", "Tructiep", "Giantiep", "Giantiepkhac", "Chung", "Giaxaydung", "Thutinhtruoc", "Xaydungtruocthue", "KhaosatThietke", "Giamsat", "Tongxaydungtruocthue", "Thuetongxaydung", "Tongxaydung", "Tailap", "Thuetailap", "Tailaptruocthue"]
+        # phan ong nganh
+        for chiphi in lds:
+            sql += (
+                f" @on{chiphi} DECIMAL(38,9)=1.0000,"
+                f" @oc{chiphi} DECIMAL(38,9)=1.0000,")
+        sql += f" @Plqt NVARCHAR(50);"
+        # tinh tamqtx
+        sql += (
+            f" IF((@Baogiaid>0) OR (Len(Isnull(@Plgia,''))>0))"
+            f" EXEC {self.xac}.tinh_tamqt3x @Baogiaid, @Hesoid, @Plgia;")
+        # load Zvl, Znc, Zmtc, Tailap
+        sql += (
+            f" SELECT @ocZvl=Sum(zVl), @ocZnc=Sum(zNc), @ocZmtc=Sum(zMtc) FROM"
+            f" (Select Isnull(sum(trigiavl),0) As zVl, Isnull(sum(trigianc),0) As zNc, Isnull(sum(trigiamtc),0) As zMtc"
+            f" From {self.xac}.tamqt31 UNION"
+            f" Select Isnull(sum(trigiavl),0) As zVl, Isnull(sum(trigianc),0) As zNc, Isnull(sum(trigiamtc),0) As zMtc"
+            f" From {self.xac}.tamqt32) AS U;"
+            f" SELECT @ocTailap=Isnull(sum(trigia1),0)"
+            f" From {self.xac}.tamqt35;")
+        sql += (
+            f" SELECT @onZvl=Sum(zVl), @onZnc=Sum(zNc), @onZmtc=Sum(zMtc) FROM"
+            f" (Select Isnull(sum(trigiavl),0) As zVl, Isnull(sum(trigianc),0) As zNc, Isnull(sum(trigiamtc),0) As zMtc"
+            f" From {self.xac}.tamqt33 UNION"
+            f" Select Isnull(sum(trigiavl),0) As zVl, Isnull(sum(trigianc),0) As zNc, Isnull(sum(trigiamtc),0) As zMtc"
+            f" From {self.xac}.tamqt34) AS U;"
+            f" SELECT @onTailap=Isnull(sum(trigia2),0)"
+            f" From {self.xac}.tamqt35;")
+        # load hesochiphi
+        ods = {"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
+            "giantiepkhac": "giantiepkhac", "thutinhtruoc": "heso_thunhaptt",
+            "khaosat": "heso_khaosat", "thietke": "heso_thietke", "giamsat": "heso_gstc"}
+        sql += f" Select "
+        for heso in ods:
+            sql += f"@{heso}=Isnull({ods[heso]},0),"
+        sql += f"@vl=1.0000 From {self.kho}.hesochiphi Where hesoid=@Hesoid;"
+        # tinh chi phi
+        lds = ["on", "oc"]
+        for phui in lds:
+            sql += (
+                f" Set @{phui}Vl= {self.kho}.lamtronso(@{phui}Zvl*@vl,0);"
+                f" Set @{phui}Nc= {self.kho}.lamtronso(@{phui}Znc*@nc,0);"
+                f" Set @{phui}Mtc= {self.kho}.lamtronso(@{phui}Zmtc*@mtc,0);"
+                f" Set @{phui}Zvlncmtc= (@{phui}Vl + @{phui}Nc + @{phui}Mtc);"
+                f" Set @{phui}Tructiepkhac= {self.kho}.lamtronso(@{phui}Zvlncmtc * @tructiepkhac,0);"
+                f" Set @{phui}Tructiep= (@{phui}Zvlncmtc + @{phui}Tructiepkhac);"
+                f" Set @{phui}Chung= {self.kho}.lamtronso(@{phui}Tructiep * @chung,0);"
+                f" Set @{phui}Giantiepkhac= {self.kho}.lamtronso(@{phui}Tructiep * @giantiepkhac,0);"
+                f" Set @{phui}Giantiep= (@{phui}Chung + @{phui}Giantiepkhac);"
+                f" Set @{phui}Giaxaydung= (@{phui}Giantiep + @{phui}Tructiep);"
+                f" Set @{phui}Thutinhtruoc= {self.kho}.lamtronso(@{phui}Giaxaydung * @thutinhtruoc,0);"
+                f" Set @{phui}Xaydungtruocthue= (@{phui}Giaxaydung + @{phui}Thutinhtruoc);"
+                f" Set @{phui}KhaosatThietke= {self.kho}.lamtronso(@{phui}Xaydungtruocthue * @khaosat * @thietke,0);"
+                f" Set @{phui}Giamsat= {self.kho}.lamtronso(@{phui}Xaydungtruocthue * @giamsat,0);"
+                f" Set @{phui}Tongxaydungtruocthue= (@{phui}Xaydungtruocthue + @{phui}KhaosatThietke + @{phui}Giamsat);"
+                f" Set @{phui}Thuetongxaydung= {self.kho}.lamtronso(@{phui}Tongxaydungtruocthue * 0.1,0);"
+                f" Set @{phui}Tongxaydung= (@{phui}Tongxaydungtruocthue + @{phui}Thuetongxaydung);"
+                # Tailap
+                f" Set @{phui}Tailaptruocthue= {self.kho}.lamtronso(@{phui}Tailap * 100/110,0);"
+                f" Set @{phui}Thuetailap= (@{phui}Tailap - @{phui}Tailaptruocthue);")
+        sql += (
+            f" Set @tongxaydung= (@onTongxaydung + @ocTongxaydung);"
+            f" Set @tailap= (@onTailap + @ocTailap);"
+            f" Set @congtrinh= (@tongxaydung + @tailap);"
+            f" Set @congtrinhtruocthue= {self.kho}.lamtronso(@congtrinh*100/110,0);"
+            f" Set @thuecongtrinh= (@congtrinh-@congtrinhtruocthue);"
+            f" Select @Plqt=Isnull(maqt, ''), @Dautucty=dautucty From {schema}.tamqt;"
+            f" IF @Plqt LIKE '%MP%' Set @dautucty= {self.kho}.lamtronso(@congtrinh, 0);"
+            f" ELSE If @dautucty is null Set @dautucty= (@onTongxaydung + @onTailap);"
+            f" Set @dautukhach= (@congtrinh - @dautucty);")
+        sql += (
+            f" UPDATE {schema}.tamqt SET"
+            f" plgia = Isnull(@Plgia, 'dutoan'),"
+            f" vlcai=@ocZvl,"
+            f" nccai=@ocZnc,"
+            f" mtccai=@ocZmtc,"
+            f" vlnganh=@onZvl,"
+            f" ncnganh=@onZnc,"
+            f" mtcnganh=@onZmtc,"
+            f" gxd1kq1=@ocTongxaydung,"
+            f" gxd2kq1=@ocTailap,"
+            f" gxd1kq2=@onTongxaydung,"
+            f" gxd2kq2=@onTailap,"
+            f" gxd=@congtrinh,"
+            f" dautucty= @dautucty,"
+            f" dautukhach= @dautukhach,")
+        # thqt01 viev
+        sql += (
+            f" dhn15= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='DHN' AND giatripl=15),0),"
+            f" dhn50= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='DHN' AND giatripl=50),0),"
+            f" dhn80= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='DHN' AND giatripl=80),0),"
+            f" dhn100= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='DHN' AND giatripl=100),0),"
+            f" sldh= Isnull((Select sum(sl) From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='DHN'),0),"
+            # tong hop ong
+            f" ong25= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=25),0),"
+            f" ong34= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=34),0),"
+            f" ong50= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=50),0),"
+            f" ong100= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=100),0),"
+            f" ong125= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=125),0),"
+            f" ong150= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=150),0),"
+            f" ong200= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=200),0),"
+            f" ong250= Isnull((Select sl From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong' AND giatripl=250),0),"
+            f" slong= Isnull((Select sum(sl) From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Ong'),0),"
+            # tong hop cat
+            f" slcat= Case When @Hesoid>=20200827"
+            f" Then Isnull((Select sum(sl) From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Cat20200827'),0)"
+            f" Else Isnull((Select sum(sl) From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Cat'),0) End,"
+            f" tiencat= Case When @Hesoid>=20200827"
+            f" Then Isnull((Select sum(vl) From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Cat20200827'),0)"
+            f" Else Isnull((Select sum(vl) From {schema}.tamthqt01"
+            f" Where tinhtrang='Moi' AND phanloai='Cat'),0) End;")
+        sql += (
+            f" If @Baogiaid>0 Update {schema}.tamqt SET baogiaid=@Baogiaid;"
+            f" If @Hesoid>0 Update {schema}.tamqt SET hesoid=@Hesoid;")
+        sql += f" END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+    def qtgt_luu(self):
+        try:
+            sql = (f"DROP PROC {self.xac}.qtgt_luu")
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
 
 
-def giavl(schema="dbo"):
-    # init prog
-    sql=(f"DROP FUNCTION {schema}.giavl")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-    # main prog
-    sql=(
-        f"CREATE FUNCTION {schema}.giavl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
-        f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,9)=0.0;"
-        f" Select Top 1 @Kq=Isnull(giavl,0.0) From dbo.baogiachiphi"
-        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
-        f" Order By baogiaid DESC;"
-        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
-        f" RETURN @Kq; END;")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
+class Qtgt_thau:
+    def __init__(self, xac='pkh'):
+        self.xac = xac
+        self.kho = 'dbo'
+        self.tao()
 
+    def tao(self):
+        self.giavl()
+        self.gianc()
+        self.giamtc()
 
-def gianc(schema="dbo"):
-    # init prog
-    sql=(f"DROP FUNCTION {schema}.gianc")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-    # main prog
-    sql=(
-        f"CREATE FUNCTION {schema}.gianc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
-        f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,9)=0.0;"
-        f" Select Top 1 @Kq=Isnull(gianc,0.0) From dbo.baogiachiphi"
-        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
-        f" Order By baogiaid DESC;"
-        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
-        f" RETURN @Kq; END;")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
+    def giavl(self):
+        # init prog
+        sql = (f"DROP FUNCTION {self.kho}.giavl_thau")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE FUNCTION {self.kho}.giavl_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+            f" Returns decimal(38,9) AS BEGIN"
+            f" Declare @Kq decimal(38,9)=0.0;"
+            f" Select Top 1 @Kq=Isnull(giavl1,0.0) From {self.kho}.baogiachiphi"
+            f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+            f" Order By baogiaid DESC;"
+            f" IF @Kq<0 SET @Kq=@Kq*(-1);"
+            f" RETURN @Kq; END;")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
 
+    def gianc(self):
+        # init prog
+        sql = (f"DROP FUNCTION {self.kho}.gianc_thau")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE FUNCTION {self.kho}.gianc_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+            f" Returns decimal(38,9) AS BEGIN"
+            f" Declare @Kq decimal(38,9)=0.0;"
+            f" Select Top 1 @Kq=Isnull(gianc1,0.0) From {self.kho}.baogiachiphi"
+            f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+            f" Order By baogiaid DESC;"
+            f" IF @Kq<0 SET @Kq=@Kq*(-1);"
+            f" RETURN @Kq; END;")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
 
-def giamtc(schema="dbo"):
-    # init prog
-    sql=(f"DROP FUNCTION {schema}.giamtc")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-    # main prog
-    sql=(
-        f"CREATE FUNCTION {schema}.giamtc(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
-        f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,9)=0.0;"
-        f" Select Top 1 @Kq=Isnull(giamtc,0.0) From dbo.baogiachiphi"
-        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
-        f" Order By baogiaid DESC;"
-        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
-        f" RETURN @Kq; END;")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-
-
-def giatl(schema="dbo"):
-    # init prog
-    sql=(f"DROP FUNCTION {schema}.giatl")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-    # main prog
-    sql=(
-        f"CREATE FUNCTION {schema}.giatl(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
-        f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,9)=0.0;"
-        f" Select Top 1 @Kq=Isnull(gia,0.0) From dbo.baogiachiphi"
-        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
-        f" Order By baogiaid DESC;"
-        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
-        f" RETURN @Kq; END;")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-
-
-def giavl_thau(schema="dbo"):
-    # init prog
-    sql=(f"DROP FUNCTION {schema}.giavl_thau")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-    # main prog
-    sql=(
-        f"CREATE FUNCTION {schema}.giavl_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
-        f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,9)=0.0;"
-        f" Select Top 1 @Kq=Isnull(giavl1,0.0) From dbo.baogiachiphi"
-        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
-        f" Order By baogiaid DESC;"
-        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
-        f" RETURN @Kq; END;")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-
-
-def gianc_thau(schema="dbo"):
-    # init prog
-    sql=(f"DROP FUNCTION {schema}.gianc_thau")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-    # main prog
-    sql=(
-        f"CREATE FUNCTION {schema}.gianc_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
-        f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,9)=0.0;"
-        f" Select Top 1 @Kq=Isnull(gianc1,0.0) From dbo.baogiachiphi"
-        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
-        f" Order By baogiaid DESC;"
-        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
-        f" RETURN @Kq; END;")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-
-
-def giamtc_thau(schema="dbo"):
-    # init prog
-    sql=(f"DROP FUNCTION {schema}.giamtc_thau")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
-    # main prog
-    sql=(
-        f"CREATE FUNCTION {schema}.giamtc_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
-        f" Returns decimal(38,9) AS BEGIN"
-        f" Declare @Kq decimal(38,9)=0.0;"
-        f" Select Top 1 @Kq=Isnull(giamtc1,0.0) From dbo.baogiachiphi"
-        f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
-        f" Order By baogiaid DESC;"
-        f" IF @Kq<0 SET @Kq=@Kq*(-1);"
-        f" RETURN @Kq; END;")
-    try:
-        db.core().execute(sql)
-    except:
-        pass
+    def giamtc(self):
+        # init prog
+        sql = (f"DROP FUNCTION {self.kho}.giamtc_thau")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE FUNCTION {self.kho}.giamtc_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
+            f" Returns decimal(38,9) AS BEGIN"
+            f" Declare @Kq decimal(38,9)=0.0;"
+            f" Select Top 1 @Kq=Isnull(giamtc1,0.0) From {self.kho}.baogiachiphi"
+            f" Where (chiphiid=@Chiphiid) AND (baogiaid<=@Baogiaid) AND (plgia=@Plgia)"
+            f" Order By baogiaid DESC;"
+            f" IF @Kq<0 SET @Kq=@Kq*(-1);"
+            f" RETURN @Kq; END;")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
 
 
 # proc
 
 
 def baogiathau():
-    sql=(f"DROP PROC dbo.baogiathau")
+    sql = (f"DROP PROC dbo.baogiathau")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC dbo.baogiathau"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
@@ -398,12 +797,12 @@ def load_tamqt3x(schema="web", qt3x=1):
     if qt3x not in [1, 2, 3, 4, 5]:
         return
     try:
-        sql=(f"DROP PROC {schema}.load_tamqt3{qt3x}")
+        sql = (f"DROP PROC {schema}.load_tamqt3{qt3x}")
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.load_tamqt3{qt3x}"
         f" @Maqt NVARCHAR(50),@Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS"
@@ -490,18 +889,20 @@ def load_tamqt3x(schema="web", qt3x=1):
 
 def tamqt_nap(xac="web"):
     # init prog
-    sql=(f"DROP PROC {xac}.tamqt_nap")
+    sql = (f"DROP PROC {xac}.tamqt_nap")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {xac}.tamqt_nap"
         f" @Maqt NVARCHAR(50)=''"
-        f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY")
+        f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
+        f" Declare @Mauqt NVARCHAR(50)='';"
+        f" SET @Mauqt=@Maqt;")
     sql += (
-        f" MERGE {xac}.tamqt AS s USING {xac}.qt AS r ON (s.maqt=r.maqt)"
+        f" MERGE {xac}.tamqt AS s USING {xac}.qt AS r ON (s.mauqt=r.mauqt)"
         f" WHEN MATCHED THEN UPDATE SET s.maqt=@maqt,"
         f" s.baogiaid=CASE WHEN r.baogiaid>0 THEN r.baogiaid"
         f" ELSE (Select Top 1 baogiaid From dbo.baogiachiphi Order By baogiaid DESC) END,"
@@ -556,13 +957,13 @@ def tamqt_nap(xac="web"):
 
 def tamqt_napgoc(xac="web"):
     # init prog
-    sql=(f"DROP PROC {xac}.tamqt_napgoc")
+    sql = (f"DROP PROC {xac}.tamqt_napgoc")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {xac}.tamqt_napgoc"
         f" @Maqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY")
@@ -622,13 +1023,13 @@ def tamqt_napgoc(xac="web"):
 
 def qtgt_nap(xac="web"):
     # init prog
-    sql=(f"DROP PROC {xac}.qtgt_nap")
+    sql = (f"DROP PROC {xac}.qtgt_nap")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {xac}.qtgt_nap"
         f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
@@ -655,7 +1056,7 @@ def qtgt_nap(xac="web"):
         f" SELECT @Gxd=isnull(gxd,0) FROM dbo.qt WHERE maqt=@Mauqt;"
         f" IF @Gxd<1 SET @Napgoc=2;"
         f" end End;")
-    sql_tinh=(
+    sql_tinh = (
         f" Select Top 1 @Hesoid=hesoid, @Baogiaid=baogiaid, @Plgia=plgia"
         f" From {xac}.tamqt Where maqt=@Maqt;"
         f" EXEC {xac}.tamqt31_tinh @Hesoid,@Baogiaid,@Plgia;"
@@ -664,7 +1065,7 @@ def qtgt_nap(xac="web"):
         f" EXEC {xac}.tamqt34_tinh @Hesoid,@Baogiaid,@Plgia;"
         f" EXEC {xac}.tamqt35_tinh @Hesoid,@Baogiaid,@Plgia;"
         f" EXEC {xac}.tamqt_tinh @Hesoid,@Baogiaid,@Plgia;")
-    sql0=(
+    sql0 = (
         f" IF @Napgoc=2 Begin"
         f" EXEC {xac}.tamqt_napgoc @Maqt;"
         # f" EXEC {xac}.tamqt31_napgoc '2020GMMP000';"
@@ -710,13 +1111,13 @@ def qtgt_nap(xac="web"):
 
 def load_tamqt(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.load_tamqt")
+    sql = (f"DROP PROC {schema}.load_tamqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.load_tamqt"
         f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
@@ -737,7 +1138,7 @@ def load_tamqt(schema="web"):
         # f" ELSE Begin SET @Mauqt=@Maqt; SELECT @Gxd=isnull(gxd,0) FROM @Nguon.qt WHERE maqt=@Mauqt;"
         # f" IF @Gxd<1 SET @Nguon='dbo'; End;"
     )
-    sql0=(
+    sql0 = (
         f" IF EXISTS (SELECT * FROM {schema}.tamqt) UPDATE {schema}.tamqt SET maqt=@Mauqt"
         f" ELSE INSERT INTO {schema}.tamqt(maqt, lastupdate) VALUES(@Mauqt, getdate()); "
     )
@@ -778,7 +1179,7 @@ def load_tamqt(schema="web"):
         f" Select Top 1 @Hesoid=hesoid, @Baogiaid=baogiaid, @Plgia=plgia"
         f" From {schema}.tamqt Where maqt=@Maqt;"
     )
-    sql0=(
+    sql0 = (
         f" Select Top 1 @Baogiaid=baogiaid From {schema}.qt Where maqt=@Maqt;"
         f" IF LEN(@Baogiaid)<1 Select Top 1 @Baogiaid=baogiaid From dbo.qt Order By baogiaid Desc;"
         f" Select Top 1 @Hesoid=hesoid From {schema}.qt Where maqt=@Maqt;"
@@ -828,12 +1229,12 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
     if qt3x not in [1, 2, 3, 4]:
         return
     try:
-        sql=(f"DROP PROC {schema}.tinh_tamqt3{qt3x}")
+        sql = (f"DROP PROC {schema}.tinh_tamqt3{qt3x}")
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinh_tamqt3{qt3x}"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -889,13 +1290,13 @@ def creat_tinh_tamqt3x(schema="web", qt3x=1):
 
 def tinh_tamqt35(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.tinh_tamqt35")
+    sql = (f"DROP PROC {schema}.tinh_tamqt35")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinh_tamqt35"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -948,13 +1349,13 @@ def tinh_tamqt35(schema="web"):
 
 def tinh_tamqt3x(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.tinh_tamqt3x")
+    sql = (f"DROP PROC {schema}.tinh_tamqt3x")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinh_tamqt3x"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -977,36 +1378,36 @@ def tinh_tamqt3x(schema="web"):
 
 def tinh_tamqt(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.tinh_tamqt")
+    sql = (f"DROP PROC {schema}.tinh_tamqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinh_tamqt"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
         f" BEGIN TRY DECLARE")
     # heso chiphi
-    lds=["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
+    lds = ["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
            "thutinhtruoc", "khaosat", "thietke", "giamsat"]
     for heso in lds:
-        sql += f" @{heso} DECIMAL(19,5)=1.0000,"
+        sql += f" @{heso} DECIMAL(38,9)=1.0000,"
     # tong ket kinh phi
-    lds=["tongxaydung", "tailap", "congtrinh", "congtrinhtruocthue",
+    lds = ["tongxaydung", "tailap", "congtrinh", "congtrinhtruocthue",
            "thuecongtrinh", "dautucty", "dautukhach", "tratruoc"]
     for chiphi in lds:
-        sql += f" @{chiphi} DECIMAL(19,5)=1.0000,"
+        sql += f" @{chiphi} DECIMAL(38,9)=1.0000,"
     # kinh phi chi tiet
-    lds=[
+    lds = [
         "Zvl", "Znc", "Zmtc", "Vl", "Nc", "Mtc", "Zvlncmtc", "Tructiepkhac", "Tructiep", "Giantiep", "Giantiepkhac", "Chung", "Giaxaydung", "Thutinhtruoc", "Xaydungtruocthue", "KhaosatThietke", "Giamsat", "Tongxaydungtruocthue", "Thuetongxaydung", "Tongxaydung", "Tailap", "Thuetailap", "Tailaptruocthue"]
     # phan ong nganh
     for chiphi in lds:
         sql += (
-            f" @on{chiphi} DECIMAL(19,5)=1.0000,"
-            f" @oc{chiphi} DECIMAL(19,5)=1.0000,")
+            f" @on{chiphi} DECIMAL(38,9)=1.0000,"
+            f" @oc{chiphi} DECIMAL(38,9)=1.0000,")
     sql += f" @Plqt NVARCHAR(50);"
     # tinh tamqtx
     sql += f" IF((@Baogiaid>0) OR (Len(@Plgia)>0)) EXEC {schema}.tinh_tamqt3x @Baogiaid, @Hesoid, @Plgia;"
@@ -1026,7 +1427,7 @@ def tinh_tamqt(schema="web"):
         f" From {schema}.tamqt34) AS U;"
         f" SELECT @onTailap=Isnull(sum(trigia2),0) From {schema}.tamqt35;")
     # load hesochiphi
-    ods={"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
+    ods = {"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
            "giantiepkhac": "giantiepkhac", "thutinhtruoc": "heso_thunhaptt",
            "khaosat": "heso_khaosat", "thietke": "heso_thietke", "giamsat": "heso_gstc"}
     sql += f" Select "
@@ -1034,7 +1435,7 @@ def tinh_tamqt(schema="web"):
         sql += f"@{heso}=Isnull({ods[heso]},0),"
     sql += f"@vl=1.0000 From dbo.hesochiphi Where hesoid=@Hesoid;"
     # tinh chi phi
-    lds=["on", "oc"]
+    lds = ["on", "oc"]
     for phui in lds:
         sql += (
             f" Set @{phui}Vl= dbo.lamtronso(@{phui}Zvl*@vl,0);"
@@ -1137,13 +1538,13 @@ def tinh_tamqt(schema="web"):
 
 def tinhlai_dotqt(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.tinhlai_dotqt")
+    sql = (f"DROP PROC {schema}.tinhlai_dotqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinhlai_dotqt"
         f" @Madot NVARCHAR(MAX)=''"
         f" WITH ENCRYPTION AS"
@@ -1200,4 +1601,5 @@ def spQtgt(schema="web"):
 
 
 # spQtgt("pkd")
-load_tamqt("pkd")
+# load_tamqt("pkd")
+Qtgt("pkd")

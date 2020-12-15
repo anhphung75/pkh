@@ -6,9 +6,12 @@ import arrow
 #from utils.thoigian import stodate, datetos
 from sqlalchemy import create_engine, ForeignKey, inspect
 from sqlalchemy import Column, Sequence, func, desc
-from sqlalchemy import Boolean, Integer, DECIMAL, Unicode, Date, DateTime, VARBINARY
+from sqlalchemy import Boolean, Integer, DECIMAL, Unicode, VARBINARY, JSON, Date, DateTime
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.mutable import MutableDict
+
 
 from utils import Api
 
@@ -21,6 +24,7 @@ class Hoso(Base):
     uctid = Column(Integer, primary_key=True)
     mahoso = Column(Unicode(50))  # yyyy.hs.xxxxxx
     mota = Column(Unicode(None))
+    #mota = Column(MutableDict.as_mutable(JSON))
     ghichu = Column(Unicode(255))
     lastupdate = Column(DateTime(timezone=False), default=func.now(),
                         onupdate=datetime.datetime.now)
