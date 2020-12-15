@@ -47,7 +47,8 @@ class ApiBase(web.RequestHandler):
     def set_default_headers(self):
         """Set the default response header to be JSON."""
         #self.set_header("Content-Type", 'application/json; charset="utf-8"')
-        self.set_header("Content-Type", 'application/x-www-form-urlencoded; charset="utf-8"')
+        self.set_header(
+            "Content-Type", 'application/x-www-form-urlencoded; charset="utf-8"')
         self.set_header("Access-Control-Allow-Origin", "*")
 
     def send_response(self, data, status=200):
@@ -69,12 +70,65 @@ class SseBase(web.RequestHandler):
         self.write('data:{}\n\n'.format(utf8data))
 
 
+class Wss_Hoso(tornado.websocket.WebSocketHandler):
+    waiters = set()
+    cache = []
+    cache_size = 200
+    pbd = nvid = ''
+
+    def get_compression_options(self):
+        # Non-None enables compression with default options.
+        return {}
+
+    def check_origin(self, origin):
+        return True
+
+    def open(self, groupid, clientid):
+        pbd = groupid.lower()
+        nvid = clientid.lower()
+        print(f"pbd={pbd} nhanvien={nvid}")
+        Wss_Hoso.waiters.add(self)
+
+    def on_close(self):
+        Wss_Hoso.waiters.remove(self)
+
+    @classmethod
+    def update_cache(cls, chat):
+        cls.cache.append(chat)
+        if len(cls.cache) > cls.cache_size:
+            cls.cache = cls.cache[-cls.cache_size:]
+
+    @classmethod
+    def send_updates(cls, chat):
+        print(f"sending message to {len(cls.waiters)} waiters")
+        for waiter in cls.waiters:
+            try:
+                waiter.write_message(chat)
+            except:
+                print(f"Error sending message")
+
+    def on_message(self, message):
+        print(f"message tu client={str(message)}")
+        # check toa magiaotiep khach
+        utcid = int(arrow.utcnow().float_timestamp * 1000)
+        parsed = tornado.escape.json_decode(message)
+        print(f"parsed={parsed}")
+        chat = {
+            "utcid": utcid,
+            "ve": f"boss.{utcid}",
+            "dulieu": parsed["dulieu"]
+        }
+
+        Wss_Hoso.update_cache(chat)
+        Wss_Hoso.send_updates(chat)
+
+
 class Api_Hoso_Rest(ApiBase):
-    def get(self, schema, namhoso=None):
-        schema = schema.lower()
-        if schema == "qlmltđ":
-            schema = "qlmltd"
-        if schema not in ['pkt', 'pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+    def get(self, pbd, namhoso=None):
+        pbd = pbd.lower()
+        if pbd == "qlmltđ":
+            pbd = "qlmltd"
+        if pbd not in ['pkt', 'pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
             self.send_response(None)
         if namhoso in ["", "all", "tat", "gom"]:
             namhoso = 9999
@@ -86,7 +140,7 @@ class Api_Hoso_Rest(ApiBase):
         #uuid = 'boss{}'.format(int(arrow.utcnow().float_timestamp * 1000))
         #res = {'id': uuid, 'event': '', 'data': []}
         #data = api.HsKh(schema, namhoso).gom()
-        
+
         data = [
             {'utcid': 11111, 'sohoso': 'gm059365/20', 'khachhang': 'Tran Thi Thu 1',
                 'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', },
@@ -98,7 +152,7 @@ class Api_Hoso_Rest(ApiBase):
                 'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', }
 
         ]
-        print(f'ApiRest schema={schema} nam={namhoso} data={data}')
+        print(f'ApiRest pbd={pbd} nam={namhoso} data={data}')
         # except:
         #    res['event'] = 'Không có dữ liệu'
         self.send_response({"info": "gom", "data": data})
@@ -215,8 +269,12 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/([^/]+)/api/hoso/([^/]+)", Api_Hoso_Rest),
+            # api socket
+            (r"/([^/]+)/wss/hoso/([^/]+)", Wss_Hoso),
+            # form
             (r"/([^/]+)/forms/hoso", Frm_Hoso),
             (r"/([^/]+)/forms/qtgt", Frm_Qtgt),
+            # report
             (r"/([^/]+)/reports/dutoan", Rpt_Dutoan),
             (r"/([^/]+)/reports/qtgt", Rpt_Qtgt),
             (r"/([^/]+)/reports/qtvt", Rpt_Qtvt),

@@ -129,8 +129,11 @@ class Hoso {
 
   tat() {
     // load json data
-    let api_url = window.location.protocol + "//" + window.location.host;
-    api_url += "/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+    let api_url = window.location.host;
+    api_url += "/" + ga["csdl"]["ten"];
+    api_url += "/wss";
+    api_url += "/hoso/" + ga["namlamviec"];
+
     this.hon.postMessage({ csdl: ga["csdl"], api: api_url });
     this.hon.onmessage = (e) => {
       let kq = e.data;

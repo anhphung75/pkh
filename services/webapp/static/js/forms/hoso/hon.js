@@ -1,5 +1,4 @@
-import "./../../refs/d3.min.js";
-import("d3.min.js");
+//import "./../../refs/d3.min.js";
 
 const delay = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -132,7 +131,8 @@ function loadHsKh(csdl, nam) {
   }
 };
 
-function api_hoso(csdl, api) {
+function api_hoso(csdl) {
+  let api = "https://" + api_url;
   d3.json(api, {
     mode: 'cors'
   }).then(res => {
@@ -150,38 +150,40 @@ function api_hoso(csdl, api) {
   //}).then(json => { /* do something */ });
 }
 
-function api_fetch(csdl, api) {
-  console.log("fetch_api", api);
-  fetch(api, {
-    method: 'GET',
-    mode: 'cors',
-    headers: {
-      //'Content-Type': 'application/json',
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    //credentials: "same-origin",
-  })
-    .then(response => {
-      let a = response.json();
-      console.log("webworker api_fetch, res.json() from server=", JSON.stringify(a, null, 4));
-    })
-    .then(data => {
-      console.log(data);
-      console.log("webworker api_fetch, data from server=", JSON.stringify(data, null, 4));
-    });
+function hoso_wss(nam) {
+  let utcid = Date.now();
+  let api = "wss://" + api_url;
+  api += "socket" + Date.now();
+  let chat = {
+    "utcid": utcid,
+    "ve": "client" + utcid,
+    "dulieu": [{ "test": "Here's some test that the server is urgently awaiting!" },
+    { "real": "Here's some text that the server is urgently awaiting!" }]
+  };
+  let wss = new WebSocket(api);
+  wss.onopen = function (ev) {
+    console.log("chat from wss client=", chat);
+    wss.send(JSON.stringify(chat));
+  };
+  wss.onmessage = function (ev) {
+    let dulieu = JSON.parse(ev.data);
+    console.log("dulieu from wss server=", dulieu);
+  }
+};
 
-}
+
 //main
-var dulieu = {};
-self.onmessage = (e) => {
-  let kq = e.data;
-  console.log("hon e.kq=", JSON.stringify(kq, null, 4));
+var api_url, dulieu = {};
+self.onmessage = (ev) => {
+  let kq = ev.data;
+  console.log("hon ev.kq=", JSON.stringify(kq, null, 4));
   //{ csdl: csdl, lenh: { options_dot: nam } }
   try {
     if (!kq.csdl) {
       return;
     }
-    api_hoso(kq.csdl, kq.api);
+    api_url = kq.api;
+    hoso_wss(kq.csdl, kq.api);
     //loadHsKh(kq.csdl, kq.nam);
   } catch (err) {
     console.log("err on hon=", err);
