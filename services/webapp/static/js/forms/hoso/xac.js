@@ -1,6 +1,96 @@
 import { taodb, cap1, capn, luu, luun } from "./../../ttdl/db.js";
 import { data_test } from "./../../test/data_test.js";
 
+//khoi tao
+var ga = {
+  csdl: { "ten": "pkh", "sohieu": 1 },
+  namlamviec: new Date().getFullYear().toString(),
+  bang: "nhandon",
+  otim: [],
+  tieude: [],
+  dulieu: [],
+};
+
+
+//stim
+//otim
+
+//view:ketqua ->table
+function nap_tieude() {
+  let bang = ga['bang'];
+  console.log("nap_tieude bang=", bang);
+  //bang = bang.toLowerCase();
+  switch (bang) {
+    case "dshc":
+      ga['tieude'] = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      break;
+    case "qtgt":
+      ga['tieude'] = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      break;
+    default:
+      ga['bang'] = "nhandon";
+      ga['tieude'] = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+  }
+}
+function nap_dulieu() {
+  //rest api
+  let api_url = window.location.protocol + "//" + window.location.host + "/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+  console.log("api_url=", api_url);
+  d3.json(api_url, {
+    mode: 'cors'
+  }).then(res => {
+    console.log("main thread res from server=", JSON.stringify(res, null, 4));
+    ga['dulieu'] = res.data || [];
+    console.log("ga['dulieu']=", ga['dulieu']);
+  });
+
+}
+
+function danhmuchoso() {
+  //dulieu, flds_be, flds_fe
+  let bang = d3.select("table[id='danhmuchoso']")
+    .attr("style", "margin: 0");
+
+  //tieude
+  bang.select("thead")
+    .selectAll("th")
+    .data(['TT',...ga['tieude']])
+    .enter()
+    .append("th")
+    .attr("class", "c")
+    .text(col => col);
+
+  //row
+  let row = bang.select("tbody")
+    .selectAll("tr")
+    .data(ga['dulieu'])
+    .enter()
+    .append("tr")
+    .attr("class", "l");
+    //.filter()
+    //.on("mouseenter,click", function () {
+    //  d3.select(this).classed("mau test", true);
+    //})
+    //.on("mouseleave", function () {
+    //  d3.select(this).classed("mau test", false);
+    //});
+
+  //col
+  let col = row.selectAll("td")
+    .data(rec => {
+      console.log("col data=", rec);
+      let a = [... d3.values(rec)];
+      return a;
+    })
+    .enter()
+    .append("td")
+    .text(d => d);
+
+  row.exit().remove();
+}
+//view:hoso
+//view:scan
+
 class Otim {
   constructor() {
     this.don();
@@ -53,7 +143,7 @@ class Otim {
 
 class Hoso {
   constructor() {
-    this.hon = new Worker(document.getElementById("view-ketqua").dataset.hon,
+    this.hon = new Worker(document.getElementById("danhmuchoso").dataset.hon,
       { type: 'module' });
     this.get_tieude(1);
     this.tat();
@@ -369,15 +459,8 @@ function loopjs() {
 }
 
 
-//khoi tao
-var ga = {
-  csdl: { "ten": "pkh", "sohieu": 1 },
-  namlamviec: new Date().getFullYear().toString(),
-  bang: 1,
-  otim: [],
-};
 var tim = new Otim();
-var hoso = new Hoso();
+//var hoso = new Hoso();
 function info() {
   d3.select("#info").text(JSON.stringify(ga, null, 4));
 }
@@ -400,10 +483,13 @@ d3.select("#namlamviec").on("change", function () {
         ga["namlamviec"] = new Date().getFullYear().toString();
     }
   }
-  api_hoso(namchu);
+  //api_hoso(namchu);
+  nap_tieude();
+  nap_dulieu();
+  danhmuchoso();
   info();
   tim.don();
-  hoso.tat();
+  //hoso.tat();
 });
 
 d3.select("#stim")

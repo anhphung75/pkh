@@ -39,14 +39,10 @@
     </div>
   </div>
 
-  <div id="view-ketqua" class="w100" data-hon="{{static_url('js/forms/hoso/hon.js')}}">
-    <div id="ketqua:tieude">
-
-    </div>
-    <div id="ketqua:noidung">
-
-    </div>
-  </div>
+  <table id="danhmuchoso" class="w100" data-hon="{{static_url('js/forms/hoso/hon.js')}}">
+    <thead></thead>
+    <tbody></tbody>
+  </table>
 </div>
 {% end %}
 
@@ -55,6 +51,6 @@
 {% end %}
 
 {% block js %}
-<script type="module" src="{{static_url('js/forms/hoso/xac.js')}}" ></script>
+<script type="module" src="{{static_url('js/forms/hoso/xac.js')}}"></script>
 <script type="module" src="{{static_url('js/forms/hoso/hon.js')}}"></script>
 {% end %}

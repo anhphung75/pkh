@@ -8,7 +8,7 @@ import asyncio
 import tornado.ioloop
 import tornado.web as web
 import tornado.httpserver as httpserver
-import logging
+import urllib
 import tornado.escape
 import tornado.websocket
 
@@ -81,7 +81,10 @@ class Wss_Hoso(tornado.websocket.WebSocketHandler):
         return {}
 
     def check_origin(self, origin):
-        return True
+        parsed_origin = urllib.parse.urlparse(origin)
+        print(f"parsed_origin={parsed_origin} netloc={parsed_origin.netloc}")
+        return parsed_origin.netloc.startswith("pna")
+        #return True
 
     def open(self, groupid, clientid):
         pbd = groupid.lower()
