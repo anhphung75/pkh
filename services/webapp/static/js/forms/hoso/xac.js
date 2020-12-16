@@ -3,7 +3,7 @@ import { data_test } from "./../../test/data_test.js";
 
 //khoi tao
 var ga = {
-  csdl: { "ten": "pkh", "sohieu": 1 },
+  csdl: { ten: "pkh", sohieu: 1 },
   namlamviec: new Date().getFullYear().toString(),
   bang: "nhandon",
   otim: [],
@@ -11,81 +11,122 @@ var ga = {
   dulieu: [],
 };
 
-
 //stim
 //otim
 
 //view:ketqua ->table
 function nap_tieude() {
-  let bang = ga['bang'];
+  let bang = ga["bang"];
   console.log("nap_tieude bang=", bang);
   //bang = bang.toLowerCase();
   switch (bang) {
     case "dshc":
-      ga['tieude'] = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      ga["tieude"] = [
+        "crud",
+        "utcid",
+        "sodot",
+        "khachhang",
+        "diachi",
+        "ngaythietke",
+        "ngaylendot",
+        "ngaythicong",
+        "ngaytrongai",
+      ];
       break;
     case "qtgt":
-      ga['tieude'] = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      ga["tieude"] = [
+        "crud",
+        "utcid",
+        "sodot",
+        "khachhang",
+        "diachi",
+        "ngaythietke",
+        "ngaylendot",
+        "ngaythicong",
+        "ngaytrongai",
+      ];
       break;
     default:
-      ga['bang'] = "nhandon";
-      ga['tieude'] = ["crud", "utcid", "sodot", "khachhang", "diachi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+      ga["bang"] = "nhandon";
+      ga["tieude"] = [
+        "crud",
+        "utcid",
+        "sodot",
+        "khachhang",
+        "diachi",
+        "ngaythietke",
+        "ngaylendot",
+        "ngaythicong",
+        "ngaytrongai",
+      ];
   }
 }
 function nap_dulieu() {
   //rest api
-  let api_url = window.location.protocol + "//" + window.location.host + "/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+  let api_url =
+    window.location.protocol +
+    "//" +
+    window.location.host +
+    "/" +
+    ga["csdl"]["ten"] +
+    "/api/hoso/" +
+    ga["namlamviec"];
   console.log("api_url=", api_url);
   d3.json(api_url, {
-    mode: 'cors'
-  }).then(res => {
+    mode: "cors",
+  }).then((res) => {
     console.log("main thread res from server=", JSON.stringify(res, null, 4));
-    ga['dulieu'] = res.data || [];
-    console.log("ga['dulieu']=", ga['dulieu']);
+    ga["dulieu"] = res.data || [];
+    console.log("ga['dulieu']=", ga["dulieu"]);
   });
-
 }
 
-function danhmuchoso() {
-  //dulieu, flds_be, flds_fe
-  let bang = d3.select("table[id='danhmuchoso']")
-    .attr("style", "margin: 0");
+function danhmuchoso(dulieu,colsBE) {
+  let bang = d3.select("table[id='danhmuchoso']").attr("style", "margin: 0");
 
   //tieude
-  bang.select("thead")
+  bang
+    .select("thead")
     .selectAll("th")
-    .data(['TT',...ga['tieude']])
+    .data(["TT", ...ga["tieude"]])
     .enter()
     .append("th")
     .attr("class", "c")
-    .text(col => col);
+    .text((col) => col);
 
   //row
-  let row = bang.select("tbody")
+  let row = bang
+    .select("tbody")
     .selectAll("tr")
-    .data(ga['dulieu'])
+    .data(ga["dulieu"])
     .enter()
     .append("tr")
     .attr("class", "l");
-    //.filter()
-    //.on("mouseenter,click", function () {
-    //  d3.select(this).classed("mau test", true);
-    //})
-    //.on("mouseleave", function () {
-    //  d3.select(this).classed("mau test", false);
-    //});
+  //.filter()
+  //.on("mouseenter,click", function () {
+  //  d3.select(this).classed("mau test", true);
+  //})
+  //.on("mouseleave", function () {
+  //  d3.select(this).classed("mau test", false);
+  //});
 
   //col
-  let col = row.selectAll("td")
-    .data(rec => {
-      console.log("col data=", rec);
-      let a = [... d3.values(rec)];
-      return a;
-    })
+  console.log("colsBE ga['dulieu'][0]=", ga["dulieu"][0]);
+  let colsBE = Object.keys(ga["dulieu"][0]);
+  let col = row
+    .selectAll("td")
+    .data((rec) => d3.permute(rec, colsBE))
     .enter()
     .append("td")
-    .text(d => d);
-
+    .text((d) => d);
+  let act = row
+    .insert("td", "td")
+    .attr("class", "c")
+    .text(d,i=> d3.format("03d")(i))
+    .html(d, (i) => {
+      console.log("html d=",d," i=",i);
+    });
+  //react view
   row.exit().remove();
 }
 //view:hoso
@@ -112,10 +153,12 @@ class Otim {
 
   xem() {
     //d3.select("div[id='view:otim']").selectAll("*").remove();
-    let zone = d3.select("div[id='view:otim']")
+    let zone = d3
+      .select("div[id='view:otim']")
       .selectAll("button")
       .data(ga["otim"]);
-    zone.enter()
+    zone
+      .enter()
       .append("button")
       .text((d) => d)
       .attr("class", "l b1px")
@@ -138,13 +181,13 @@ class Otim {
     zone.exit().remove();
     info();
   }
-
 }
 
 class Hoso {
   constructor() {
-    this.hon = new Worker(document.getElementById("danhmuchoso").dataset.hon,
-      { type: 'module' });
+    this.hon = new Worker(document.getElementById("danhmuchoso").dataset.hon, {
+      type: "module",
+    });
     this.get_tieude(1);
     this.tat();
   }
@@ -154,7 +197,7 @@ class Hoso {
     let dulieu = [];
     switch (bang) {
       case 2:
-        ga['bang'] = bang;
+        ga["bang"] = bang;
         dulieu = [
           "crud",
           "utcid",
@@ -168,7 +211,7 @@ class Hoso {
         ];
         break;
       case 3:
-        ga['bang'] = bang;
+        ga["bang"] = bang;
         dulieu = [
           "crud",
           "utcid",
@@ -182,7 +225,7 @@ class Hoso {
         ];
         break;
       default:
-        ga['bang'] = 1;
+        ga["bang"] = 1;
         dulieu = [
           "crud",
           "utcid",
@@ -201,7 +244,7 @@ class Hoso {
       .attr("class", "grid w100 ba hov bang" + bang)
       .style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
-        console.log("ketqua:tieude bang", ga['bang'], " rec=", ev.target);
+        console.log("ketqua:tieude bang", ga["bang"], " rec=", ev.target);
       });
     zone.selectAll("*").remove();
     zone
@@ -240,7 +283,7 @@ class Hoso {
       let r = kq.kq;
       console.log("tat dulieu=", JSON.stringify(r, null, 4));
       let dulieu = [1, 2, 3, 4, 5, 6, 7, 8, 9];
-      switch (ga['bang']) {
+      switch (ga["bang"]) {
         case 2:
           dulieu = [
             "crud",
@@ -280,10 +323,10 @@ class Hoso {
       }
       d3.select("div[id='ketqua:noidung']")
         .append("div")
-        .attr("class", "grid w100 hov bang" + ga['bang'])
+        .attr("class", "grid w100 hov bang" + ga["bang"])
         //.style("background-color", "#d1e5f0")
         .on("mouseover", function (ev) {
-          console.log("ketqua:noidung bang", ga['bang'], " rec=", ev.target);
+          console.log("ketqua:noidung bang", ga["bang"], " rec=", ev.target);
         })
         .selectAll("div")
         .data(dulieu)
@@ -299,7 +342,7 @@ class Hoso {
   }
   nap(uid = "") {
     let dulieu = [];
-    switch (ga['bang']) {
+    switch (ga["bang"]) {
       case 2:
         dulieu = [
           "nd crud",
@@ -345,7 +388,7 @@ class Hoso {
       .attr("class", "grid view-hoso w100 hov bang")
       //.style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
-        console.log("view:hoso", ga['bang'], " rec=", ev.target);
+        console.log("view:hoso", ga["bang"], " rec=", ev.target);
       })
       .selectAll("div")
       .data(this.textloc)
@@ -417,7 +460,7 @@ class Hoso {
       .attr("class", "grid view-hoso w100 hov bang")
       //.style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
-        console.log("view:hoso", ga['bang'], " rec=", ev.target);
+        console.log("view:hoso", ga["bang"], " rec=", ev.target);
       })
       .selectAll("div")
       .data(this.textloc)
@@ -445,7 +488,6 @@ class Hoso {
 
 //tao option bang hoso:
 
-
 function loopjs() {
   let i = 1;
   while (true) {
@@ -457,7 +499,6 @@ function loopjs() {
     }
   }
 }
-
 
 var tim = new Otim();
 //var hoso = new Hoso();
@@ -508,7 +549,6 @@ d3.select("#stim")
   })
   .on("input", function () {
     console.log("oninput s=", this.value);
-
   })
   .on("change", function () {
     console.log("onchange stim=", this.value);
@@ -525,12 +565,18 @@ d3.select("#don-otim").on("click", function (ev) {
 //capn(ga['csdl'], data_test);
 
 function api_hoso(nam) {
-
-  let api_url = window.location.protocol + "//" + window.location.host + "/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+  let api_url =
+    window.location.protocol +
+    "//" +
+    window.location.host +
+    "/" +
+    ga["csdl"]["ten"] +
+    "/api/hoso/" +
+    ga["namlamviec"];
   console.log("api_url=", api_url);
   d3.json(api_url, {
-    mode: 'cors'
-  }).then(res => {
+    mode: "cors",
+  }).then((res) => {
     console.log("main thread res from server=", JSON.stringify(res, null, 4));
     let dulieu = res.data || {};
     let flds_be = ["utcid", "sohoso", "khachhang", "diachigandhn"];
@@ -546,23 +592,26 @@ function api_hoso(nam) {
 }
 
 function show_ketqua(dulieu, flds_be, flds_fe) {
-  let bang = d3.select("div[id='test']")
+  let bang = d3
+    .select("div[id='test']")
     .append("table")
     .attr("style", "margin: 0");
   //go bo class hidden
   d3.select("tbody").selectAll("tr").remove();
   //tieude
 
-  bang.append("thead")
+  bang
+    .append("thead")
     .selectAll("th")
-    .data(['crud', ...flds_fe])
+    .data(["crud", ...flds_fe])
     .enter()
     .append("th")
     .attr("class", "c")
-    .text(fld => fld);
+    .text((fld) => fld);
 
   //row
-  let row = bang.append("tbody")
+  let row = bang
+    .append("tbody")
     .selectAll("tr")
     .data(dulieu)
     .enter()
@@ -570,18 +619,21 @@ function show_ketqua(dulieu, flds_be, flds_fe) {
     .attr("class", "l hov");
 
   //col
-  let col = row.selectAll("td")
-    .data(rec => d3.permute(rec, flds_be))
+  let col = row
+    .selectAll("td")
+    .data((rec) => d3.permute(rec, flds_be))
     .enter()
     .append("td")
-    .text(d => d);
-  let crud = row.insert('td', 'td');
-  crud.append('button')
+    .text((d) => d);
+  let crud = row.insert("td", "td");
+  crud
+    .append("button")
     .on("click", function () {
       console.log("button trash click=", this.value);
     })
     .html('<i class="fa fa-trash"></i>');
-  crud.append('button')
+  crud
+    .append("button")
     .on("click", function () {
       console.log("button edit click=", this.value);
     })
