@@ -5,62 +5,58 @@ import { data_test } from "./../../test/data_test.js";
 var ga = {
   csdl: { ten: "pkh", sohieu: 1 },
   namlamviec: new Date().getFullYear().toString(),
-  bang: "nhandon",
-  otim: [],
-  tieude: [],
+  otim: ['66',],
   dulieu: [],
+  colsBE: [],
+  colsFE: [],
+  url: {},
+
+  tieude: (bang = 0) => {
+    switch (bang) {
+      case "dshc":
+        break;
+      case "qtgt":
+        break;
+      default:
+        ga.colsBE = ["utcid", "sohoso", "khachhang", "diachigandhn", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        ga.colsFE = ["utcid", "so ho so", "khach hang", "dia chi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+    }
+  },
+  lay_url: () => {
+    ga.url['api'] = "https://" + window.location.host + "/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
+    ga.url['wss'] = "wss://" + window.location.host + "/" + ga["csdl"]["ten"] + "/wss/hoso/" + ga["namlamviec"];
+    ga.url['hon'] = d3.select("table[id='danhsach']").attr("data-hon");
+  },
+  //load tu idb loc theo otim
+  noidung: (bang = 0) => {
+
+  },
+
+  ktra_dulieu: (ld) => {
+    let t = 0, d = [], rec, k, v;
+    while (true) {
+      try {
+        rec = ld[t];
+        for (k in ga.colsBE) {
+          k in rec ? v = 0 : rec[k] = '';
+        }
+        d.push(rec);
+        t++;
+      } catch (err) {
+        break;
+      }
+    }
+    ga.dulieu = d;
+  },
 };
 
-//stim
-//otim
+
+//stim filter danhsach
+
+//otim filter tu idb
 
 //view:ketqua ->table
-function nap_tieude() {
-  let bang = ga["bang"];
-  console.log("nap_tieude bang=", bang);
-  //bang = bang.toLowerCase();
-  switch (bang) {
-    case "dshc":
-      ga["tieude"] = [
-        "crud",
-        "utcid",
-        "sodot",
-        "khachhang",
-        "diachi",
-        "ngaythietke",
-        "ngaylendot",
-        "ngaythicong",
-        "ngaytrongai",
-      ];
-      break;
-    case "qtgt":
-      ga["tieude"] = [
-        "crud",
-        "utcid",
-        "sodot",
-        "khachhang",
-        "diachi",
-        "ngaythietke",
-        "ngaylendot",
-        "ngaythicong",
-        "ngaytrongai",
-      ];
-      break;
-    default:
-      ga["bang"] = "nhandon";
-      ga["tieude"] = [
-        "crud",
-        "utcid",
-        "sodot",
-        "khachhang",
-        "diachi",
-        "ngaythietke",
-        "ngaylendot",
-        "ngaythicong",
-        "ngaytrongai",
-      ];
-  }
-}
+
 function nap_dulieu() {
   //rest api
   let api_url =
@@ -76,19 +72,25 @@ function nap_dulieu() {
     mode: "cors",
   }).then((res) => {
     console.log("main thread res from server=", JSON.stringify(res, null, 4));
-    ga["dulieu"] = res.data || [];
-    console.log("ga['dulieu']=", ga["dulieu"]);
+    let dulieu = res.data || [];
+    ga.ktra_dulieu(dulieu);
+    danhsach();
   });
 }
 
-function danhmuchoso(dulieu,colsBE) {
-  let bang = d3.select("table[id='danhmuchoso']").attr("style", "margin: 0");
-
+function danhsach(stim) {
+  stim = JSON.stringify(stim).toLowerCase() || '';
+  console.log("danhsach stim=", stim);
+  if (stim.length == 0) {
+    console.log("danhsach quit stim len=0");
+    return;
+  }
+  let bang = d3.select("table[id='danhsach']").attr("style", "margin: 0");
   //tieude
   bang
     .select("thead")
     .selectAll("th")
-    .data(["TT", ...ga["tieude"]])
+    .data(["Id", ...ga["colsFE"]])
     .enter()
     .append("th")
     .attr("class", "c")
@@ -98,36 +100,55 @@ function danhmuchoso(dulieu,colsBE) {
   let row = bang
     .select("tbody")
     .selectAll("tr")
-    .data(ga["dulieu"])
+    .data(ga.dulieu)
     .enter()
     .append("tr")
-    .attr("class", "l");
-  //.filter()
-  //.on("mouseenter,click", function () {
-  //  d3.select(this).classed("mau test", true);
-  //})
-  //.on("mouseleave", function () {
-  //  d3.select(this).classed("mau test", false);
-  //});
+    .attr("class", "l")
+    .attr("data-uuid", (d, i) => {
+      console.log("data-uuid d=", d, " i=", i);
+      return d.utcid;
+    })
+    .filter((d, i) => {
+      let t = 0, isok = false, ss;
+      while (true) {
+        try {
+          ss = JSON.stringify(d).toLowerCase();
+          console.log("filer stim=", stim, " in ", ss, " isok=", isok);
+          if (ss.indexOf(stim) > -1) {
+            isok = true;
+            console.log("filer if indexof stim=", stim, " in ", ss, " isok=", isok);
+            break;
+          }
+          t++;
+        } catch (err) {
+          break;
+        }
+      }
+      console.log("filer stim=", stim, " isok=", isok);
+      return isok;
+    })
+    .on("mouseenter click", function (ev) {
+      d3.select(this).classed("mau test", true);
+      console.log("row mouseenter=", ev.target);
+    })
+    .on("mouseleave", function (ev) {
+      d3.select(this).classed("mau test", false);
+      console.log("row mouseleave=", ev.target);
+    });
 
   //col
-  console.log("colsBE ga['dulieu'][0]=", ga["dulieu"][0]);
-  let colsBE = Object.keys(ga["dulieu"][0]);
   let col = row
     .selectAll("td")
-    .data((rec) => d3.permute(rec, colsBE))
+    .data((d, i) => [d3.format("03d")(i), ...d3.permute(d, ga.colsBE)])
     .enter()
     .append("td")
     .text((d) => d);
-  let act = row
-    .insert("td", "td")
-    .attr("class", "c")
-    .text(d,i=> d3.format("03d")(i))
-    .html(d, (i) => {
-      console.log("html d=",d," i=",i);
-    });
+
   //react view
+  col.exit().remove();
   row.exit().remove();
+  bang.exit().remove();
+  return bang;
 }
 //view:hoso
 //view:scan
@@ -138,7 +159,7 @@ class Otim {
   }
 
   don() {
-    ga["otim"] = [ga["namlamviec"]];
+    //ga["otim"] = [ga["namlamviec"]];
     this.xem();
   }
 
@@ -185,7 +206,7 @@ class Otim {
 
 class Hoso {
   constructor() {
-    this.hon = new Worker(document.getElementById("danhmuchoso").dataset.hon, {
+    this.hon = new Worker(document.getElementById("danhsach").dataset.hon, {
       type: "module",
     });
     this.get_tieude(1);
@@ -525,9 +546,8 @@ d3.select("#namlamviec").on("change", function () {
     }
   }
   //api_hoso(namchu);
-  nap_tieude();
+  ga.tieude(0);
   nap_dulieu();
-  danhmuchoso();
   info();
   tim.don();
   //hoso.tat();
@@ -549,6 +569,7 @@ d3.select("#stim")
   })
   .on("input", function () {
     console.log("oninput s=", this.value);
+    danhsach(this.value);
   })
   .on("change", function () {
     console.log("onchange stim=", this.value);
@@ -640,3 +661,6 @@ function show_ketqua(dulieu, flds_be, flds_fe) {
     .html('<i class="fa fa-edit"></i>');
   return bang;
 }
+
+
+ga.lay_url();
