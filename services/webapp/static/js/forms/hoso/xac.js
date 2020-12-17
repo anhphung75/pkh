@@ -184,6 +184,7 @@ var mvc = {
       .remove();
     mvc.info();
   },
+
   danhsach: (stim) => {
     let bang = d3.select("table[id='danhsach']").attr("style", "margin: 0");
     //tieude
@@ -193,61 +194,71 @@ var mvc = {
       .append("th")
       .attr("class", "c")
       .text((col) => col);
-    bang.exit().remove();
 
     //rows
     bang.select("tbody").selectAll("tr").remove();
     let dulieu = ga.loc_stim(stim);
-    let rows = bang.select("tbody").selectAll("tr")
-      .data(dulieu);
-    let row = rows.enter()
-      .append("tr")
+    let rows = bang.select("tbody").selectAll("tr").data(dulieu);
+    let row = rows.enter().append("tr")
       .attr("class", "l")
       .attr("data-uuid", (d, i) => {
         console.log("data-uuid d=", d, " i=", i);
         return d.utcid;
       })
-      .on("mouseenter click", function (ev) {
+      .on("mouseenter", function (ev) {
         d3.select(this).classed("mau test", true);
-        console.log("row mouseenter=", ev.target);
+        mvc.hoso(ev.target.__data__);
       })
       .on("mouseleave", function (ev) {
         d3.select(this).classed("mau test", false);
         console.log("row mouseleave=", ev.target);
+      })
+      .on("click", function (ev) {
+        mvc.hoso(ev.target.parentNode.__data__);
+        console.log("row click=", ev.target.parentNode.__data__);
       });
-    rows.exit()
-      .remove();
+    rows.exit().remove();
 
     //col
     let cols = row.selectAll("td")
       .data((d, i) => [d3.format("03d")(i + 1), ...d3.permute(d, ga.colsBE)]);
-    cols.enter()
-      .append("td")
+    cols.enter().append("td")
       .html((d) => d);
-    cols.exit()
-      .remove();
-    //to mau stim
-    function tomau(stim) {
+    cols.exit().remove();
+
+    //tomau
+    let tomau_stim = (stim) => {
       if (!stim) { return };
-      stim = new RegExp("<td>.*(" + stim + ").*(?=</td>)", 'gi');
-      //let moi = "<b style='color:red'>" + stim + "</b>"
-      let ss = bang.select("tbody").html().toString();
-      let ls = ss.match(stim);
-      let l = ls ? ls.length : 0;
-      for (let j = 0; j < l; j++) {
-        console.log("mau tim thay ls[", j, "]=", ls[j]);
-        //ss = ss.replace(ls[j], "<b style='color:red'>" + ls[j] + "</b>");
-      }
-
-
-      //nd.replace(goc, (m)=> console.log("mau tim thay=",m));
-      //bang.select("tbody").html(nd);
+      let goc = new RegExp("<td>[^<]*(" + stim + ")", 'gi');
+      let zone = bang.select("tbody").html().toString();
+      zone = zone.replace(goc, (m) => {
+        let mau = new RegExp(stim, 'gi');
+        let moi = "<b style='color:red'>" + stim + "</b>";
+        m = m.replace(mau, moi);
+        return m;
+      });
+      bang.select("tbody").html(zone);
     };
-    tomau(stim);
-    //act.text()
+    tomau_stim(stim);
   },
-  hoso: () => {
+  hoso: (dulieu) => {
+    let uuid = d3.select("table[id='danhsach']").select("tbody").select('.mau').attr("data-uuid");
+    console.log("hoso uuid=", uuid);
+    let bang = d3.select("div[id='view:hoso']");
 
+    let rows = bang.selectAll("div").data(dulieu);
+    let row = rows.enter().append("div")
+      .attr("class", "grid row w100");
+    rows.exit().remove();
+
+    let cols = row.selectAll("div")
+      .data((d, i) => {
+        console.log("hoso cols d=", d);
+        return d;
+      });
+    cols.enter().append("div")
+      .html((d) => d);
+    cols.exit().remove();
   },
   scan: () => {
 
