@@ -5,11 +5,16 @@ import { data_test } from "./../../test/data_test.js";
 var ga = {
   csdl: { ten: "pkh", sohieu: 1 },
   namlamviec: new Date().getFullYear().toString(),
-  otim: ['66',],
+  otim: [],
   dulieu: [],
   colsBE: [],
   colsFE: [],
   url: {},
+
+  tao: () => {
+    ga.lay_url();
+    ga.tieude();
+  },
 
   tieude: (bang = 0) => {
     switch (bang) {
@@ -22,14 +27,26 @@ var ga = {
         ga.colsFE = ["utcid", "so ho so", "khach hang", "dia chi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
     }
   },
+
   lay_url: () => {
-    ga.url['api'] = "https://" + window.location.host + "/" + ga["csdl"]["ten"] + "/api/hoso/" + ga["namlamviec"];
-    ga.url['wss'] = "wss://" + window.location.host + "/" + ga["csdl"]["ten"] + "/wss/hoso/" + ga["namlamviec"];
+    ga.url['api'] = [
+      "https://" + window.location.host + "/" + ga.csdl.ten + "/api/hoso/" + ga.namlamviec,
+      "https://" + window.location.host + "/" + ga.csdl.ten + "/api/dshc/" + ga.namlamviec,
+    ];
+    ga.url['wss'] = "wss://" + window.location.host + "/" + ga.csdl.ten + "/wss/hoso/" + ga.namlamviec;
     ga.url['hon'] = d3.select("table[id='danhsach']").attr("data-hon");
   },
+
   //load tu idb loc theo otim
   noidung: (bang = 0) => {
-
+    d3.json(ga.url['api'][bang], {
+      mode: "cors",
+    }).then((res) => {
+      console.log("main thread res from server=", JSON.stringify(res, null, 4));
+      let dulieu = res.data || [];
+      ga.ktra_dulieu(dulieu);
+      mvc.danhsach();
+    });
   },
 
   ktra_dulieu: (ld) => {
@@ -48,9 +65,194 @@ var ga = {
     }
     ga.dulieu = d;
   },
+
+  loc_stim: (s) => {
+    s = s ? s.toString().toLowerCase() : '';
+    let kq = ga.dulieu.filter(d => JSON.stringify(Object.values(d)).toLowerCase().includes(s));
+    return kq;
+  },
+  loc_otim: () => {
+
+  },
 };
 
+var mvc = {
+  info: () => {
+    d3.select("#info").text(JSON.stringify(ga, null, 4));
+  },
 
+  tao: () => {
+    mvc.namlamviec();
+    mvc.stim();
+    mvc.don_otim();
+    mvc.otim();
+  },
+
+  namlamviec: () => {
+    d3.select("#namlamviec").on("change", function () {
+      let namchu = this.value.toString();
+      if (ga["namlamviec"] == namchu) {
+        return;
+      }
+      if (/^\d+$/.test(namchu)) {
+        ga["namlamviec"] = namchu;
+      } else {
+        switch (namchu) {
+          case "":
+          case "all":
+          case "tat":
+            ga["namlamviec"] = "";
+            break;
+          default:
+            ga["namlamviec"] = new Date().getFullYear().toString();
+        }
+      }
+      //api_hoso(namchu);
+      ga.tieude(0);
+      ga.noidung();
+      mvc.info();
+      mvc.otim();
+      //hoso.tat();
+    });
+  },
+
+  stim: () => {
+    d3.select("#stim")
+      .on("keydown", function (ev) {
+        let s = this.value ? this.value.trim().toLowerCase() : '';
+        switch (ev.keyCode) {
+          case 13: //enter goto 1st hosoloc
+            if (s.length > 0 && ga.otim.indexOf(s) === -1) {
+              ga.otim.push(s);
+            }
+            mvc.otim();
+            break;
+          case 45: //insert
+            if (s.length > 0 && ga.otim.indexOf(s) === -1) {
+              ga.otim.push(s);
+            }
+            mvc.otim();
+            this.value = "";
+            break;
+          default:
+            console.log("btn=", ev.code, " keyCode=", ev.keyCode);
+        }
+      })
+      .on("input", function () {
+        console.log("oninput s=", this.value);
+        mvc.danhsach(this.value);
+      })
+      .on("change", function () {
+        console.log("onchange stim=", this.value);
+      });
+  },
+
+  don_otim: () => {
+    d3.select("#don-otim").on("click", function (ev) {
+      console.log("btn clear otim=", ev.target);
+      ga["otim"] = [ga["namlamviec"]];
+      mvc.otim();
+    });
+  },
+
+  otim: (dulieu = ga.otim) => {
+    //d3.select("div[id='view:otim']").selectAll("*").remove();
+    console.log("otim dulieu=ga.otim=", dulieu);
+    let zone = d3.select("div[id='view:otim']").selectAll("button")
+      .data(dulieu);
+    zone.enter()
+      .append("button")
+      .text((d) => d)
+      .attr("class", "l b1px")
+      .style("paddingLeft", "1em")
+      .style("color", "red")
+      .on("click", function () {
+        let s = this.textContent || this.innerText;
+        s = s.trim().toLowerCase() || "";
+        ga["otim"] = ga["otim"].filter((i) => i !== s);
+        this.remove();
+        mvc.info();
+      })
+      .on("mouseout", function (ev) {
+        this.style.textDecoration = "none";
+      })
+      .on("mouseover", function (ev) {
+        this.style.textDecoration = "line-through";
+        console.log("btn mouseover=", ev.target);
+      });
+    zone.exit()
+      .remove();
+    mvc.info();
+  },
+  danhsach: (stim) => {
+    let bang = d3.select("table[id='danhsach']").attr("style", "margin: 0");
+    //tieude
+    bang.select("thead").selectAll("th")
+      .data(["Id", ...ga.colsFE])
+      .enter()
+      .append("th")
+      .attr("class", "c")
+      .text((col) => col);
+    bang.exit().remove();
+
+    //rows
+    bang.select("tbody").selectAll("tr").remove();
+    let dulieu = ga.loc_stim(stim);
+    let rows = bang.select("tbody").selectAll("tr")
+      .data(dulieu);
+    let row = rows.enter()
+      .append("tr")
+      .attr("class", "l")
+      .attr("data-uuid", (d, i) => {
+        console.log("data-uuid d=", d, " i=", i);
+        return d.utcid;
+      })
+      .on("mouseenter click", function (ev) {
+        d3.select(this).classed("mau test", true);
+        console.log("row mouseenter=", ev.target);
+      })
+      .on("mouseleave", function (ev) {
+        d3.select(this).classed("mau test", false);
+        console.log("row mouseleave=", ev.target);
+      });
+    rows.exit()
+      .remove();
+
+    //col
+    let cols = row.selectAll("td")
+      .data((d, i) => [d3.format("03d")(i + 1), ...d3.permute(d, ga.colsBE)]);
+    cols.enter()
+      .append("td")
+      .html((d) => d);
+    cols.exit()
+      .remove();
+    //to mau stim
+    function tomau(stim) {
+      if (!stim) { return };
+      stim = new RegExp("<td>.*(" + stim + ").*(?=</td>)", 'gi');
+      //let moi = "<b style='color:red'>" + stim + "</b>"
+      let ss = bang.select("tbody").html().toString();
+      let ls = ss.match(stim);
+      let l = ls ? ls.length : 0;
+      for (let j = 0; j < l; j++) {
+        console.log("mau tim thay ls[", j, "]=", ls[j]);
+        //ss = ss.replace(ls[j], "<b style='color:red'>" + ls[j] + "</b>");
+      }
+
+
+      //nd.replace(goc, (m)=> console.log("mau tim thay=",m));
+      //bang.select("tbody").html(nd);
+    };
+    tomau(stim);
+    //act.text()
+  },
+  hoso: () => {
+
+  },
+  scan: () => {
+
+  },
+};
 //stim filter danhsach
 
 //otim filter tu idb
@@ -74,82 +276,11 @@ function nap_dulieu() {
     console.log("main thread res from server=", JSON.stringify(res, null, 4));
     let dulieu = res.data || [];
     ga.ktra_dulieu(dulieu);
-    danhsach();
+    mvc.danhsach();
   });
 }
 
-function danhsach(stim) {
-  stim = JSON.stringify(stim).toLowerCase() || '';
-  console.log("danhsach stim=", stim);
-  if (stim.length == 0) {
-    console.log("danhsach quit stim len=0");
-    return;
-  }
-  let bang = d3.select("table[id='danhsach']").attr("style", "margin: 0");
-  //tieude
-  bang
-    .select("thead")
-    .selectAll("th")
-    .data(["Id", ...ga["colsFE"]])
-    .enter()
-    .append("th")
-    .attr("class", "c")
-    .text((col) => col);
 
-  //row
-  let row = bang
-    .select("tbody")
-    .selectAll("tr")
-    .data(ga.dulieu)
-    .enter()
-    .append("tr")
-    .attr("class", "l")
-    .attr("data-uuid", (d, i) => {
-      console.log("data-uuid d=", d, " i=", i);
-      return d.utcid;
-    })
-    .filter((d, i) => {
-      let t = 0, isok = false, ss;
-      while (true) {
-        try {
-          ss = JSON.stringify(d).toLowerCase();
-          console.log("filer stim=", stim, " in ", ss, " isok=", isok);
-          if (ss.indexOf(stim) > -1) {
-            isok = true;
-            console.log("filer if indexof stim=", stim, " in ", ss, " isok=", isok);
-            break;
-          }
-          t++;
-        } catch (err) {
-          break;
-        }
-      }
-      console.log("filer stim=", stim, " isok=", isok);
-      return isok;
-    })
-    .on("mouseenter click", function (ev) {
-      d3.select(this).classed("mau test", true);
-      console.log("row mouseenter=", ev.target);
-    })
-    .on("mouseleave", function (ev) {
-      d3.select(this).classed("mau test", false);
-      console.log("row mouseleave=", ev.target);
-    });
-
-  //col
-  let col = row
-    .selectAll("td")
-    .data((d, i) => [d3.format("03d")(i), ...d3.permute(d, ga.colsBE)])
-    .enter()
-    .append("td")
-    .text((d) => d);
-
-  //react view
-  col.exit().remove();
-  row.exit().remove();
-  bang.exit().remove();
-  return bang;
-}
 //view:hoso
 //view:scan
 
@@ -510,157 +641,19 @@ class Hoso {
 //tao option bang hoso:
 
 function loopjs() {
-  let i = 1;
+  let t = 1;
   while (true) {
     try {
       //command
-      i++;
+      t++;
     } catch (err) {
       break;
     }
   }
 }
 
-var tim = new Otim();
-//var hoso = new Hoso();
-function info() {
-  d3.select("#info").text(JSON.stringify(ga, null, 4));
-}
-
-d3.select("#namlamviec").on("change", function () {
-  let namchu = this.value.toString();
-  if (ga["namlamviec"] == namchu) {
-    return;
-  }
-  if (/^\d+$/.test(namchu)) {
-    ga["namlamviec"] = namchu;
-  } else {
-    switch (namchu) {
-      case "":
-      case "all":
-      case "tat":
-        ga["namlamviec"] = "";
-        break;
-      default:
-        ga["namlamviec"] = new Date().getFullYear().toString();
-    }
-  }
-  //api_hoso(namchu);
-  ga.tieude(0);
-  nap_dulieu();
-  info();
-  tim.don();
-  //hoso.tat();
-});
-
-d3.select("#stim")
-  .on("keydown", function (ev) {
-    switch (ev.keyCode) {
-      case 13: //enter goto 1st hosoloc
-        tim.moi(this.value);
-        break;
-      case 45: //insert
-        tim.moi(this.value);
-        this.value = "";
-        break;
-      default:
-        console.log("btn=", ev.code, " keyCode=", ev.keyCode);
-    }
-  })
-  .on("input", function () {
-    console.log("oninput s=", this.value);
-    danhsach(this.value);
-  })
-  .on("change", function () {
-    console.log("onchange stim=", this.value);
-  });
-
-d3.select("#don-otim").on("click", function (ev) {
-  console.log("btn clear otim=", ev.target);
-  ga["otim"] = [ga["namlamviec"]];
-  tim.xem();
-});
-
-//database
-//taodb(ga['csdl']);
-//capn(ga['csdl'], data_test);
-
-function api_hoso(nam) {
-  let api_url =
-    window.location.protocol +
-    "//" +
-    window.location.host +
-    "/" +
-    ga["csdl"]["ten"] +
-    "/api/hoso/" +
-    ga["namlamviec"];
-  console.log("api_url=", api_url);
-  d3.json(api_url, {
-    mode: "cors",
-  }).then((res) => {
-    console.log("main thread res from server=", JSON.stringify(res, null, 4));
-    let dulieu = res.data || {};
-    let flds_be = ["utcid", "sohoso", "khachhang", "diachigandhn"];
-    let flds_fe = ["utcid", "so ho so", "khach hang", "dia chi"];
-    show_ketqua(dulieu, flds_be, flds_fe);
-  });
-  //d3.json(api_url, {
-  //  headers: new Headers({
-  //    "Authorization": `Basic ${base64.encode(`${login}:${password}`)}`
-  //"Authorization", "Basic " + btoa(username + ":" + password));
-  //  }),
-  //}).then(json => { /* do something */ });
-}
-
-function show_ketqua(dulieu, flds_be, flds_fe) {
-  let bang = d3
-    .select("div[id='test']")
-    .append("table")
-    .attr("style", "margin: 0");
-  //go bo class hidden
-  d3.select("tbody").selectAll("tr").remove();
-  //tieude
-
-  bang
-    .append("thead")
-    .selectAll("th")
-    .data(["crud", ...flds_fe])
-    .enter()
-    .append("th")
-    .attr("class", "c")
-    .text((fld) => fld);
-
-  //row
-  let row = bang
-    .append("tbody")
-    .selectAll("tr")
-    .data(dulieu)
-    .enter()
-    .append("tr")
-    .attr("class", "l hov");
-
-  //col
-  let col = row
-    .selectAll("td")
-    .data((rec) => d3.permute(rec, flds_be))
-    .enter()
-    .append("td")
-    .text((d) => d);
-  let crud = row.insert("td", "td");
-  crud
-    .append("button")
-    .on("click", function () {
-      console.log("button trash click=", this.value);
-    })
-    .html('<i class="fa fa-trash"></i>');
-  crud
-    .append("button")
-    .on("click", function () {
-      console.log("button edit click=", this.value);
-    })
-    .html('<i class="fa fa-edit"></i>');
-  return bang;
-}
 
 
-ga.lay_url();
+
+ga.tao();
+mvc.tao();
