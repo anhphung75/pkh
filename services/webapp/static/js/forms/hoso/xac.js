@@ -2,21 +2,24 @@ import { taodb, cap1, capn, luu, luun } from "./../../ttdl/db.js";
 import { data_test } from "./../../test/data_test.js";
 
 //khoi tao
+
 var ga = {
   csdl: { ten: "pkh", sohieu: 1 },
   namlamviec: new Date().getFullYear().toString(),
   otim: [],
-  dulieu: [],
+  dulieu: {},
+  tieude: [],
+  noidung: [],
   colsBE: [],
   colsFE: [],
   url: {},
 
   tao: () => {
     ga.lay_url();
-    ga.tieude();
+    ga.lay_tieude();
   },
 
-  tieude: (bang = 0) => {
+  lay_tieude: (bang = 0) => {
     switch (bang) {
       case "dshc":
         break;
@@ -24,7 +27,7 @@ var ga = {
         break;
       default:
         ga.colsBE = ["utcid", "sohoso", "khachhang", "diachigandhn", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
-        ga.colsFE = ["utcid", "so ho so", "khach hang", "dia chi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        ga.tieude = ["utcid", "so ho so", "khach hang", "dia chi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
     }
   },
 
@@ -37,38 +40,65 @@ var ga = {
     ga.url['hon'] = d3.select("table[id='danhsach']").attr("data-hon");
   },
 
+  lay_idb: () => {
+
+  },
   //load tu idb loc theo otim
-  noidung: (bang = 0) => {
+  lay_api: (bang = 0) => {
     d3.json(ga.url['api'][bang], {
       mode: "cors",
     }).then((res) => {
       console.log("main thread res from server=", JSON.stringify(res, null, 4));
       let dulieu = res.data || [];
-      ga.ktra_dulieu(dulieu);
-      mvc.danhsach();
+      //lay dulieu
+      let t = 0, rec, k;
+      while (true) {
+        try {
+          rec = dulieu[t];
+          let uuid = rec.utcid || rec.uuid || rec.uid;
+          if (!(uuid in ga.dulieu)) { ga.dulieu[uuid] = {}; };
+          for (k in rec) {
+            if (!(['utcid', 'uuid', 'uid'].includes(k))) {
+              ga.dulieu[uuid][k] = rec[k];
+            }
+          }
+          t++;
+        } catch (err) {
+          break;
+        }
+      }
+      ga.lay_noidung(bang);
     });
   },
 
-  ktra_dulieu: (ld) => {
-    let t = 0, d = [], rec, k, v;
-    while (true) {
-      try {
-        rec = ld[t];
-        for (k in ga.colsBE) {
-          k in rec ? v = 0 : rec[k] = '';
-        }
-        d.push(rec);
-        t++;
-      } catch (err) {
-        break;
+  lay_noidung: (bang = 0) => {
+    let k, k1, rec, i;
+    for (k in ga.dulieu) {
+      rec = ga.dulieu[k];
+      for (i in ga.colsBE) {
+        k1 = ga.colsBE[i];
+        if (!(k1 in rec)) { rec[k1] = '' };
       }
+    };
+    let luid = Object.keys(ga.dulieu).sort();
+    ga.noidung = [];
+    ga.colsBE = ['stt', ...ga.colsBE];
+    ga.tieude = ['STT', ...ga.tieude];
+    for (i in luid) {
+      k = luid[i];
+      //chen stt;
+      ga.dulieu[k].stt = d3.format("03d")(parseInt(i) + 1);
+      rec = d3.permute(ga.dulieu[k], ga.colsBE);
+      console.log("lay_noidung rec=", rec);
     }
-    ga.dulieu = d;
+
   },
 
   loc_stim: (s) => {
-    s = s ? s.toString().toLowerCase() : '';
-    let kq = ga.dulieu.filter(d => JSON.stringify(Object.values(d)).toLowerCase().includes(s));
+    if (!s || s === '') { return ga.dulieu };
+    s = s.toString().toLowerCase();
+    //s = mvc.slistfilter(s);
+    let kq = ga.dulieu.filter(d => JSON.stringify(Object.values(d)).toLowerCase().indexOf(s) > 0);
     return kq;
   },
   loc_otim: () => {
@@ -88,32 +118,45 @@ var mvc = {
     mvc.otim();
   },
 
-  namlamviec: () => {
-    d3.select("#namlamviec").on("change", function () {
-      let namchu = this.value.toString();
-      if (ga["namlamviec"] == namchu) {
-        return;
-      }
-      if (/^\d+$/.test(namchu)) {
-        ga["namlamviec"] = namchu;
+  sregexp: (stim) => {
+    if (!stim) { return stim };
+    let k, ltim = [...stim];
+    let mau = '';
+    for (k in ltim) {
+      if (['$', '(', ')', '[', '.', '+', '*', '^', '?', '\\'].includes(ltim[k])) {
+        mau += "\\" + ltim[k];
       } else {
-        switch (namchu) {
-          case "":
-          case "all":
-          case "tat":
-            ga["namlamviec"] = "";
-            break;
-          default:
-            ga["namlamviec"] = new Date().getFullYear().toString();
-        }
+        mau += ltim[k];
       }
-      //api_hoso(namchu);
-      ga.tieude(0);
-      ga.noidung();
-      mvc.info();
-      mvc.otim();
-      //hoso.tat();
-    });
+    }
+    return mau;
+  },
+
+  namlamviec: () => {
+    d3.select("#namlamviec")
+      .on("change", function () {
+        let namchu = this.value.toString();
+        if (ga["namlamviec"] == namchu) {
+          return;
+        }
+        if (/^\d+$/.test(namchu)) {
+          ga["namlamviec"] = namchu;
+        } else {
+          switch (namchu) {
+            case "":
+            case "all":
+            case "tat":
+              ga["namlamviec"] = "";
+              break;
+            default:
+              ga["namlamviec"] = new Date().getFullYear().toString();
+          }
+        }
+        //api_hoso(namchu);
+        ga.lay_api();
+        mvc.info();
+        //mvc.otim();
+      });
   },
 
   stim: () => {
@@ -186,6 +229,7 @@ var mvc = {
   },
 
   danhsach: (stim) => {
+
     let bang = d3.select("table[id='danhsach']").attr("style", "margin: 0");
     //tieude
     bang.select("thead").selectAll("th")
@@ -223,8 +267,24 @@ var mvc = {
     let cols = row.selectAll("td")
       .data((d, i) => [d3.format("03d")(i + 1), ...d3.permute(d, ga.colsBE)]);
     cols.enter().append("td")
-      .html((d) => d);
+      .html((d, i) => {
+        if (!d || !stim) { return d };
+        console.log("col d=", d, " i=", i);
+        stim = stim.toString();
+        let zone = d.toString();
+        let mau = mvc.sregexp(stim);
+        console.log("mau func sregexp=", mau);
+        mau = new RegExp(mau, 'gi');
+        zone = zone.replace(mau, (m) => {
+          if (m === undefined || m === null || m === '') { return };
+          console.log("col mau tim duoc=", m, " i=", i);
+          let moi = "<b style='color:red'>" + m + "</b>";
+          return moi;
+        })
+        return zone;
+      })
     cols.exit().remove();
+
 
     //tomau
     let tomau_stim = (stim) => {
@@ -239,7 +299,7 @@ var mvc = {
       });
       bang.select("tbody").html(zone);
     };
-    tomau_stim(stim);
+    //tomau_stim(stim);
   },
   hoso: (dulieu) => {
     let uuid = d3.select("table[id='danhsach']").select("tbody").select('.mau').attr("data-uuid");
@@ -269,6 +329,15 @@ var mvc = {
 //otim filter tu idb
 
 //view:ketqua ->table
+
+var hoasy = {
+  tomau: (zone, stim, color = 'red') => {
+    let mau = new RegExp(stim, 'gi');
+    let moi = "<b style='color:" + color + "'>" + stim + "</b>";
+    let m = zone.replace(mau, moi);
+    return m;
+  },
+}
 
 function nap_dulieu() {
   //rest api

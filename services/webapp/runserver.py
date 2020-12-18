@@ -84,7 +84,7 @@ class Wss_Hoso(tornado.websocket.WebSocketHandler):
         parsed_origin = urllib.parse.urlparse(origin)
         print(f"parsed_origin={parsed_origin} netloc={parsed_origin.netloc}")
         return parsed_origin.netloc.startswith("pna")
-        #return True
+        # return True
 
     def open(self, groupid, clientid):
         pbd = groupid.lower()
@@ -145,15 +145,14 @@ class Api_Hoso_Rest(ApiBase):
         #data = api.HsKh(schema, namhoso).gom()
 
         data = [
-            {'utcid': 11111, 'sohoso': 'gm059365/20', 'khachhang': 'Tran Thi Thu 1',
-                'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', },
-
-            {'utcid': 22222, 'sohoso': 'gm059366/20', 'khachhang': 'Tran Thi Thu 2',
-                'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', },
-
-            {'utcid': 33333, 'sohoso': 'gm059367/20', 'khachhang': 'Tran Thi Thu 4',
-                'diachigandhn': 'T15- Kha Vạn Cân- Q.TĐ', }
-
+            {"utcid": 11111, "sohoso": "gm059365/20", "khachhang": "Tran Thi Thu 1",
+                "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
+            {"utcid": 22222, "sohoso": "gm059366/20", "khachhang": "Tran Thi Thu 2",
+                "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
+            {"utcid": 33333, "sohoso": "gm059367/20", "khachhang": "Tran Thi Thu 4",
+                "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
+            {"utcid": 4444, "sohoso": "gm059367/20", "khachhang": "Test [$&+,:;=?@#|'<>.-^*()%!\{}] Anh",
+                "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", }
         ]
         print(f'ApiRest pbd={pbd} nam={namhoso} data={data}')
         # except:
