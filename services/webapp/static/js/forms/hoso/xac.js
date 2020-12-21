@@ -1,7 +1,7 @@
 import { taodb, cap1, capn, luu, luun } from "./../../ttdl/db.js";
 import { data_test } from "./../../test/data_test.js";
 
-//untils
+//utils
 d3.selection.prototype.first = function () {
   return d3.select(
     this.nodes()[0]
@@ -17,6 +17,8 @@ d3.selection.prototype.last = function () {
 var ga = {
   csdl: { ten: "pkh", sohieu: 1 },
   namlamviec: new Date().getFullYear().toString(),
+  tttt: '',
+  ltttt: [],
   otim: [],
   dulieu: {},
   tieude: [],
@@ -128,20 +130,20 @@ var ga = {
       }
     }
     console.log("ga noidung=", ga.noidung);
-    mvc.danhsach();
+    lv.danhsach();
   },
 };
 
-var mvc = {
+var lv = {
   info: () => {
     d3.select("#info").text(JSON.stringify(ga, null, 4));
   },
 
   tao: () => {
-    mvc.namlamviec();
-    mvc.stim();
-    mvc.don_otim();
-    mvc.otim();
+    lv.namlamviec();
+    lv.stim();
+    lv.don_otim();
+    lv.otim();
   },
 
   sregexp: (stim) => {
@@ -180,8 +182,8 @@ var mvc = {
         }
         //api_hoso(namchu);
         ga.lay_api();
-        mvc.info();
-        //mvc.otim();
+        lv.info();
+        //lv.otim();
       });
   },
 
@@ -189,36 +191,54 @@ var mvc = {
     d3.select("#stim")
       .on("keydown", function (ev) {
         let s = this.value ? this.value.trim().toLowerCase() : '';
-        let zone, cur, truoc, sau;
+        let zone, h, d, c, t;
         switch (ev.keyCode) {
           case 13: //enter goto 1st hosoloc
             if (s.length > 0 && ga.otim.indexOf(s) === -1) {
               ga.otim.push(s);
             }
-            mvc.otim();
+            lv.otim();
             ga.loc_otim();
             break;
           case 45: //insert
             if (s.length > 0 && ga.otim.indexOf(s) === -1) {
               ga.otim.push(s);
             }
-            mvc.otim();
+            lv.otim();
             ga.loc_otim();
             this.value = "";
             break;
           case 38: //mui ten len
-            zone = d3.select("table[id='danhsach']").select("tbody").select("tr");
-            cur = zone.select(".mau");
-            if (cur.empty()) { console.log("empty cur") };
-            console.log("zone=", zone, "type=", typeof (zone));
-            cur = zone.classed("mau", false);
-            zone.select(() => cur.previousElementSibling).classed("mau", true);
+            zone = d3.select("table[id='danhsach']").select("tbody").selectAll("tr.mau");
+            if (zone.empty()) {
+              console.log("empty zone");
+              ga.tttt = ga.ltttt[ga.ltttt.length - 1];
+              d3.select("table[id='danhsach']").select("tbody")
+                .select("[data-tttt='" + ga.tttt + "']").classed("mau", true);
+            } else {
+              zone.classed("mau", false);
+              t = ga.ltttt.indexOf(ga.tttt);
+              ga.tttt = t < 1 ? ga.ltttt[ga.ltttt.length - 1] : ga.ltttt[t - 1];
+              d3.select("table[id='danhsach']").select("tbody")
+                .select("[data-tttt='" + ga.tttt + "']").classed("mau", true);
+            };
+            lv.hoso(ga.tttt);
             break;
           case 40: //mui ten xuong
-            zone = d3.select("table[id='danhsach']").select("tbody").select("tr[class='mau']");
-            console.log("zone=", zone, "type=", typeof (zone));
-            cur = zone.classed("mau", false);
-            zone.select(() => cur.nextElementSibling).classed("mau", true);
+            zone = d3.select("table[id='danhsach']").select("tbody").selectAll("tr.mau");
+            if (zone.empty()) {
+              console.log("empty zone");
+              ga.tttt = ga.ltttt[0];
+              d3.select("table[id='danhsach']").select("tbody")
+                .select("tr[data-tttt='" + ga.tttt + "']").classed("mau", true);
+            } else {
+              zone.classed("mau", false);
+              t = ga.ltttt.indexOf(ga.tttt);
+              ga.tttt = t > ga.ltttt.length - 2 ? ga.ltttt[0] : ga.ltttt[t + 1];
+              d3.select("table[id='danhsach']").select("tbody")
+                .select("tr[data-tttt='" + ga.tttt + "']").classed("mau", true);
+            };
+            lv.hoso(ga.tttt);
             break;
           default:
             console.log("btn=", ev.code, " keyCode=", ev.keyCode);
@@ -226,7 +246,7 @@ var mvc = {
       })
       .on("input", function () {
         console.log("oninput s=", this.value);
-        mvc.danhsach(this.value);
+        lv.danhsach(this.value);
       })
       .on("change", function () {
         console.log("onchange stim=", this.value);
@@ -237,7 +257,7 @@ var mvc = {
     d3.select("#don-otim").on("click", function (ev) {
       console.log("btn clear otim=", ev.target);
       ga["otim"] = [ga["namlamviec"]];
-      mvc.otim();
+      lv.otim();
     });
   },
 
@@ -257,7 +277,7 @@ var mvc = {
         s = s.trim().toLowerCase() || "";
         ga["otim"] = ga["otim"].filter((i) => i !== s);
         this.remove();
-        mvc.info();
+        lv.info();
       })
       .on("mouseout", function (ev) {
         this.style.textDecoration = "none";
@@ -268,7 +288,7 @@ var mvc = {
       });
     zone.exit()
       .remove();
-    //mvc.danhsach();
+    //lv.danhsach();
   },
 
   danhsach: (stim) => {
@@ -282,46 +302,44 @@ var mvc = {
       .text((col) => col);
 
     //rows
+    ga.ltttt = [];
     bang.select("tbody").selectAll("tr").remove();
     let rows = bang.select("tbody").selectAll("tr").data(ga.noidung);
     let row = rows.enter().append("tr")
       .attr("class", "l")
-      .attr("data-tttt", (d, i) => {
-        console.log("data-tttt d=", d, " i=", i);
-        return d.tttt;
-      })
+      .attr("data-tttt", (d) => d.tttt)
       .filter(d => {
         stim = stim ? stim : '';
         let dk = d.stim.includes(stim);
-        console.log("filter row d=", d, "dk=", dk);
+        if (dk) { ga.ltttt.push(d.tttt) };
         return dk
       })
-      .on("mouseenter", function (ev) {
+      .on("mouseenter", (ev, d) => {
         d3.select(this).classed("mau test", true);
-        console.log("row mouseenter=", ev.target.__data__);
-        mvc.hoso();
+        console.log("row mouseenter d=", d);
+        ga.tttt = d.tttt;
+        lv.hoso(ga.tttt);
       })
-      .on("mouseleave", function (ev) {
+      .on("mouseleave", function (ev, d) {
+        console.log("row mouseleave ga.ltttt=", ga.ltttt);
+        let t = ga.ltttt.indexOf(d.tttt);
+        if (t === 0 || t + 1 === ga.ltttt.length) {
+          console.log("row mouseleave return ev=", ev.target);
+          return;
+        };
         d3.select(this).classed("mau test", false);
-        console.log("row mouseleave=", ev.target);
-      })
-      .on("click", function (ev) {
-        mvc.hoso();
-        console.log("row click=", ev.target.parentNode.__data__);
+        console.log("row mouseleave ev=", ev.target);
       });
-    row.exit().remove();
-    rows.exit().remove();
 
     //col
-    let cols = row.selectAll("td")
-      .data((d) => d3.permute(d, ga.colsBE));
+    let cols = row.selectAll("td").data((d) => d3.permute(d, ga.colsBE));
     cols.enter().append("td")
       .html((d, i) => {
         if (!d || !stim) { return d };
         console.log("col d=", d, " i=", i);
         stim = stim.toString();
         let zone = d.toString();
-        let mau = mvc.sregexp(stim);
+        let mau = lv.sregexp(stim);
         console.log("mau func sregexp=", mau);
         mau = new RegExp(mau, 'gi');
         zone = zone.replace(mau, (m) => {
@@ -331,10 +349,11 @@ var mvc = {
           return moi;
         })
         return zone;
-      })
+      });
     cols.exit().remove();
   },
-  hoso: (tttt) => {
+
+  hoso: (tttt = ga.tttt) => {
     if (!tttt) {
       tttt = d3.select("table[id='danhsach']").select("tbody").select('.mau').attr("data-tttt");
     };
@@ -664,4 +683,4 @@ class Hoso {
 }
 
 ga.tao();
-mvc.tao();
+lv.tao();
