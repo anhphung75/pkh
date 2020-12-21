@@ -1,6 +1,17 @@
 import { taodb, cap1, capn, luu, luun } from "./../../ttdl/db.js";
 import { data_test } from "./../../test/data_test.js";
 
+//untils
+d3.selection.prototype.first = function () {
+  return d3.select(
+    this.nodes()[0]
+  );
+};
+d3.selection.prototype.last = function () {
+  return d3.select(
+    this.nodes()[this.size() - 1]
+  );
+};
 //khoi tao
 
 var ga = {
@@ -11,7 +22,6 @@ var ga = {
   tieude: [],
   noidung: [],
   colsBE: [],
-  colsFE: [],
   url: {},
 
   tao: () => {
@@ -26,8 +36,8 @@ var ga = {
       case "qtgt":
         break;
       default:
-        ga.colsBE = ["utcid", "sohoso", "khachhang", "diachigandhn", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
-        ga.tieude = ["utcid", "so ho so", "khach hang", "dia chi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        ga.colsBE = ["stt", "utcid", "sohoso", "khachhang", "diachigandhn", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        ga.tieude = ["stt", "utcid", "so ho so", "khach hang", "dia chi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
     }
   },
 
@@ -51,58 +61,74 @@ var ga = {
       console.log("main thread res from server=", JSON.stringify(res, null, 4));
       let dulieu = res.data || [];
       //lay dulieu
-      let t = 0, rec, k;
+      let t = 0, rec, k, stim, kotim, tttt, keys;
       while (true) {
         try {
           rec = dulieu[t];
-          let uuid = rec.utcid || rec.uuid || rec.uid;
-          if (!(uuid in ga.dulieu)) { ga.dulieu[uuid] = {}; };
+          stim = null;
+          kotim = ['tttt', 'uuid', 'uid', 'lastupdate', 'inok', 'scan', 'blob', 'tt', 'stt'];
+          tttt = rec.tttt || rec.uuid;
+          if (!tttt) {
+            tttt = Date.now();
+            while (tttt in ga.dulieu) {
+              tttt += 1;
+            }
+          };
+          if (!(tttt in ga.dulieu)) {
+            ga.dulieu[tttt] = { 'tttt': tttt };
+          };
           for (k in rec) {
-            if (!(['utcid', 'uuid', 'uid'].includes(k))) {
-              ga.dulieu[uuid][k] = rec[k];
+            if (['tttt', 'uuid'].includes(k) === false) {
+              ga.dulieu[tttt][k] = rec[k];
+            }
+            if (kotim.includes(k) === false) {
+              if (stim) {
+                stim = [...new Set([...stim, ...rec[k].toString().split(/\s+/)])];
+              } else {
+                stim = [...new Set([...rec[k].toString().split(/\s+/)])];
+              }
             }
           }
+          ga.dulieu[tttt]['stim'] = stim.join(' ').trim();
           t++;
         } catch (err) {
           break;
         }
       }
-      ga.lay_noidung(bang);
+      //xep thu tu
+      keys = Object.keys(ga.dulieu).sort();
+      t = 1;
+      for (k in keys) {
+        ga.dulieu[keys[k]]['stt'] = d3.format("03,d")(t);
+        t += 1;
+      }
+      ga.loc_otim();
     });
   },
 
-  lay_noidung: (bang = 0) => {
-    let k, k1, rec, i;
-    for (k in ga.dulieu) {
-      rec = ga.dulieu[k];
-      for (i in ga.colsBE) {
-        k1 = ga.colsBE[i];
-        if (!(k1 in rec)) { rec[k1] = '' };
-      }
-    };
-    let luid = Object.keys(ga.dulieu).sort();
-    ga.noidung = [];
-    ga.colsBE = ['stt', ...ga.colsBE];
-    ga.tieude = ['STT', ...ga.tieude];
-    for (i in luid) {
-      k = luid[i];
-      //chen stt;
-      ga.dulieu[k].stt = d3.format("03d")(parseInt(i) + 1);
-      rec = d3.permute(ga.dulieu[k], ga.colsBE);
-      console.log("lay_noidung rec=", rec);
-    }
-
-  },
-
-  loc_stim: (s) => {
-    if (!s || s === '') { return ga.dulieu };
-    s = s.toString().toLowerCase();
-    //s = mvc.slistfilter(s);
-    let kq = ga.dulieu.filter(d => JSON.stringify(Object.values(d)).toLowerCase().indexOf(s) > 0);
-    return kq;
-  },
   loc_otim: () => {
-
+    ga.noidung = [];
+    let k, keys, isok, i, ss, s;
+    keys = Object.keys(ga.dulieu).sort();
+    console.log("ga.dulieu=", ga.dulieu);
+    console.log("keys=", keys);
+    for (k in keys) {
+      isok = true;
+      for (i in ga.otim) {
+        ss = ga.dulieu[keys[k]].stim;
+        s = ga.otim[i];
+        console.log("loc_otim ss=", s, " s=", s);
+        if (ss.includes(s) === false) {
+          isok = false;
+          break;
+        }
+      }
+      if (isok) {
+        ga.noidung.push(ga.dulieu[keys[k]]);
+      }
+    }
+    console.log("ga noidung=", ga.noidung);
+    mvc.danhsach();
   },
 };
 
@@ -163,19 +189,36 @@ var mvc = {
     d3.select("#stim")
       .on("keydown", function (ev) {
         let s = this.value ? this.value.trim().toLowerCase() : '';
+        let zone, cur, truoc, sau;
         switch (ev.keyCode) {
           case 13: //enter goto 1st hosoloc
             if (s.length > 0 && ga.otim.indexOf(s) === -1) {
               ga.otim.push(s);
             }
             mvc.otim();
+            ga.loc_otim();
             break;
           case 45: //insert
             if (s.length > 0 && ga.otim.indexOf(s) === -1) {
               ga.otim.push(s);
             }
             mvc.otim();
+            ga.loc_otim();
             this.value = "";
+            break;
+          case 38: //mui ten len
+            zone = d3.select("table[id='danhsach']").select("tbody").select("tr");
+            cur = zone.select(".mau");
+            if (cur.empty()) { console.log("empty cur") };
+            console.log("zone=", zone, "type=", typeof (zone));
+            cur = zone.classed("mau", false);
+            zone.select(() => cur.previousElementSibling).classed("mau", true);
+            break;
+          case 40: //mui ten xuong
+            zone = d3.select("table[id='danhsach']").select("tbody").select("tr[class='mau']");
+            console.log("zone=", zone, "type=", typeof (zone));
+            cur = zone.classed("mau", false);
+            zone.select(() => cur.nextElementSibling).classed("mau", true);
             break;
           default:
             console.log("btn=", ev.code, " keyCode=", ev.keyCode);
@@ -199,9 +242,9 @@ var mvc = {
   },
 
   otim: (dulieu = ga.otim) => {
-    //d3.select("div[id='view:otim']").selectAll("*").remove();
+    //d3.select("div[id='view_otim']").selectAll("*").remove();
     console.log("otim dulieu=ga.otim=", dulieu);
-    let zone = d3.select("div[id='view:otim']").selectAll("button")
+    let zone = d3.select("#view_otim").selectAll("button")
       .data(dulieu);
     zone.enter()
       .append("button")
@@ -225,15 +268,14 @@ var mvc = {
       });
     zone.exit()
       .remove();
-    mvc.info();
+    //mvc.danhsach();
   },
 
   danhsach: (stim) => {
-
     let bang = d3.select("table[id='danhsach']").attr("style", "margin: 0");
     //tieude
     bang.select("thead").selectAll("th")
-      .data(["Id", ...ga.colsFE])
+      .data(ga.tieude)
       .enter()
       .append("th")
       .attr("class", "c")
@@ -241,31 +283,38 @@ var mvc = {
 
     //rows
     bang.select("tbody").selectAll("tr").remove();
-    let dulieu = ga.loc_stim(stim);
-    let rows = bang.select("tbody").selectAll("tr").data(dulieu);
+    let rows = bang.select("tbody").selectAll("tr").data(ga.noidung);
     let row = rows.enter().append("tr")
       .attr("class", "l")
-      .attr("data-uuid", (d, i) => {
-        console.log("data-uuid d=", d, " i=", i);
-        return d.utcid;
+      .attr("data-tttt", (d, i) => {
+        console.log("data-tttt d=", d, " i=", i);
+        return d.tttt;
+      })
+      .filter(d => {
+        stim = stim ? stim : '';
+        let dk = d.stim.includes(stim);
+        console.log("filter row d=", d, "dk=", dk);
+        return dk
       })
       .on("mouseenter", function (ev) {
         d3.select(this).classed("mau test", true);
-        mvc.hoso(ev.target.__data__);
+        console.log("row mouseenter=", ev.target.__data__);
+        mvc.hoso();
       })
       .on("mouseleave", function (ev) {
         d3.select(this).classed("mau test", false);
         console.log("row mouseleave=", ev.target);
       })
       .on("click", function (ev) {
-        mvc.hoso(ev.target.parentNode.__data__);
+        mvc.hoso();
         console.log("row click=", ev.target.parentNode.__data__);
       });
+    row.exit().remove();
     rows.exit().remove();
 
     //col
     let cols = row.selectAll("td")
-      .data((d, i) => [d3.format("03d")(i + 1), ...d3.permute(d, ga.colsBE)]);
+      .data((d) => d3.permute(d, ga.colsBE));
     cols.enter().append("td")
       .html((d, i) => {
         if (!d || !stim) { return d };
@@ -284,136 +333,32 @@ var mvc = {
         return zone;
       })
     cols.exit().remove();
-
-
-    //tomau
-    let tomau_stim = (stim) => {
-      if (!stim) { return };
-      let goc = new RegExp("<td>[^<]*(" + stim + ")", 'gi');
-      let zone = bang.select("tbody").html().toString();
-      zone = zone.replace(goc, (m) => {
-        let mau = new RegExp(stim, 'gi');
-        let moi = "<b style='color:red'>" + stim + "</b>";
-        m = m.replace(mau, moi);
-        return m;
-      });
-      bang.select("tbody").html(zone);
-    };
-    //tomau_stim(stim);
   },
-  hoso: (dulieu) => {
-    let uuid = d3.select("table[id='danhsach']").select("tbody").select('.mau').attr("data-uuid");
-    console.log("hoso uuid=", uuid);
-    let bang = d3.select("div[id='view:hoso']");
-
-    let rows = bang.selectAll("div").data(dulieu);
-    let row = rows.enter().append("div")
-      .attr("class", "grid row w100");
-    rows.exit().remove();
-
-    let cols = row.selectAll("div")
-      .data((d, i) => {
-        console.log("hoso cols d=", d);
-        return d;
-      });
-    cols.enter().append("div")
-      .html((d) => d);
-    cols.exit().remove();
+  hoso: (tttt) => {
+    if (!tttt) {
+      tttt = d3.select("table[id='danhsach']").select("tbody").select('.mau').attr("data-tttt");
+    };
+    console.log("hoso tttt=", tttt);
+    let noidung = d3.permute(ga.dulieu[tttt], ga.colsBE)
+    let i, k, v, dulieu = [];
+    for (i in ga.colsBE) {
+      dulieu.push(ga.tieude[i]);
+      dulieu.push(noidung[i]);
+    }
+    let zone = d3.select("#view_hoso")
+      .attr("class", "grid row w100")
+      .style('grid', 'auto-flow minmax(1rem, max-content)/max-content 1fr');
+    let cells = zone.selectAll("div").data(dulieu);
+    cells.enter().append("div");
+    cells.attr("class", "l")
+      .text(d => d);
+    cells.exit().remove();
   },
   scan: () => {
 
   },
 };
-//stim filter danhsach
 
-//otim filter tu idb
-
-//view:ketqua ->table
-
-var hoasy = {
-  tomau: (zone, stim, color = 'red') => {
-    let mau = new RegExp(stim, 'gi');
-    let moi = "<b style='color:" + color + "'>" + stim + "</b>";
-    let m = zone.replace(mau, moi);
-    return m;
-  },
-}
-
-function nap_dulieu() {
-  //rest api
-  let api_url =
-    window.location.protocol +
-    "//" +
-    window.location.host +
-    "/" +
-    ga["csdl"]["ten"] +
-    "/api/hoso/" +
-    ga["namlamviec"];
-  console.log("api_url=", api_url);
-  d3.json(api_url, {
-    mode: "cors",
-  }).then((res) => {
-    console.log("main thread res from server=", JSON.stringify(res, null, 4));
-    let dulieu = res.data || [];
-    ga.ktra_dulieu(dulieu);
-    mvc.danhsach();
-  });
-}
-
-
-//view:hoso
-//view:scan
-
-class Otim {
-  constructor() {
-    this.don();
-  }
-
-  don() {
-    //ga["otim"] = [ga["namlamviec"]];
-    this.xem();
-  }
-
-  moi(s) {
-    s = s.trim().toLowerCase() || "";
-    if (s.length < 1 || ga["otim"].indexOf(s) > -1) {
-      return;
-    }
-    ga["otim"].push(s);
-    this.xem();
-  }
-
-  xem() {
-    //d3.select("div[id='view:otim']").selectAll("*").remove();
-    let zone = d3
-      .select("div[id='view:otim']")
-      .selectAll("button")
-      .data(ga["otim"]);
-    zone
-      .enter()
-      .append("button")
-      .text((d) => d)
-      .attr("class", "l b1px")
-      .style("paddingLeft", "1em")
-      .style("color", "red")
-      .on("click", function () {
-        let s = this.textContent || this.innerText;
-        s = s.trim().toLowerCase() || "";
-        ga["otim"] = ga["otim"].filter((i) => i !== s);
-        this.remove();
-        info();
-      })
-      .on("mouseout", function (ev) {
-        this.style.textDecoration = "none";
-      })
-      .on("mouseover", function (ev) {
-        this.style.textDecoration = "line-through";
-        console.log("btn mouseover=", ev.target);
-      });
-    zone.exit().remove();
-    info();
-  }
-}
 
 class Hoso {
   constructor() {
@@ -616,11 +561,11 @@ class Hoso {
     }
     this.textloc = [{ crud: "nd crud" }, { uctid: "nd utcid" }];
     let curid = 0;
-    d3.select("div[id='view:hoso']")
+    d3.select("div[id='view_hoso']")
       .attr("class", "grid view-hoso w100 hov bang")
       //.style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
-        console.log("view:hoso", ga["bang"], " rec=", ev.target);
+        console.log("view_hoso", ga["bang"], " rec=", ev.target);
       })
       .selectAll("div")
       .data(this.textloc)
@@ -688,11 +633,11 @@ class Hoso {
     }
     this.textloc = [{ crud: "nd crud" }, { uctid: "nd utcid" }];
     let curid = 0;
-    d3.select("div[id='view:hoso']")
+    d3.select("#view_hoso")
       .attr("class", "grid view-hoso w100 hov bang")
       //.style("background-color", "#d1e5f0")
       .on("mouseover", function (ev) {
-        console.log("view:hoso", ga["bang"], " rec=", ev.target);
+        console.log("view_hoso", ga["bang"], " rec=", ev.target);
       })
       .selectAll("div")
       .data(this.textloc)
@@ -717,23 +662,6 @@ class Hoso {
       });
   }
 }
-
-//tao option bang hoso:
-
-function loopjs() {
-  let t = 1;
-  while (true) {
-    try {
-      //command
-      t++;
-    } catch (err) {
-      break;
-    }
-  }
-}
-
-
-
 
 ga.tao();
 mvc.tao();

@@ -13,23 +13,23 @@
   /*grid: auto-flow minmax(1rem, max-content)/1fr */
   grid-template-columns: 7fr 3fr;
   grid-template-rows: auto;
-  grid-template-areas: "hoso scan" "stim stim" "ketqua ketqua";
+  grid-template-areas: "hoso scan" "stim stim" "danhsach danhsach";
 }
 
-#view-hoso {
+#view_hoso {
   grid-area: hoso;
 }
 
-#view-scan {
+#view_scan {
   grid-area: scan;
 }
 
-#view-stim {
+#view_stim {
   grid-area: stim;
 }
 
-#view-ketqua {
-  grid-area: ketqua;
+#view_danhsach {
+  grid-area: danhsach;
   height: 80vh;
 }
 

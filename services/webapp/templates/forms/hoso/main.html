@@ -18,15 +18,14 @@
 </div>
 
 <div class="grid hoso ba">
-  <div id="view:hoso" class="l">
-    ho os duoc chon
+  <div id="view_hoso" class="l">
   </div>
 
-  <div id="view:scan" class="r">
+  <div id="view_scan" class="r">
     file scan
   </div>
 
-  <div id="view-stim" class="w100">
+  <div id="view_stim" class="w100">
     {% set url_img=static_url('images/searchicon.png') %}
     <input type="text" class="w100" placeholder="tìm không phân biệt chữ hoa, chữ thường" id="stim"
       style="background-image:url({{url_img}})">
@@ -38,11 +37,12 @@
       </div>
     </div>
   </div>
-
-  <table id="danhsach" class="w100" data-hon="{{static_url('js/forms/hoso/hon.js')}}">
-    <thead></thead>
-    <tbody></tbody>
-  </table>
+  <div id="view_danhsach" class="w100">
+    <table id="danhsach" class="w100" data-hon="{{static_url('js/forms/hoso/hon.js')}}">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
+  </div>
 </div>
 {% end %}
 
