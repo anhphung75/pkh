@@ -17,14 +17,48 @@
   </select>
 </div>
 
-<div class="grid hoso ba">
-  <div id="view_hoso" class="l">
+<div class="grid hoso w100">
+  <div class="btbl">
+    <div class="grid hosomau tieude">
+      <div class="c u fb fu">
+        THÔNG TIN
+      </div>
+      <div class="crud">
+        <button type="button" id="moi_hoso">
+          <i class="fa fa-plus"></i>
+        </button>
+        <button type="button" id="sua_hoso">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button type="button" id="xoa_hoso">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div id="view_hoso" class="l">
+    </div>
   </div>
-
-  <div id="view_scan" class="r">
-    file scan
+  <div class="ba">
+    <div class="grid scan tieude">
+      <div class="c u fb fu">
+        HÌNH ẢNH
+      </div>
+      <div class="crud">
+        <button type="button" id="moi_scan">
+          <i class="fa fa-plus"></i>
+        </button>
+        <button type="button" id="sua_scan">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button type="button" id="xoa_scan">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div id="view_scan" class="r">
+      file scan
+    </div>
   </div>
-
   <div id="view_stim" class="w100">
     {% set url_img=static_url('images/searchicon.png') %}
     <input type="text" class="w100" placeholder="tìm không phân biệt chữ hoa, chữ thường" id="stim"
@@ -39,7 +73,7 @@
   </div>
   <div id="view_danhsach" class="w100">
     <table id="danhsach" class="w100" data-hon="{{static_url('js/forms/hoso/hon.js')}}">
-      <thead></thead>
+      <thead class="tieude"></thead>
       <tbody></tbody>
     </table>
   </div>

@@ -1,19 +1,8 @@
 import { taodb, cap1, capn, luu, luun } from "./../../ttdl/db.js";
 import { data_test } from "./../../test/data_test.js";
 
-//utils
-d3.selection.prototype.first = function () {
-  return d3.select(
-    this.nodes()[0]
-  );
-};
-d3.selection.prototype.last = function () {
-  return d3.select(
-    this.nodes()[this.size() - 1]
-  );
-};
-//khoi tao
 
+//khoi tao
 var ga = {
   csdl: { ten: "pkh", sohieu: 1 },
   namlamviec: new Date().getFullYear().toString(),
@@ -38,8 +27,8 @@ var ga = {
       case "qtgt":
         break;
       default:
-        ga.colsBE = ["stt", "utcid", "sohoso", "khachhang", "diachigandhn", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
-        ga.tieude = ["stt", "utcid", "so ho so", "khach hang", "dia chi", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        ga.colsBE = ["stt", "tttt", "sohoso", "khachhang", "diachigandhn", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
+        ga.tieude = ["Stt", "Mã hồ sơ", "Số hồ sơ", "Khách hàng", "Địa chỉ gắn đhn", "Ngày thiết kế", "Ngày lên đợt", "Ngày thi công", "Ngày trở ngại"];
     }
   },
 
@@ -53,7 +42,53 @@ var ga = {
   },
 
   lay_idb: () => {
-
+    let w = { 'tttt': null };
+    let gui = {
+      csdl: { ten: "pkh", sohieu: 1 },
+      lenh: 'lay',
+      bang: '',
+      dk: '',
+      kq: {}
+    }
+    //lay danhsach tttt
+    w['tttt'] = new Worker(ga.url.hon);
+    gui.lenh = 'gom';
+    gui.dk = { 'tttt': 'all' }
+    w['tttt'].postMessage(gui);
+    w['tttt'].onmessage = (e) => {
+      let tra = e.data;
+      console.log("w[", i, "] tra=", JSON.stringify(tra, null, 2));
+      if (tra.cv < 0) {
+        console.log("tat kq.cv=", tra.cv);
+        w[i].terminate();
+        if ("err" in tra) {
+          console.log("err=", tra.err);
+        }
+        return null;
+      }
+      ga.ltttt = tra.kq;
+      //lay chitiet tttt
+      let i, l = ga.ltttt.length - 1 || 0;
+      for (i = 0; i < l; i++) {
+        w[i] = new Worker(ga.url.hon);
+        gui.lenh = 'gom';
+        gui.dk = { 'tttt': 'all' }
+        gui.otim = ga.otim;
+        w[i].postMessage(gui);
+        w[i].onmessage = (e) => {
+          let tra = e.data;
+          console.log("w[", i, "] tra=", JSON.stringify(tra, null, 2));
+          if (tra.cv < 0) {
+            console.log("tat kq.cv=", tra.cv);
+            w[i].terminate();
+            if ("err" in tra) {
+              console.log("err=", tra.err);
+            }
+            return null;
+          }
+        }
+      }
+    }
   },
   //load tu idb loc theo otim
   lay_api: (bang = 0) => {
@@ -180,10 +215,7 @@ var lv = {
               ga["namlamviec"] = new Date().getFullYear().toString();
           }
         }
-        //api_hoso(namchu);
         ga.lay_api();
-        lv.info();
-        //lv.otim();
       });
   },
 
@@ -277,7 +309,6 @@ var lv = {
         s = s.trim().toLowerCase() || "";
         ga["otim"] = ga["otim"].filter((i) => i !== s);
         this.remove();
-        lv.info();
       })
       .on("mouseout", function (ev) {
         this.style.textDecoration = "none";
@@ -369,8 +400,20 @@ var lv = {
       .style('grid', 'auto-flow minmax(1rem, max-content)/max-content 1fr');
     let cells = zone.selectAll("div").data(dulieu);
     cells.enter().append("div");
-    cells.attr("class", "l")
-      .text(d => d);
+    cells.text(d => d)
+      .attr("class", "l bb")
+      .classed("fb", (d, i) => {
+        if (i % 2 === 1) {
+          return true;
+        }
+        return false;
+      })
+      .style("background-color", (d, i) => {
+        if (i % 2 === 1) {
+          return 'transparent';
+        }
+        return 'coral';
+      });
     cells.exit().remove();
   },
   scan: () => {
