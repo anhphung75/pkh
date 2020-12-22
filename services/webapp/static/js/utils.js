@@ -1,3 +1,12 @@
+function tao_uuid() {
+  var temp_url = URL.createObjectURL(new Blob());
+  var uuid = temp_url.toString();
+  URL.revokeObjectURL(temp_url);
+  return uuid.substr(uuid.lastIndexOf('/') + 1);
+  // remove prefix (e.g. blob:null/, blob:www.test.com/, ...)
+  // vd tao_uuid()= f6ca05c0-fad5-46fc-a237-a8e930e7cb49
+}
+
 function lamtronso(solamtron, sole = 0) {
   try {
     let le = Math.pow(10, sole);
@@ -14,7 +23,6 @@ function lamtronso(solamtron, sole = 0) {
     return 0;
   }
 }
-
 
 class Tien {
   constructor(sotien) {
