@@ -421,6 +421,67 @@ var lv = {
   },
 };
 
+var scan={
+  tao:()=>{
+    scan.lay_api();
+  },
+
+  lay_idb:(tttt)=>{
+    
+  },
+
+  lay_api: (tttt) => {
+    d3.json(ga.url['api'][bang], {
+      mode: "cors",
+    }).then((res) => {
+      console.log("main thread res from server=", JSON.stringify(res, null, 4));
+      let dulieu = res.data || [];
+      //lay dulieu
+      let t = 0, rec, k, stim, kotim, tttt, keys;
+      while (true) {
+        try {
+          rec = dulieu[t];
+          stim = null;
+          kotim = ['tttt', 'uuid', 'uid', 'lastupdate', 'inok', 'scan', 'blob', 'tt', 'stt'];
+          tttt = rec.tttt || rec.uuid;
+          if (!tttt) {
+            tttt = Date.now();
+            while (tttt in ga.dulieu) {
+              tttt += 1;
+            }
+          };
+          if (!(tttt in ga.dulieu)) {
+            ga.dulieu[tttt] = { 'tttt': tttt };
+          };
+          for (k in rec) {
+            if (['tttt', 'uuid'].includes(k) === false) {
+              ga.dulieu[tttt][k] = rec[k];
+            }
+            if (kotim.includes(k) === false) {
+              if (stim) {
+                stim = [...new Set([...stim, ...rec[k].toString().split(/\s+/)])];
+              } else {
+                stim = [...new Set([...rec[k].toString().split(/\s+/)])];
+              }
+            }
+          }
+          ga.dulieu[tttt]['stim'] = stim.join(' ').trim();
+          t++;
+        } catch (err) {
+          break;
+        }
+      }
+      //xep thu tu
+      keys = Object.keys(ga.dulieu).sort();
+      t = 1;
+      for (k in keys) {
+        ga.dulieu[keys[k]]['stt'] = d3.format("03,d")(t);
+        t += 1;
+      }
+      ga.loc_otim();
+    });
+  },
+}
 
 class Hoso {
   constructor() {
