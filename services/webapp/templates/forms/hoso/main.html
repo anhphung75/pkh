@@ -55,8 +55,11 @@
         </button>
       </div>
     </div>
-    <div id="view_scan" class="r">
-      file scan
+    <div id="view_scan" class="r w100" data-scan="{{static_url('scan/MP03_2020.pdf')}}">
+      <object class="r w100" type="application/pdf" width="500" height="400"
+        data="https://pna:8888{{static_url('scan/MP04_2020.pdf')}}">
+        <p>Insert your error message here, if the PDF cannot be displayed.</p>
+      </object>
     </div>
   </div>
   <div id="view_stim" class="w100">

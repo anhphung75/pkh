@@ -323,7 +323,9 @@ var lv = {
   },
 
   danhsach: (stim) => {
-    let bang = d3.select("table[id='danhsach']").attr("style", "margin: 0");
+    let bang = d3.select("table[id='danhsach']")
+      .style("margin", "0")
+      .style("border-collapse", "collapse");
     //tieude
     bang.select("thead").selectAll("th")
       .data(ga.tieude)
@@ -346,6 +348,7 @@ var lv = {
         return dk
       })
       .on("mouseenter", (ev, d) => {
+        bang.selectAll("tr").classed("mau test", false);
         d3.select(this).classed("mau test", true);
         console.log("row mouseenter d=", d);
         ga.tttt = d.tttt;
@@ -416,18 +419,25 @@ var lv = {
       });
     cells.exit().remove();
   },
-  scan: () => {
-
-  },
 };
 
-var scan={
-  tao:()=>{
+var scan = {
+  tao: () => {
     scan.lay_api();
   },
+  test: () => {
+    let pdfFile = d3.select("#view_scan").attr("data-scan");
+    console.log("url scan=", pdfFile);
+    //let blob = new Blob([pdfFile], { type: 'application/pdf' })
+    //let url = (window.URL || window.webkitURL).createObjectURL(blob);
+    let url = new URL("https://pna:8888");
+    url.pathname = pdfFile;
+    let mascan = 'scan01';
+    ga.url.scan = [{ mascan: mascan, ulr: url.href }];
+    scan.hoso("scan01");
+  },
+  lay_idb: (tttt) => {
 
-  lay_idb:(tttt)=>{
-    
   },
 
   lay_api: (tttt) => {
@@ -480,6 +490,32 @@ var scan={
       }
       ga.loc_otim();
     });
+
+
+  },
+
+  hoso: (mascan) => {
+    let dulieu = ga.url.scan;
+    console.log("scan hoso mascan=", mascan, " dulieu=", dulieu);
+
+    let zone = d3.select("#view_scan").attr("class", "w100")
+    //zone.selectAll("object").remove();
+
+    let cells = zone.selectAll("object").data(dulieu)
+      .filter(d => {
+        console.log("Scan cells filter d=", d);
+        return d.mascan.includes(mascan);
+      });
+
+    cells.enter().append("object")
+      .style("background-color", "transparent")
+      .attr("type", "application/pdf")
+      .attr("typemustmatch", true)
+      .attr("width", "500")
+      .attr("height", "2000");
+    cells.attr("data", (d, i) => d ? d.url.toString() : null);
+    cells.exit().remove();
+
   },
 }
 
@@ -788,3 +824,4 @@ class Hoso {
 
 ga.tao();
 lv.tao();
+scan.test();

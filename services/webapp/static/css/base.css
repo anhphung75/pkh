@@ -1,7 +1,5 @@
 @charset "UTF-8";
-*,
-*:before,
-*:after {
+*, *:before, *:after {
   box-sizing: border-box;
   background-color: transparent;
   color: black;
@@ -9,10 +7,8 @@
 
 @import url("./font_Opensans.css");
 @import url("./font_UVNTintuc.css");
-html,
-body {
-  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep",
-    "UVN Tin Tuc Hep Them", sans-serif;
+html, body {
+  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
   /* font-size: 16pt; */
   margin: 0;
   border: 0;
@@ -182,8 +178,7 @@ body {
   border: 0;
 }
 
-.ba,
-.btrbl {
+.ba, .btrbl {
   border: 1px solid black;
 }
 
@@ -255,10 +250,7 @@ body {
   background-color: lightgreen;
 }
 
-.hide,
-.an,
-.dau,
-.che {
+.hide, .an, .dau, .che {
   display: none;
 }
 
@@ -312,9 +304,7 @@ body {
 }
 
 @media print {
-  *,
-  *:before,
-  *:after {
+  *, *:before, *:after {
     box-sizing: border-box;
     background-color: transparent;
     color: black;
@@ -332,8 +322,9 @@ body {
 }
 
 @media screen {
-  .test {
-    border: 1px solid black;
+  .test, .mau {
+    border: 1px solid green;
+    border-radius: 10px;
     background: yellow;
   }
 }
