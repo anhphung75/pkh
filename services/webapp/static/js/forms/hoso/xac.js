@@ -1,12 +1,11 @@
 import { taodb, cap1, capn, luu, luun } from "./../../ttdl/db.js";
 import { data_test } from "./../../test/data_test.js";
 
-
 //khoi tao
 var ga = {
   csdl: { ten: "pkh", sohieu: 1 },
   namlamviec: new Date().getFullYear().toString(),
-  tttt: '',
+  tttt: "",
   ltttt: [],
   otim: [],
   dulieu: {},
@@ -27,35 +26,71 @@ var ga = {
       case "qtgt":
         break;
       default:
-        ga.colsBE = ["stt", "tttt", "sohoso", "khachhang", "diachigandhn", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai"];
-        ga.tieude = ["Stt", "Mã hồ sơ", "Số hồ sơ", "Khách hàng", "Địa chỉ gắn đhn", "Ngày thiết kế", "Ngày lên đợt", "Ngày thi công", "Ngày trở ngại"];
+        ga.colsBE = [
+          "stt",
+          "tttt",
+          "sohoso",
+          "khachhang",
+          "diachigandhn",
+          "ngaythietke",
+          "ngaylendot",
+          "ngaythicong",
+          "ngaytrongai",
+        ];
+        ga.tieude = [
+          "Stt",
+          "Mã hồ sơ",
+          "Số hồ sơ",
+          "Khách hàng",
+          "Địa chỉ gắn đhn",
+          "Ngày thiết kế",
+          "Ngày lên đợt",
+          "Ngày thi công",
+          "Ngày trở ngại",
+        ];
     }
   },
 
   lay_url: () => {
-    ga.url['api'] = [
-      "https://" + window.location.host + "/" + ga.csdl.ten + "/api/hoso/" + ga.namlamviec,
-      "https://" + window.location.host + "/" + ga.csdl.ten + "/api/dshc/" + ga.namlamviec,
+    ga.url["api"] = [
+      "https://" +
+      window.location.host +
+      "/" +
+      ga.csdl.ten +
+      "/api/hoso/" +
+      ga.namlamviec,
+      "https://" +
+      window.location.host +
+      "/" +
+      ga.csdl.ten +
+      "/api/dshc/" +
+      ga.namlamviec,
     ];
-    ga.url['wss'] = "wss://" + window.location.host + "/" + ga.csdl.ten + "/wss/hoso/" + ga.namlamviec;
-    ga.url['hon'] = d3.select("table[id='danhsach']").attr("data-hon");
+    ga.url["wss"] =
+      "wss://" +
+      window.location.host +
+      "/" +
+      ga.csdl.ten +
+      "/wss/hoso/" +
+      ga.namlamviec;
+    ga.url["hon"] = d3.select("table[id='danhsach']").attr("data-hon");
   },
 
   lay_idb: () => {
-    let w = { 'tttt': null };
+    let w = { tttt: null };
     let gui = {
       csdl: { ten: "pkh", sohieu: 1 },
-      lenh: 'lay',
-      bang: '',
-      dk: '',
-      kq: {}
-    }
+      lenh: "lay",
+      bang: "",
+      dk: "",
+      kq: {},
+    };
     //lay danhsach tttt
-    w['tttt'] = new Worker(ga.url.hon);
-    gui.lenh = 'gom';
-    gui.dk = { 'tttt': 'all' }
-    w['tttt'].postMessage(gui);
-    w['tttt'].onmessage = (e) => {
+    w["tttt"] = new Worker(ga.url.hon);
+    gui.lenh = "gom";
+    gui.dk = { tttt: "all" };
+    w["tttt"].postMessage(gui);
+    w["tttt"].onmessage = (e) => {
       let tra = e.data;
       console.log("w[", i, "] tra=", JSON.stringify(tra, null, 2));
       if (tra.cv < 0) {
@@ -68,11 +103,12 @@ var ga = {
       }
       ga.ltttt = tra.kq;
       //lay chitiet tttt
-      let i, l = ga.ltttt.length - 1 || 0;
+      let i,
+        l = ga.ltttt.length - 1 || 0;
       for (i = 0; i < l; i++) {
         w[i] = new Worker(ga.url.hon);
-        gui.lenh = 'gom';
-        gui.dk = { 'tttt': 'all' }
+        gui.lenh = "gom";
+        gui.dk = { tttt: "all" };
         gui.otim = ga.otim;
         w[i].postMessage(gui);
         w[i].onmessage = (e) => {
@@ -86,47 +122,65 @@ var ga = {
             }
             return null;
           }
-        }
+        };
       }
-    }
+    };
   },
   //load tu idb loc theo otim
   lay_api: (bang = 0) => {
-    d3.json(ga.url['api'][bang], {
+    d3.json(ga.url["api"][bang], {
       mode: "cors",
     }).then((res) => {
       console.log("main thread res from server=", JSON.stringify(res, null, 4));
       let dulieu = res.data || [];
       //lay dulieu
-      let t = 0, rec, k, stim, kotim, tttt, keys;
+      let t = 0,
+        rec,
+        k,
+        stim,
+        kotim,
+        tttt,
+        keys;
       while (true) {
         try {
           rec = dulieu[t];
           stim = null;
-          kotim = ['tttt', 'uuid', 'uid', 'lastupdate', 'inok', 'scan', 'blob', 'tt', 'stt'];
+          kotim = [
+            "tttt",
+            "uuid",
+            "uid",
+            "lastupdate",
+            "inok",
+            "scan",
+            "blob",
+            "tt",
+            "stt",
+          ];
           tttt = rec.tttt || rec.uuid;
           if (!tttt) {
             tttt = Date.now();
             while (tttt in ga.dulieu) {
               tttt += 1;
             }
-          };
+          }
           if (!(tttt in ga.dulieu)) {
-            ga.dulieu[tttt] = { 'tttt': tttt };
-          };
+            ga.dulieu[tttt] = { tttt: tttt };
+          }
           for (k in rec) {
-            if (['tttt', 'uuid'].includes(k) === false) {
+            if (["tttt", "uuid"].includes(k) === false) {
               ga.dulieu[tttt][k] = rec[k];
             }
             if (kotim.includes(k) === false) {
               if (stim) {
-                stim = [...new Set([...stim, ...rec[k].toString().split(/\s+/)])];
+                stim = [
+                  ...new Set([...stim, ...rec[k].toString().split(/\s+/)]),
+                ];
               } else {
                 stim = [...new Set([...rec[k].toString().split(/\s+/)])];
               }
             }
           }
-          ga.dulieu[tttt]['stim'] = stim.join(' ').trim();
+          ga.dulieu[tttt]["stim"] = stim.join(" ").trim();
           t++;
         } catch (err) {
           break;
@@ -136,7 +190,7 @@ var ga = {
       keys = Object.keys(ga.dulieu).sort();
       t = 1;
       for (k in keys) {
-        ga.dulieu[keys[k]]['stt'] = d3.format("03,d")(t);
+        ga.dulieu[keys[k]]["stt"] = d3.format("03,d")(t);
         t += 1;
       }
       ga.loc_otim();
@@ -182,11 +236,16 @@ var lv = {
   },
 
   sregexp: (stim) => {
-    if (!stim) { return stim };
-    let k, ltim = [...stim];
-    let mau = '';
+    if (!stim) {
+      return stim;
+    }
+    let k,
+      ltim = [...stim];
+    let mau = "";
     for (k in ltim) {
-      if (['$', '(', ')', '[', '.', '+', '*', '^', '?', '\\'].includes(ltim[k])) {
+      if (
+        ["$", "(", ")", "[", ".", "+", "*", "^", "?", "\\"].includes(ltim[k])
+      ) {
         mau += "\\" + ltim[k];
       } else {
         mau += ltim[k];
@@ -196,33 +255,32 @@ var lv = {
   },
 
   namlamviec: () => {
-    d3.select("#namlamviec")
-      .on("change", function () {
-        let namchu = this.value.toString();
-        if (ga["namlamviec"] == namchu) {
-          return;
+    d3.select("#namlamviec").on("change", function () {
+      let namchu = this.value.toString();
+      if (ga["namlamviec"] == namchu) {
+        return;
+      }
+      if (/^\d+$/.test(namchu)) {
+        ga["namlamviec"] = namchu;
+      } else {
+        switch (namchu) {
+          case "":
+          case "all":
+          case "tat":
+            ga["namlamviec"] = "";
+            break;
+          default:
+            ga["namlamviec"] = new Date().getFullYear().toString();
         }
-        if (/^\d+$/.test(namchu)) {
-          ga["namlamviec"] = namchu;
-        } else {
-          switch (namchu) {
-            case "":
-            case "all":
-            case "tat":
-              ga["namlamviec"] = "";
-              break;
-            default:
-              ga["namlamviec"] = new Date().getFullYear().toString();
-          }
-        }
-        ga.lay_api();
-      });
+      }
+      ga.lay_api();
+    });
   },
 
   stim: () => {
     d3.select("#stim")
       .on("keydown", function (ev) {
-        let s = this.value ? this.value.trim().toLowerCase() : '';
+        let s = this.value ? this.value.trim().toLowerCase() : "";
         let zone, h, d, c, t;
         switch (ev.keyCode) {
           case 13: //enter goto 1st hosoloc
@@ -241,35 +299,49 @@ var lv = {
             this.value = "";
             break;
           case 38: //mui ten len
-            zone = d3.select("table[id='danhsach']").select("tbody").selectAll("tr.mau");
+            zone = d3
+              .select("table[id='danhsach']")
+              .select("tbody")
+              .selectAll("tr.mau");
             if (zone.empty()) {
               console.log("empty zone");
               ga.tttt = ga.ltttt[ga.ltttt.length - 1];
-              d3.select("table[id='danhsach']").select("tbody")
-                .select("[data-tttt='" + ga.tttt + "']").classed("mau", true);
+              d3.select("table[id='danhsach']")
+                .select("tbody")
+                .select("[data-tttt='" + ga.tttt + "']")
+                .classed("mau", true);
             } else {
               zone.classed("mau", false);
               t = ga.ltttt.indexOf(ga.tttt);
               ga.tttt = t < 1 ? ga.ltttt[ga.ltttt.length - 1] : ga.ltttt[t - 1];
-              d3.select("table[id='danhsach']").select("tbody")
-                .select("[data-tttt='" + ga.tttt + "']").classed("mau", true);
-            };
+              d3.select("table[id='danhsach']")
+                .select("tbody")
+                .select("[data-tttt='" + ga.tttt + "']")
+                .classed("mau", true);
+            }
             lv.hoso(ga.tttt);
             break;
           case 40: //mui ten xuong
-            zone = d3.select("table[id='danhsach']").select("tbody").selectAll("tr.mau");
+            zone = d3
+              .select("table[id='danhsach']")
+              .select("tbody")
+              .selectAll("tr.mau");
             if (zone.empty()) {
               console.log("empty zone");
               ga.tttt = ga.ltttt[0];
-              d3.select("table[id='danhsach']").select("tbody")
-                .select("tr[data-tttt='" + ga.tttt + "']").classed("mau", true);
+              d3.select("table[id='danhsach']")
+                .select("tbody")
+                .select("tr[data-tttt='" + ga.tttt + "']")
+                .classed("mau", true);
             } else {
               zone.classed("mau", false);
               t = ga.ltttt.indexOf(ga.tttt);
               ga.tttt = t > ga.ltttt.length - 2 ? ga.ltttt[0] : ga.ltttt[t + 1];
-              d3.select("table[id='danhsach']").select("tbody")
-                .select("tr[data-tttt='" + ga.tttt + "']").classed("mau", true);
-            };
+              d3.select("table[id='danhsach']")
+                .select("tbody")
+                .select("tr[data-tttt='" + ga.tttt + "']")
+                .classed("mau", true);
+            }
             lv.hoso(ga.tttt);
             break;
           default:
@@ -296,9 +368,9 @@ var lv = {
   otim: (dulieu = ga.otim) => {
     //d3.select("div[id='view_otim']").selectAll("*").remove();
     console.log("otim dulieu=ga.otim=", dulieu);
-    let zone = d3.select("#view_otim").selectAll("button")
-      .data(dulieu);
-    zone.enter()
+    let zone = d3.select("#view_otim").selectAll("button").data(dulieu);
+    zone
+      .enter()
       .append("button")
       .text((d) => d)
       .attr("class", "l b1px")
@@ -317,17 +389,19 @@ var lv = {
         this.style.textDecoration = "line-through";
         console.log("btn mouseover=", ev.target);
       });
-    zone.exit()
-      .remove();
+    zone.exit().remove();
     //lv.danhsach();
   },
 
   danhsach: (stim) => {
-    let bang = d3.select("table[id='danhsach']")
+    let bang = d3
+      .select("table[id='danhsach']")
       .style("margin", "0")
       .style("border-collapse", "collapse");
     //tieude
-    bang.select("thead").selectAll("th")
+    bang
+      .select("thead")
+      .selectAll("th")
       .data(ga.tieude)
       .enter()
       .append("th")
@@ -338,14 +412,18 @@ var lv = {
     ga.ltttt = [];
     bang.select("tbody").selectAll("tr").remove();
     let rows = bang.select("tbody").selectAll("tr").data(ga.noidung);
-    let row = rows.enter().append("tr")
+    let row = rows
+      .enter()
+      .append("tr")
       .attr("class", "l")
       .attr("data-tttt", (d) => d.tttt)
-      .filter(d => {
-        stim = stim ? stim : '';
+      .filter((d) => {
+        stim = stim ? stim : "";
         let dk = d.stim.includes(stim);
-        if (dk) { ga.ltttt.push(d.tttt) };
-        return dk
+        if (dk) {
+          ga.ltttt.push(d.tttt);
+        }
+        return dk;
       })
       .on("mouseenter", (ev, d) => {
         bang.selectAll("tr").classed("mau test", false);
@@ -360,28 +438,34 @@ var lv = {
         if (t === 0 || t + 1 === ga.ltttt.length) {
           console.log("row mouseleave return ev=", ev.target);
           return;
-        };
+        }
         d3.select(this).classed("mau test", false);
         console.log("row mouseleave ev=", ev.target);
       });
 
     //col
     let cols = row.selectAll("td").data((d) => d3.permute(d, ga.colsBE));
-    cols.enter().append("td")
+    cols
+      .enter()
+      .append("td")
       .html((d, i) => {
-        if (!d || !stim) { return d };
+        if (!d || !stim) {
+          return d;
+        }
         console.log("col d=", d, " i=", i);
         stim = stim.toString();
         let zone = d.toString();
         let mau = lv.sregexp(stim);
         console.log("mau func sregexp=", mau);
-        mau = new RegExp(mau, 'gi');
+        mau = new RegExp(mau, "gi");
         zone = zone.replace(mau, (m) => {
-          if (m === undefined || m === null || m === '') { return };
+          if (m === undefined || m === null || m === "") {
+            return;
+          }
           console.log("col mau tim duoc=", m, " i=", i);
           let moi = "<b style='color:red'>" + m + "</b>";
           return moi;
-        })
+        });
         return zone;
       });
     cols.exit().remove();
@@ -389,21 +473,30 @@ var lv = {
 
   hoso: (tttt = ga.tttt) => {
     if (!tttt) {
-      tttt = d3.select("table[id='danhsach']").select("tbody").select('.mau').attr("data-tttt");
-    };
+      tttt = d3
+        .select("table[id='danhsach']")
+        .select("tbody")
+        .select(".mau")
+        .attr("data-tttt");
+    }
     console.log("hoso tttt=", tttt);
-    let noidung = d3.permute(ga.dulieu[tttt], ga.colsBE)
-    let i, k, v, dulieu = [];
+    let noidung = d3.permute(ga.dulieu[tttt], ga.colsBE);
+    let i,
+      k,
+      v,
+      dulieu = [];
     for (i in ga.colsBE) {
       dulieu.push(ga.tieude[i]);
       dulieu.push(noidung[i]);
     }
-    let zone = d3.select("#view_hoso")
+    let zone = d3
+      .select("#view_hoso")
       .attr("class", "grid row w100")
-      .style('grid', 'auto-flow minmax(1rem, max-content)/max-content 1fr');
+      .style("grid", "auto-flow minmax(1rem, max-content)/max-content 1fr");
     let cells = zone.selectAll("div").data(dulieu);
     cells.enter().append("div");
-    cells.text(d => d)
+    cells
+      .text((d) => d)
       .attr("class", "l bb")
       .classed("fb", (d, i) => {
         if (i % 2 === 1) {
@@ -413,9 +506,9 @@ var lv = {
       })
       .style("background-color", (d, i) => {
         if (i % 2 === 1) {
-          return 'transparent';
+          return "transparent";
         }
-        return 'coral';
+        return "coral";
       });
     cells.exit().remove();
   },
@@ -430,52 +523,67 @@ var scan = {
     console.log("url scan=", pdfFile);
     //let blob = new Blob([pdfFile], { type: 'application/pdf' })
     //let url = (window.URL || window.webkitURL).createObjectURL(blob);
-    let url = new URL("https://pna:8888");
-    url.pathname = pdfFile;
-    let mascan = 'scan01';
-    ga.url.scan = [{ mascan: mascan, ulr: url.href }];
+    let url = new URL(pdfFile);
+    let mascan = "scan01";
+    ga.url.scan = [{ mascan: mascan, url: url.href }];
     scan.hoso("scan01");
   },
-  lay_idb: (tttt) => {
-
-  },
+  lay_idb: (tttt) => { },
 
   lay_api: (tttt) => {
-    d3.json(ga.url['api'][bang], {
+    d3.json(ga.url["api"][bang], {
       mode: "cors",
     }).then((res) => {
       console.log("main thread res from server=", JSON.stringify(res, null, 4));
       let dulieu = res.data || [];
       //lay dulieu
-      let t = 0, rec, k, stim, kotim, tttt, keys;
+      let t = 0,
+        rec,
+        k,
+        stim,
+        kotim,
+        tttt,
+        keys;
       while (true) {
         try {
           rec = dulieu[t];
           stim = null;
-          kotim = ['tttt', 'uuid', 'uid', 'lastupdate', 'inok', 'scan', 'blob', 'tt', 'stt'];
+          kotim = [
+            "tttt",
+            "uuid",
+            "uid",
+            "lastupdate",
+            "inok",
+            "scan",
+            "blob",
+            "tt",
+            "stt",
+          ];
           tttt = rec.tttt || rec.uuid;
           if (!tttt) {
             tttt = Date.now();
             while (tttt in ga.dulieu) {
               tttt += 1;
             }
-          };
+          }
           if (!(tttt in ga.dulieu)) {
-            ga.dulieu[tttt] = { 'tttt': tttt };
-          };
+            ga.dulieu[tttt] = { tttt: tttt };
+          }
           for (k in rec) {
-            if (['tttt', 'uuid'].includes(k) === false) {
+            if (["tttt", "uuid"].includes(k) === false) {
               ga.dulieu[tttt][k] = rec[k];
             }
             if (kotim.includes(k) === false) {
               if (stim) {
-                stim = [...new Set([...stim, ...rec[k].toString().split(/\s+/)])];
+                stim = [
+                  ...new Set([...stim, ...rec[k].toString().split(/\s+/)]),
+                ];
               } else {
                 stim = [...new Set([...rec[k].toString().split(/\s+/)])];
               }
             }
           }
-          ga.dulieu[tttt]['stim'] = stim.join(' ').trim();
+          ga.dulieu[tttt]["stim"] = stim.join(" ").trim();
           t++;
         } catch (err) {
           break;
@@ -485,39 +593,46 @@ var scan = {
       keys = Object.keys(ga.dulieu).sort();
       t = 1;
       for (k in keys) {
-        ga.dulieu[keys[k]]['stt'] = d3.format("03,d")(t);
+        ga.dulieu[keys[k]]["stt"] = d3.format("03,d")(t);
         t += 1;
       }
       ga.loc_otim();
     });
-
-
   },
 
   hoso: (mascan) => {
     let dulieu = ga.url.scan;
     console.log("scan hoso mascan=", mascan, " dulieu=", dulieu);
 
-    let zone = d3.select("#view_scan").attr("class", "w100")
+    let zone = d3.select("#view_scan").attr("class", "w100");
     //zone.selectAll("object").remove();
 
-    let cells = zone.selectAll("object").data(dulieu)
-      .filter(d => {
+    let cells = zone
+      .selectAll("object")
+      .data(dulieu)
+      .filter((d) => {
         console.log("Scan cells filter d=", d);
         return d.mascan.includes(mascan);
       });
 
-    cells.enter().append("object")
+    cells
+      .enter()
+      .append("object")
       .style("background-color", "transparent")
       .attr("type", "application/pdf")
       .attr("typemustmatch", true)
       .attr("width", "500")
       .attr("height", "2000");
-    cells.attr("data", (d, i) => d ? d.url.toString() : null);
+    cells.attr("data", (d, i) => {
+      if (d) {
+        return d.url.toString();
+      } else {
+        return d;
+      }
+    });
     cells.exit().remove();
-
   },
-}
+};
 
 class Hoso {
   constructor() {
@@ -825,3 +940,47 @@ class Hoso {
 ga.tao();
 lv.tao();
 scan.test();
+
+var hon = {
+  a: "",
+
+  inlineWorker_layHoso: (csdl, tttt) => {
+    let sworker =
+      "self.onmessage=function(e){ self.postMessage('msg from worker'); }";
+    let blob = new Blob([sworker], { type: "text/javascript" });
+    let url = (window.URL || window.webkitURL).createObjectURL(blob);
+    return url;
+  },
+
+  layHoso: () => {
+    let url = hon.inlineWorker_layHoso();
+    let w = new Worker(url);
+    w.postMessage("hello from xac");
+    w.onmessage = (e) => {
+      console.log("hon layhoso nhan: " + e.data);
+    };
+    (window.URL || window.webkitURL).revokeObjectURL(url);
+  },
+};
+
+hon.layHoso();
+/*
+inline worker
+var blob = new Blob([
+  "onmessage = function(e) { postMessage('msg from worker'); }"]);
+
+// Obtain a blob URL reference to our worker 'file'.
+var blobURL = window.URL.createObjectURL(blob);
+
+var worker = new Worker(blobURL);
+worker.onmessage = function(e) {
+// e.data == 'msg from worker'
+};
+//stop worker
+worker.terminate();
+
+//giai phong bo nho luu tru blob
+window.URL.revokeObjectURL(blobURL);
+
+worker.postMessage(); // Start the worker.
+*/
