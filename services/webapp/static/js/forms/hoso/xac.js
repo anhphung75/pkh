@@ -26,53 +26,17 @@ var ga = {
       case "qtgt":
         break;
       default:
-        ga.colsBE = [
-          "stt",
-          "tttt",
-          "sohoso",
-          "khachhang",
-          "diachigandhn",
-          "ngaythietke",
-          "ngaylendot",
-          "ngaythicong",
-          "ngaytrongai",
-        ];
-        ga.tieude = [
-          "Stt",
-          "Mã hồ sơ",
-          "Số hồ sơ",
-          "Khách hàng",
-          "Địa chỉ gắn đhn",
-          "Ngày thiết kế",
-          "Ngày lên đợt",
-          "Ngày thi công",
-          "Ngày trở ngại",
-        ];
+        ga.colsBE = ["stt", "tttt", "sohoso", "khachhang", "diachigandhn", "ngaythietke", "ngaylendot", "ngaythicong", "ngaytrongai",];
+        ga.tieude = ["Stt", "Mã hồ sơ", "Số hồ sơ", "Khách hàng", "Địa chỉ gắn đhn", "Ngày thiết kế", "Ngày lên đợt", "Ngày thi công", "Ngày trở ngại",];
     }
   },
 
   lay_url: () => {
     ga.url["api"] = [
-      "https://" +
-      window.location.host +
-      "/" +
-      ga.csdl.ten +
-      "/api/hoso/" +
-      ga.namlamviec,
-      "https://" +
-      window.location.host +
-      "/" +
-      ga.csdl.ten +
-      "/api/dshc/" +
-      ga.namlamviec,
+      "https://" + window.location.host + "/" + ga.csdl.ten + "/api/hoso/" + ga.namlamviec,
+      "https://" + window.location.host + "/" + ga.csdl.ten + "/api/dshc/" + ga.namlamviec,
     ];
-    ga.url["wss"] =
-      "wss://" +
-      window.location.host +
-      "/" +
-      ga.csdl.ten +
-      "/wss/hoso/" +
-      ga.namlamviec;
+    ga.url["wss"] = "wss://" + window.location.host + "/" + ga.csdl.ten + "/wss/hoso/" + ga.namlamviec;
     ga.url["hon"] = d3.select("table[id='danhsach']").attr("data-hon");
   },
 

@@ -69,4 +69,31 @@ var suaStr = (ss = '') => {
   return ss;
 };
 
-export { isObjEmpty, ld2dd, suaStr, any2obj, lamtronso };
+function tao_uuid() {
+  var temp_url = URL.createObjectURL(new Blob());
+  var uuid = temp_url.toString();
+  URL.revokeObjectURL(temp_url);
+  return uuid.substr(uuid.lastIndexOf('/') + 1);
+  // remove prefix (e.g. blob:null/, blob:www.test.com/, ...)
+  // vd tao_uuid()= f6ca05c0-fad5-46fc-a237-a8e930e7cb49
+}
+
+function arrayBufferToBlob(buffer, type) {
+  return new Blob([buffer], { type: type });
+}
+
+function blobToArrayBuffer(blob) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener('loadend', (e) => {
+      resolve(reader.result);
+    });
+    reader.addEventListener('error', reject);
+    reader.readAsArrayBuffer(blob);
+  });
+}
+
+export {
+  isObjEmpty, ld2dd, suaStr, any2obj, lamtronso,
+  tao_uuid, arrayBufferToBlob, blobToArrayBuffer
+};
