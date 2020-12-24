@@ -25,13 +25,16 @@ function nap(csdl, bang, uuid) {
   //try {
   indexedDB.open(csdl.ten, csdl.sohieu).onsuccess = (e) => {
     const db = e.target.result;
-    db.transaction(bang, 'readonly').objectStore(bang).openCursor(IDBKeyRange.only(uuid)).onsuccess = (e) => {
-      let cs = e.target.result;
-      if (cs) {
-        dulieu[bang] = cs.value;
-        cs.continue();
-      }
-    };
+    db.transaction(bang, 'readonly').objectStore(bang)
+      .openCursor(IDBKeyRange.only(uuid))
+      .onsuccess = (e) => {
+        let cs = e.target.result;
+        if (cs) {
+          dulieu[bang] = cs.value;
+          self.postMessage({ cv: cv, kq: dulieu });
+          cs.continue();
+        }
+      };
   }
 
   //} catch (err) {

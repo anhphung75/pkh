@@ -31,70 +31,74 @@ var taodb = async (csdl) => {
         idx.createIndex("iddshc", "iddshc", { unique: false });
         idx.createIndex("mahctn", "mahctn", { unique: false });
 
-        idx = db.createObjectStore('hoso', { keyPath: 'utcid' });
+        idx = db.createObjectStore('hoso', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("mahoso", "mahoso", { unique: false });
 
-        idx = db.createObjectStore('khachhang', { keyPath: 'utcid' });
+        idx = db.createObjectStore('khachhang', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("makhachhang", "makhachhang", { unique: false });
 
-        idx = db.createObjectStore('dot', { keyPath: 'utcid' });
+        idx = db.createObjectStore('dot', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("madot", "madot", { unique: false });
 
-        idx = db.createObjectStore('donvithicong', { keyPath: 'utcid' });
+        idx = db.createObjectStore('donvithicong', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("madvtc", "madvtc", { unique: false });
 
-        idx = db.createObjectStore('hoancong', { keyPath: 'utcid' });
+        idx = db.createObjectStore('hoancong', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("mahctn", "mahctn", { unique: false });
 
-        idx = db.createObjectStore('chiphi', { keyPath: 'utcid' });
+        idx = db.createObjectStore('chiphi', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("machiphi", "machiphi", { unique: false });
 
-        idx = db.createObjectStore('cpxd', { keyPath: 'utcid' });
+        idx = db.createObjectStore('cpxd', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("macpxd", "macpxd", { unique: false });
 
-        idx = db.createObjectStore('cpvl', { keyPath: 'utcid' });
+        idx = db.createObjectStore('cpvl', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("macpvl", "macpvl", { unique: false });
 
-        idx = db.createObjectStore('cpvt', { keyPath: 'utcid' });
+        idx = db.createObjectStore('cpvt', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("macpvt", "macpvt", { unique: false });
 
-        idx = db.createObjectStore('cpql', { keyPath: 'utcid' });
+        idx = db.createObjectStore('cpql', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("macpql", "macpql", { unique: false });
 
-        idx = db.createObjectStore('khuvuc', { keyPath: 'utcid' });
+        idx = db.createObjectStore('khuvuc', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("maq", "maq", { unique: false });
         idx.createIndex("maqp", "maqp", { unique: false });
 
-        idx = db.createObjectStore('baogia', { keyPath: 'utcid' });
+        idx = db.createObjectStore('baogia', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("mabaogia", "mabaogia", { unique: false });
 
-        idx = db.createObjectStore('bgvl', { keyPath: 'utcid' });
+        idx = db.createObjectStore('bgvl', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("mabaogia", "mabaogia", { unique: false });
 
-        idx = db.createObjectStore('bgnc', { keyPath: 'utcid' });
+        idx = db.createObjectStore('bgnc', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("mabaogia", "mabaogia", { unique: false });
 
-        idx = db.createObjectStore('bgmtc', { keyPath: 'utcid' });
+        idx = db.createObjectStore('bgmtc', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("mabaogia", "mabaogia", { unique: false });
 
-        idx = db.createObjectStore('nhanvien', { keyPath: 'utcid' });
+        idx = db.createObjectStore('nhanvien', { keyPath: 'idutc' });
         idx.createIndex("lastupdated", "lastupdated", { unique: false });
         idx.createIndex("manhanvien", "manhanvien", { unique: false });
+
+        idx = db.createObjectStore('scan', { keyPath: 'idutc' });
+        idx.createIndex("lastupdated", "lastupdated", { unique: false });
+        idx.createIndex("mascan", "mascan", { unique: false });
       }
     };
   } catch (err) { };

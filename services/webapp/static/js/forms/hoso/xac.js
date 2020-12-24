@@ -43,7 +43,7 @@ var ga = {
   lay_idb: () => {
     let w = { tttt: null };
     let gui = {
-      csdl: { ten: "pkh", sohieu: 1 },
+      csdl: { ten: "pkh", cap: 1 },
       lenh: "lay",
       bang: "",
       dk: "",
@@ -358,15 +358,11 @@ var lv = {
   },
 
   danhsach: (stim) => {
-    let bang = d3
-      .select("table[id='danhsach']")
+    let bang = d3.select("table[id='danhsach']")
       .style("margin", "0")
       .style("border-collapse", "collapse");
     //tieude
-    bang
-      .select("thead")
-      .selectAll("th")
-      .data(ga.tieude)
+    bang.select("thead").selectAll("th").data(ga.tieude)
       .enter()
       .append("th")
       .attr("class", "c")
@@ -409,9 +405,7 @@ var lv = {
 
     //col
     let cols = row.selectAll("td").data((d) => d3.permute(d, ga.colsBE));
-    cols
-      .enter()
-      .append("td")
+    cols.enter().append("td")
       .html((d, i) => {
         if (!d || !stim) {
           return d;
@@ -437,30 +431,21 @@ var lv = {
 
   hoso: (tttt = ga.tttt) => {
     if (!tttt) {
-      tttt = d3
-        .select("table[id='danhsach']")
-        .select("tbody")
-        .select(".mau")
-        .attr("data-tttt");
+      tttt = d3.select("table[id='danhsach']").select("tbody").select(".mau").attr("data-tttt");
     }
     console.log("hoso tttt=", tttt);
     let noidung = d3.permute(ga.dulieu[tttt], ga.colsBE);
-    let i,
-      k,
-      v,
-      dulieu = [];
+    let i, k, v, dulieu = [];
     for (i in ga.colsBE) {
       dulieu.push(ga.tieude[i]);
       dulieu.push(noidung[i]);
     }
-    let zone = d3
-      .select("#view_hoso")
+    let zone = d3.select("#view_hoso")
       .attr("class", "grid row w100")
       .style("grid", "auto-flow minmax(1rem, max-content)/max-content 1fr");
     let cells = zone.selectAll("div").data(dulieu);
     cells.enter().append("div");
-    cells
-      .text((d) => d)
+    cells.text((d) => d)
       .attr("class", "l bb")
       .classed("fb", (d, i) => {
         if (i % 2 === 1) {
@@ -476,21 +461,44 @@ var lv = {
       });
     cells.exit().remove();
   },
+
+  scan: (mascan) => {
+    let dulieu = ga.url.scan[mascan] || [];
+    console.log("scan mascan=", mascan, " dulieu=", dulieu);
+    let zone = d3.select("#view_scan").attr("class", "w100");
+    //zone.selectAll("object").remove();
+
+    let cells = zone.selectAll("object").data(dulieu);
+    cells.enter().append("object")
+      .style("background-color", "transparent")
+      .attr("type", "application/pdf")
+      .attr("typemustmatch", true)
+      .attr("width", "500")
+      .attr("height", "2000");
+    cells.attr("data", (d, i) => {
+      if (d) {
+        return d.toString();
+      } else {
+        return d;
+      }
+    });
+    cells.exit().remove();
+  },
 };
 
-var web={
+var web = {
 
 }
 
-var soc={
-  wss:null,
-  tao:()=>{
+var soc = {
+  wss: null,
+  tao: () => {
     try {
       let url = "ws://" + location.host + "/chatsocket";
       soc.wss = new WebSocket(url);
-    } catch (err) {};
+    } catch (err) { };
   },
-  gui:(tin)=>{
+  gui: (tin) => {
     switch (tin) {
       case "dshc":
         websocket.binaryType = "arraybuffer";
@@ -501,15 +509,18 @@ var soc={
         soc.wss.send(JSON.stringify(tin));
     }
   },
-  nhan:(tin)=>{
+  nhan: (tin) => {
 
   }
 }
 
 var scan = {
   tao: () => {
-    scan.lay_api();
+    idb.lay_api();
   },
+
+
+
   test: () => {
     let pdfFile = d3.select("#view_scan").attr("data-scan");
     console.log("url scan=", pdfFile);
@@ -635,73 +646,6 @@ class Hoso {
     this.tat();
   }
 
-  get_tieude(bang = 1) {
-    bang = parseInt(bang) || 1;
-    let dulieu = [];
-    switch (bang) {
-      case 2:
-        ga["bang"] = bang;
-        dulieu = [
-          "crud",
-          "utcid",
-          "sodot",
-          "khachhang",
-          "diachi",
-          "ngaythietke",
-          "ngaylendot",
-          "ngaythicong",
-          "ngaytrongai",
-        ];
-        break;
-      case 3:
-        ga["bang"] = bang;
-        dulieu = [
-          "crud",
-          "utcid",
-          "sodot",
-          "khachhang",
-          "diachi",
-          "ngaythietke",
-          "ngaylendot",
-          "ngaythicong",
-          "ngaytrongai",
-        ];
-        break;
-      default:
-        ga["bang"] = 1;
-        dulieu = [
-          "crud",
-          "utcid",
-          "sodot",
-          "khachhang",
-          "diachi",
-          "ngaythietke",
-          "ngaylendot",
-          "ngaythicong",
-          "ngaytrongai",
-        ];
-    }
-    this.tieude = [...dulieu];
-    let zone = d3.select("div[id='ketqua:tieude']");
-    zone
-      .attr("class", "grid w100 ba hov bang" + bang)
-      .style("background-color", "#d1e5f0")
-      .on("mouseover", function (ev) {
-        console.log("ketqua:tieude bang", ga["bang"], " rec=", ev.target);
-      });
-    zone.selectAll("*").remove();
-    zone
-      .selectAll("div")
-      .data(dulieu)
-      .enter()
-      .append("div")
-      .text((d) => d)
-      .attr("class", (d, id) => "c bl fb wb cot" + id)
-      .style("color", "magenta")
-      .on("click", function (ev) {
-        //sort
-      });
-  }
 
   tat() {
     // load json data
@@ -933,29 +877,110 @@ ga.tao();
 lv.tao();
 scan.test();
 
-var hon = {
-  a: "",
-
-  inlineWorker_layHoso: (csdl, tttt) => {
-    let sworker =
-      "self.onmessage=function(e){ self.postMessage('msg from worker'); }";
-    let blob = new Blob([sworker], { type: "text/javascript" });
+var sw = {
+  lay_scan() {
+    let sw = `
+      self.onmessage = (ev) => {
+      let tin = ev.data;
+      try {
+        let cv = 1;
+        indexedDB.open(tin.csdl.ten, tin.csdl.cap).onsuccess = (e) => {
+          const db = e.target.result;
+          db.transaction(tin.bang, 'readonly')
+            .objectStore(tin.bang)
+            .openCursor(IDBKeyRange.only(tin.dk.idutc))
+            .onsuccess = (e) => {
+              let cs = e.target.result;
+              if (cs) {
+                let kq = cs.value.pdf || cs.value.blob;
+                if (kq) {
+                  self.postMessage({ cv: cv, kq: kq });
+                  cv++;
+                };
+                cs.continue();
+              } else {
+                self.postMessage({ cv: -1, kq: null });
+              };
+            };
+        }
+      } catch (err) {
+        self.postMessage({ cv: cv, err: err });
+      };
+    }`;
+    let blob = new Blob([sw], { type: "text/javascript" });
     let url = (window.URL || window.webkitURL).createObjectURL(blob);
     return url;
   },
+}
 
-  layHoso: () => {
-    let url = hon.inlineWorker_layHoso();
-    let w = new Worker(url);
-    w.postMessage("hello from xac");
-    w.onmessage = (e) => {
-      console.log("hon layhoso nhan: " + e.data);
-    };
-    (window.URL || window.webkitURL).revokeObjectURL(url);
+var idb = {
+  lay_scan: () => {
+    if (!ga.tttt) { return };
+    let gui, tra, ma, k, i = 0, w = {};
+    let blob, url, sw_url = sw.lay_scan();
+    ga.url.scan = {};
+    for (k in ga.dulieu[ga.tttt]) {
+      if (['iddot', 'dot.idutc'].includes(k)) {
+        ma = ga.dulieu[ga.tttt][k];
+        gui = {
+          csdl: { ten: "pkh", cap: 1 },
+          lenh: "lay",
+          bang: "dot",
+          dk: { "idutc": ma },
+        };
+        ma = 'dot.' + ma;
+        ga.url.scan[ma] = [];
+        w[i] = new Worker(sw_url);
+        w[i].postMessage(gui);
+        w[i].onmessage = (e) => {
+          tra = e.data;
+          console.log("idb.lay_scan tra=", JSON.stringify(tra, null, 2));
+          if ("err" in tra) {
+            console.log("err=", tra.err);
+          }
+          if (tra.cv > 0) {
+            blob = new Blob([tra.kq], { type: "application/pdf" });
+            url = (window.URL || window.webkitURL).createObjectURL(blob);
+            ga.url.scan[ma].push(url);
+          } else {
+            w[i].terminate();
+            (window.URL || window.webkitURL).revokeObjectURL(sw_url);
+          };
+        }
+      }
+      if (['idhoso', 'hoso.idutc'].includes(k)) {
+        ma = ga.dulieu[ga.tttt][k];
+        gui = {
+          csdl: { ten: "pkh", cap: 1 },
+          lenh: "lay",
+          bang: "hoso",
+          dk: { "idutc": ma },
+        };
+        ma = 'hoso.' + ma;
+        ga.url.scan[ma] = [];
+        w[i] = new Worker(sw_url);
+        w[i].postMessage(gui);
+        w[i].onmessage = (e) => {
+          tra = e.data;
+          console.log("idb.lay_scan tra=", JSON.stringify(tra, null, 2));
+          if ("err" in tra) {
+            console.log("err=", tra.err);
+          }
+          if (tra.cv > 0) {
+            blob = new Blob([tra.kq], { type: "application/pdf" });
+            url = (window.URL || window.webkitURL).createObjectURL(blob);
+            ga.url.scan[ma].push(url);
+          } else {
+            w[i].terminate();
+            (window.URL || window.webkitURL).revokeObjectURL(sw_url);
+          };
+        }
+      }
+    }
   },
 };
 
-hon.layHoso();
+
 /*
 inline worker
 var blob = new Blob([
