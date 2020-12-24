@@ -478,6 +478,34 @@ var lv = {
   },
 };
 
+var web={
+
+}
+
+var soc={
+  wss:null,
+  tao:()=>{
+    try {
+      let url = "ws://" + location.host + "/chatsocket";
+      soc.wss = new WebSocket(url);
+    } catch (err) {};
+  },
+  gui:(tin)=>{
+    switch (tin) {
+      case "dshc":
+        websocket.binaryType = "arraybuffer";
+        break;
+      case "qtgt":
+        break;
+      default:
+        soc.wss.send(JSON.stringify(tin));
+    }
+  },
+  nhan:(tin)=>{
+
+  }
+}
+
 var scan = {
   tao: () => {
     scan.lay_api();

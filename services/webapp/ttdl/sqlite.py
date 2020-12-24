@@ -39,24 +39,13 @@ class ChiphiQuanly(Base):
                         onupdate=datetime.datetime.now)
 
 
-class Maychu():
-    def __init__(self, server='postgresql', user=None, pwd=None, host=None, dbname=None):
+class Server():
+    def __init__(self, user=None, pwd=None, host=None, dbname="draft.db"):
         self.user = user
         self.pwd = pwd
         self.host = host
         self.dbname = dbname
-        if server == 'mssql':
-            self.server = server
-            self.cnnstr = (
-                f"{server}+pyodbc://{self.user}:{self.pwd}@{self.host}/{self.dbname}?"
-                f"driver=ODBC+Driver+17+for+SQL+Server")
-        elif server == 'postgresql':
-            self.server = server
-            self.cnnstr = (
-                f"{server}+psycopg2://{self.user}:{self.pwd}@{self.host}/{self.dbname}")
-        else:
-            self.server = 'sqlite'
-            self.cnnstr = f"{server}:///draft.db"
+        self.cnnstr = f"sqlite:///{self.dbname}"
 
     def core(self):
         try:
@@ -100,11 +89,10 @@ class Maychu():
             pass
 
 
-def run_mssql(sql=''):
-    mssql = Maychu("mssql", "PKH.TCTB", "123456789",
-                   "192.168.24.4:1433", "PKHData")
+def runsql(sql=''):
+    engine = Server()
     try:
-        kq = mssql.core().execute(sql)
+        kq = engine.core().execute(sql)
         data = []
         for row in kq:
             dl = dict(row)

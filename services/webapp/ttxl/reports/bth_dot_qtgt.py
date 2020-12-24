@@ -1,4 +1,4 @@
-from ttdl import run_mssql
+from ttdl.mssql import runsql
 from utils import Tien, tachhangso, lamtronso
 
 
@@ -60,7 +60,7 @@ class Dulieu:
             f" From {self.schema}.dot"
             f" Where (madot='{self.madot}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         self.sodot = dl[0]["sodot"]
@@ -75,7 +75,7 @@ class Dulieu:
             f" From {self.schema}.qt"
             f" Where (madot='{self.madot}' And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         ngayhoancong = {}
@@ -121,7 +121,7 @@ class Dulieu:
             f"Select top 1 ten as dvtc From dbo.nhathau"
             f" Where (nhathauid='{self.dvtcid}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -147,7 +147,7 @@ class Dulieu:
             f" Where (madot='{self.madot}' And tinhtrang like 'tn%')"
             f" Group By madot"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         self.ztrongai = dl[0]["trongai"]
@@ -159,7 +159,7 @@ class Dulieu:
             f" Where (madot='{self.madot}')"
             f" Group By madot"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         self.zhoso = dl[0]["hoso"]
@@ -175,7 +175,7 @@ def dulieuin(schema):
         f" Order By madot,lastupdate"
     )
     try:
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return data
         dulieu = []

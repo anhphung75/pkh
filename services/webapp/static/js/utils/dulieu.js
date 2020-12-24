@@ -78,11 +78,15 @@ function tao_uuid() {
   // vd tao_uuid()= f6ca05c0-fad5-46fc-a237-a8e930e7cb49
 }
 
-function arrayBufferToBlob(buffer, type) {
+function arrayBuffer2String(buf) {
+  return String.fromCharCode.apply(null, new Uint8Array(buf));
+}
+
+function arrayBuffer2Blob(buffer, type) {
   return new Blob([buffer], { type: type });
 }
 
-function blobToArrayBuffer(blob) {
+function blob2ArrayBuffer(blob) {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.addEventListener('loadend', (e) => {
@@ -94,6 +98,7 @@ function blobToArrayBuffer(blob) {
 }
 
 export {
-  isObjEmpty, ld2dd, suaStr, any2obj, lamtronso,
-  tao_uuid, arrayBufferToBlob, blobToArrayBuffer
+  isObjEmpty, ld2dd, suaStr, any2obj, lamtronso, tao_uuid,
+  arrayBuffer2Blob, blob2ArrayBuffer,
+  arrayBuffer2String
 };

@@ -6,8 +6,7 @@ import arrow
 #from utils.thoigian import stodate, datetos
 from sqlalchemy import create_engine, ForeignKey, inspect
 from sqlalchemy import Column, Sequence, func, desc
-from sqlalchemy import Boolean, Integer, DECIMAL, Unicode, VARBINARY, JSON, Date, DateTime
-from sqlalchemy.dialects.postgresql import JSONB
+from sqlalchemy import Integer, Unicode, JSON, Boolean,  DECIMAL,  VARBINARY,  Date, DateTime
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict
@@ -16,47 +15,56 @@ from sqlalchemy.ext.mutable import MutableDict
 Base = declarative_base()
 
 
-class Hoso(Base):
+class Mau(object):
+    dulieu = Column(MutableDict.as_mutable(JSON))
+    lastupdate = Column(Integer,
+                        default=int(arrow.utcnow().float_timestamp * 1000),
+                        onupdate=int(arrow.utcnow().float_timestamp * 1000))
+
+
+class Tttt(Mau, Base):
+    __tablename__ = 'tttt'
+    __table_args__ = {"schema": "web"}
+    tttt = Column(Integer, primary_key=True)
+
+
+class Hoso(Mau, Base):
     __tablename__ = 'hoso'
     __table_args__ = {"schema": "web"}
-    uctid = Column(Integer, primary_key=True)
+    idhoso = Column(Integer, primary_key=True)
     mahoso = Column(Unicode(50))  # yyyy.hs.xxxxxx
-    mota = Column(Unicode(None))
-    #mota = Column(MutableDict.as_mutable(JSON))
-    ghichu = Column(Unicode(255))
-    lastupdate = Column(DateTime(timezone=False), default=func.now(),
-                        onupdate=datetime.datetime.now)
 
 
-class ChiphiQuanly(Base):
+class Khachhang(Mau, Base):
+    __tablename__ = 'khachhang'
+    __table_args__ = {"schema": "web"}
+    idkhachhang = Column(Integer, primary_key=True)
+    makhachhang = Column(Unicode(50))  # yyyy.hs.xxxxxx
+
+
+class ChiphiQuanly(Mau, Base):
     __tablename__ = 'chiphiquanly'
     __table_args__ = {"schema": "web"}
-    uctid = Column(Integer, primary_key=True)
-    cpqlid = Column(Integer)  # yyyy.hs.xxxxxx
-    mota = Column(Unicode(None))
-    ghichu = Column(Unicode(255))
-    lastupdate = Column(DateTime(timezone=False), default=func.now(),
-                        onupdate=datetime.datetime.now)
+    idcpql = Column(Integer, primary_key=True)
+    macpql = Column(Unicode(50))  # yyyy.hs.xxxxxx
 
 
-class Maychu():
-    def __init__(self, server='postgresql', user=None, pwd=None, host=None, dbname=None):
+class Bgvl(Mau, Base):
+    __tablename__ = 'bgvl'
+    __table_args__ = {"schema": "web"}
+    idbgvl = Column(Integer, primary_key=True)
+    mabgvl = Column(Unicode(50))
+
+
+class Server():
+    def __init__(self, user=None, pwd=None, host=None, dbname=None):
         self.user = user
         self.pwd = pwd
         self.host = host
         self.dbname = dbname
-        if server == 'mssql':
-            self.server = server
-            self.cnnstr = (
-                f"{server}+pyodbc://{self.user}:{self.pwd}@{self.host}/{self.dbname}?"
-                f"driver=ODBC+Driver+17+for+SQL+Server")
-        elif server == 'postgresql':
-            self.server = server
-            self.cnnstr = (
-                f"{server}+psycopg2://{self.user}:{self.pwd}@{self.host}/{self.dbname}")
-        else:
-            self.server = 'sqlite'
-            self.cnnstr = f"{server}:///draft.db"
+        self.cnnstr = (
+            f"mssql+pyodbc://{self.user}:{self.pwd}@{self.host}/{self.dbname}?"
+            f"driver=ODBC+Driver+17+for+SQL+Server")
 
     def core(self):
         try:
@@ -100,11 +108,11 @@ class Maychu():
             pass
 
 
-def run_mssql(sql=''):
-    mssql = Maychu("mssql", "PKH.TCTB", "123456789",
-                   "192.168.24.4:1433", "PKHData")
+def runsql(sql=''):
+    engine = Server("PKH.TCTB", "123456789",
+                    "192.168.24.4:1433", "PKHData")
     try:
-        kq = mssql.core().execute(sql)
+        kq = engine.core().execute(sql)
         data = []
         for row in kq:
             dl = dict(row)
@@ -118,8 +126,6 @@ def run_mssql(sql=''):
                     dl[k] = float(dl[k])
             data.append(dl)
         kq.close()
-        for cp in data:
-            print(f"runsql cp={cp}")
         return data
     except:
         return None

@@ -1,4 +1,4 @@
-from ttdl import run_mssql
+from ttdl.mssql import runsql
 from utils import Tien, tachhangso, lamtronso
 
 
@@ -45,7 +45,7 @@ class Dulieu:
             f" From {self.schema}.dot"
             f" Where (madot='{self.madot}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -58,7 +58,7 @@ class Dulieu:
             f"Select top 1 ten as dvtc From dbo.nhathau"
             f" Where (nhathauid='{self.dvtcid}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -85,7 +85,7 @@ class Dulieu:
             f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
             f" Order By ngaygan"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         for r in dl:
@@ -123,7 +123,7 @@ class Dulieu:
             f" And r.chiphiid In (Select chiphiid From dbo.chiphi Where mapl1 Like 'VL%')) as t"
             f" ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
@@ -147,7 +147,7 @@ class Dulieu:
             f" From dbo.chiphi"
             f" Where chiphiid In {dl}"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl != None) and (len(dl) > 0)):
             chiphi = {}
             for r in dl:
@@ -218,7 +218,7 @@ class Dulieu:
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Cat' And tinhtrang='Moi')) AS t"
             f" ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
@@ -241,7 +241,7 @@ class Dulieu:
             f" From dbo.chiphi"
             f" Where chiphiid In {dl}"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl != None) and (len(dl) > 0)):
             chiphi = {}
             for r in dl:
@@ -312,7 +312,7 @@ class Dulieu:
             f" And r.chiphiid In (Select chiphiid From dbo.plchiphi Where phanloai='Ong' And tinhtrang='Moi')) AS t"
             f" ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl != None) and (len(dl) > 0)):
             for r in dl:
                 k = (r["chiphiid"], r["giavl"], r["hosoid"])
@@ -336,7 +336,7 @@ class Dulieu:
             f" From dbo.chiphi"
             f" Where chiphiid In {dl}"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl != None) and (len(dl) > 0)):
             chiphi = {}
             for r in dl:
@@ -391,7 +391,7 @@ def dulieuin(schema):
         f" Order By madot,lastupdate"
     )
     try:
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return data
         dulieu = []

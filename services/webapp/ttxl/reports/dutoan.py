@@ -1,4 +1,4 @@
-from ttdl import run_mssql
+from ttdl.mssql import runsql
 from utils import Tien, tachhangso, lamtronso
 
 
@@ -131,7 +131,7 @@ class Dulieu:
             f" From {self.schema}.qt qt"
             f" Where (qt.maqt='{self.maqt}' And datalength(qt.madot)>0)"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -152,7 +152,7 @@ class Dulieu:
             f"Select top 1 sohoso, diachikhachhang as diachigandhn, khachhang From dbo.hoso"
             f" Where (hosoid='{self.hosoid}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -165,7 +165,7 @@ class Dulieu:
             f"Select top 1 sodot, isnull(nhathauid,0) as dvtcid From {self.schema}.dot"
             f" Where (madot='{self.madot}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -177,7 +177,7 @@ class Dulieu:
             f"Select top 1 ten as dvtc From dbo.nhathau"
             f" Where (nhathauid='{self.dvtcid}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -218,7 +218,7 @@ class Dulieu:
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt31 qt ON cp.chiphiid=qt.chiphiid"
             f" Where (qt.maqt='{self.maqt}' And datalength(cp.chiphiid)>0) Order By qt.maqtgt"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -240,7 +240,7 @@ class Dulieu:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -262,7 +262,7 @@ class Dulieu:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -283,7 +283,7 @@ class Dulieu:
             f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt33 qt ON cp.chiphiid=qt.chiphiid"
             f" Where (qt.maqt='{self.maqt}' And datalength(cp.chiphiid)>0) Order By qt.maqtgt"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -305,7 +305,7 @@ class Dulieu:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -327,7 +327,7 @@ class Dulieu:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -349,7 +349,7 @@ class Dulieu:
             f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%' And datalength(cp.chiphiid)>0)"
             f" Order By qt.maqtgt"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         # load gia
@@ -379,7 +379,7 @@ class Dulieu:
             f" isnull(heso_khaosat,0) as khaosat,isnull(heso_thietke,0) as thietke,isnull(heso_gstc,0) as giamsat"
             f" From dbo.hesochiphi Where hesoid={self.cpqlid}"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -466,7 +466,7 @@ def dulieuin(schema):
         f" Order By qt.madot,qt.tt,qt.lastupdate"
     )
     try:
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return data
         dulieu = []

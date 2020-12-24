@@ -1,4 +1,4 @@
-from ttdl import run_mssql
+from ttdl.mssql import runsql
 from utils import Tien, tachhangso, lamtronso
 
 
@@ -36,7 +36,7 @@ class Dulieu:
             f" From {self.schema}.dot"
             f" Where (madot='{self.madot}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -52,7 +52,7 @@ class Dulieu:
             f"Select top 1 ten as dvtc From dbo.nhathau"
             f" Where (nhathauid='{self.dvtcid}')"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return
         dl = dl[0]
@@ -84,7 +84,7 @@ class Dulieu:
             f" From {self.schema}.qtvt"
             f" Where (madot='{self.madot}' And datalength(chiphiid)>0) Order By maqtvt"
         )
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         print(f"cpvt dl={dl}")
         if ((dl == None) or (len(dl) < 1)):
             return
@@ -100,7 +100,7 @@ def dulieuin(schema):
         f" Order By madot,lastupdate"
     )
     try:
-        dl = run_mssql(sql)
+        dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
             return data
         dulieu = []

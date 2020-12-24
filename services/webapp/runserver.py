@@ -12,8 +12,9 @@ import urllib
 import tornado.escape
 import tornado.websocket
 
-from ttdl import Maychu
-from ttxl import api
+from ttdl.mssql import Server as svMssql
+from ttdl.postgresql import Server as svPostgre
+from ttdl.sqlite import Server as svSqlite
 
 from ttxl.reports import dutoan, qtgt, qtvt
 from ttxl.reports import bth_dot_qtgt
@@ -384,7 +385,7 @@ def main():
     # read args to run
     parser = argparse.ArgumentParser(allow_abbrev=False)
     parser.add_argument('--server', '-server',
-                        type=str, default='mssql_')
+                        type=str, default='postgresql')
     parser.add_argument('--db_user', '-dbuser',
                         type=str, default='pkh.web')
     parser.add_argument('--db_pwd', '-dbpwd',  type=str, default='pkh.web')
@@ -397,8 +398,15 @@ def main():
 
     # creat db
     global db
-    db = Maychu(thamso.server, thamso.db_user, thamso.db_pwd,
-                thamso.db_host, thamso.db_name)
+    if thamso.server in ['mssql']:
+        db = svMssql(thamso.db_user, thamso.db_pwd,
+                     thamso.db_host, thamso.db_name)
+    elif thamso.server in ['postgresql']:
+        db = svPostgre(thamso.db_user, thamso.db_pwd,
+                       thamso.db_host, thamso.db_name)
+    else:
+        db = svSqlite(thamso.db_user, thamso.db_pwd,
+                      thamso.db_host, thamso.db_name)
 
     # creat webapp
     app = make_app()
