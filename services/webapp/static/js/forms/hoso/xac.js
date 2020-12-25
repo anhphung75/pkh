@@ -943,19 +943,116 @@ var sw = {
 }
 
 var idb = {
+  sw: {
+    lay_scan: () => {
+      let sw = `
+      self.onmessage = (ev) => {
+      let tin = ev.data;
+      try {
+        let cv = 1,rr,kq;
+        indexedDB.open(tin.csdl.ten, tin.csdl.cap).onsuccess = (e) => {
+          const db = e.target.result;
+          db.transaction(tin.bang, 'readonly')
+            .objectStore(tin.bang)
+            .openCursor(IDBKeyRange.only(tin.idutc))
+            .onsuccess = (e) => {
+              let cs = e.target.result;
+              if (cs) {
+                rr = cs.value;
+                kq = rr.pdf || rr.blob || rr.scan;
+                if (kq) {
+                  self.postMessage({ cv: cv, kq: kq });
+                  cv++;
+                };
+                cs.continue();
+              } else {
+                self.postMessage({ cv: -1, kq: null });
+              };
+            };
+        }
+      } catch (err) {
+        self.postMessage({ cv: cv, err: err });
+      };
+    }`;
+      let blob = new Blob([sw], { type: "text/javascript" });
+      let url = (window.URL || window.webkitURL).createObjectURL(blob);
+      return url;
+    },
+    luu: () => {
+      let sw = `
+        self.onmessage = (ev) => {
+          let tin = ev.data;
+          try {
+            let cv = 1, rr = tin.dulieu, db, cs, rs, k, sx;
+            indexedDB.open(tin.csdl.ten, tin.csdl.cap).onsuccess = (e) => {
+              db = e.target.result;
+              db.transaction(tin.bang, 'readwrite')
+                .objectStore(tin.bang)
+                .openCursor(IDBKeyRange.only(tin.idutc))
+                .onsuccess = (e) => {
+                  cs = e.target.result;
+                  if (cs) {
+                    rs = cs.value;
+                    if (rs['lastupdate'] > rr['lastupdate']) {
+                      cv++;
+                      cs.continue();
+                    }
+                    for (k in rr) {
+                      if (rr[k]) {
+                        if (rr[k].length > 0 || rr[k].size > 0) {
+                          rs[k] = rr[k];
+                        } else {
+                          if (['ghichu', 'notes'].includes(k)) {
+                            rs[k] = rr[k];
+                          }
+                        }
+                      }
+                    }
+                    rs['lastupdate'] = Date.now();
+                    sx = cs.update(rs);
+                    sx.onsuccess = () => {
+                      self.postMessage({ cv: -1, kq: "save fin" });
+                    };
+                    cv++;
+                    cs.continue();
+                  } else {
+                    ///new data
+                    rr['lastupdate'] = Date.now();
+                    indexedDB.open(tin.csdl.ten, tin.csdl.cap).onsuccess = (e) => {
+                      let db1 = e.target.result
+                        .transaction(bang, 'readwrite')
+                        .objectStore(bang)
+                        .put(rr);
+                      db1.onsuccess = () => {
+                        self.postMessage({ cv: -1, kq: "save fin" });
+                      };
+                    };
+                  }
+                };
+            }
+          } catch (err) {
+            self.postMessage({ cv: cv, err: err });
+          };
+        }
+      }`;
+      let blob = new Blob([sw], { type: "text/javascript" });
+      let url = (window.URL || window.webkitURL).createObjectURL(blob);
+      return url;
+    },
+  },
   lay_scan: () => {
     if (!ga.tttt) { return };
     let gui, tra, ma, k, i = 0, w = {};
-    let blob, url, sw_url = sw.lay_scan();
+    let blob, url, sw_url = idb.sw.lay_scan();
     ga.url.scan = {};
     for (k in ga.dulieu[ga.tttt]) {
-      if (['iddot', 'dot.idutc'].includes(k)) {
+      if (['dot.idutc', 'iddot'].includes(k)) {
         ma = ga.dulieu[ga.tttt][k];
         gui = {
           csdl: { ten: "pkh", cap: 1 },
           lenh: "lay",
           bang: "dot",
-          dk: { "idutc": ma },
+          idutc: ma,
         };
         ma = 'dot.' + ma;
         ga.url.scan[ma] = [];
@@ -977,7 +1074,7 @@ var idb = {
           };
         }
       }
-      if (['idhoso', 'hoso.idutc'].includes(k)) {
+      if (['hoso.idutc', 'idhoso'].includes(k)) {
         ma = ga.dulieu[ga.tttt][k];
         gui = {
           csdl: { ten: "pkh", cap: 1 },
@@ -1005,6 +1102,7 @@ var idb = {
           };
         }
       }
+      i++;
     }
   },
 };
