@@ -41,7 +41,8 @@
   grid-area: danhsach;
   height: 80vh;
 }
-tr:hover{
+
+#danhsach tr:hover{
   border:1px solid green;
   background-color:#9999ff;
 }

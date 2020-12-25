@@ -146,13 +146,13 @@ class Api_Hoso_Rest(ApiBase):
         #data = api.HsKh(schema, namhoso).gom()
 
         data = [
-            {"utcid": 11111, "sohoso": "gm059365/20", "khachhang": "Tran Thi Thu 1",
+            {"utcid": 11111, "sodot": "2020gmmp001", "sohoso": "gm059365/20", "khachhang": "Tran Thi Thu 1",
                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
-            {"utcid": 22222, "sohoso": "gm059366/20", "khachhang": "Tran Thi Thu 2",
+            {"utcid": 22222, "sodot": "2020gmmp001", "sohoso": "gm059366/20", "khachhang": "Tran Thi Thu 2",
                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
-            {"utcid": 33333, "sohoso": "gm059367/20", "khachhang": "Tran Thi Thu 4",
+            {"utcid": 33333, "sodot": "2020gmmp001", "sohoso": "gm059367/20", "khachhang": "Tran Thi Thu 4",
                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
-            {"utcid": 4444, "sohoso": "gm059367/20", "khachhang": "Test [$&+,:;=?@#|'<>.-^*()%!\{}] Anh",
+            {"utcid": 4444, "sodot": "2020gmmp001", "sohoso": "gm059367/20", "khachhang": "Test Anh",
                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", }
         ]
         print(f'ApiRest pbd={pbd} nam={namhoso} data={data}')
