@@ -16,27 +16,86 @@ from sqlalchemy.ext.mutable import MutableDict
 Base = declarative_base()
 
 
-class Hoso(Base):
+class Mau(object):
+    __table_args__ = {"schema": "web"}
+    idutc = Column(Integer, primary_key=True)
+    refs = Column(MutableDict.as_mutable(JSON))
+    data = Column(MutableDict.as_mutable(JSON))
+    #refs = Column(mutable_json_type(dbtype=JSON, nested=True))
+    #data = Column(mutable_json_type(dbtype=JSON, nested=True))
+    slang = Column(Unicode(255))
+    status = Column(Unicode(50))
+    inok = Column(Boolean, default=False)
+    lastupdate = Column(Integer,
+                        default=int(arrow.utcnow().float_timestamp * 1000),
+                        onupdate=int(arrow.utcnow().float_timestamp * 1000))
+
+
+class Test_table_arg(Mau, Base):
+    __tablename__ = 'test_table_arg'
+
+
+class Khachhang(Mau, Base):
+    __tablename__ = 'khachhang'
+    __table_args__ = {"schema": "web"}
+    makhachhang = Column(Unicode(50))  # yyyy.kh.xxxxxx xx:stt
+    # lkn1_hoso_khachhang = relationship(
+    #    "Hoso", back_populates="lk1n_khachhang_hoso")
+
+
+class Hoso(Mau, Base):
     __tablename__ = 'hoso'
     __table_args__ = {"schema": "web"}
-    uctid = Column(Integer, primary_key=True)
     mahoso = Column(Unicode(50))  # yyyy.hs.xxxxxx
-    mota = Column(Unicode(None))
-    #mota = Column(MutableDict.as_mutable(JSON))
-    ghichu = Column(Unicode(255))
-    lastupdate = Column(DateTime(timezone=False), default=func.now(),
-                        onupdate=datetime.datetime.now)
+    # lk1n_khachhang_hoso = relationship(
+    #    "Khachhang", back_populates="lkn1_hoso_khachhang")
 
 
-class ChiphiQuanly(Base):
+class Khuvuc(Mau, Base):
+    __tablename__ = 'khuvuc'
+    __table_args__ = {"schema": "web"}
+    makhuvuc = Column(Unicode(50))  # yyyy.hs.xxxxxx
+
+
+class Dot(Mau, Base):
+    __tablename__ = 'dot'
+    __table_args__ = {"schema": "web"}
+    madot = Column(Unicode(50))  # yyyy.gmmp.xxx xxx:stt
+    # refs:= dvtc.idutc, madvtc, qtvt.idutc, maqtvt
+    # data:= qtgt:tonghoso:, tongqt, tongtrongai,...,nguoilap, ngaylap,ghichu; qtvt:sophieunhap,
+
+
+class Donvithicong(Mau, Base):
+    __tablename__ = 'donvithicong'
+    __table_args__ = {"schema": "web"}
+    madvtc = Column(Unicode(50))
+    # data:= lienhe, masothue, ....
+
+
+class ChiphiQuanly(Mau, Base):
     __tablename__ = 'chiphiquanly'
     __table_args__ = {"schema": "web"}
-    uctid = Column(Integer, primary_key=True)
-    cpqlid = Column(Integer)  # yyyy.hs.xxxxxx
-    mota = Column(Unicode(None))
-    ghichu = Column(Unicode(255))
-    lastupdate = Column(DateTime(timezone=False), default=func.now(),
-                        onupdate=datetime.datetime.now)
+    macpql = Column(Unicode(50))  # yyyy.hs.xxxxxx
+
+
+class Bgvl(Mau, Base):
+    __tablename__ = 'bgvl'
+    __table_args__ = {"schema": "web"}
+
+
+class Bgnc(Mau, Base):
+    __tablename__ = 'bgnc'
+    __table_args__ = {"schema": "web"}
+
+
+class Bgmtc(Mau, Base):
+    __tablename__ = 'bgmtc'
+    __table_args__ = {"schema": "web"}
+
+
+class Bgtl(Mau, Base):
+    __tablename__ = 'bgtl'
+    __table_args__ = {"schema": "web"}
 
 
 class Server():
@@ -111,3 +170,9 @@ def runsql(sql=''):
         return data
     except:
         return None
+
+
+engine = Server("pkh", "Ph0ngK3H0@ch",
+                "192.168.24.4:1433", "PKHData")
+engine.orm()
+engine.show_views('web')

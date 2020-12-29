@@ -4,15 +4,13 @@ import datetime
 import decimal
 import arrow
 import json
-# from utils.thoigian import stodate, datetos
+#from utils.thoigian import stodate, datetos
 from sqlalchemy import create_engine, ForeignKey, inspect
 from sqlalchemy import Column, Sequence, func, desc
-from sqlalchemy import BigInteger, Unicode, JSON, Boolean,  DECIMAL,  VARBINARY,  Date, DateTime
-from sqlalchemy import insert
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy import Integer, Unicode, JSON, Boolean,  DECIMAL,  VARBINARY,  Date, DateTime
+from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict
-from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 from sqlalchemy_json import mutable_json_type
 
 
@@ -21,16 +19,16 @@ Base = declarative_base()
 
 class Mau(object):
     __table_args__ = {"schema": "web"}
-    idutc = Column(BigInteger, primary_key=True, autoincrement=False)
+    idutc = Column(Integer, primary_key=True)
     refs = Column(Unicode())
     data = Column(Unicode())
-    # refs = Column(MutableDict.as_mutable(JSON))
-    # data = Column(MutableDict.as_mutable(JSON))
-    # refs = Column(mutable_json_type(dbtype=JSON, nested=True))
-    # data = Column(mutable_json_type(dbtype=JSON, nested=True))
+    #refs = Column(MutableDict.as_mutable(JSON))
+    #data = Column(MutableDict.as_mutable(JSON))
+    #refs = Column(mutable_json_type(dbtype=JSON, nested=True))
+    #data = Column(mutable_json_type(dbtype=JSON, nested=True))
     status = Column(Unicode(50))
     inok = Column(Boolean, default=False)
-    lastupdate = Column(BigInteger,
+    lastupdate = Column(Integer,
                         default=int(arrow.utcnow().float_timestamp * 1000),
                         onupdate=int(arrow.utcnow().float_timestamp * 1000))
 
@@ -107,7 +105,7 @@ class Server():
             # params = urllib.parse.quote_plus(
             #    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
             # cnnstr = f"mssql+pyodbc:///?odbc_connect={params}"
-            # cnnstr = f"sqlite:///:memory:"
+            #            cnnstr = f"sqlite:///:memory:"
             engine = create_engine(self.cnnstr, echo=True)
             engine.execution_options(isolation_level="AUTOCOMMIT")
         except:
@@ -115,13 +113,14 @@ class Server():
         return engine
 
     def orm(self):
-        try:
-            engine = create_engine(self.cnnstr, echo=False)
-            Base.metadata.create_all(engine)
-            Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
-            return Session()
-        except:
-            return None
+        # try:
+        #cnnstr = f"sqlite:///:memory:"
+        engine = create_engine(self.cnnstr, echo=True)
+        Base.metadata.create_all(engine)
+        Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
+        # except:
+        # return None
+        return Session()
 
     def show_views(self, schema=None):
         sql = f"Select * From Information_schema.tables"
@@ -130,8 +129,12 @@ class Server():
         sql += f" Order by table_catalog, table_schema, table_type, table_name;"
         try:
             kq = self.core().execute(sql)
+            dl = []
             for row in kq:
-                print(dict(row))
+                a = dict(row)
+                dl.append(a)
+                print(a)
+            return dl
         except:
             pass
 
@@ -144,6 +147,28 @@ class Server():
             pass
 
 
+class DoiJson():
+    def __init__(self, schema='dbo'):
+        self.schema = schema
+        self.svread = null
+        self.svsave = null
+    
+    def open_svread(self):
+        return engine
+    
+    def khachhang(self):
+        # load
+        sql = (
+            f"Select top 1 sodot, ngaylap, khuvuc,isnull(nhathauid,0) as dvtcid,"
+            f" isnull(dautucty,0) as tiencty,isnull(dautukhach,0) as tienkhach"
+            f" From {self.schema}.dot"
+            f" Where (madot='{self.madot}')"
+        )
+        dl = runsql(sql)
+        if ((dl == None) or (len(dl) < 1)):
+            return
+
+
 def runsql(sql=''):
     engine = Server("pkh", "Ph0ngK3H0@ch",
                     "192.168.24.4:1433", "PKHData")
@@ -154,7 +179,7 @@ def runsql(sql=''):
             dl = dict(row)
             for k in dl.copy():
                 if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
-                    if k in ['lastupdate', 'ngaylendot']:
+                    if k == 'lastupdate':
                         dl[k] = int(arrow.get(dl[k]).to(
                             'utc').float_timestamp * 1000)
                     else:
@@ -164,79 +189,10 @@ def runsql(sql=''):
             data.append(dl)
         kq.close()
         return data
-    except IntegrityError as err:
-        if err:
-            return err
+    except:
         return None
 
 
-class DoiJson():
-    def __init__(self, schema='web'):
-        self.schema = schema
-        self.open_svsave()
-
-    def open_svsave(self):
-        engine = Server("pkh", "Ph0ngK3H0@ch",
-                        "192.168.24.4:1433", "PKHData")
-        self.svsave = engine.orm()
-
-    def khachhang(self):
-        # load
-        sql = (
-            f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
-            f" dot.ngaylendot, dot.madot"
-            f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
-            f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
-            f" Where hoso.hosoid>0 and datalength(dot.ngaylendot)>0"
-            f" Order By hoso.hosoid,dot.ngaylendot"
-        )
-        dlr = runsql(sql)
-        if ((dlr == None) or (len(dlr) < 1)):
-            return
-        print(f"dulieu khachhang={dlr}")
-        # chuyen dulieu
-        dl = {}
-        dl["idutc"] = dlr[0]["ngaylendot"]
-        dl["status"] = "oK"
-        dl["inok"] = 1
-        dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
-        dl["refs"] = {"madot": dlr[0]['madot'], "hosoid": dlr[0]["hosoid"]}
-        dl["data"] = {}
-        if dlr[0]["khachhang"]:
-            dl["data"]["khachhang"] = (
-                ' '.join(dlr[0]["khachhang"].split())).upper()
-        if dlr[0]["diachi"]:
-            dc = dlr[0]["diachi"].replace("- ", ", ")
-            dc = ' '.join(dc.split())
-            dl["data"]["diachi"] = dc
-        if dlr[0]["lienhe"]:
-            dl["data"]["lienhe"] = ' '.join(dlr[0]["lienhe"].split())
-        dl["makhachhang"] = f"{dlr[0]['madot']}.{dlr[0]['hosoid']}"
-        dl["refs"] = json.dumps(dl["refs"], ensure_ascii=False)
-        dl["data"] = json.dumps(dl["data"], ensure_ascii=False)
-        print(f"dulieu sau chuyen doi khachhang={dl}")
-        # insert
-        issaved = False
-        maxloop = 0
-        while issaved == False and maxloop < 10:
-            sql = (
-                f"INSERT INTO {self.schema}.khachhang(idutc,status,inok,lastupdate,refs,data,makhachhang) "
-                f"VALUES({dl['idutc']},'{dl['status']}',{dl['inok']},{dl['lastupdate']},"
-                f"'{dl['refs']}','{dl['data']}','{dl['makhachhang']}')")
-            dlr = runsql(sql)
-            if dlr:
-                err_code = int(dlr.orig.args[0])
-                print(f"dlr.orig.args[0]={dlr.orig.args[0]}")
-                print(f"dlr.orig.args[1]={dlr.orig.args[1]}")
-                if err_code == 23000:
-                    # duplicate Primary key
-                    dl["idutc"] += 1
-                else:
-                    issaved = True
-            else:
-                issaved = True
-            maxloop += 1
-
-
-# test
-DoiJson("web").khachhang()
+engine = Server("pkh", "Ph0ngK3H0@ch",
+                "192.168.24.4:1433", "PKHData")
+dl = engine.show_views("web")

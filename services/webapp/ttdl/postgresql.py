@@ -17,7 +17,10 @@ Base = declarative_base()
 
 
 class Mau(object):
-    dulieu = Column(MutableDict.as_mutable(JSON))
+    idutc = Column(Integer, primary_key=True)
+    refs = Column(MutableDict.as_mutable(JSON))
+    data = Column(MutableDict.as_mutable(JSON))
+    status = Column(Unicode(50))
     lastupdate = Column(Integer,
                         default=int(arrow.utcnow().float_timestamp * 1000),
                         onupdate=int(arrow.utcnow().float_timestamp * 1000))
