@@ -35,10 +35,6 @@ class Mau(object):
                         onupdate=int(arrow.utcnow().float_timestamp * 1000))
 
 
-class Test_table_arg(Mau, Base):
-    __tablename__ = 'test_table_arg'
-
-
 class Khachhang(Mau, Base):
     __tablename__ = 'khachhang'
     makhachhang = Column(Unicode(50))  # yyyy.kh.xxxxxx xx:stt
@@ -145,7 +141,7 @@ class Server():
 
 
 def runsql(sql=''):
-    engine = Server("pkh", "Ph0ngK3H0@ch",
+    engine = Server("pkh.tctb", "123456789",
                     "192.168.24.4:1433", "PKHData")
     try:
         kq = engine.core().execute(sql)
@@ -154,7 +150,7 @@ def runsql(sql=''):
             dl = dict(row)
             for k in dl.copy():
                 if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
-                    if k in ['lastupdate', 'ngaylendot']:
+                    if k in ['lastupdate']:
                         dl[k] = int(arrow.get(dl[k]).to(
                             'utc').float_timestamp * 1000)
                     else:
@@ -165,77 +161,112 @@ def runsql(sql=''):
         kq.close()
         return data
     except IntegrityError as err:
-        if err:
-            return err
-        return None
+        if err.orig:
+            return {"code": err.orig.args[0], "err": err.orig.args[1]}
+        else:
+            return None
 
 
 class DoiJson():
     def __init__(self, schema='web'):
         self.schema = schema
-        self.open_svsave()
 
-    def open_svsave(self):
+    def runsql(self, sql=''):
         engine = Server("pkh", "Ph0ngK3H0@ch",
                         "192.168.24.4:1433", "PKHData")
-        self.svsave = engine.orm()
+        try:
+            kq = engine.core().execute(sql)
+            data = []
+            for row in kq:
+                dl = dict(row)
+                for k in dl.copy():
+                    if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
+                        if k in ['lastupdate', 'ngaylendot']:
+                            dl[k] = int(arrow.get(dl[k]).to(
+                                'utc').float_timestamp * 1000)
+                        else:
+                            dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
+                    if isinstance(dl[k], decimal.Decimal):
+                        dl[k] = float(dl[k])
+                data.append(dl)
+            kq.close()
+            return data
+        except IntegrityError as err:
+            if err.orig:
+                return {"err_code": int(err.orig.args[0]), "err": err.orig.args[1]}
+            else:
+                return None
 
-    def khachhang(self):
+    def crud_moi(self, bang, dl, ma='mahoso', ismoi=True):
+        try:
+            maxloop = 0
+            while True and maxloop < 10:
+                sql = (
+                    f"INSERT INTO {self.schema}.{bang}(idutc,status,inok,lastupdate,refs,data,{ma}) "
+                    f"VALUES({dl['idutc']},'{dl['status']}',{dl['inok']},{dl['lastupdate']},"
+                    f"'{dl['refs']}','{dl['data']}','{dl[ma]}')")
+                kq = self.runsql(sql)
+                if "err" in kq:
+                    print(f"err={kq['err']}")
+                    if ismoi and kq['err_code'] == 23000:
+                        # duplicate Primary key
+                        dl["idutc"] += 1
+                    else:
+                        break
+                else:
+                    break
+                maxloop += 1
+        except:
+            return None
+
+    def nap_khachhang(self, uid):
         # load
         sql = (
             f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
             f" dot.ngaylendot, dot.madot"
             f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
             f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
-            f" Where hoso.hosoid>0 and datalength(dot.ngaylendot)>0"
+            f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
             f" Order By hoso.hosoid,dot.ngaylendot"
         )
-        dlr = runsql(sql)
-        if ((dlr == None) or (len(dlr) < 1)):
-            return
-        print(f"dulieu khachhang={dlr}")
+        r = self.runsql(sql)
+        if ((r == None) or (len(r) < 1)):
+            return None
+        print(f"dulieu khachhang={r}")
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = dlr[0]["ngaylendot"]
+        dl["idutc"] = r[0]["ngaylendot"]
         dl["status"] = "oK"
         dl["inok"] = 1
         dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
-        dl["refs"] = {"madot": dlr[0]['madot'], "hosoid": dlr[0]["hosoid"]}
+        dl["refs"] = {"madot": r[0]['madot'], "hosoid": r[0]["hosoid"]}
         dl["data"] = {}
-        if dlr[0]["khachhang"]:
+        if r[0]["khachhang"]:
             dl["data"]["khachhang"] = (
-                ' '.join(dlr[0]["khachhang"].split())).upper()
-        if dlr[0]["diachi"]:
-            dc = dlr[0]["diachi"].replace("- ", ", ")
+                ' '.join(r[0]["khachhang"].split())).upper()
+        if r[0]["diachi"]:
+            dc = r[0]["diachi"].replace("- ", ", ")
             dc = ' '.join(dc.split())
             dl["data"]["diachi"] = dc
-        if dlr[0]["lienhe"]:
-            dl["data"]["lienhe"] = ' '.join(dlr[0]["lienhe"].split())
-        dl["makhachhang"] = f"{dlr[0]['madot']}.{dlr[0]['hosoid']}"
+        if r[0]["lienhe"]:
+            dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
+        dl["makhachhang"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
         dl["refs"] = json.dumps(dl["refs"], ensure_ascii=False)
         dl["data"] = json.dumps(dl["data"], ensure_ascii=False)
         print(f"dulieu sau chuyen doi khachhang={dl}")
-        # insert
-        issaved = False
-        maxloop = 0
-        while issaved == False and maxloop < 10:
-            sql = (
-                f"INSERT INTO {self.schema}.khachhang(idutc,status,inok,lastupdate,refs,data,makhachhang) "
-                f"VALUES({dl['idutc']},'{dl['status']}',{dl['inok']},{dl['lastupdate']},"
-                f"'{dl['refs']}','{dl['data']}','{dl['makhachhang']}')")
-            dlr = runsql(sql)
-            if dlr:
-                err_code = int(dlr.orig.args[0])
-                print(f"dlr.orig.args[0]={dlr.orig.args[0]}")
-                print(f"dlr.orig.args[1]={dlr.orig.args[1]}")
-                if err_code == 23000:
-                    # duplicate Primary key
-                    dl["idutc"] += 1
-                else:
-                    issaved = True
-            else:
-                issaved = True
-            maxloop += 1
+        return dl
+
+    def khachhang(self):
+        uid = 1
+        try:
+            while True:
+                dulieu = self.nap_khachhang(uid)
+                if dulieu:
+                    self.crud_moi("khachhang", dulieu,
+                                  ma='makhachhang', ismoi=True)
+                uid += 1
+        except:
+            return None
 
 
 # test
