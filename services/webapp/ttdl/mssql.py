@@ -198,13 +198,34 @@ class DoiJson():
                 return None
 
     def crud_moi(self, bang, dl, ma='mahoso', ismoi=True):
-        try:
-            maxloop = 0
-            while True and maxloop < 10:
-                sql = (
-                    f"INSERT INTO {self.schema}.{bang}(idutc,status,inok,lastupdate,refs,data,{ma}) "
-                    f"VALUES({dl['idutc']},N'{dl['status']}',{dl['inok']},{dl['lastupdate']},"
-                    f"N'{dl['refs']}',N'{dl['data']}',N'{dl[ma]}')")
+        # check dl
+        for k in dl.copy():
+            if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data', ma]:
+                del dl[k]
+        if not dl['idutc']:
+            dl['idutc'] = int(arrow.utcnow().float_timestamp * 1000)
+        dl['inok'] = 1
+        if dl['status']:
+            dl['status'] = f"N'{dl['status']}'"
+        if dl[ma]:
+            dl[ma] = f"N'{dl[ma]}'"
+        if dl['refs']:
+            try:
+                dl["refs"] = json.dumps(dl["refs"], ensure_ascii=False)
+            except:
+                pass
+            dl['refs'] = f"N'{dl['refs']}'"
+        if dl['data']:
+            try:
+                dl['data'] = json.dumps(dl['data'], ensure_ascii=False)
+            except:
+                pass
+            dl['data'] = f"N'{dl['data']}'"
+        while True:
+            dl['lastupdate'] = int(arrow.utcnow().float_timestamp * 1000)
+            sql = (f"INSERT INTO {self.schema}.{bang} ({','.join(dl.keys())}) "
+                   f"VALUES ({','.join(dl.values())});")
+            try:
                 kq = self.runsql(sql)
                 if "err" in kq:
                     print(f"err={kq['err']}")
@@ -214,11 +235,10 @@ class DoiJson():
                     else:
                         break
                 else:
-                    print("inserted")
+                    print("created ok")
                     break
-                maxloop += 1
-        except:
-            return None
+            except:
+                break
 
     def nap_khachhang(self, uid):
         # load
@@ -239,7 +259,7 @@ class DoiJson():
         dl["idutc"] = r[0]["ngaylendot"]
         dl["makhachhang"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
 
-        dl["status"] = "oK"
+        dl["status"] = "chuyen json"
         dl["inok"] = 1
         dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
         dl["refs"] = {
@@ -256,9 +276,6 @@ class DoiJson():
             dl["data"]["diachi"] = dc
         if r[0]["lienhe"]:
             dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
-        # convert json to string
-        dl["refs"] = json.dumps(dl["refs"], ensure_ascii=False)
-        dl["data"] = json.dumps(dl["data"], ensure_ascii=False)
         print(f"dulieu sau chuyen doi khachhang={dl}")
         return dl
 
@@ -286,7 +303,30 @@ class TaoDulieu():
         pass
 
     def Chiphiquanly(self):
-        pass
+        recs = [
+            {"hesoid": "1",
+             "mota": {"vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}},
+            {"hesoid": "2",
+             "mota": {"vl": 1, "nc": 2.8, "mtc": 1.34, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}},
+            {"hesoid": "3",
+             "mota": {"vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}},
+            {"hesoid": "4",
+             "mota": {"vl": 1, "nc": 3.857, "mtc": 1.504, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}},
+            {"hesoid": "5",
+             "mota": {"vl": 1, "nc": 5.714, "mtc": 1.82, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}},
+            {"hesoid": "6",
+             "mota": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0,
+                      "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}},
+            {"hesoid": "7",
+             "mota": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0,
+                      "thutinhtruoc": 0.055, "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566}},
+            {"hesoid": "20190725",
+             "mota": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0,
+                      "thutinhtruoc": 0.055, "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566}},
+            {"hesoid": "20200721",
+             "mota": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02,
+                      "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566}}
+        ]
 
 
 # test
