@@ -104,7 +104,7 @@ class Server():
             #    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
             # cnnstr = f"mssql+pyodbc:///?odbc_connect={params}"
             # cnnstr = f"sqlite:///:memory:"
-            engine = create_engine(self.cnnstr, echo=True)
+            engine = create_engine(self.cnnstr, echo=False)
             engine.execution_options(isolation_level="AUTOCOMMIT")
         except:
             return None
@@ -203,8 +203,8 @@ class DoiJson():
             while True and maxloop < 10:
                 sql = (
                     f"INSERT INTO {self.schema}.{bang}(idutc,status,inok,lastupdate,refs,data,{ma}) "
-                    f"VALUES({dl['idutc']},'{dl['status']}',{dl['inok']},{dl['lastupdate']},"
-                    f"'{dl['refs']}','{dl['data']}','{dl[ma]}')")
+                    f"VALUES({dl['idutc']},N'{dl['status']}',{dl['inok']},{dl['lastupdate']},"
+                    f"N'{dl['refs']}',N'{dl['data']}',N'{dl[ma]}')")
                 kq = self.runsql(sql)
                 if "err" in kq:
                     print(f"err={kq['err']}")
@@ -214,6 +214,7 @@ class DoiJson():
                     else:
                         break
                 else:
+                    print("inserted")
                     break
                 maxloop += 1
         except:
@@ -223,7 +224,7 @@ class DoiJson():
         # load
         sql = (
             f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
-            f" dot.ngaylendot, dot.madot"
+            f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
             f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
             f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
             f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
@@ -236,10 +237,15 @@ class DoiJson():
         # chuyen dulieu
         dl = {}
         dl["idutc"] = r[0]["ngaylendot"]
+        dl["makhachhang"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
+
         dl["status"] = "oK"
         dl["inok"] = 1
         dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
-        dl["refs"] = {"madot": r[0]['madot'], "hosoid": r[0]["hosoid"]}
+        dl["refs"] = {
+            "dot": {"id": r[0]['dotid'], "ma": r[0]['madot']},
+            "qtgt": {"id": r[0]['qtid'], "ma": r[0]['maqt']},
+            "hoso": {"id": r[0]['hosoid'], "ma": dl["makhachhang"]}, }
         dl["data"] = {}
         if r[0]["khachhang"]:
             dl["data"]["khachhang"] = (
@@ -250,16 +256,19 @@ class DoiJson():
             dl["data"]["diachi"] = dc
         if r[0]["lienhe"]:
             dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
-        dl["makhachhang"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
+        # convert json to string
         dl["refs"] = json.dumps(dl["refs"], ensure_ascii=False)
         dl["data"] = json.dumps(dl["data"], ensure_ascii=False)
         print(f"dulieu sau chuyen doi khachhang={dl}")
         return dl
 
     def khachhang(self):
-        uid = 1
+        uid = 124455
+        maxloop = 124540
         try:
-            while True:
+            while True and uid < maxloop:
+                print(
+                    f"Chuyen hoso id={uid:06d} *****")
                 dulieu = self.nap_khachhang(uid)
                 if dulieu:
                     self.crud_moi("khachhang", dulieu,
@@ -267,6 +276,17 @@ class DoiJson():
                 uid += 1
         except:
             return None
+
+
+class TaoDulieu():
+    def __init__(self, schema='web'):
+        self.schema = schema
+
+    def Khuvuc(self):
+        pass
+
+    def Chiphiquanly(self):
+        pass
 
 
 # test
