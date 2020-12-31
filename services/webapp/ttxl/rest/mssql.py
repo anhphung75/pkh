@@ -61,38 +61,38 @@ class Server():
             pass
 
 
+def runsql(self, sql=''):
+    engine = Server("pkh", "Ph0ngK3H0@ch",
+                    "192.168.24.4:1433", "PKHData")
+    try:
+        kq = engine.core().execute(sql)
+        data = []
+        for row in kq:
+            dl = dict(row)
+            for k in dl.copy():
+                if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
+                    if k in ['lastupdate', 'ngaylendot']:
+                        dl[k] = int(arrow.get(dl[k]).to(
+                            'utc').float_timestamp * 1000)
+                    else:
+                        dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
+                if isinstance(dl[k], decimal.Decimal):
+                    dl[k] = float(dl[k])
+            data.append(dl)
+        kq.close()
+        return data
+    except IntegrityError as err:
+        if err.orig:
+            return {"err_code": int(err.orig.args[0]), "err": err.orig.args[1]}
+        else:
+            return None
+
+
 class Rest():
     def __init__(self, schema='web', bang='hoso'):
         self.schema = schema.lower()
         self.bang = bang.lower()
         self.mabang()
-
-    def runsql(self, sql=''):
-        engine = Server("pkh", "Ph0ngK3H0@ch",
-                        "192.168.24.4:1433", "PKHData")
-        try:
-            engine.orm()
-            kq = engine.core().execute(sql)
-            data = []
-            for row in kq:
-                dl = dict(row)
-                for k in dl.copy():
-                    if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
-                        if k in ['lastupdate', 'ngaylendot']:
-                            dl[k] = int(arrow.get(dl[k]).to(
-                                'utc').float_timestamp * 1000)
-                        else:
-                            dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
-                    if isinstance(dl[k], decimal.Decimal):
-                        dl[k] = float(dl[k])
-                data.append(dl)
-            kq.close()
-            return data
-        except IntegrityError as err:
-            if err.orig:
-                return {"err_code": int(err.orig.args[0]), "err": err.orig.args[1]}
-            else:
-                return None
 
     def mabang(self):
         if self.bang in ["hoso"]:
@@ -114,7 +114,7 @@ class Rest():
             sql += f"From {self.schema}.{self.bang} Where idutc>0"
         print(f"sql={sql}")
         try:
-            r = self.runsql(sql)
+            r = runsql(sql)
             if ((r == None) or (len(r) < 1) or ("err" in r)):
                 return None
             print(f"Rest {self.bang} gom[{sval}]={r}")
@@ -127,7 +127,7 @@ class Rest():
             return None
         sql = f"Select top 1 * From {self.schema}.{self.bang} Where idutc={idutc}"
         try:
-            r = self.runsql(sql)
+            r = runsql(sql)
             if ((r == None) or (len(r) < 1) or ("err" in r)):
                 return None
             print(f"Rest {self.bang} nap[{idutc}]={r}")
@@ -140,24 +140,56 @@ class Rest():
             return None
         sql = f"Delete From {self.schema}.{self.bang} Where idutc={idutc};"
         try:
-            r = self.runsql(sql)
+            r = runsql(sql)
             if ((r == None) or (len(r) < 1) or ("err" not in r)):
                 print(f"Rest {self.bang} xoa[{idutc}]= ok")
         except:
             return None
 
-    def moi(self, dl, ismoi=False):
-        if not dl:
+    def moi(self, dl):
+        if dl and (('refs' in dl) or ('data' in dl)):
+            for k in dl.copy():
+                if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data', self.ma]:
+                    del dl[k]
+        else:
             return None
-        # check dl
-        for k in dl.copy():
-            if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data', self.ma]:
-                del dl[k]
+        # check exist
+        sql = (
+            f"Select top 1 idutc From {self.schema}.{self.bang} "
+            f"Where idutc>0")
+        if 'refs' in dl:
+            if len(dl['refs']) > 0:
+                if isinstance(dl['data'], str):
+                    dl['refs'] = f"N'{dl['refs']}'"
+                else:
+                    dl['refs'] = f"N'{json.dumps(dl['refs'], ensure_ascii=False)}'"
+                sql += f" And refs={dl['refs']}"
+            else:
+                del dl['refs']
+        if 'data' in dl:
+            if len(dl['data']) > 0:
+                if isinstance(dl['data'], str):
+                    dl['data'] = f"N'{dl['data']}'"
+                else:
+                    dl['data'] = f"N'{json.dumps(dl['data'], ensure_ascii=False)}'"
+                sql += f" And data={dl['data']}"
+            else:
+                del dl['data']
+        try:
+            r = runsql(sql)
+            if ((r != None) or (len(r) > 0) or ("err" in r)):
+                print(f"Rest {self.bang} moi err dl={dl}")
+                return None
+        except:
+            return None
         # format by mssql
         dl['inok'] = "1"
-        if 'idutc' not in dl:
-            dl['idutc'] = int(arrow.utcnow().float_timestamp * 1000)
-        dl['idutc'] = f"{dl['idutc']}"
+        if 'idutc' in dl:
+            dl['idutc'] = f"{dl['idutc']}"
+            if len(dl['idutc']) < 1:
+                dl['idutc'] = f"{int(arrow.utcnow().float_timestamp * 1000)}"
+        else:
+            dl['idutc'] = f"{int(arrow.utcnow().float_timestamp * 1000)}"
         if 'status' in dl:
             if len(dl['status']) > 0:
                 dl['status'] = f"N'{dl['status']}'"
@@ -168,26 +200,16 @@ class Rest():
                 dl[self.ma] = f"N'{dl[self.ma]}'"
             else:
                 del dl[self.ma]
-        if 'refs' in dl:
-            if len(dl['refs']) > 0:
-                dl['refs'] = f"N'{json.dumps(dl['refs'], ensure_ascii=False)}'"
-            else:
-                del dl['refs']
-        if 'data' in dl:
-            if len(dl['data']) > 0:
-                dl['data'] = f"N'{json.dumps(dl['data'], ensure_ascii=False)}'"
-            else:
-                del dl['data']
         while True:
             dl['lastupdate'] = f"{int(arrow.utcnow().float_timestamp * 1000)}"
             sql = (f"INSERT INTO {self.schema}.{self.bang} ({','.join(dl.keys())}) "
                    f"VALUES ({','.join(dl.values())});")
             print(f"sql={sql}")
             try:
-                kq = self.runsql(sql)
+                kq = runsql(sql)
                 if "err" in kq:
                     print(f"err={kq['err']}")
-                    if ismoi and kq['err_code'] == 23000:
+                    if kq['err_code'] == 23000:
                         # duplicate Primary key
                         dl["idutc"] += 1
                     else:
@@ -199,10 +221,13 @@ class Rest():
                 break
 
     def sua(self, dl):
+        if dl and (('refs' in dl) or ('data' in dl)):
+            for k in dl.copy():
+                if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data', self.ma]:
+                    del dl[k]
+        else:
+            return None
         # check dl
-        for k in dl.copy():
-            if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data', self.ma]:
-                del dl[k]
         if 'data' in dl:
             if isinstance(dl['data'], str):
                 dl['data'] = json.loads(dl['data'])
@@ -217,8 +242,6 @@ class Rest():
                                 del dl['data'][k][k1]
             except:
                 pass
-        else:
-            dl['data'] = {}
         if 'refs' in dl:
             if isinstance(dl['refs'], str):
                 dl["refs"] = json.loads(dl["refs"])
@@ -232,8 +255,6 @@ class Rest():
                                 del dl['refs'][k][k1]
             except:
                 pass
-        else:
-            dl['refs'] = {}
         # check lastupdate
         if ('lastupdate' not in dl) or ('idutc' not in dl):
             self.moi(dl)
@@ -252,6 +273,8 @@ class Rest():
             r['status'] = r['status'].lower()
             if 'fin' in r['status']:
                 return None
+        if 'data' not in dl:
+            dl['data'] = {}
         if 'data' in r:
             for k in r['data']:
                 if k not in dl['data']:
@@ -266,6 +289,8 @@ class Rest():
             dl['data'] = f"N'{json.dumps(dl['data'], ensure_ascii=False)}'"
         else:
             del dl['data']
+        if 'refs' not in dl:
+            dl['refs'] = {}
         if 'refs' in r:
             for k in r['refs']:
                 if k not in dl['refs']:
@@ -296,9 +321,9 @@ class Rest():
         for k in dl:
             sql += f"{k}={dl[k]},"
         sql += (f"lastupdate={int(arrow.utcnow().float_timestamp * 1000)} "
-                f"Where idutc={dl['idutc']} And status Not Like '%Fin%';")
+                f"Where idutc={dl['idutc']} And status Not Like N'%Fin%';")
         try:
-            r = self.runsql(sql)
+            r = runsql(sql)
             if ((r == None) or (len(r) < 1) or ("err" not in r)):
                 print(f"Rest {self.bang} sua[{dl['idutc']}]=ok")
         except:
@@ -368,75 +393,6 @@ class DoiJson():
     def __init__(self, schema='web'):
         self.schema = schema
 
-    def runsql(self, sql=''):
-        engine = Server("pkh", "Ph0ngK3H0@ch",
-                        "192.168.24.4:1433", "PKHData")
-        try:
-            kq = engine.core().execute(sql)
-            data = []
-            for row in kq:
-                dl = dict(row)
-                for k in dl.copy():
-                    if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
-                        if k in ['lastupdate', 'ngaylendot']:
-                            dl[k] = int(arrow.get(dl[k]).to(
-                                'utc').float_timestamp * 1000)
-                        else:
-                            dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
-                    if isinstance(dl[k], decimal.Decimal):
-                        dl[k] = float(dl[k])
-                data.append(dl)
-            kq.close()
-            return data
-        except IntegrityError as err:
-            if err.orig:
-                return {"err_code": int(err.orig.args[0]), "err": err.orig.args[1]}
-            else:
-                return None
-
-    def crud_moi(self, bang, dl, ma='mahoso', ismoi=True):
-        # check dl
-        for k in dl.copy():
-            if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data', ma]:
-                del dl[k]
-        if not dl['idutc']:
-            dl['idutc'] = int(arrow.utcnow().float_timestamp * 1000)
-        dl['inok'] = 1
-        if dl['status']:
-            dl['status'] = f"N'{dl['status']}'"
-        if dl[ma]:
-            dl[ma] = f"N'{dl[ma]}'"
-        if dl['refs']:
-            try:
-                dl["refs"] = json.dumps(dl["refs"], ensure_ascii=False)
-            except:
-                pass
-            dl['refs'] = f"N'{dl['refs']}'"
-        if dl['data']:
-            try:
-                dl['data'] = json.dumps(dl['data'], ensure_ascii=False)
-            except:
-                pass
-            dl['data'] = f"N'{dl['data']}'"
-        while True:
-            dl['lastupdate'] = int(arrow.utcnow().float_timestamp * 1000)
-            sql = (f"INSERT INTO {self.schema}.{bang} ({','.join(dl.keys())}) "
-                   f"VALUES ({','.join(dl.values())});")
-            try:
-                kq = self.runsql(sql)
-                if "err" in kq:
-                    print(f"err={kq['err']}")
-                    if ismoi and kq['err_code'] == 23000:
-                        # duplicate Primary key
-                        dl["idutc"] += 1
-                    else:
-                        break
-                else:
-                    print("created ok")
-                    break
-            except:
-                break
-
     def nap_khachhang(self, uid):
         # load
         sql = (
@@ -447,7 +403,7 @@ class DoiJson():
             f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
             f" Order By hoso.hosoid,dot.ngaylendot"
         )
-        r = self.runsql(sql)
+        r = runsql(sql)
         if ((r == None) or (len(r) < 1)):
             return None
         print(f"dulieu khachhang={r}")
@@ -490,6 +446,44 @@ class DoiJson():
                 uid += 1
         except:
             return None
+
+    def nap_hoso(self, uid):
+        # load
+        sql = (
+            f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
+            f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
+            f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
+            f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
+            f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
+            f" Order By hoso.hosoid,dot.ngaylendot"
+        )
+        r = runsql(sql)
+        if ((r == None) or (len(r) < 1)):
+            return None
+        print(f"dulieu hoso={r}")
+        # chuyen dulieu
+        dl = {}
+        dl["idutc"] = r[0]["ngaylendot"]
+        #dl["mahoso"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
+        dl["status"] = "chuyen json"
+        #dl["inok"] = 1
+        dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
+        dl["refs"] = {
+            "dot": {"id": r[0]['dotid'], "ma": r[0]['madot']},
+            "qtgt": {"id": r[0]['qtid'], "ma": r[0]['maqt']},
+            "hoso": {"id": r[0]['hosoid'], "ma": dl["makhachhang"]}, }
+        dl["data"] = {}
+        if r[0]["khachhang"]:
+            dl["data"]["khachhang"] = (
+                ' '.join(r[0]["khachhang"].split())).upper()
+        if r[0]["diachi"]:
+            dc = r[0]["diachi"].replace("- ", ", ")
+            dc = ' '.join(dc.split())
+            dl["data"]["diachi"] = dc
+        if r[0]["lienhe"]:
+            dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
+        print(f"dulieu sau chuyen doi khachhang={dl}")
+        return dl
 
 
 TaoJson()
