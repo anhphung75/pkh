@@ -11,8 +11,10 @@ from sqlalchemy import BigInteger, Unicode, JSON, Boolean,  DECIMAL,  VARBINARY,
 from sqlalchemy import insert
 from sqlalchemy.exc import SQLAlchemyError, IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
+
 from sqlalchemy_json import mutable_json_type
 
 
@@ -22,10 +24,10 @@ Base = declarative_base()
 class Mau(object):
     __table_args__ = {"schema": "web"}
     idutc = Column(BigInteger, primary_key=True, autoincrement=False)
-    refs = Column(Unicode())
-    data = Column(Unicode())
-    # refs = Column(MutableDict.as_mutable(JSON))
-    # data = Column(MutableDict.as_mutable(JSON))
+    _refs = Column(Unicode())
+    _data = Column(Unicode())
+    #refs = Column(MutableDict.as_mutable(Unicode()))
+    #data = Column(MutableDict.as_mutable(Unicode()))
     # refs = Column(mutable_json_type(dbtype=JSON, nested=True))
     # data = Column(mutable_json_type(dbtype=JSON, nested=True))
     status = Column(Unicode(50))
@@ -33,6 +35,38 @@ class Mau(object):
     lastupdate = Column(BigInteger,
                         default=int(arrow.utcnow().float_timestamp * 1000),
                         onupdate=int(arrow.utcnow().float_timestamp * 1000))
+
+    @hybrid_property
+    def refs(self):
+        try:
+            dl = json.loads(self._refs)
+        except:
+            dl = {}
+        return dl
+
+    @refs.setter
+    def refs(self, new):
+        dl = self.refs()
+        for k in new:
+            if len(new[k]) > 0:
+                dl[k] = new[k]
+        self._refs = json.dumps(dl, ensure_ascii=False)
+
+    @hybrid_property
+    def data(self):
+        try:
+            dl = json.loads(self._data)
+        except:
+            dl = {}
+        return dl
+
+    @data.setter
+    def data(self, new):
+        dl = self.data()
+        for k in new:
+            if (len(new[k]) > 0) or (k in ['ghichu', 'notes']):
+                dl[k] = new[k]
+        self._data = json.dumps(dl, ensure_ascii=False)
 
 
 class Khachhang(Mau, Base):
@@ -69,7 +103,6 @@ class Donvithicong(Mau, Base):
 
 class ChiphiQuanly(Mau, Base):
     __tablename__ = 'chiphiquanly'
-    macpql = Column(Unicode(50))  # yyyy.hs.xxxxxx
 
 
 class Bgvl(Mau, Base):
@@ -104,11 +137,35 @@ class Server():
             #    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
             # cnnstr = f"mssql+pyodbc:///?odbc_connect={params}"
             # cnnstr = f"sqlite:///:memory:"
-            engine = create_engine(self.cnnstr, echo=False)
+            engine = create_engine(self.cnnstr, echo=True)
             engine.execution_options(isolation_level="AUTOCOMMIT")
         except:
             return None
         return engine
+
+    def runsql(self, sql=''):
+        try:
+            kq = self.core().execute(sql)
+            data = []
+            for row in kq:
+                dl = dict(row)
+                for k in dl.copy():
+                    if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
+                        if k in ['lastupdate']:
+                            dl[k] = int(arrow.get(dl[k]).to(
+                                'utc').float_timestamp * 1000)
+                        else:
+                            dl[k] = int(arrow.get(dl[k]).format("YYYYMMDD"))
+                    if isinstance(dl[k], decimal.Decimal):
+                        dl[k] = float(dl[k])
+                data.append(dl)
+            kq.close()
+            return data
+        except IntegrityError as err:
+            if err.orig:
+                return {"err_code": int(err.orig.args[0]), "err": err.orig.args[1]}
+            else:
+                return None
 
     def orm(self):
         try:
@@ -165,4 +222,3 @@ def runsql(sql=''):
             return {"code": err.orig.args[0], "err": err.orig.args[1]}
         else:
             return None
-

@@ -3,10 +3,11 @@ import datetime
 import decimal
 import json
 
-from sqlalchemy import create_engine
 from sqlalchemy.exc import IntegrityError
 
-#from ttdl.mssql import Server
+from ttdl.mssql import Khachhang
+from ttdl.mssql import Hoso
+from ttdl.mssql import ChiphiQuanly
 
 
 class Server():
@@ -336,154 +337,156 @@ class Rest():
         self.sua(dl)
 
 
-class TaoJson():
+class Orm():
     def __init__(self, schema='web'):
-        self.schema = schema
-        self.Chiphiquanly()
+        self.schema = schema.lower()
+        self.ma = None
+        self.bdl = None
+        self.server()
 
-    def Khuvuc(self):
-        pass
+    def server(self):
+        engine = Server("pkh", "Ph0ngK3H0@ch",
+                        "192.168.24.4:1433", "PKHData")
+        self.orm = engine.orm()
 
-    def Chiphiquanly(self):
-        dl = {"macpql": 1, "status": "Fin",
-              "data": {"vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}
-              }
-        Rest("web", "chiphiquanly").sua(dl)
-        dl = {"macpql": 2, "status": "Fin",
-              "data": {"vl": 1, "nc": 2.8, "mtc": 1.34, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}
-              }
-        Rest("web", "chiphiquanly").save(dl)
-
-        dl = {"macpql": 3, "status": "Fin",
-              "data": {"vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}
-              }
-        Rest("web", "chiphiquanly").moi(dl)
-        dl = {"macpql": 4, "status": "Fin",
-              "data": {"vl": 1, "nc": 3.857, "mtc": 1.504, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053}
-              }
-        Rest("web", "chiphiquanly").moi(dl)
-        dl = {"macpql": 5, "status": "Fin",
-              "data": {"vl": 1, "nc": 5.714, "mtc": 1.82, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
-                       "phaply": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}
-              }
-        Rest("web", "chiphiquanly").moi(dl)
-        dl = {"macpql": 6, "status": "Fin",
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
-                       "phaply": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}
-              }
-        Rest("web", "chiphiquanly").moi(dl)
-        dl = {"macpql": 7, "status": "Fin",
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
-                       "phaply": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}
-              }
-        Rest("web", "chiphiquanly").moi(dl)
-        dl = {"macpql": 20190725, "status": "Fin",
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
-                       "phaply": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"}
-              }
-        Rest("web", "chiphiquanly").moi(dl)
-        dl = {"macpql": 20200721, "status": "Fin",
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
-                       "phaply": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"}
-              }
-        Rest("web", "chiphiquanly").moi(dl)
-
-
-class DoiJson():
-    def __init__(self, schema='web'):
-        self.schema = schema
-
-    def nap_khachhang(self, uid):
-        # load
-        sql = (
-            f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
-            f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
-            f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
-            f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
-            f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
-            f" Order By hoso.hosoid,dot.ngaylendot"
-        )
-        r = runsql(sql)
-        if ((r == None) or (len(r) < 1)):
-            return None
-        print(f"dulieu khachhang={r}")
-        # chuyen dulieu
-        dl = {}
-        dl["idutc"] = r[0]["ngaylendot"]
-        dl["makhachhang"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
-
-        dl["status"] = "chuyen json"
-        dl["inok"] = 1
-        dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
-        dl["refs"] = {
-            "dot": {"id": r[0]['dotid'], "ma": r[0]['madot']},
-            "qtgt": {"id": r[0]['qtid'], "ma": r[0]['maqt']},
-            "hoso": {"id": r[0]['hosoid'], "ma": dl["makhachhang"]}, }
-        dl["data"] = {}
-        if r[0]["khachhang"]:
-            dl["data"]["khachhang"] = (
-                ' '.join(r[0]["khachhang"].split())).upper()
-        if r[0]["diachi"]:
-            dc = r[0]["diachi"].replace("- ", ", ")
-            dc = ' '.join(dc.split())
-            dl["data"]["diachi"] = dc
-        if r[0]["lienhe"]:
-            dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
-        print(f"dulieu sau chuyen doi khachhang={dl}")
-        return dl
-
-    def khachhang(self):
-        uid = 124455
-        maxloop = 124540
+    def thongtin(self, bang):
         try:
-            while True and uid < maxloop:
-                print(
-                    f"Chuyen hoso id={uid:06d} *****")
-                dulieu = self.nap_khachhang(uid)
-                if dulieu:
-                    self.crud_moi("khachhang", dulieu,
-                                  ma='makhachhang', ismoi=True)
-                uid += 1
+            bang = bang.lower()
+            if bang in ["hoso"]:
+                self.ma = "mahoso"
+                self.bdl = Hoso
+            elif bang in ["khachhang"]:
+                self.ma = "makhachhang"
+                self.bdl = Khachhang
+            elif bang in ["dot"]:
+                self.ma = "madot"
+            elif bang in ["qtgt"]:
+                self.ma = "maqtgt"
+            elif bang in ['chiphiquanly', 'cpql']:
+                self.ma = "macpql"
+                self.bdl = ChiphiQuanly
+            else:
+                self.ma = None
+                self.bdl = None
+        except:
+            pass
+
+    def gom(self, bang, stim):
+        self.thongtin(bang)
+        if self.bdl == None:
+            return None
+        try:
+            stim = f"{stim}".lower()
+            r = self.orm.query(self.bdl).filter(
+                (self.bdl._refs.like('%stim%')) | (self.bdl._data.like('%stim%'))).all()
+            print(f"orm cpql r = {r}")
+            return r
         except:
             return None
 
-    def nap_hoso(self, uid):
-        # load
-        sql = (
-            f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
-            f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
-            f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
-            f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
-            f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
-            f" Order By hoso.hosoid,dot.ngaylendot"
-        )
-        r = runsql(sql)
-        if ((r == None) or (len(r) < 1)):
+    def nap(self, bang, idutc=0):
+        self.thongtin(bang)
+        try:
+            idutc = int(idutc)
+            r = self.orm.query(self.bdl).get(idutc).first()
+            print(f"orm nap r = {r}")
+            return r
+        except:
             return None
-        print(f"dulieu hoso={r}")
-        # chuyen dulieu
-        dl = {}
-        dl["idutc"] = r[0]["ngaylendot"]
-        #dl["mahoso"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
-        dl["status"] = "chuyen json"
-        #dl["inok"] = 1
-        dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
-        dl["refs"] = {
-            "dot": {"id": r[0]['dotid'], "ma": r[0]['madot']},
-            "qtgt": {"id": r[0]['qtid'], "ma": r[0]['maqt']},
-            "hoso": {"id": r[0]['hosoid'], "ma": dl["makhachhang"]}, }
-        dl["data"] = {}
-        if r[0]["khachhang"]:
-            dl["data"]["khachhang"] = (
-                ' '.join(r[0]["khachhang"].split())).upper()
-        if r[0]["diachi"]:
-            dc = r[0]["diachi"].replace("- ", ", ")
-            dc = ' '.join(dc.split())
-            dl["data"]["diachi"] = dc
-        if r[0]["lienhe"]:
-            dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
-        print(f"dulieu sau chuyen doi khachhang={dl}")
-        return dl
 
+    def moi(self, bang, dl):
+        self.thongtin(bang)
+        if (self.bang == None) or ('idutc' not in dl):
+            return None
+        if dl and ('refs' not in dl) and ('data' not in dl):
+            return None
+        s = self.bdl()
+        if "refs" in dl:
+            s.refs = dl['refs']
+        if "data" in dl:
+            s.data = dl['data']
+        if 'status' in dl:
+            s.status = dl['status']
+        if 'inok' in dl:
+            s.inok = dl['inok']
+        while True:
+            s.idutc = int(dl['idutc'])
+            s.lastupdate = int(arrow.utcnow().float_timestamp * 1000)
+            try:
+                self.orm.add(s)
+                self.orm.commit()
+                break
+            except IntegrityError as err:
+                try:
+                    if int(err.orig.args[0]) in [23000, 23000]:
+                        # duplicate Primary key
+                        dl['idutc'] += 1
+                except:
+                    break
 
-TaoJson()
+    def read(self, bang, idutc):
+        self.nap(bang, idutc)
+
+    def save1(self, bang='', dl={}):
+        self.thongtin(bang)
+        if self.bdl == None:
+            return None
+        if dl and (('refs' in dl) or ('data' in dl)):
+            for k in dl.copy():
+                if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data']:
+                    del dl[k]
+        else:
+            return None
+        # check dl
+        if 'data' in dl:
+            if isinstance(dl['data'], str):
+                dl['data'] = json.loads(dl['data'])
+            try:
+                for k in dl['data'].copy():
+                    if (dl['data'][k] == None) or (len(dl['data'][k]) < 1):
+                        if k.lower() not in ['ghichu', 'notes']:
+                            del dl['data'][k]
+                    for k1 in k:
+                        if (dl['data'][k][k1] == None) or (len(dl['data'][k][k1]) < 1):
+                            if k1.lower() not in ['ghichu', 'notes']:
+                                del dl['data'][k][k1]
+            except:
+                pass
+        if 'refs' in dl:
+            if isinstance(dl['refs'], str):
+                dl["refs"] = json.loads(dl["refs"])
+            try:
+                for k in dl['refs'].copy():
+                    if (dl['refs'][k] == None) or (len(dl['refs'][k]) < 1):
+                        del dl['refs'][k]
+                    else:
+                        for k1 in k:
+                            if (dl['refs'][k][k1] == None) or (len(dl['refs'][k][k1]) < 1):
+                                del dl['refs'][k][k1]
+            except:
+                pass
+        if "idutc" not in dl:
+            dl['idutc'] = int(arrow.utcnow().float_timestamp * 1000)
+            self.moi(bang, dl)
+            return None
+        s = self.nap(bang, dl['idutc'])
+        if s == None:
+            self.moi(bang, dl)
+            return None
+        if "refs" in dl:
+            s.refs = dl['refs']
+        if "data" in dl:
+            s.data = dl['data']
+        if 'status' in dl:
+            s.status = dl['status']
+        if 'inok' in dl:
+            s.inok = dl['inok']
+        s.idutc = int(dl['idutc'])
+        s.lastupdate = int(arrow.utcnow().float_timestamp * 1000)
+        try:
+            self.orm.commit()
+        except IntegrityError as err:
+            try:
+                print(f"save1 err={err.orig.args[1]}")
+            except:
+                return None
