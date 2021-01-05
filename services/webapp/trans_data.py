@@ -12,9 +12,13 @@ db = engine.orm()
 class TaoJson():
     def __init__(self, schema='web'):
         self.schema = schema
-        self.chiphiquanly()
+        # self.chiphiquanly()
+        self.donvithicong()
 
     def khuvuc(self):
+        pass
+
+    def donvithicong(self):
         pass
 
     def chiphiquanly(self):
@@ -103,7 +107,7 @@ class DoiJson():
     def __init__(self, schema='web'):
         self.schema = schema
 
-    def nap_khachhang(self, uid):
+    def nap1_khachhang(self, uid):
         # load
         sql = (
             f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
@@ -120,15 +124,10 @@ class DoiJson():
         # chuyen dulieu
         dl = {}
         dl["idutc"] = r[0]["ngaylendot"]
-        dl["makhachhang"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
-
-        dl["status"] = "chuyen json"
-        dl["inok"] = 1
-        dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
         dl["refs"] = {
             "dot": {"id": r[0]['dotid'], "ma": r[0]['madot']},
             "qtgt": {"id": r[0]['qtid'], "ma": r[0]['maqt']},
-            "hoso": {"id": r[0]['hosoid'], "ma": dl["makhachhang"]}, }
+            "hoso": {"id": r[0]['hosoid']}, }
         dl["data"] = {}
         if r[0]["khachhang"]:
             dl["data"]["khachhang"] = (
@@ -139,25 +138,39 @@ class DoiJson():
             dl["data"]["diachi"] = dc
         if r[0]["lienhe"]:
             dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
+        dl["status"] = "chuyen json"
         print(f"dulieu sau chuyen doi khachhang={dl}")
         return dl
 
-    def khachhang(self):
-        uid = 124455
-        maxloop = 124540
-        try:
-            while True and uid < maxloop:
-                print(
-                    f"Chuyen hoso id={uid:06d} *****")
-                dulieu = self.nap_khachhang(uid)
-                if dulieu:
-                    self.crud_moi("khachhang", dulieu,
-                                  ma='makhachhang', ismoi=True)
-                uid += 1
-        except:
+    def nap1_dot(self, uid):
+        # load
+        sql = (
+            f"Select top 1 * From dbo.dot "
+            f"Where madot='{uid}' "
+            f"Order By nam,madot")
+        r = engine.runsql(sql)
+        if ((r == None) or (len(r) < 1)):
             return None
+        print(f"dulieu dot={r}")
+        # chuyen dulieu
+        dl = {}
+        dl["idutc"] = r[0]["ngaylendot"]
+        dl["refs"] = {
+            "dotid": r[0]['dotid'],
+            "madot": r[0]['madot'],
+            "namlv": r[0]['nam'],
+            "kho": r[0]['hop'],
+            "plqt": r[0]['plqt'],
+            "nhathauid": r[0]['nhathauid'],
+        }
+        dl["data"] = {
+            "ngaylendot": r[0]['ngaylendot'],
+        }
+        dl["status"] = r[0]['tinhtrang']
+        print(f"dulieu json dot={dl}")
+        return dl
 
-    def nap_hoso(self, uid):
+    def nap1_hoso(self, uid):
         # load
         sql = (
             f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
@@ -194,6 +207,45 @@ class DoiJson():
             dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
         print(f"dulieu sau chuyen doi khachhang={dl}")
         return dl
+
+    def khachhang(self):
+        uid = 124455
+        maxloop = 124540
+        try:
+            while True and uid < maxloop:
+                print(f"Chuyen hoso id={uid:06d} *****")
+                dl = self.nap1_khachhang(uid)
+                if dl != None:
+                    Rest("web").moi("khachhang", dl)
+                uid += 1
+        except:
+            return None
+
+    def dot(self):
+        uid = 124455
+        maxloop = 124540
+        try:
+            while True and uid < maxloop:
+                print(f"Chuyen dot id={uid:06d} *****")
+                dl = self.nap1_dot(uid)
+                if dl != None:
+                    Rest("web").moi("dot", dl)
+                uid += 1
+        except:
+            return None
+
+    def hoso(self):
+        uid = 124455
+        maxloop = 124540
+        try:
+            while True and uid < maxloop:
+                print(f"Chuyen hoso id={uid:06d} *****")
+                dl = self.nap1_hoso(uid)
+                if dl != None:
+                    Rest("web").moi("hoso", dl)
+                uid += 1
+        except:
+            return None
 
 
 def drop_tables(schema='web'):

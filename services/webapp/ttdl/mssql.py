@@ -21,6 +21,7 @@ Base = declarative_base()
 
 class Mau(object):
     __table_args__ = {"schema": "web"}
+
     idutc = Column(BigInteger, primary_key=True, autoincrement=False)
     _refs = Column(Unicode())
     _data = Column(Unicode())
@@ -68,8 +69,8 @@ class Mau(object):
         # remove includes
         for v in stim.copy():
             for v1 in stim.copy():
-                if (v in v1) and (v != v1) and (v in stim):
-                    stim.remove(v)
+                if (v1 in v) and (v1 != v) and (v1 in stim):
+                    stim.remove(v1)
         return stim
 
     @hybrid_property
@@ -105,8 +106,8 @@ class Mau(object):
                     new.add(v)
             for v in new.copy():
                 for v1 in new.copy():
-                    if (v in v1) and (v != v1) and (v in new):
-                        new.remove(v)
+                    if (v1 in v) and (v1 != v) and (v1 in new):
+                        new.remove(v1)
             new = ' '.join(new)
             if ('timkiem' not in data) or (data['timkiem'] != new):
                 data['timkiem'] = new
@@ -142,8 +143,8 @@ class Mau(object):
             new = new | old
             for v in new.copy():
                 for v1 in new.copy():
-                    if (v in v1) and (v != v1) and (v in new):
-                        new.remove(v)
+                    if (v1 in v) and (v1 != v) and (v1 in new):
+                        new.remove(v1)
             dl['timkiem'] = ' '.join(new)
             self._data = json.dumps(dl, ensure_ascii=False)
 
@@ -169,7 +170,7 @@ class Dot(Mau, Base):
 
 class Donvithicong(Mau, Base):
     __tablename__ = 'donvithicong'
-    #madvtc = Column(Unicode(50))
+    # madvtc = Column(Unicode(50))
     # data:= lienhe, masothue, ....
 
 
@@ -223,7 +224,7 @@ class Server():
                 dl = dict(row)
                 for k in dl.copy():
                     if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
-                        if k in ['lastupdate']:
+                        if k in ['lastupdate', 'ngaylendot']:
                             dl[k] = int(arrow.get(dl[k]).to(
                                 'utc').float_timestamp * 1000)
                         else:
@@ -312,6 +313,8 @@ class Rest():
             bang = bang.lower()
             if bang in ['chiphiquanly', 'cpql']:
                 self.bdl = ChiphiQuanly
+            elif bang in ['hoso', 'hosokhachhang']:
+                self.bdl = Hoso
             else:
                 self.bdl = None
         except:
@@ -323,8 +326,7 @@ class Rest():
             return None
         try:
             stim = f"{stim}".lower()
-            r = self.orm.query(self.bdl).filter(
-                (self.bdl._refs.like('%stim%')) | (self.bdl._data.like('%stim%'))).all()
+            r = self.orm.query(self.bdl).filter(self.bdl.data.timkiem.like('%stim%')).all()
             print(f"orm cpql r = {r}")
             return r
         except:
