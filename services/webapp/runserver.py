@@ -14,7 +14,7 @@ import tornado.websocket
 
 from ttdl.mssql import Server as svMssql
 from ttdl.postgresql import Server as svPostgre
-from ttdl.sqlite import Server as svSqlite
+#from ttdl.sqlite import Server as svSqlite
 
 from ttxl.reports import dutoan, qtgt, qtvt
 from ttxl.reports import bth_dot_qtgt

@@ -27,28 +27,87 @@ class Mau(object):
                         default=int(arrow.utcnow().float_timestamp * 1000),
                         onupdate=int(arrow.utcnow().float_timestamp * 1000))
 
+    def tracuu(self, dl):
+        stim = set()
+        dsbo = ['lastupdate', 'inok', 'scan', 'url', 'idutc']
+        dl = {"defa": dl}
+        while len(dl) > 0:
+            refs = {}
+            kk = 0
+            for k in dl:
+                if k not in dsbo:
+                    if dl[k] == None:
+                        pass
+                    elif isinstance(dl[k], (str, int, float)):
+                        stim.add(f"{dl[k]}")
+                    elif isinstance(dl[k], dict):
+                        for k1 in dl[k]:
+                            if k1 not in dsbo:
+                                if isinstance(dl[k][k1], (str, int, float)):
+                                    stim.add(f"{dl[k][k1]}")
+                                elif isinstance(dl[k][k1], (dict, list)):
+                                    refs[kk] = dl[k][k1].copy()
+                                    kk += 1
+                                else:
+                                    pass
+                    elif isinstance(dl[k], list):
+                        for v1 in dl[k]:
+                            if isinstance(v1, (str, int, float)):
+                                stim.add(f"{v1}")
+                            elif isinstance(v1, (dict, list)):
+                                refs[kk] = v1.copy()
+                                kk += 1
+                            else:
+                                pass
+                    else:
+                        pass
+            dl = refs.copy()
+        # remove includes
+        for v in stim.copy():
+            for v1 in stim.copy():
+                if (v in v1) and (v != v1) and (v in stim):
+                    stim.remove(v)
+        return stim
+
     @hybrid_property
     def refs(self):
         try:
             dl = json.loads(self._refs)
-            print(f"hydrid property refs")
-            return dl
         except:
-            return self._refs
+            dl = {}
+        return dl
 
     @refs.setter
     def refs(self, new):
-        print(f"refs setter new={new}")
         dl = {}
         try:
             dl = json.loads(self._refs)
         except:
             pass
         for k in new:
-            if (k in ['ghichu', 'notes']) or (new[k] and (f'new[k]' not in ['', '{}', '[]'])):
+            if (k in ['ghichu', 'notes']) or (new[k] != None and (f'new[k]' not in ['', '{}', '[]'])):
                 dl[k] = new[k]
         if len(dl) > 0:
             self._refs = json.dumps(dl, ensure_ascii=False)
+            # add stim
+            new = self.tracuu(dl)
+            data = {}
+            try:
+                data = json.loads(self._data)
+            except:
+                pass
+            if ('timkiem' in data) and (len(data['timkiem']) > 0):
+                old = data['timkiem'].split(' ')
+                for v in old:
+                    new.add(v)
+            for v in new.copy():
+                for v1 in new.copy():
+                    if (v in v1) and (v != v1) and (v in new):
+                        new.remove(v)
+            new = ' '.join(new)
+            if ('timkiem' not in data) or (data['timkiem'] != new):
+                data['timkiem'] = new
+                self._data = json.dumps(data, ensure_ascii=False)
 
     @hybrid_property
     def data(self):
@@ -66,10 +125,24 @@ class Mau(object):
         except:
             pass
         for k in new:
-            if (k in ['ghichu', 'notes']) or (new[k] and (f'new[k]' not in ['', '{}', '[]'])):
+            if (k in ['ghichu', 'notes']) or (new[k] != None and (f'new[k]' not in ['', '{}', '[]'])):
                 dl[k] = new[k]
         print("data setter new={new}")
         if len(dl) > 0:
+            # add stim
+            refs = {}
+            try:
+                refs = json.loads(self._refs)
+            except:
+                pass
+            new = self.tracuu(refs)
+            old = self.tracuu(dl)
+            new = new | old
+            for v in new.copy():
+                for v1 in new.copy():
+                    if (v in v1) and (v != v1) and (v in new):
+                        new.remove(v)
+            dl['timkiem'] = ' '.join(new)
             self._data = json.dumps(dl, ensure_ascii=False)
 
 
@@ -280,7 +353,7 @@ class TaoJson():
 
     def chiphiquanly(self):
         dl = {
-            "idutc": int(arrow.get("20200101").to('utc').float_timestamp * 1000),
+            "idutc": int(arrow.get("2019-09-18 12:33:43").to('utc').float_timestamp * 1000),
             "refs": {"macpql": 1},
             "data": {"vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055, "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053},
             "status": "Fin"

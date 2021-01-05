@@ -7,12 +7,10 @@ import json
 # from utils.thoigian import stodate, datetos
 from sqlalchemy import create_engine, ForeignKey, inspect
 from sqlalchemy import Column, Sequence, func, desc
-from sqlalchemy import BigInteger, Unicode, JSON, Boolean,  DECIMAL,  VARBINARY,  Date, DateTime
-from sqlalchemy import insert
-from sqlalchemy.exc import SQLAlchemyError, IntegrityError
+from sqlalchemy import BigInteger, Unicode, Boolean
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property
-from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
 
 from sqlalchemy_json import mutable_json_type
@@ -26,15 +24,53 @@ class Mau(object):
     idutc = Column(BigInteger, primary_key=True, autoincrement=False)
     _refs = Column(Unicode())
     _data = Column(Unicode())
-    #refs = Column(MutableDict.as_mutable(Unicode()))
-    #data = Column(MutableDict.as_mutable(Unicode()))
-    # refs = Column(mutable_json_type(dbtype=JSON, nested=True))
-    # data = Column(mutable_json_type(dbtype=JSON, nested=True))
     status = Column(Unicode(50))
     inok = Column(Boolean, default=False)
     lastupdate = Column(BigInteger,
                         default=int(arrow.utcnow().float_timestamp * 1000),
                         onupdate=int(arrow.utcnow().float_timestamp * 1000))
+
+    def tracuu(self, dl):
+        stim = set()
+        dsbo = ['lastupdate', 'inok', 'scan', 'url', 'idutc']
+        dl = {"defa": dl}
+        while len(dl) > 0:
+            refs = {}
+            kk = 0
+            for k in dl:
+                if k not in dsbo:
+                    if dl[k] == None:
+                        pass
+                    elif isinstance(dl[k], (str, int, float)):
+                        stim.add(f"{dl[k]}")
+                    elif isinstance(dl[k], dict):
+                        for k1 in dl[k]:
+                            if k1 not in dsbo:
+                                if isinstance(dl[k][k1], (str, int, float)):
+                                    stim.add(f"{dl[k][k1]}")
+                                elif isinstance(dl[k][k1], (dict, list)):
+                                    refs[kk] = dl[k][k1].copy()
+                                    kk += 1
+                                else:
+                                    pass
+                    elif isinstance(dl[k], list):
+                        for v1 in dl[k]:
+                            if isinstance(v1, (str, int, float)):
+                                stim.add(f"{v1}")
+                            elif isinstance(v1, (dict, list)):
+                                refs[kk] = v1.copy()
+                                kk += 1
+                            else:
+                                pass
+                    else:
+                        pass
+            dl = refs.copy()
+        # remove includes
+        for v in stim.copy():
+            for v1 in stim.copy():
+                if (v in v1) and (v != v1) and (v in stim):
+                    stim.remove(v)
+        return stim
 
     @hybrid_property
     def refs(self):
@@ -46,11 +82,35 @@ class Mau(object):
 
     @refs.setter
     def refs(self, new):
-        dl = self.refs()
+        dl = {}
+        try:
+            dl = json.loads(self._refs)
+        except:
+            pass
         for k in new:
-            if len(new[k]) > 0:
+            if (k in ['ghichu', 'notes']) or (new[k] != None and (f'new[k]' not in ['', '{}', '[]'])):
                 dl[k] = new[k]
-        self._refs = json.dumps(dl, ensure_ascii=False)
+        if len(dl) > 0:
+            self._refs = json.dumps(dl, ensure_ascii=False)
+            # add stim
+            new = self.tracuu(dl)
+            data = {}
+            try:
+                data = json.loads(self._data)
+            except:
+                pass
+            if ('timkiem' in data) and (len(data['timkiem']) > 0):
+                old = data['timkiem'].split(' ')
+                for v in old:
+                    new.add(v)
+            for v in new.copy():
+                for v1 in new.copy():
+                    if (v in v1) and (v != v1) and (v in new):
+                        new.remove(v)
+            new = ' '.join(new)
+            if ('timkiem' not in data) or (data['timkiem'] != new):
+                data['timkiem'] = new
+                self._data = json.dumps(data, ensure_ascii=False)
 
     @hybrid_property
     def data(self):
@@ -62,42 +122,54 @@ class Mau(object):
 
     @data.setter
     def data(self, new):
-        dl = self.data()
+        dl = {}
+        try:
+            dl = json.loads(self._data)
+        except:
+            pass
         for k in new:
-            if (len(new[k]) > 0) or (k in ['ghichu', 'notes']):
+            if (k in ['ghichu', 'notes']) or (new[k] != None and (f'new[k]' not in ['', '{}', '[]'])):
                 dl[k] = new[k]
-        self._data = json.dumps(dl, ensure_ascii=False)
+        if len(dl) > 0:
+            # add stim
+            refs = {}
+            try:
+                refs = json.loads(self._refs)
+            except:
+                pass
+            new = self.tracuu(refs)
+            old = self.tracuu(dl)
+            new = new | old
+            for v in new.copy():
+                for v1 in new.copy():
+                    if (v in v1) and (v != v1) and (v in new):
+                        new.remove(v)
+            dl['timkiem'] = ' '.join(new)
+            self._data = json.dumps(dl, ensure_ascii=False)
 
 
 class Khachhang(Mau, Base):
     __tablename__ = 'khachhang'
-    makhachhang = Column(Unicode(50))  # yyyy.kh.xxxxxx xx:stt
-    # lkn1_hoso_khachhang = relationship(
-    #    "Hoso", back_populates="lk1n_khachhang_hoso")
 
 
 class Hoso(Mau, Base):
     __tablename__ = 'hoso'
-    mahoso = Column(Unicode(50))  # yyyy.hs.xxxxxx
-    # lk1n_khachhang_hoso = relationship(
-    #    "Khachhang", back_populates="lkn1_hoso_khachhang")
 
 
 class Khuvuc(Mau, Base):
     __tablename__ = 'khuvuc'
-    makhuvuc = Column(Unicode(50))  # yyyy.hs.xxxxxx
 
 
 class Dot(Mau, Base):
     __tablename__ = 'dot'
-    madot = Column(Unicode(50))  # yyyy.gmmp.xxx xxx:stt
+    # madot = Column(Unicode(50))  # yyyy.gmmp.xxx xxx:stt
     # refs:= dvtc.idutc, madvtc, qtvt.idutc, maqtvt
     # data:= qtgt:tonghoso:, tongqt, tongtrongai,...,nguoilap, ngaylap,ghichu; qtvt:sophieunhap,
 
 
 class Donvithicong(Mau, Base):
     __tablename__ = 'donvithicong'
-    madvtc = Column(Unicode(50))
+    #madvtc = Column(Unicode(50))
     # data:= lienhe, masothue, ....
 
 
@@ -222,3 +294,151 @@ def runsql(sql=''):
             return {"code": err.orig.args[0], "err": err.orig.args[1]}
         else:
             return None
+
+
+class Rest():
+    def __init__(self, schema='web'):
+        self.schema = schema.lower()
+        self.bdl = None
+        self.server()
+
+    def server(self):
+        engine = Server("pkh", "Ph0ngK3H0@ch",
+                        "192.168.24.4:1433", "PKHData")
+        self.orm = engine.orm()
+
+    def thongtin(self, bang):
+        try:
+            bang = bang.lower()
+            if bang in ['chiphiquanly', 'cpql']:
+                self.bdl = ChiphiQuanly
+            else:
+                self.bdl = None
+        except:
+            pass
+
+    def gom(self, bang, stim):
+        self.thongtin(bang)
+        if self.bdl == None:
+            return None
+        try:
+            stim = f"{stim}".lower()
+            r = self.orm.query(self.bdl).filter(
+                (self.bdl._refs.like('%stim%')) | (self.bdl._data.like('%stim%'))).all()
+            print(f"orm cpql r = {r}")
+            return r
+        except:
+            return None
+
+    def nap(self, bang, idutc=0):
+        self.thongtin(bang)
+        # try:
+        idutc = int(idutc)
+        r = self.orm.query(self.bdl).filter(
+            self.bdl.idutc == idutc).first()
+        print(f"orm nap r = {vars(r)}")
+        return r
+        # except:
+        #    return None
+
+    def moi(self, bang, dl):
+        self.thongtin(bang)
+        if (self.bdl == None) or ('idutc' not in dl):
+            return None
+        if dl and ('refs' not in dl) and ('data' not in dl):
+            return None
+        s = self.bdl()
+        if "refs" in dl:
+            s.refs = dl['refs']
+        if "data" in dl:
+            s.data = dl['data']
+        if 'status' in dl:
+            s.status = dl['status']
+        if 'inok' in dl:
+            s.inok = dl['inok']
+        while True:
+            s.idutc = int(dl['idutc'])
+            s.lastupdate = int(arrow.utcnow().float_timestamp * 1000)
+            try:
+                print(f'orm moi refs={s.refs} _refs={s._refs}')
+                print(f'orm moi data={s.data} _data={s._data}')
+                self.orm.add(s)
+                self.orm.commit()
+                break
+            except IntegrityError as err:
+                try:
+                    info = f"{err}"
+                    if ('UNIQUE' in info) or ('PRIMARY' in info):
+                        # duplicate Primary key
+                        self.orm.rollback()
+                        dl['idutc'] += 1
+                except:
+                    break
+
+    def read(self, bang, idutc):
+        self.nap(bang, idutc)
+
+    def save1(self, bang='', dl={}):
+        self.thongtin(bang)
+        if self.bdl == None:
+            return None
+        if dl and (('refs' in dl) or ('data' in dl)):
+            for k in dl.copy():
+                if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data']:
+                    del dl[k]
+        else:
+            return None
+        # check dl
+        if 'data' in dl:
+            if isinstance(dl['data'], str):
+                dl['data'] = json.loads(dl['data'])
+            try:
+                for k in dl['data'].copy():
+                    if (dl['data'][k] == None) or (len(dl['data'][k]) < 1):
+                        if k.lower() not in ['ghichu', 'notes']:
+                            del dl['data'][k]
+                    for k1 in k:
+                        if (dl['data'][k][k1] == None) or (len(dl['data'][k][k1]) < 1):
+                            if k1.lower() not in ['ghichu', 'notes']:
+                                del dl['data'][k][k1]
+            except:
+                pass
+        if 'refs' in dl:
+            if isinstance(dl['refs'], str):
+                dl["refs"] = json.loads(dl["refs"])
+            try:
+                for k in dl['refs'].copy():
+                    if (dl['refs'][k] == None) or (len(dl['refs'][k]) < 1):
+                        del dl['refs'][k]
+                    else:
+                        for k1 in k:
+                            if (dl['refs'][k][k1] == None) or (len(dl['refs'][k][k1]) < 1):
+                                del dl['refs'][k][k1]
+            except:
+                pass
+        if "idutc" not in dl:
+            dl['idutc'] = int(arrow.utcnow().float_timestamp * 1000)
+            self.moi(bang, dl)
+            return None
+        s = self.nap(bang, dl['idutc'])
+        if s == None:
+            self.moi(bang, dl)
+            return None
+        if "refs" in dl:
+            s.refs = dl['refs']
+        if "data" in dl:
+            s.data = dl['data']
+        if 'status' in dl:
+            s.status = dl['status']
+        if 'inok' in dl:
+            s.inok = dl['inok']
+        s.idutc = int(dl['idutc'])
+        s.lastupdate = int(arrow.utcnow().float_timestamp * 1000)
+        try:
+            self.orm.commit()
+        except IntegrityError as err:
+            try:
+                self.orm.rollback()
+                print(f"save1 err={err.orig.args[1]}")
+            except:
+                return None
