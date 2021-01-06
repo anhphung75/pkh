@@ -108,7 +108,6 @@ class DoiJson():
         self.schema = schema
 
     def nap1_khachhang(self, uid):
-        # load
         sql = (
             f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
             f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
@@ -118,28 +117,39 @@ class DoiJson():
             f" Order By hoso.hosoid,dot.ngaylendot"
         )
         r = engine.runsql(sql)
-        if ((r == None) or (len(r) < 1)):
+        if ((r is None) or (not r)):
             return None
-        print(f"dulieu khachhang={r}")
+        print(f"dulieu r={r}")
+        r = r[0]
+        for k in r:
+            if r[k] is None:
+                r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = r[0]["ngaylendot"]
+        dl["idutc"] = r["ngaylendot"]
         dl["refs"] = {
-            "dot": {"id": r[0]['dotid'], "ma": r[0]['madot']},
-            "qtgt": {"id": r[0]['qtid'], "ma": r[0]['maqt']},
-            "hoso": {"id": r[0]['hosoid']}, }
+            "dot": {"id": r['dotid'], "ma": r['madot']},
+            "qtgt": {"id": r['qtid'], "ma": r['maqt']},
+            "hoso": {"id": r['hosoid']}, }
         dl["data"] = {}
-        if r[0]["khachhang"]:
+        if r["khachhang"]:
             dl["data"]["khachhang"] = (
-                ' '.join(r[0]["khachhang"].split())).upper()
-        if r[0]["diachi"]:
-            dc = r[0]["diachi"].replace("- ", ", ")
+                ' '.join(r["khachhang"].split())).upper()
+        if r["diachi"]:
+            dc = r["diachi"].replace("- ", ", ")
             dc = ' '.join(dc.split())
             dl["data"]["diachi"] = dc
-        if r[0]["lienhe"]:
-            dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
+        if r["lienhe"]:
+            dl["data"]["lienhe"] = ' '.join(r["lienhe"].split())
         dl["status"] = "chuyen json"
-        print(f"dulieu sau chuyen doi khachhang={dl}")
+        # xoa rong
+        for k in dl['refs'].copy():
+            if (not dl['refs'][k]) and (dl['refs'][k] != 0):
+                del dl['refs'][k]
+        for k in dl['data'].copy():
+            if (not dl['data'][k]) and (dl['data'][k] != 0):
+                del dl['data'][k]
+        print(f"dulieu json={dl}")
         return dl
 
     def nap1_dot(self, uid):
@@ -147,31 +157,51 @@ class DoiJson():
         sql = (
             f"Select top 1 * From dbo.dot "
             f"Where madot='{uid}' "
-            f"Order By nam,madot")
+            f"Order By madot")
         r = engine.runsql(sql)
-        if ((r == None) or (len(r) < 1)):
+        if ((r is None) or (not r)):
             return None
-        print(f"dulieu dot={r}")
+        #print(f"dulieu r={r}")
+        r = r[0]
+        for k in r:
+            if r[k] is None:
+                r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = r[0]["ngaylendot"]
+        dl["idutc"] = r["ngaylendot"]
         dl["refs"] = {
-            "dotid": r[0]['dotid'],
-            "madot": r[0]['madot'],
-            "namlv": r[0]['nam'],
-            "kho": r[0]['hop'],
-            "plqt": r[0]['plqt'],
-            "nhathauid": r[0]['nhathauid'],
+            "dotid": r['dotid'],
+            "madot": r['madot'],
+            "namlv": r['nam'],
+            "kho": r['hop'],
+            "plqt": r['plqt'],
+            "nhathauid": r['nhathauid'],
         }
         dl["data"] = {
-            "ngaylendot": r[0]['ngaylendot'],
-        }
-        dl["status"] = r[0]['tinhtrang']
-        print(f"dulieu json dot={dl}")
+            "sodot": r['sodot'],
+            "ngaylendot": r['ngaylendot'],
+            "khuvuc": r['khuvuc'],
+            "ngayhoancong": r['ngaydshc'],
+            "ngaythicong": r['ngaythicong'],
+            "tonghoso": r['tonghs'],
+            "qtgt_tong": r['qt_tong'],
+            "qtgt_ok": r['qt_ok'],
+            "qtgt_tn": r['qt_tn'],
+            "qtgt_thieu": r['qt_thieu'],
+            "ngaylap": r['ngaylap'],
+            "nguoilap": r['nguoilap']}
+        dl["status"] = r['tinhtrang']
+        # xoa rong
+        for k in dl['refs'].copy():
+            if (not dl['refs'][k]) and (dl['refs'][k] != 0):
+                del dl['refs'][k]
+        for k in dl['data'].copy():
+            if (not dl['data'][k]) and (dl['data'][k] != 0):
+                del dl['data'][k]
+        #print(f"dulieu json={dl}")
         return dl
 
     def nap1_hoso(self, uid):
-        # load
         sql = (
             f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
             f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
@@ -181,31 +211,39 @@ class DoiJson():
             f" Order By hoso.hosoid,dot.ngaylendot"
         )
         r = engine.runsql(sql)
-        if ((r == None) or (len(r) < 1)):
+        if ((r is None) or (not r)):
             return None
-        print(f"dulieu hoso={r}")
+        print(f"dulieu r={r}")
+        r = r[0]
+        for k in r:
+            if r[k] is None:
+                r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = r[0]["ngaylendot"]
-        #dl["mahoso"] = f"{r[0]['madot']}.{r[0]['hosoid']}"
-        dl["status"] = "chuyen json"
-        #dl["inok"] = 1
-        dl["lastupdate"] = int(arrow.utcnow().float_timestamp * 1000)
+        dl["idutc"] = r["ngaylendot"]
         dl["refs"] = {
-            "dot": {"id": r[0]['dotid'], "ma": r[0]['madot']},
-            "qtgt": {"id": r[0]['qtid'], "ma": r[0]['maqt']},
-            "hoso": {"id": r[0]['hosoid'], "ma": dl["makhachhang"]}, }
+            "dot": {"id": r['dotid'], "ma": r['madot']},
+            "qtgt": {"id": r['qtid'], "ma": r['maqt']},
+            "hoso": {"id": r['hosoid']}, }
         dl["data"] = {}
-        if r[0]["khachhang"]:
+        if r["khachhang"]:
             dl["data"]["khachhang"] = (
-                ' '.join(r[0]["khachhang"].split())).upper()
-        if r[0]["diachi"]:
-            dc = r[0]["diachi"].replace("- ", ", ")
+                ' '.join(r["khachhang"].split())).upper()
+        if r["diachi"]:
+            dc = r["diachi"].replace("- ", ", ")
             dc = ' '.join(dc.split())
             dl["data"]["diachi"] = dc
-        if r[0]["lienhe"]:
-            dl["data"]["lienhe"] = ' '.join(r[0]["lienhe"].split())
-        print(f"dulieu sau chuyen doi khachhang={dl}")
+        if r["lienhe"]:
+            dl["data"]["lienhe"] = ' '.join(r["lienhe"].split())
+        dl["status"] = "chuyen json"
+        # xoa rong
+        for k in dl['refs'].copy():
+            if (not dl['refs'][k]) and (dl['refs'][k] != 0):
+                del dl['refs'][k]
+        for k in dl['data'].copy():
+            if (not dl['data'][k]) and (dl['data'][k] != 0):
+                del dl['data'][k]
+        print(f"dulieu json={dl}")
         return dl
 
     def khachhang(self):
@@ -221,18 +259,19 @@ class DoiJson():
         except:
             return None
 
-    def dot(self):
-        uid = 124455
-        maxloop = 124540
-        try:
-            while True and uid < maxloop:
-                print(f"Chuyen dot id={uid:06d} *****")
-                dl = self.nap1_dot(uid)
-                if dl != None:
-                    Rest("web").moi("dot", dl)
-                uid += 1
-        except:
+    def dot(self, nam):
+        sql = (
+            f"Select madot From dbo.dot "
+            f"Where madot like '{nam}%' "
+            f"Order By madot")
+        r = engine.runsql(sql)
+        if ((r is None) or (not r)):
             return None
+        #print(f"dulieu dot={r}")
+        for rec in r:
+            dl = self.nap1_dot(rec['madot'])
+            if dl is not None:
+                Rest("web").moi("dot", dl)
 
     def hoso(self):
         uid = 124455
@@ -261,4 +300,4 @@ def drop_tables(schema='web'):
 
 
 # drop_tables()
-TaoJson("web")
+DoiJson("web").dot(2010)

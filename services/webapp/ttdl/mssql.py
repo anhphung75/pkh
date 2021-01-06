@@ -19,6 +19,85 @@ from sqlalchemy_json import mutable_json_type
 Base = declarative_base()
 
 
+def xoakeys(dl, xoa):
+    if f"{dl}" in ['None', '', '{}', '[]']:
+        return dl
+    if f"{xoa}" in ['None', '', '{}', '[]']:
+        return dl
+    if not isinstance(xoa, list):
+        xoa = [xoa]
+    # xoa key
+    for k in dl.copy():
+        if (k in xoa) or (f"{k}" in xoa):
+            del dl[k]
+        elif isinstance(dl[k], dict):
+            dl[k] = xoakeys(dl[k], xoa)
+        else:
+            pass
+    return dl
+
+
+def xoarong(dl):
+    if f"{dl}" in ['None', '', '{}', '[]']:
+        return None
+    if isinstance(dl, dict):
+        for k in dl.copy():
+            if f"{dl[k]}" in ['None', '', '{}', '[]']:
+                del dl[k]
+            elif isinstance(dl[k], (dict, list)):
+                dl[k] = xoarong(dl[k])
+            else:
+                pass
+    elif isinstance(dl, list):
+        for v in dl.copy():
+            if f"{v}" in ['None', '', '{}', '[]']:
+                dl.remove(v)
+            elif isinstance(v, (dict, list)):
+                v = xoarong(v)
+            else:
+                pass
+    else:
+        pass
+    return dl
+
+
+def svals(dl):
+    if f"{dl}" in ['None', '', '{}', '[]']:
+        return None
+    stim = set()
+    dsbo = ['lastupdate', 'inok', 'scan', 'url', 'idutc']
+    if isinstance(dl, (str, int, float)):
+        stim.add(f"{dl}")
+    elif isinstance(dl, dict):
+        for k in dl:
+            if (k not in dsbo) and isinstance(dl[k], (str, int, float)) and (f"{dl[k]}" not in ['None', '', '{}', '[]']):
+                stim.add(f"{dl[k]}")
+            elif isinstance(dl[k], (dict, list)):
+                s = svals(dl[k])
+                if s is not None:
+                    stim = stim | s
+            else:
+                pass
+    elif isinstance(dl, list):
+        for v in dl:
+            if isinstance(v, (str, int, float)) and (f"{v}" not in ['None', '', '{}', '[]']):
+                stim.add(f"{v}")
+            elif isinstance(v, (dict, list)):
+                s = svals(v)
+                if s is not None:
+                    stim = stim | s
+            else:
+                pass
+    else:
+        pass
+    # remove includes
+    for v in stim.copy():
+        for v1 in stim.copy():
+            if (v1 in v) and (v1 != v) and (v1 in stim):
+                stim.remove(v1)
+    return stim
+
+
 class Mau(object):
     __table_args__ = {"schema": "web"}
 
@@ -31,48 +110,6 @@ class Mau(object):
                         default=int(arrow.utcnow().float_timestamp * 1000),
                         onupdate=int(arrow.utcnow().float_timestamp * 1000))
 
-    def tracuu(self, dl):
-        stim = set()
-        dsbo = ['lastupdate', 'inok', 'scan', 'url', 'idutc']
-        dl = {"defa": dl}
-        while len(dl) > 0:
-            refs = {}
-            kk = 0
-            for k in dl:
-                if k not in dsbo:
-                    if dl[k] == None:
-                        pass
-                    elif isinstance(dl[k], (str, int, float)):
-                        stim.add(f"{dl[k]}")
-                    elif isinstance(dl[k], dict):
-                        for k1 in dl[k]:
-                            if k1 not in dsbo:
-                                if isinstance(dl[k][k1], (str, int, float)):
-                                    stim.add(f"{dl[k][k1]}")
-                                elif isinstance(dl[k][k1], (dict, list)):
-                                    refs[kk] = dl[k][k1].copy()
-                                    kk += 1
-                                else:
-                                    pass
-                    elif isinstance(dl[k], list):
-                        for v1 in dl[k]:
-                            if isinstance(v1, (str, int, float)):
-                                stim.add(f"{v1}")
-                            elif isinstance(v1, (dict, list)):
-                                refs[kk] = v1.copy()
-                                kk += 1
-                            else:
-                                pass
-                    else:
-                        pass
-            dl = refs.copy()
-        # remove includes
-        for v in stim.copy():
-            for v1 in stim.copy():
-                if (v1 in v) and (v1 != v) and (v1 in stim):
-                    stim.remove(v1)
-        return stim
-
     @hybrid_property
     def refs(self):
         try:
@@ -83,18 +120,31 @@ class Mau(object):
 
     @refs.setter
     def refs(self, new):
+        try:
+            if 'fin' in self.status.lower():
+                return None
+        except:
+            pass
         dl = {}
         try:
             dl = json.loads(self._refs)
         except:
             pass
         for k in new:
-            if (k in ['ghichu', 'notes']) or (new[k] != None and (f'new[k]' not in ['', '{}', '[]'])):
-                dl[k] = new[k]
+            if f'new[k]' not in ['None', '', '{}', '[]']:
+                if k in ['del', 'xoa', 'delkeys', 'xoakeys']:
+                    dl = xoakeys(dl, new[k])
+                else:
+                    dl[k] = new[k]
+            elif k in ['ghichu', 'notes']:
+                del dl[k]
+            else:
+                pass
+        dl = xoarong(dl)
         if len(dl) > 0:
             self._refs = json.dumps(dl, ensure_ascii=False)
             # add stim
-            new = self.tracuu(dl)
+            new = svals(dl)
             data = {}
             try:
                 data = json.loads(self._data)
@@ -111,6 +161,7 @@ class Mau(object):
             new = ' '.join(new)
             if ('timkiem' not in data) or (data['timkiem'] != new):
                 data['timkiem'] = new
+                data = xoarong(data)
                 self._data = json.dumps(data, ensure_ascii=False)
 
     @hybrid_property
@@ -123,14 +174,26 @@ class Mau(object):
 
     @data.setter
     def data(self, new):
+        try:
+            if 'fin' in self.status.lower():
+                return None
+        except:
+            pass
         dl = {}
         try:
             dl = json.loads(self._data)
         except:
             pass
         for k in new:
-            if (k in ['ghichu', 'notes']) or (new[k] != None and (f'new[k]' not in ['', '{}', '[]'])):
-                dl[k] = new[k]
+            if f'new[k]' not in ['None', '', '{}', '[]']:
+                if k in ['del', 'xoa', 'delkeys', 'xoakeys']:
+                    dl = xoakeys(dl, new[k])
+                else:
+                    dl[k] = new[k]
+            elif k in ['ghichu', 'notes']:
+                del dl[k]
+            else:
+                pass
         if len(dl) > 0:
             # add stim
             refs = {}
@@ -138,27 +201,32 @@ class Mau(object):
                 refs = json.loads(self._refs)
             except:
                 pass
-            new = self.tracuu(refs)
-            old = self.tracuu(dl)
+            new = svals(refs)
+            old = svals(dl)
             new = new | old
             for v in new.copy():
                 for v1 in new.copy():
                     if (v1 in v) and (v1 != v) and (v1 in new):
                         new.remove(v1)
             dl['timkiem'] = ' '.join(new)
+            dl = xoarong(dl)
             self._data = json.dumps(dl, ensure_ascii=False)
-
-
-class Khachhang(Mau, Base):
-    __tablename__ = 'khachhang'
 
 
 class Hoso(Mau, Base):
     __tablename__ = 'hoso'
 
 
+class Khachhang(Mau, Base):
+    __tablename__ = 'khachhang'
+
+
 class Khuvuc(Mau, Base):
     __tablename__ = 'khuvuc'
+
+
+class Donvithicong(Mau, Base):
+    __tablename__ = 'donvithicong'
 
 
 class Dot(Mau, Base):
@@ -168,14 +236,40 @@ class Dot(Mau, Base):
     # data:= qtgt:tonghoso:, tongqt, tongtrongai,...,nguoilap, ngaylap,ghichu; qtvt:sophieunhap,
 
 
-class Donvithicong(Mau, Base):
-    __tablename__ = 'donvithicong'
-    # madvtc = Column(Unicode(50))
-    # data:= lienhe, masothue, ....
+class Chiphi(Mau, Base):
+    __tablename__ = 'chiphi'
 
 
 class ChiphiQuanly(Mau, Base):
     __tablename__ = 'chiphiquanly'
+
+
+class Qtvt(Mau, Base):
+    __tablename__ = 'qtvt'
+
+
+class Qtvt_cpvt(Mau, Base):
+    __tablename__ = 'qtvt_cpvt'
+
+
+class Qtgt(Mau, Base):
+    __tablename__ = 'qtgt'
+
+
+class Qtgt_cpxd(Mau, Base):
+    __tablename__ = 'qtgt_cpxd'
+
+
+class Qtgt_cpvl(Mau, Base):
+    __tablename__ = 'qtgt_cpvl'
+
+
+class Qtgt_cpvt(Mau, Base):
+    __tablename__ = 'qtgt_cpvt'
+
+
+class Qtgt_cptl(Mau, Base):
+    __tablename__ = 'qtgt_cptl'
 
 
 class Bgvl(Mau, Base):
@@ -311,10 +405,42 @@ class Rest():
     def thongtin(self, bang):
         try:
             bang = bang.lower()
-            if bang in ['chiphiquanly', 'cpql']:
-                self.bdl = ChiphiQuanly
-            elif bang in ['hoso', 'hosokhachhang']:
+            if bang in ['hoso', 'hosokhachhang']:
                 self.bdl = Hoso
+            elif bang in ['khachhang']:
+                self.bdl = Khachhang
+            elif bang in ['khuvuc']:
+                self.bdl = Khuvuc
+            elif bang in ['donvithicong', 'dvtc', 'nhathau']:
+                self.bdl = Donvithicong
+            elif bang in ['dot']:
+                self.bdl = Dot
+            elif bang in ['chiphi']:
+                self.bdl = Chiphi
+            elif bang in ['chiphiquanly', 'cpql']:
+                self.bdl = ChiphiQuanly
+            elif bang in ['quyettoanvattu', 'qtvt']:
+                self.bdl = Qtvt
+            elif bang in ['qtvt_cpvt']:
+                self.bdl = Qtvt_cpvt
+            elif bang in ['quyettoangiatri', 'qtgt']:
+                self.bdl = Qtgt
+            elif bang in ['qtgt_cpxd']:
+                self.bdl = Qtgt_cpxd
+            elif bang in ['qtgt_cpvl']:
+                self.bdl = Qtgt_cpvl
+            elif bang in ['qtgt_cpvt']:
+                self.bdl = Qtgt_cpvt
+            elif bang in ['qtgt_cptl']:
+                self.bdl = Qtgt_cptl
+            elif bang in ['baogiavatlieu', 'bgvl']:
+                self.bdl = Bgvl
+            elif bang in ['baogianhancong', 'bgnc']:
+                self.bdl = Bgnc
+            elif bang in ['baogiamaythicong', 'bgmtc']:
+                self.bdl = Bgmtc
+            elif bang in ['baogiatailap', 'bgtl']:
+                self.bdl = Bgtl
             else:
                 self.bdl = None
         except:
@@ -326,7 +452,8 @@ class Rest():
             return None
         try:
             stim = f"{stim}".lower()
-            r = self.orm.query(self.bdl).filter(self.bdl.data.timkiem.like('%stim%')).all()
+            r = self.orm.query(self.bdl).filter(
+                self.bdl.data.timkiem.like('%stim%')).all()
             print(f"orm cpql r = {r}")
             return r
         except:
