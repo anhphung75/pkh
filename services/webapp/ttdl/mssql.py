@@ -10,16 +10,16 @@ from sqlalchemy import Column, Sequence, func, desc
 from sqlalchemy import BigInteger, Unicode, Boolean
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
 from sqlalchemy.orm import scoped_session, sessionmaker, relationship
-
-from sqlalchemy_json import mutable_json_type
 
 
 Base = declarative_base()
 
 
 def xoakeys(dl, xoa):
+    if not isinstance(dl, dict):
+        return dl
     if f"{dl}" in ['None', '', '{}', '[]']:
         return dl
     if f"{xoa}" in ['None', '', '{}', '[]']:
@@ -44,15 +44,15 @@ def xoarong(dl):
         for k in dl.copy():
             if f"{dl[k]}" in ['None', '', '{}', '[]']:
                 del dl[k]
-            elif isinstance(dl[k], (dict, list)):
+            elif isinstance(dl[k], (dict, list, set)):
                 dl[k] = xoarong(dl[k])
             else:
                 pass
-    elif isinstance(dl, list):
+    elif isinstance(dl, (list, set)):
         for v in dl.copy():
             if f"{v}" in ['None', '', '{}', '[]']:
                 dl.remove(v)
-            elif isinstance(v, (dict, list)):
+            elif isinstance(v, (dict, list, set)):
                 v = xoarong(v)
             else:
                 pass
@@ -72,17 +72,17 @@ def svals(dl):
         for k in dl:
             if (k not in dsbo) and isinstance(dl[k], (str, int, float)) and (f"{dl[k]}" not in ['None', '', '{}', '[]']):
                 stim.add(f"{dl[k]}")
-            elif isinstance(dl[k], (dict, list)):
+            elif isinstance(dl[k], (dict, list, set, tuple)):
                 s = svals(dl[k])
                 if s is not None:
                     stim = stim | s
             else:
                 pass
-    elif isinstance(dl, list):
+    elif isinstance(dl, (list, set, tuple)):
         for v in dl:
             if isinstance(v, (str, int, float)) and (f"{v}" not in ['None', '', '{}', '[]']):
                 stim.add(f"{v}")
-            elif isinstance(v, (dict, list)):
+            elif isinstance(v, (dict, list, set, tuple)):
                 s = svals(v)
                 if s is not None:
                     stim = stim | s
@@ -98,6 +98,44 @@ def svals(dl):
     return stim
 
 
+def tim1(dl, stim=None):
+    print(f"tim1 stim={stim}, dl={vars(dl)} type(dl)={type(dl)}")
+    if f"{dl}" in ['None', '', '{}', '[]']:
+        return False
+    if isinstance(stim, (str, int, float)):
+        stim = f"{stim}".lower()
+        if stim in ['None', '', '{}', '[]']:
+            return True
+    else:
+        return False
+    if isinstance(dl, (str, int, float)):
+        if stim in f"{dl}".lower():
+            return True
+    elif isinstance(dl, dict):
+        for k in dl:
+            if isinstance(dl[k], (str, int, float)):
+                if stim in f"{dl[k]}".lower():
+                    return True
+            elif isinstance(dl[k], (dict, list, set, tuple)):
+                if tim1(dl[k], stim) == True:
+                    return True
+            else:
+                pass
+    elif isinstance(dl, (list, set, tuple)):
+        for v in dl:
+            if isinstance(v, (str, int, float)):
+                if stim in f"{v}".lower():
+                    return True
+            elif isinstance(v, (dict, list, set, tuple)):
+                if tim1(v, stim) == True:
+                    return True
+            else:
+                pass
+    else:
+        pass
+    return False
+
+
 class Mau(object):
     __table_args__ = {"schema": "web"}
 
@@ -110,10 +148,24 @@ class Mau(object):
                         default=int(arrow.utcnow().float_timestamp * 1000),
                         onupdate=int(arrow.utcnow().float_timestamp * 1000))
 
+    def __init__(self, idutc, _refs, _data, status):
+        self.idutc = idutc
+        self._refs = _refs
+        self._data = _data
+        self.status = status
+
     @hybrid_property
     def refs(self):
         try:
             dl = json.loads(self._refs)
+        except:
+            dl = {}
+        return dl
+
+    @refs.expression
+    def refs(cls):
+        try:
+            dl = json.loads(cls._refs)
         except:
             dl = {}
         return dl
@@ -172,6 +224,14 @@ class Mau(object):
             dl = {}
         return dl
 
+    @data.expression
+    def data(cls):
+        try:
+            dl = json.loads(cls._data)
+        except:
+            dl = {}
+        return dl
+
     @data.setter
     def data(self, new):
         try:
@@ -211,6 +271,55 @@ class Mau(object):
             dl['timkiem'] = ' '.join(new)
             dl = xoarong(dl)
             self._data = json.dumps(dl, ensure_ascii=False)
+
+    @hybrid_method
+    def timkiem(self, ltim=None):
+        if isinstance(ltim, (str, int, float)):
+            _tim = f"{ltim}"
+
+            print(f"self.idutc={self.idutc}")
+
+            print(f"self.refs={self.refs}")
+
+            print(f"self.data={self.data}")
+            ok = tim1(self.idutc, _tim)
+            print(
+                f"_tim={_tim} tim1(self.idutc, _tim)={ok}")
+            if ok:
+                return True
+            ok = tim1(self.refs, _tim)
+            print(f"_tim={_tim} tim1(self.refs, _tim)={ok}")
+            if ok:
+                return True
+            ok = tim1(self.data, _tim)
+            print(f"_tim={_tim} tim1(self.data, _tim)={ok}")
+            if ok:
+                return True
+        elif isinstance(ltim, (list, set, tuple)):
+            for _tim in ltim:
+                ok = tim1(self.idutc, _tim)
+                if ok:
+                    return True
+                ok = tim1(self.refs, _tim)
+                if ok:
+                    return True
+                ok = tim1(self.data, _tim)
+                if ok:
+                    return True
+        elif isinstance(ltim, dict):
+            for _tim in ltim.values():
+                ok = tim1(self.idutc, _tim)
+                if ok:
+                    return True
+                ok = tim1(self.refs, _tim)
+                if ok:
+                    return True
+                ok = tim1(self.data, _tim)
+                if ok:
+                    return True
+        else:
+            pass
+        return False
 
 
 class Hoso(Mau, Base):
@@ -318,7 +427,7 @@ class Server():
                 dl = dict(row)
                 for k in dl.copy():
                     if type(dl[k]) in [datetime, datetime.date, datetime.datetime, datetime.time]:
-                        if k in ['lastupdate', 'ngaylendot']:
+                        if k in ['lastupdate']:
                             dl[k] = int(arrow.get(dl[k]).to(
                                 'utc').float_timestamp * 1000)
                         else:
@@ -450,22 +559,32 @@ class Rest():
         self.thongtin(bang)
         if self.bdl == None:
             return None
+        # try:
+        print(f"orm gom stim= {stim}")
+        r = self.orm.query(self.bdl).filter(self.bdl.data['timkiem'].like(stim)).first()
+        print(f"orm gom r = {r}")
+        return r
+        # except:
+        #    return None
+
+    def nap(self, bang, idutc=0):
+        self.thongtin(bang)
         try:
-            stim = f"{stim}".lower()
-            r = self.orm.query(self.bdl).filter(
-                self.bdl.data.timkiem.like('%stim%')).all()
-            print(f"orm cpql r = {r}")
+            idutc = int(idutc)
+            r = self.orm.query(self.bdl).get(idutc)
+            print(f"orm nap r = {vars(r)}")
+            print(f"orm nap type r = {type(r)}")
             return r
         except:
             return None
 
-    def nap(self, bang, idutc=0):
+    def nap_get(self, bang, idutc=0):
         self.thongtin(bang)
         # try:
-        idutc = int(idutc)
-        r = self.orm.query(self.bdl).filter(
-            self.bdl.idutc == idutc).first()
-        print(f"orm nap r = {vars(r)}")
+        # idutc = int(idutc)
+        r = self.orm.query(self.bdl).get(idutc)
+        print(f"orm nap_get r = {vars(r)}")
+        print(f"orm nap_get type r = {type(r)}")
         return r
         # except:
         #    return None

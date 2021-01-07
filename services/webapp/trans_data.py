@@ -126,7 +126,8 @@ class DoiJson():
                 r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = r["ngaylendot"]
+        dl["idutc"] = int(arrow.get(r["ngaylendot"]).to(
+            'utc').float_timestamp * 1000)
         dl["refs"] = {
             "dot": {"id": r['dotid'], "ma": r['madot']},
             "qtgt": {"id": r['qtid'], "ma": r['maqt']},
@@ -168,7 +169,8 @@ class DoiJson():
                 r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = r["ngaylendot"]
+        dl["idutc"] = int(arrow.get(r["ngaylendot"]).to(
+            'utc').float_timestamp * 1000)
         dl["refs"] = {
             "dotid": r['dotid'],
             "madot": r['madot'],
@@ -220,7 +222,8 @@ class DoiJson():
                 r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = r["ngaylendot"]
+        dl["idutc"] = int(arrow.get(r["ngaylendot"]).to(
+            'utc').float_timestamp * 1000)
         dl["refs"] = {
             "dot": {"id": r['dotid'], "ma": r['madot']},
             "qtgt": {"id": r['qtid'], "ma": r['maqt']},
@@ -300,4 +303,4 @@ def drop_tables(schema='web'):
 
 
 # drop_tables()
-DoiJson("web").dot(2010)
+Rest("web").gom('dot','2020')
