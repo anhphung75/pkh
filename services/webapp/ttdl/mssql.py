@@ -99,7 +99,10 @@ def svals(dl):
 
 
 def tim1(dl, stim=None):
-    print(f"tim1 stim={stim}, dl={vars(dl)} type(dl)={type(dl)}")
+    try:
+        print(f"tim1 stim={stim}, dl={vars(dl)} type(dl)={type(dl)}")
+    except:
+        print(f"tim1 stim={stim}, dl={dl} type(dl)={type(dl)}")
     if f"{dl}" in ['None', '', '{}', '[]']:
         return False
     if isinstance(stim, (str, int, float)):
@@ -561,7 +564,7 @@ class Rest():
             return None
         # try:
         print(f"orm gom stim= {stim}")
-        r = self.orm.query(self.bdl).filter(self.bdl.data['timkiem'].like(stim)).first()
+        r = self.orm.query(self.bdl).first()
         print(f"orm gom r = {r}")
         return r
         # except:

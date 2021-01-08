@@ -303,4 +303,5 @@ def drop_tables(schema='web'):
 
 
 # drop_tables()
-Rest("web").gom('dot','2020')
+kq= Rest("web").gom('dot','2020')
+print(f"kq.data={kq.data} type data={type(kq.data)} kq.timkiem('2020')={kq.timkiem('2020')}")
