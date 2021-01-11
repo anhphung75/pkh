@@ -1039,6 +1039,79 @@ var idb = {
       let url = (window.URL || window.webkitURL).createObjectURL(blob);
       return url;
     },
+    nap: () => {
+      let sw = `
+      self.onmessage = (ev) => {
+        let tin = ev.data;
+        try {
+          let cv = 1, db, cs, kq = {};
+          indexedDB.open(tin.csdl.ten, tin.csdl.cap).onsuccess = (e) => {
+            db = e.target.result;
+            db.transaction(tin.bang, 'readonly')
+              .objectStore(tin.bang)
+              .openCursor(IDBKeyRange.only(tin.idutc))
+              .onsuccess = (e) => {
+                cs = e.target.result;
+                if (cs) {
+                  kq = cs.value;
+                  self.postMessage({ cv: cv, kq: kq });
+                  cv++;
+                  cs.continue();
+                } else {
+                  self.postMessage({ cv: -1, kq: {} });
+                }
+              };
+          }
+        } catch (err) {
+          self.postMessage({ cv: cv, err: err });
+        };
+      }`;
+      let blob = new Blob([sw], { type: "text/javascript" });
+      let url = (window.URL || window.webkitURL).createObjectURL(blob);
+      return url;
+    },
+    gom: (nam) => {
+      let sw = `
+      self.onmessage = (ev) => {
+        let tin = ev.data;
+        try {
+          let cv = 1, db, cs, ce, kq = {};
+          if (nam) {
+            nam = pareseInt(nam);
+            cs = (nam - 1) + "-12-01";
+            cs = new Date(cs).getTime();
+            ce = nam + "-12-31";
+            ce = new Date(ce).getTime();
+          } else {
+            cs = 0;
+            ce = new Date().getFullYear().toString() + "-12-31";
+            ce = new Date(ce).getTime();
+          }
+          indexedDB.open(tin.csdl.ten, tin.csdl.cap).onsuccess = (e) => {
+            db = e.target.result;
+            db.transaction(tin.bang, 'readonly')
+              .objectStore(tin.bang)
+              .openCursor(IDBKeyRange.bound(cs, ce))
+              .onsuccess = (e) => {
+                cs = e.target.result;
+                if (cs) {
+                  kq = cs.value;
+                  self.postMessage({ cv: cv, kq: kq });
+                  cv++;
+                  cs.continue();
+                } else {
+                  self.postMessage({ cv: -1, kq: {} });
+                }
+              };
+          }
+        } catch (err) {
+          self.postMessage({ cv: cv, err: err });
+        };
+      }`;
+      let blob = new Blob([sw], { type: "text/javascript" });
+      let url = (window.URL || window.webkitURL).createObjectURL(blob);
+      return url;
+    },
   },
   lay_scan: () => {
     if (!ga.tttt) { return };
@@ -1054,6 +1127,199 @@ var idb = {
           bang: "dot",
           idutc: ma,
         };
+        ma = 'dot.' + ma;
+        ga.url.scan[ma] = [];
+        w[i] = new Worker(sw_url);
+        w[i].postMessage(gui);
+        w[i].onmessage = (e) => {
+          tra = e.data;
+          console.log("idb.lay_scan tra=", JSON.stringify(tra, null, 2));
+          if ("err" in tra) {
+            console.log("err=", tra.err);
+          }
+          if (tra.cv > 0) {
+            blob = new Blob([tra.kq], { type: "application/pdf" });
+            url = (window.URL || window.webkitURL).createObjectURL(blob);
+            ga.url.scan[ma].push(url);
+          } else {
+            w[i].terminate();
+            (window.URL || window.webkitURL).revokeObjectURL(sw_url);
+          };
+        }
+      }
+      if (['hoso.idutc', 'idhoso'].includes(k)) {
+        ma = ga.dulieu[ga.tttt][k];
+        gui = {
+          csdl: { ten: "pkh", cap: 1 },
+          lenh: "lay",
+          bang: "hoso",
+          dk: { "idutc": ma },
+        };
+        ma = 'hoso.' + ma;
+        ga.url.scan[ma] = [];
+        w[i] = new Worker(sw_url);
+        w[i].postMessage(gui);
+        w[i].onmessage = (e) => {
+          tra = e.data;
+          console.log("idb.lay_scan tra=", JSON.stringify(tra, null, 2));
+          if ("err" in tra) {
+            console.log("err=", tra.err);
+          }
+          if (tra.cv > 0) {
+            blob = new Blob([tra.kq], { type: "application/pdf" });
+            url = (window.URL || window.webkitURL).createObjectURL(blob);
+            ga.url.scan[ma].push(url);
+          } else {
+            w[i].terminate();
+            (window.URL || window.webkitURL).revokeObjectURL(sw_url);
+          };
+        }
+      }
+      i++;
+    }
+  },
+  lay_hoso: (nam = ga.namlamviec) => {
+    if (!ga.tttt) { return };
+    let gui, tra, tin, tttt, ii, ma, bang, k, i = 0, w = {};
+    let blob, sw_url = idb.sw.gom(nam);
+    ga.dulieu = {};
+    gui = {
+      csdl: { ten: "pkh", cap: 1 },
+      bang: "hoso",
+    };
+    w[0] = new Worker(sw_url);
+    w[0].postMessage(gui);
+    w[0].onmessage = (e) => {
+      tra = e.data;
+      console.log("idb.lay_hoso tra=", JSON.stringify(tra, null, 2));
+      if ("err" in tra) {
+        console.log("err=", tra.err);
+      }
+      if (tra.cv > 0) {
+        tttt = tra.kq.idutc;
+        if (tttt && tra.kq) {
+          tra = tra.kq;
+          ga.dulieu[tttt] = tra;
+          if ('dot' in tra) {
+            gui.bang = 'dot';
+            gui.idutc = tra.dot.idutc || tra.dot.refs.id;
+            ii = gui.bang + gui.idutc;
+            w[ii] = new Worker(idb.sw.nap());
+            w[ii].postMessage(gui);
+            w[ii].onmessage = (e) => {
+              tin = e.data;
+              console.log("idb.lay_hoso.dot tin=", JSON.stringify(tin, null, 2));
+              if ("err" in tin) {
+                console.log("err=", tin.err);
+              }
+              if ((tin.cv > 0) && tin.kq) {
+                tin = tin.kq;
+                bang = 'dot';
+                ma = bang + "_idutc";
+                ga.dulieu[tttt][ma] = tin.idutc;
+                ma = bang + "_status";
+                ga.dulieu[tttt][ma] = tin.status;
+                ma = bang + "_lastupdate"
+                ga.dulieu[tttt][ma] = tin.lastupdate;
+                for (k in tin.refs) {
+                  ma = bang + '_refs_' + k;
+                  ga.dulieu[tttt][ma] = tin.refs[k];
+                }
+                for (k in tin.data) {
+                  ma = bang + '_data_' + k;
+                  ga.dulieu[tttt][ma] = tin.data[k];
+                }
+              }
+              if (tin.cv < 0) {
+                w[ii].terminate();
+                delete w[ii];
+              };
+            }
+          }
+          if ('khachhang' in tra) {
+            gui.bang = 'khachhang';
+            gui.idutc = tra.khachhang.idutc || tra.khachhang.refs.id;
+            ii = gui.bang + gui.idutc;
+            w[ii] = new Worker(idb.sw.nap());
+            w[ii].postMessage(gui);
+            w[ii].onmessage = (e) => {
+              tin = e.data;
+              console.log("idb.lay_hoso.khachhang tin=", JSON.stringify(tin, null, 2));
+              if ("err" in tin) {
+                console.log("err=", tin.err);
+              }
+              if ((tin.cv > 0) && tin.kq) {
+                tin = tin.kq;
+                bang = 'khachhang';
+                ma = bang + "_idutc";
+                ga.dulieu[tttt][ma] = tin.idutc;
+                ma = bang + "_status";
+                ga.dulieu[tttt][ma] = tin.status;
+                ma = bang + "_lastupdate"
+                ga.dulieu[tttt][ma] = tin.lastupdate;
+                for (k in tin.refs) {
+                  ma = bang + '_refs_' + k;
+                  ga.dulieu[tttt][ma] = tin.refs[k];
+                }
+                for (k in tin.data) {
+                  ma = bang + '_data_' + k;
+                  ga.dulieu[tttt][ma] = tin.data[k];
+                }
+              }
+              if (tin.cv < 0) {
+                w[ii].terminate();
+                delete w[ii];
+              };
+            }
+          }
+          if ('donvithicong' in tra) {
+            gui.bang = 'donvithicong';
+            gui.idutc = tra.khachhang.idutc || tra.khachhang.refs.id;
+            ii = gui.bang + gui.idutc;
+            w[ii] = new Worker(idb.sw.nap());
+            w[ii].postMessage(gui);
+            w[ii].onmessage = (e) => {
+              tin = e.data;
+              console.log("idb.lay_hoso.donvithicong tin=", JSON.stringify(tin, null, 2));
+              if ("err" in tin) {
+                console.log("err=", tin.err);
+              }
+              if ((tin.cv > 0) && tin.kq) {
+                tin = tin.kq;
+                bang = 'donvithicong';
+                ma = bang + "_idutc";
+                ga.dulieu[tttt][ma] = tin.idutc;
+                ma = bang + "_status";
+                ga.dulieu[tttt][ma] = tin.status;
+                ma = bang + "_lastupdate"
+                ga.dulieu[tttt][ma] = tin.lastupdate;
+                for (k in tin.refs) {
+                  ma = bang + '_refs_' + k;
+                  ga.dulieu[tttt][ma] = tin.refs[k];
+                }
+                for (k in tin.data) {
+                  ma = bang + '_data_' + k;
+                  ga.dulieu[tttt][ma] = tin.data[k];
+                }
+              }
+              if (tin.cv < 0) {
+                w[ii].terminate();
+                delete w[ii];
+              };
+            }
+          }
+        }
+      }
+      if (tra.cv) {
+        w[0].terminate();
+        delete w[0];
+      };
+    }
+
+    for (k in ga.dulieu[ga.tttt]) {
+      if (['dot.idutc', 'iddot'].includes(k)) {
+        ma = ga.dulieu[ga.tttt][k];
+
         ma = 'dot.' + ma;
         ga.url.scan[ma] = [];
         w[i] = new Worker(sw_url);

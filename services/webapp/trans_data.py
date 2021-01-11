@@ -2,6 +2,7 @@ import arrow
 import json
 
 from ttdl.mssql import Server, Rest
+from ttdl.mssql import xoarong
 
 
 engine = Server("pkh", "Ph0ngK3H0@ch",
@@ -13,7 +14,7 @@ class TaoJson():
     def __init__(self, schema='web'):
         self.schema = schema
         # self.chiphiquanly()
-        self.donvithicong()
+        # self.donvithicong()
 
     def khuvuc(self):
         pass
@@ -162,7 +163,7 @@ class DoiJson():
         r = engine.runsql(sql)
         if ((r is None) or (not r)):
             return None
-        #print(f"dulieu r={r}")
+        # print(f"dulieu r={r}")
         r = r[0]
         for k in r:
             if r[k] is None:
@@ -200,7 +201,7 @@ class DoiJson():
         for k in dl['data'].copy():
             if (not dl['data'][k]) and (dl['data'][k] != 0):
                 del dl['data'][k]
-        #print(f"dulieu json={dl}")
+        # print(f"dulieu json={dl}")
         return dl
 
     def nap1_hoso(self, uid):
@@ -212,6 +213,7 @@ class DoiJson():
             f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
             f" Order By hoso.hosoid,dot.ngaylendot"
         )
+        print("nap1_hoso sql={sql}")
         r = engine.runsql(sql)
         if ((r is None) or (not r)):
             return None
@@ -240,12 +242,7 @@ class DoiJson():
             dl["data"]["lienhe"] = ' '.join(r["lienhe"].split())
         dl["status"] = "chuyen json"
         # xoa rong
-        for k in dl['refs'].copy():
-            if (not dl['refs'][k]) and (dl['refs'][k] != 0):
-                del dl['refs'][k]
-        for k in dl['data'].copy():
-            if (not dl['data'][k]) and (dl['data'][k] != 0):
-                del dl['data'][k]
+        dl = xoarong(dl)
         print(f"dulieu json={dl}")
         return dl
 
@@ -262,6 +259,62 @@ class DoiJson():
         except:
             return None
 
+    def nap1_chiphi(self, uid):
+        # load
+        sql = (
+            f"Select top 1 * From dbo.chiphi "
+            f"Where chiphiid='{uid}' "
+            f"Order By lastupdate,chiphiid")
+        r = engine.runsql(sql)
+        if ((r is None) or (not r)):
+            return None
+        # print(f"dulieu r={r}")
+        r = r[0]
+        for k in r:
+            if r[k] is None:
+                r[k] = ''
+        # chuyen dulieu
+        dl = {}
+        dl["idutc"] = int(arrow.get(r["lastupdate"]).to(
+            'utc').float_timestamp * 1000)
+        if 'CTLD' in r['mapl1']:
+            plcp = 'cpxd'
+        elif 'VTTC' in r['mapl1']:
+            plcp = 'cpvt'
+        elif 'VLXD' in r['mapl1']:
+            plcp = 'cpvl'
+        elif 'TLMD' in r['mapl1']:
+            plcp = 'tlmd'
+        else:
+            plcp = ''
+        dl["refs"] = {
+            "chiphiid": r['chiphiid'],
+            'maketoan': ''.join(f"{r['maso']}".split('.')),
+            "plcp": plcp,
+        }
+        nhanhieu = ''
+        if r['nhanhieu']:
+            nhanhieu = r['nhanhieu'].strip()
+        if r['tinhtrang']:
+            mota = ' '.join(
+                f"{r['diengiai']} {nhanhieu} ({r['tinhtrang'].strip()})".split())
+        else:
+            mota = ' '.join(
+                f"{r['diengiai']} {nhanhieu}".split())
+        dl["data"] = {
+            "mota_qtgt": mota,
+            "mota_qtvt": mota,
+            "dvt": r['dvt'],
+            "nhanhieu": r['nhanhieu'],
+            "tinhtrang": r['tinhtrang'],
+            "ghichu": r['ghichu'],
+        }
+        dl["status"] = 'chuyen json'
+        # xoa rong
+        dl = xoarong(dl)
+        # print(f"dulieu json={dl}")
+        return dl
+
     def dot(self, nam):
         sql = (
             f"Select madot From dbo.dot "
@@ -270,24 +323,41 @@ class DoiJson():
         r = engine.runsql(sql)
         if ((r is None) or (not r)):
             return None
-        #print(f"dulieu dot={r}")
+        # print(f"dulieu dot={r}")
         for rec in r:
             dl = self.nap1_dot(rec['madot'])
             if dl is not None:
                 Rest("web").moi("dot", dl)
 
-    def hoso(self):
-        uid = 124455
-        maxloop = 124540
-        try:
-            while True and uid < maxloop:
-                print(f"Chuyen hoso id={uid:06d} *****")
-                dl = self.nap1_hoso(uid)
-                if dl != None:
-                    Rest("web").moi("hoso", dl)
-                uid += 1
-        except:
+    def hoso(self, nam):
+        sql = (
+            f"Select hoso.hosoid"
+            f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
+            f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
+            f" Where dot.nam={nam} and datalength(dot.ngaylendot)>0"
+            f" Order By dot.ngaylendot,dot.madot,qt.maqt,hoso.hosoid"
+        )
+        r = engine.runsql(sql)
+        if ((r is None) or (not r)):
             return None
+        for rec in r:
+            dl = self.nap1_hoso(rec['hosoid'])
+            if dl is not None:
+                Rest("web").moi("hoso", dl)
+
+    def chiphi(self):
+        sql = (
+            f"Select chiphiid From dbo.chiphi "
+            f"Where chiphiid>0"
+            f"Order By lastupdate,chiphiid")
+        r = engine.runsql(sql)
+        if ((r is None) or (not r)):
+            return None
+        # print(f"dulieu dot={r}")
+        for rec in r:
+            dl = self.nap1_chiphi(rec['chiphiid'])
+            if dl is not None:
+                Rest("web").moi("chiphi", dl)
 
 
 def drop_tables(schema='web'):
@@ -303,5 +373,5 @@ def drop_tables(schema='web'):
 
 
 # drop_tables()
-kq= Rest("web").gom('dot','2020')
-print(f"kq.data={kq.data} type data={type(kq.data)} kq.timkiem('2020')={kq.timkiem('2020')}")
+# TaoJson("web").chiphiquanly()
+DoiJson("web").hoso(2020)
