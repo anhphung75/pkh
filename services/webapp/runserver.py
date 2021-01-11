@@ -114,12 +114,12 @@ class Wss_Hoso(tornado.websocket.WebSocketHandler):
     def on_message(self, message):
         print(f"message tu client={str(message)}")
         # check toa magiaotiep khach
-        utcid = int(arrow.utcnow().float_timestamp * 1000)
+        idutc = int(arrow.utcnow().float_timestamp * 1000)
         parsed = tornado.escape.json_decode(message)
         print(f"parsed={parsed}")
         chat = {
-            "utcid": utcid,
-            "ve": f"boss.{utcid}",
+            "idutc": idutc,
+            "ve": f"boss.{idutc}",
             "dulieu": parsed["dulieu"]
         }
 
@@ -146,13 +146,13 @@ class Api_Hoso_Rest(ApiBase):
         #data = api.HsKh(schema, namhoso).gom()
 
         data = [
-            {"utcid": 11111, "sodot": "2020gmmp001", "sohoso": "gm059365/20", "khachhang": "Tran Thi Thu 1",
+            {"idutc": 11111, "sodot": "2020gmmp001", "sohoso": "gm059365/20", "khachhang": "Tran Thi Thu 1",
                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
-            {"utcid": 22222, "sodot": "2020gmmp001", "sohoso": "gm059366/20", "khachhang": "Tran Thi Thu 2",
+            {"idutc": 22222, "sodot": "2020gmmp001", "sohoso": "gm059366/20", "khachhang": "Tran Thi Thu 2",
                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
-            {"utcid": 33333, "sodot": "2020gmmp001", "sohoso": "gm059367/20", "khachhang": "Tran Thi Thu 4",
+            {"idutc": 33333, "sodot": "2020gmmp001", "sohoso": "gm059367/20", "khachhang": "Tran Thi Thu 4",
                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
-            {"utcid": 4444, "sodot": "2020gmmp001", "sohoso": "gm059367/20", "khachhang": "Test Anh",
+            {"idutc": 4444, "sodot": "2020gmmp001", "sohoso": "gm059367/20", "khachhang": "Test Anh",
                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", }
         ]
         print(f'ApiRest pbd={pbd} nam={namhoso} data={data}')
