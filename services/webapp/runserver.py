@@ -87,10 +87,9 @@ class Wss_Hoso(tornado.websocket.WebSocketHandler):
         return parsed_origin.netloc.startswith("pna")
         # return True
 
-    def open(self, groupid, clientid):
-        pbd = groupid.lower()
-        nvid = clientid.lower()
-        print(f"pbd={pbd} nhanvien={nvid}")
+    def open(self, groupid=''):
+        Wss_Hoso.pbd = f"{groupid}".lower()
+        print(f"pbd={Wss_Hoso.pbd}")
         Wss_Hoso.waiters.add(self)
 
     def on_close(self):
@@ -111,18 +110,42 @@ class Wss_Hoso(tornado.websocket.WebSocketHandler):
             except:
                 print(f"Error sending message")
 
-    def on_message(self, message):
-        print(f"message tu client={str(message)}")
+    def on_message(self, tin):
+        print(f"message tu client={tin}")
+        tin = tornado.escape.json_decode(tin)
         # check toa magiaotiep khach
         idutc = int(arrow.utcnow().float_timestamp * 1000)
-        parsed = tornado.escape.json_decode(message)
-        print(f"parsed={parsed}")
+        # check dk de pass
+        if "bang" not in tin['dl']:
+            return None
+        _bang = f"{tin['dl']['bang']}"
+        if "gom" in tin['dl']:
+            _nam = f"{tin['dl']['gom']}"
+            dl = [
+                {"idutc": 11111, "sodot": "2020gmmp001", "sohoso": "gm059365/20", "khachhang": "Tran Thi Thu 1",
+                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
+                {"idutc": 22222, "sodot": "2020gmmp001", "sohoso": "gm059366/20", "khachhang": "Tran Thi Thu 2",
+                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
+                {"idutc": 33333, "sodot": "2020gmmp001", "sohoso": "gm059367/20", "khachhang": "Tran Thi Thu 4",
+                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", },
+                {"idutc": 4444, "sodot": "2020gmmp001", "sohoso": "gm059367/20", "khachhang": "Test Anh",
+                 "diachigandhn": "T15- Kha Vạn Cân- Q.TĐ", }
+            ]
+        elif "nap" in tin['dl']:
+            _uid = f"{tin['dl']['nap']}"
+        elif "luu" in tin['dl']:
+            _dl = f"{tin['dl']['luu']}"
+        elif "moi" in tin['dl']:
+            _dl = f"{tin['dl']['moi']}"
+        elif "sua" in tin['dl']:
+            _dl = f"{tin['dl']['sua']}"
+        else:
+            return None
         chat = {
-            "idutc": idutc,
-            "ve": f"boss.{idutc}",
-            "dulieu": parsed["dulieu"]
+            "id": idutc,
+            "ve": f"boss.{idutc}.{Wss_Hoso.pbd}",
+            "dl": {"bang": _bang, "dl": dl}
         }
-
         Wss_Hoso.update_cache(chat)
         Wss_Hoso.send_updates(chat)
 
@@ -179,7 +202,11 @@ class MainHandler(WebBase):
 
 class Frm_Hoso(WebBase):
     def get(self, schema):
-        schema = schema.lower()
+        schema = f"{schema}".lower()
+        if schema in ['pkh']:
+            self.set_secure_cookie("pbd", "Ph0ngK3H0@ch")
+        else:
+            self.set_secure_cookie("pbd", "kh@chTh@nThi3t")
         self.render("forms/hoso/main.html", error=None)
 
 
@@ -273,7 +300,7 @@ class WebApp(web.Application):
             (r"/", MainHandler),
             (r"/([^/]+)/api/hoso/([^/]+)", Api_Hoso_Rest),
             # api socket
-            (r"/([^/]+)/wss/hoso/([^/]+)", Wss_Hoso),
+            (r"/([^/]+)/wss/hoso", Wss_Hoso),
             # form
             (r"/([^/]+)/forms/hoso", Frm_Hoso),
             (r"/([^/]+)/forms/qtgt", Frm_Qtgt),
