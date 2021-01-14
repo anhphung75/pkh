@@ -45,7 +45,7 @@ class Hoso(web.UIModule):
 
 
 class Dot(web.UIModule):
-    def render(self, madot="", ttdl={}):
+    def render(self, madot=None, ttdl=None):
         uid = f"bth_dot_vl_{madot}"
         return self.render_string(
             "reports/bth_dot_vl/rpt-1dot.html",

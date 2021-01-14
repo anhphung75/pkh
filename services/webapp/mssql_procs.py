@@ -137,7 +137,7 @@ class Csdl:
         # main prog
         sql = (
             f"CREATE TABLE {self.xac}.tamqt3{id} ("
-            f"maqtgt NVARCHAR(50) NOT NULL DEFAULT '',"
+            f"maqtgt NVARCHAR(50) NULL DEFAULT '',"
             f"tt INT NULL,"
             f"chiphiid INT NULL DEFAULT 0,")
         if id in [5]:
@@ -159,8 +159,8 @@ class Csdl:
         sql += (
             f"lastupdate DATETIME NULL DEFAULT NULL,"
             f"maqt NVARCHAR(50) NULL DEFAULT NULL,"
-            f"mauqtgt NVARCHAR(50) NULL DEFAULT '',"
-            f"CONSTRAINT {self.xac}_tamqt3{id}_pk PRIMARY KEY (maqtgt));"
+            f"mauqtgt NVARCHAR(50) NOT NULL DEFAULT '',"
+            f"CONSTRAINT {self.xac}_tamqt3{id}_pk PRIMARY KEY (mauqtgt));"
         )
         try:
             db.core().execute(sql)
@@ -172,7 +172,7 @@ class Qtgt:
     def __init__(self, xac='pkh'):
         self.xac = xac
         self.kho = 'dbo'
-        self.tao()
+        # self.tao()
 
     def tao(self):
         # self.lamtronso()
@@ -315,77 +315,81 @@ class Qtgt:
         if qt3x in [1, 2, 3, 4]:
             sql += (
                 f"IF DataLength(Isnull(@Mauqt,''))>0 "
-                f"Begin INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,"
-                f"tienvl,tiennc,tienmtc) SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,"
-                f"maqtgt as mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
+                f"Begin INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,tienvl,tiennc,tienmtc) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
                 f"FROM {self.xac}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
-                f"If Not Exists (Select * From #bdl) INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,"
-                f"giavl,gianc,giamtc,tienvl,tiennc,tienmtc) SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,"
-                f"maqtgt as mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
+                f"If Not Exists (Select * From #bdl) "
+                f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,tienvl,tiennc,tienmtc) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
                 f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
                 f"If Not Exists (Select * From #bdl) If Not Exists (Select * From {self.xac}.tamqt3{qt3x}) "
                 f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{qt3x} Order By lastupdate; "
-                f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,"
-                f"tienvl,tiennc,tienmtc) SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,"
-                f"maqtgt as mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
+                f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,tienvl,tiennc,tienmtc) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
                 f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
                 f"UPDATE #bdl SET soluong=0; End End ")
             sql += (
                 f"IF DataLength(Isnull(@Mauqt,''))<1 "
-                f"Begin INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,"
-                f"tienvl,tiennc,tienmtc) SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,"
-                f"maqtgt as mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
+                f"Begin INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,tienvl,tiennc,tienmtc) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
                 f"FROM {self.xac}.qt3{qt3x} WHERE maqt=@Maqt AND chiphiid>0 ORDER BY tt,chiphiid; "
-                f"If Not Exists (Select * From #bdl) INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,"
-                f"giavl,gianc,giamtc,tienvl,tiennc,tienmtc) SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,"
-                f"maqtgt as mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
+                f"If Not Exists (Select * From #bdl) "
+                f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,tienvl,tiennc,tienmtc) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
                 f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Maqt AND chiphiid>0 ORDER BY tt,chiphiid; "
                 f"If Not Exists (Select * From #bdl) If Not Exists (Select * From {self.xac}.tamqt3{qt3x}) "
                 f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{qt3x} Order By lastupdate; "
-                f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,"
-                f"tienvl,tiennc,tienmtc) SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,"
-                f"maqtgt as mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
+                f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,soluong,giavl,gianc,giamtc,tienvl,tiennc,tienmtc) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc "
                 f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
                 f"UPDATE #bdl SET soluong=0; End End ")
         else:
             sql += (
                 f"IF DataLength(Isnull(@Mauqt,''))>0 "
                 f"Begin INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,gia,oc_sl,on_sl,oc_tien,on_tien) "
-                f"SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,maqtgt as mauqtgt,chiphiid,dongia,"
-                f"sl1,sl2,trigia1,trigia2 FROM {self.xac}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 "
-                f"ORDER BY tt,chiphiid; If Not Exists (Select * From #bdl) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,dongia,sl1,sl2,trigia1,trigia2 "
+                f"FROM {self.xac}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
+                f"If Not Exists (Select * From #bdl) "
                 f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,gia,oc_sl,on_sl,oc_tien,on_tien) "
-                f"SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,maqtgt as mauqtgt,chiphiid,dongia,"
-                f"sl1,sl2,trigia1,trigia2 FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 "
-                f"ORDER BY tt,chiphiid; If Not Exists (Select * From #bdl) "
-                f"If Not Exists (Select * From {self.xac}.tamqt3{qt3x}) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,dongia,sl1,sl2,trigia1,trigia2 "
+                f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
+                f"If Not Exists (Select * From #bdl) If Not Exists (Select * From {self.xac}.tamqt3{qt3x}) "
                 f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{qt3x} Order By lastupdate; "
                 f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,gia,oc_sl,on_sl,oc_tien,on_tien) "
-                f"SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,maqtgt as mauqtgt,chiphiid,dongia,"
-                f"sl1,sl2,trigia1,trigia2 FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 "
-                f"ORDER BY tt,chiphiid; "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,dongia,sl1,sl2,trigia1,trigia2 "
+                f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
                 f"UPDATE #bdl SET soluong=0; End End ")
             sql += (
                 f"IF DataLength(Isnull(@Mauqt,''))<1 "
                 f"Begin INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,gia,oc_sl,on_sl,oc_tien,on_tien) "
-                f"SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,maqtgt as mauqtgt,chiphiid,dongia,"
-                f"sl1,sl2,trigia1,trigia2 FROM {self.xac}.qt3{qt3x} WHERE maqt=@Maqt AND chiphiid>0 "
-                f"ORDER BY tt,chiphiid; If Not Exists (Select * From #bdl) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,dongia,sl1,sl2,trigia1,trigia2 "
+                f"FROM {self.xac}.qt3{qt3x} WHERE maqt=@Maqt AND chiphiid>0 ORDER BY tt,chiphiid; "
+                f"If Not Exists (Select * From #bdl) "
                 f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,gia,oc_sl,on_sl,oc_tien,on_tien) "
-                f"SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,maqtgt as mauqtgt,chiphiid,dongia,"
-                f"sl1,sl2,trigia1,trigia2 FROM {self.kho}.qt3{qt3x} WHERE maqt=@Maqt AND chiphiid>0 "
-                f"ORDER BY tt,chiphiid; If Not Exists (Select * From #bdl) "
-                f"If Not Exists (Select * From {self.xac}.tamqt3{qt3x}) "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,dongia,sl1,sl2,trigia1,trigia2 "
+                f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Maqt AND chiphiid>0 ORDER BY tt,chiphiid; "
+                f"If Not Exists (Select * From #bdl) If Not Exists (Select * From {self.xac}.tamqt3{qt3x}) "
                 f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{qt3x} Order By lastupdate; "
                 f"INSERT INTO #bdl (maqt,tt,mauqtgt,chiphiid,gia,oc_sl,on_sl,oc_tien,on_tien) "
-                f"SELECT @Maqt as maqt,Identity(INT, 1, 1) As tt,maqtgt as mauqtgt,chiphiid,dongia,"
-                f"sl1,sl2,trigia1,trigia2 FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 "
-                f"ORDER BY tt,chiphiid; "
+                f"SELECT @Maqt as maqt,(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt,maqtgt as mauqtgt,"
+                f"chiphiid,dongia,sl1,sl2,trigia1,trigia2 "
+                f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
                 f"UPDATE #bdl SET soluong=0; End End ")
         # up maqtgt
         sql += (
             f"UPDATE #bdl SET "
-            f"maqtgt=Case When r.tt<10 Then CONCAT(@Maqt,{qt3x}0,r.tt) Else CONCAT(@Maqt,{qt3x},r.tt) End "
+            f"maqtgt=Case When tt<10 Then CONCAT(@Maqt,{qt3x}0,tt) Else CONCAT(@Maqt,{qt3x},tt) End "
             f"WHERE tt>0; ")
         # Up to tamqt3x
         if qt3x in [1, 2, 3, 4]:
@@ -429,7 +433,6 @@ class Qtgt:
         except:
             pass
         # main prog
-        sql0 = ""
         sql = (
             f"CREATE PROC {self.xac}.nap_qt "
             f"@Maqt NVARCHAR(50),@Mauqt NVARCHAR(50)='',@Gxd DECIMAL(38,9)=0.0 "
@@ -437,30 +440,41 @@ class Qtgt:
             f"BEGIN SET NOCOUNT ON "
             f"BEGIN TRY Declare @ttdl NVARCHAR(50)='',@Maq INT=26; "
             f"IF DataLength(Isnull(@Maqt,''))<1 Return; ")
+        # init data
+        cs = ['maqt', 'mauqt', 'baogiaid', 'hesoid',
+              'plgia', 'madot', 'hosoid', 'tt', 'soho']
+        cr = ['@Maqt as maqt', 'maqt as mauqt', 'baogiaid', 'hesoid', 'plgia',
+              'madot', 'hosoid', 'tt', 'soho']
         # tao bdl
         sql += (
-            f"SELECT top 1 * INTO #bdl FROM {self.xac}.tamqt; "
+            f"SELECT top 1 {','.join(cs)} INTO #bdl FROM {self.xac}.tamqt; "
             f"DELETE FROM #bdl; ")
         # load dulieu
+
         sql += (
             f"IF Isnull(@Gxd,0)>0 "
-            f"Begin If Not Exists (Select * From #bdl) INSERT INTO #bdl "
-            f"SELECT TOP 1 * FROM {self.xac}.qt WHERE gxd=@Gxd; "
+            f"Begin If Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)}) "
+            f"SELECT TOP 1 {','.join(cr)} FROM {self.xac}.qt WHERE gxd=@Gxd; "
             f"If Not Exists (Select * From #bdl) INSERT INTO #bdl "
-            f"SELECT TOP 1 * FROM {self.kho}.qt WHERE gxd=@Gxd; End "
+            f"SELECT TOP 1 {','.join(cr)} FROM {self.kho}.qt WHERE gxd=@Gxd; End "
+
             f"IF DataLength(Isnull(@Mauqt,''))>0 "
-            f"Begin If Not Exists (Select * From #bdl) INSERT INTO #bdl "
-            f"SELECT TOP 1 * FROM {self.xac}.qt WHERE maqt=@Mauqt; "
-            f"If Not Exists (Select * From #bdl) INSERT INTO #bdl "
-            f"SELECT TOP 1 * FROM {self.kho}.qt WHERE maqt=@Mauqt; End "
-            f"IF Not Exists (Select * From #bdl) INSERT INTO #bdl "
-            f"SELECT TOP 1 * FROM {self.xac}.qt WHERE maqt=@Maqt; "
-            f"IF Not Exists (Select * From #bdl) INSERT INTO #bdl "
-            f"SELECT TOP 1 * FROM {self.kho}.qt WHERE maqt=@Maqt; "
+            f"Begin If Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)}) "
+            f"SELECT TOP 1 {','.join(cr)} FROM {self.xac}.qt WHERE maqt=@Mauqt; "
+            f"If Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)}) "
+            f"SELECT TOP 1 {','.join(cr)} FROM {self.kho}.qt WHERE maqt=@Mauqt; End "
+
+            f"IF Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)}) "
+            f"SELECT TOP 1 {','.join(cr)} FROM {self.xac}.qt WHERE maqt=@Maqt; "
+            f"IF Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)}) "
+            f"SELECT TOP 1 {','.join(cr)} FROM {self.kho}.qt WHERE maqt=@Maqt; "
+
             f"IF Not Exists (Select * From #bdl) Begin Set @Mauqt=@Maqt;"
-            f"INSERT INTO #bdl (maqt,mauqt) VALUES (@Maqt,@Mauqt); End "
-            f"ELSE Begin Select top 1 @Mauqt=maqt From #bdl; "
-            f"UPDATE #bdl SET maqt=@Maqt,mauqt=@Mauqt; End ")
+            f"INSERT INTO #bdl (maqt,mauqt) VALUES (@Maqt,@Mauqt); End ")
+        # f"ELSE Begin Select top 1 @Mauqt=maqt From #bdl; "
+        # f"UPDATE #bdl SET maqt=@Maqt,mauqt=@Mauqt; End ")
+        # check
+        sql += f"select * from #bdl; "
         # up qt
         sql += (
             f"UPDATE s SET "
@@ -517,7 +531,7 @@ class Qtgt:
             f"FROM {self.xac}.tamqt33 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
             f"UPDATE s SET "
             f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
-            f"FROM {self.xac}.tamqt34 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; END ")
+            f"FROM {self.xac}.tamqt34 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
             f"UPDATE s SET "
             f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
             f"FROM {self.xac}.tamqt35 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; END ")
@@ -527,24 +541,24 @@ class Qtgt:
         except:
             pass
 
-    def tinh_qt3x(self, qt3x = 1):
+    def tinh_qt3x(self, qt3x=1):
         pass
 
     def tinh_qt(self):
-        sql=(f"DROP PROC {self.xac}.tinh_qt")
+        sql = (f"DROP PROC {self.xac}.tinh_qt")
         try:
             db.core().execute(sql)
         except:
             pass
         # main prog
-        sql=(
+        sql = (
             f"CREATE PROC {self.xac}.tinh_qt"
             f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
             f" WITH ENCRYPTION AS"
             f" BEGIN SET NOCOUNT ON"
             f" BEGIN TRY DECLARE")
         # heso chiphi
-        lds=["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
+        lds = ["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
                "thutinhtruoc", "khaosat", "thietke", "giamsat"]
         for heso in lds:
             sql += f" @{heso} DECIMAL(38,9)=1.0000,"
@@ -584,7 +598,7 @@ class Qtgt:
             f" SELECT @onTailap=Isnull(sum(trigia2),0)"
             f" From {self.xac}.tamqt35;")
         # load hesochiphi
-        ods={"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
+        ods = {"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
                "giantiepkhac": "giantiepkhac", "thutinhtruoc": "heso_thunhaptt",
                "khaosat": "heso_khaosat", "thietke": "heso_thietke", "giamsat": "heso_gstc"}
         sql += f" Select "
@@ -697,19 +711,19 @@ class Qtgt:
 
     def qtgt_tinh(self):
         try:
-            sql=(f"DROP PROC {self.xac}.qtgt_tinh")
+            sql = (f"DROP PROC {self.xac}.qtgt_tinh")
             db.core().execute(sql)
         except:
             pass
         # main prog
-        sql=(
+        sql = (
             f"CREATE PROC {self.xac}.qtgt_tinh"
             f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
             f" WITH ENCRYPTION AS"
             f" BEGIN SET NOCOUNT ON"
             f" BEGIN TRY DECLARE")
         # heso chiphi
-        lds=["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
+        lds = ["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
                "thutinhtruoc", "khaosat", "thietke", "giamsat"]
         for heso in lds:
             sql += f" @{heso} DECIMAL(38,9)=1.0000,"
@@ -749,7 +763,7 @@ class Qtgt:
             f" SELECT @onTailap=Isnull(sum(trigia2),0)"
             f" From {self.xac}.tamqt35;")
         # load hesochiphi
-        ods={"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
+        ods = {"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
                "giantiepkhac": "giantiepkhac", "thutinhtruoc": "heso_thunhaptt",
                "khaosat": "heso_khaosat", "thietke": "heso_thietke", "giamsat": "heso_gstc"}
         sql += f" Select "
@@ -859,7 +873,7 @@ class Qtgt:
 
     def qtgt_luu(self):
         try:
-            sql=(f"DROP PROC {self.xac}.qtgt_luu")
+            sql = (f"DROP PROC {self.xac}.qtgt_luu")
             db.core().execute(sql)
         except:
             pass
@@ -867,9 +881,9 @@ class Qtgt:
 
 
 class Qtgt_thau:
-    def __init__(self, xac = 'pkh'):
-        self.xac=xac
-        self.kho='dbo'
+    def __init__(self, xac='pkh'):
+        self.xac = xac
+        self.kho = 'dbo'
         self.tao()
 
     def tao(self):
@@ -879,13 +893,13 @@ class Qtgt_thau:
 
     def giavl(self):
         # init prog
-        sql=(f"DROP FUNCTION {self.kho}.giavl_thau")
+        sql = (f"DROP FUNCTION {self.kho}.giavl_thau")
         try:
             db.core().execute(sql)
         except:
             pass
         # main prog
-        sql=(
+        sql = (
             f"CREATE FUNCTION {self.kho}.giavl_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
             f" Returns decimal(38,9) AS BEGIN"
             f" Declare @Kq decimal(38,9)=0.0;"
@@ -901,13 +915,13 @@ class Qtgt_thau:
 
     def gianc(self):
         # init prog
-        sql=(f"DROP FUNCTION {self.kho}.gianc_thau")
+        sql = (f"DROP FUNCTION {self.kho}.gianc_thau")
         try:
             db.core().execute(sql)
         except:
             pass
         # main prog
-        sql=(
+        sql = (
             f"CREATE FUNCTION {self.kho}.gianc_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
             f" Returns decimal(38,9) AS BEGIN"
             f" Declare @Kq decimal(38,9)=0.0;"
@@ -923,13 +937,13 @@ class Qtgt_thau:
 
     def giamtc(self):
         # init prog
-        sql=(f"DROP FUNCTION {self.kho}.giamtc_thau")
+        sql = (f"DROP FUNCTION {self.kho}.giamtc_thau")
         try:
             db.core().execute(sql)
         except:
             pass
         # main prog
-        sql=(
+        sql = (
             f"CREATE FUNCTION {self.kho}.giamtc_thau(@Chiphiid INT=0,@Baogiaid INT=0,@Plgia NVARCHAR(50)='dutoan')"
             f" Returns decimal(38,9) AS BEGIN"
             f" Declare @Kq decimal(38,9)=0.0;"
@@ -948,13 +962,13 @@ class Qtgt_thau:
 
 
 def baogiathau():
-    sql=(f"DROP PROC dbo.baogiathau")
+    sql = (f"DROP PROC dbo.baogiathau")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC dbo.baogiathau"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
@@ -988,77 +1002,17 @@ def baogiathau():
         pass
 
 
-def nap_tamqt3x(schema = "web", qt3x = 1):
-    """
-    BEGIN tran
-  MERGE pkh.tamqt31 AS s
-  USING # tamdulieu AS r
-  ON s.maqtgt = r.maqtgt
-  WHEN MATCHED THEN UPDATE SET
- s.maqt = r.maqt,
- s.maqtgt = r.maqtgt,
- s.tt = r.tt,
- s.chiphiid = r.chiphiid,
- s.soluong = r.soluong,
- s.giavl = r.giavl,
- s.gianc = r.gianc,
- s.giamtc = r.giamtc,
- s.trigiavl = r.trigiavl,
- s.trigianc = r.trigianc,
- s.trigiamtc = r.trigiamtc,
- - - - qtt s.soluong1 = r.soluong1,
- s.giavl1 = r.giavl1,
- s.gianc1 = r.gianc1,
- s.giamtc1 = r.giamtc1,
- s.trigiavl1 = r.trigiavl1,
- s.trigianc1 = r.trigianc1,
- s.trigiamtc1 = r.trigiamtc1,
- s.ghichu = r.ghichu,
- s.lastupdate = ISNULL(r.lastupdate, getdate())
- WHEN NOT MATCHED THEN
- INSERT(maqtgt,tt,chiphiid,soluong,giavl,gianc,giamtc,trigiavl,trigianc,trigiamtc,
-  soluong1,
-  giavl1,
-  gianc1,
-  giamtc1,
-  trigiavl1,
-  trigianc1,
-  trigiamtc1,
-  ghichu,
-  lastupdate,
-  maqt)
-VALUES(r.maqtgt,r.tt,r.chiphiid, r.soluong,
-    r.giavl,
-    r.gianc,
-    r.giamtc,
-    r.trigiavl,
-    r.trigianc,
-    r.trigiamtc,
-    r.soluong1,
-    r.giavl1,
-    r.gianc1,
-    r.giamtc1,
-    r.trigiavl1,
-    r.trigianc1,
-    r.trigiamtc1,
-    r.ghichu, ISNULL(r.lastupdate, getdate()),
-    r.maqt)
-WHEN NOT MATCHED BY SOURCE THEN DELETE;
-WHILE (@@TranCount > 0) COMMIT tran;
-    """
-
-
-def load_tamqt3x(schema = "web", qt3x = 1):
+def load_tamqt3x(schema="web", qt3x=1):
     # init prog
     if qt3x not in [1, 2, 3, 4, 5]:
         return
     try:
-        sql=(f"DROP PROC {schema}.load_tamqt3{qt3x}")
+        sql = (f"DROP PROC {schema}.load_tamqt3{qt3x}")
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.load_tamqt3{qt3x}"
         f" @Maqt NVARCHAR(50),@Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS"
@@ -1143,15 +1097,15 @@ def load_tamqt3x(schema = "web", qt3x = 1):
         pass
 
 
-def tamqt_nap(xac = "web"):
+def tamqt_nap(xac="web"):
     # init prog
-    sql=(f"DROP PROC {xac}.tamqt_nap")
+    sql = (f"DROP PROC {xac}.tamqt_nap")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {xac}.tamqt_nap"
         f" @Maqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
@@ -1211,15 +1165,15 @@ def tamqt_nap(xac = "web"):
         pass
 
 
-def tamqt_napgoc(xac = "web"):
+def tamqt_napgoc(xac="web"):
     # init prog
-    sql=(f"DROP PROC {xac}.tamqt_napgoc")
+    sql = (f"DROP PROC {xac}.tamqt_napgoc")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {xac}.tamqt_napgoc"
         f" @Maqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY")
@@ -1277,15 +1231,15 @@ def tamqt_napgoc(xac = "web"):
         pass
 
 
-def qtgt_nap(xac = "web"):
+def qtgt_nap(xac="web"):
     # init prog
-    sql=(f"DROP PROC {xac}.qtgt_nap")
+    sql = (f"DROP PROC {xac}.qtgt_nap")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {xac}.qtgt_nap"
         f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
@@ -1312,7 +1266,7 @@ def qtgt_nap(xac = "web"):
         f" SELECT @Gxd=isnull(gxd,0) FROM dbo.qt WHERE maqt=@Mauqt;"
         f" IF @Gxd<1 SET @Napgoc=2;"
         f" end End;")
-    sql_tinh=(
+    sql_tinh = (
         f" Select Top 1 @Hesoid=hesoid, @Baogiaid=baogiaid, @Plgia=plgia"
         f" From {xac}.tamqt Where maqt=@Maqt;"
         f" EXEC {xac}.tamqt31_tinh @Hesoid,@Baogiaid,@Plgia;"
@@ -1321,7 +1275,7 @@ def qtgt_nap(xac = "web"):
         f" EXEC {xac}.tamqt34_tinh @Hesoid,@Baogiaid,@Plgia;"
         f" EXEC {xac}.tamqt35_tinh @Hesoid,@Baogiaid,@Plgia;"
         f" EXEC {xac}.tamqt_tinh @Hesoid,@Baogiaid,@Plgia;")
-    sql0=(
+    sql0 = (
         f" IF @Napgoc=2 Begin"
         f" EXEC {xac}.tamqt_napgoc @Maqt;"
         # f" EXEC {xac}.tamqt31_napgoc '2020GMMP000';"
@@ -1365,15 +1319,15 @@ def qtgt_nap(xac = "web"):
         pass
 
 
-def load_tamqt(schema = "web"):
+def load_tamqt(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.load_tamqt")
+    sql = (f"DROP PROC {schema}.load_tamqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.load_tamqt"
         f" @Maqt NVARCHAR(50), @Gxd DECIMAL(38,0)=0.0, @Mauqt NVARCHAR(50)=''"
         f" WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY"
@@ -1394,7 +1348,7 @@ def load_tamqt(schema = "web"):
         # f" ELSE Begin SET @Mauqt=@Maqt; SELECT @Gxd=isnull(gxd,0) FROM @Nguon.qt WHERE maqt=@Mauqt;"
         # f" IF @Gxd<1 SET @Nguon='dbo'; End;"
     )
-    sql0=(
+    sql0 = (
         f" IF EXISTS (SELECT * FROM {schema}.tamqt) UPDATE {schema}.tamqt SET maqt=@Mauqt"
         f" ELSE INSERT INTO {schema}.tamqt(maqt, lastupdate) VALUES(@Mauqt, getdate()); "
     )
@@ -1435,7 +1389,7 @@ def load_tamqt(schema = "web"):
         f" Select Top 1 @Hesoid=hesoid, @Baogiaid=baogiaid, @Plgia=plgia"
         f" From {schema}.tamqt Where maqt=@Maqt;"
     )
-    sql0=(
+    sql0 = (
         f" Select Top 1 @Baogiaid=baogiaid From {schema}.qt Where maqt=@Maqt;"
         f" IF LEN(@Baogiaid)<1 Select Top 1 @Baogiaid=baogiaid From dbo.qt Order By baogiaid Desc;"
         f" Select Top 1 @Hesoid=hesoid From {schema}.qt Where maqt=@Maqt;"
@@ -1480,17 +1434,17 @@ def load_tamqt(schema = "web"):
         pass
 
 
-def creat_tinh_tamqt3x(schema = "web", qt3x = 1):
+def creat_tinh_tamqt3x(schema="web", qt3x=1):
     # init prog
     if qt3x not in [1, 2, 3, 4]:
         return
     try:
-        sql=(f"DROP PROC {schema}.tinh_tamqt3{qt3x}")
+        sql = (f"DROP PROC {schema}.tinh_tamqt3{qt3x}")
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinh_tamqt3{qt3x}"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -1544,15 +1498,15 @@ def creat_tinh_tamqt3x(schema = "web", qt3x = 1):
         pass
 
 
-def tinh_tamqt35(schema = "web"):
+def tinh_tamqt35(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.tinh_tamqt35")
+    sql = (f"DROP PROC {schema}.tinh_tamqt35")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinh_tamqt35"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -1603,15 +1557,15 @@ def tinh_tamqt35(schema = "web"):
         pass
 
 
-def tinh_tamqt3x(schema = "web"):
+def tinh_tamqt3x(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.tinh_tamqt3x")
+    sql = (f"DROP PROC {schema}.tinh_tamqt3x")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinh_tamqt3x"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
@@ -1632,22 +1586,22 @@ def tinh_tamqt3x(schema = "web"):
         pass
 
 
-def tinh_tamqt(schema = "web"):
+def tinh_tamqt(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.tinh_tamqt")
+    sql = (f"DROP PROC {schema}.tinh_tamqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinh_tamqt"
         f" @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'"
         f" WITH ENCRYPTION AS"
         f" BEGIN SET NOCOUNT ON"
         f" BEGIN TRY DECLARE")
     # heso chiphi
-    lds=["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
+    lds = ["vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
            "thutinhtruoc", "khaosat", "thietke", "giamsat"]
     for heso in lds:
         sql += f" @{heso} DECIMAL(38,9)=1.0000,"
@@ -1683,7 +1637,7 @@ def tinh_tamqt(schema = "web"):
         f" From {schema}.tamqt34) AS U;"
         f" SELECT @onTailap=Isnull(sum(trigia2),0) From {schema}.tamqt35;")
     # load hesochiphi
-    ods={"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
+    ods = {"nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
            "giantiepkhac": "giantiepkhac", "thutinhtruoc": "heso_thunhaptt",
            "khaosat": "heso_khaosat", "thietke": "heso_thietke", "giamsat": "heso_gstc"}
     sql += f" Select "
@@ -1792,15 +1746,15 @@ def tinh_tamqt(schema = "web"):
         pass
 
 
-def tinhlai_dotqt(schema = "web"):
+def tinhlai_dotqt(schema="web"):
     # init prog
-    sql=(f"DROP PROC {schema}.tinhlai_dotqt")
+    sql = (f"DROP PROC {schema}.tinhlai_dotqt")
     try:
         db.core().execute(sql)
     except:
         pass
     # main prog
-    sql=(
+    sql = (
         f"CREATE PROC {schema}.tinhlai_dotqt"
         f" @Madot NVARCHAR(MAX)=''"
         f" WITH ENCRYPTION AS"
@@ -1829,7 +1783,7 @@ def tinhlai_dotqt(schema = "web"):
         pass
 
 
-def spQtgt(schema = "web"):
+def spQtgt(schema="web"):
     lamtronso()
     giavl()
     gianc()
@@ -1856,5 +1810,5 @@ def spQtgt(schema = "web"):
     giamtc_thau()
 
 
-Csdl("pkd")
-Qtgt("pkd")
+# Csdl("pkh")
+Qtgt("pkh").nap_qt()
