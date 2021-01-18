@@ -200,7 +200,7 @@ class Qtgt:
     def __init__(self, xac='pkh'):
         self.xac = xac
         self.kho = 'dbo'
-        self.tao()
+        # self.tao()
 
     def tao(self):
         self.lamtronso()
@@ -485,10 +485,17 @@ class Qtgt:
             f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.dot r ON s.madot=r.madot; ")
         # nap qt3x
         sql += (
+            f"Set @Maqt=CAST(@Maqt as text); "
+            f"Set @Mauqt=CAST(@Mauqt as text); "
+            f"Select concat('EXEC {self.xac}.nap_qt31 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt31 @Maqt, @Mauqt; "
+            f"Select concat('EXEC {self.xac}.nap_qt32 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt32 @Maqt, @Mauqt; "
+            f"Select concat('EXEC {self.xac}.nap_qt33 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt33 @Maqt, @Mauqt; "
+            f"Select concat('EXEC {self.xac}.nap_qt34 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt34 @Maqt, @Mauqt; "
+            f"Select concat('EXEC {self.xac}.nap_qt35 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt35 @Maqt, @Mauqt; ")
         # up chiphikhuvuc
         sql += (
@@ -771,7 +778,7 @@ class Qtgt:
         sql = (
             f"CREATE PROC {self.xac}.luu_qt3{qt3x} "
             f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"Declare @Maqt NVARCHAR(50)='',@Status NVARCHAR(50)=''; "
+            f"Declare @Maqt NVARCHAR(50)='',@Status NVARCHAR(50)='',@Soluong DECIMAL(38,9); "
             f"Select Top 1 @Maqt=maqt,@Status=tinhtrang From {self.xac}.tamqt; "
             f"IF DataLength(Isnull(@Maqt,''))<1 RETURN; "
             f"IF Isnull(@Status,'') like '%fin%' RETURN; ")
@@ -781,7 +788,9 @@ class Qtgt:
                   'soluong', 'giavl', 'gianc', 'giamtc', 'tienvl', 'tiennc', 'tienmtc']
             sql += (
                 f"SELECT {','.join(cr)} INTO #bdl FROM {self.xac}.tamqt3{qt3x} "
-                f"WHERE maqt=@Maqt And chiphiid>0 And soluong>0 ORDER BY tt,chiphiid; "
+                f"WHERE maqt=@Maqt And chiphiid>0 ORDER BY tt,chiphiid; "
+                f"Select @Soluong=Isnull(sum(soluong),0) From #bdl; "
+                f"If @soluong<=0 DELETE FROM #bdl; "
                 f"If Exists (Select * From #bdl) UPDATE #bdl SET maqt=@Maqt,"
                 f"maqtgt=(Case When tt<10 Then CONCAT(@Maqt,{qt3x}0,tt) Else CONCAT(@Maqt,{qt3x},tt) End); ")
         else:
@@ -1003,5 +1012,5 @@ class Qtgt_thau:
 # proc
 
 
-# Csdl("pkh").tttt_qt01()
-Qtgt("pkh")
+# Csdl("pkh")
+Qtgt("pkh").nap_qtgt()
