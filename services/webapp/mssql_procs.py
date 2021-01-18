@@ -347,46 +347,48 @@ class Qtgt:
             f"CREATE PROC {self.xac}.nap_qt3{qt3x} "
             f"@Maqt NVARCHAR(50),@Mauqt NVARCHAR(50)='' "
             f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"IF DataLength(Isnull(@Maqt,''))<1 Return; ")
+            f"Set @Maqt=Isnull(CAST(@Maqt as NVARCHAR(255)),''); "
+            f"IF DataLength(@Maqt)<1 Return; "
+            f"Set @Mauqt=Isnull(CAST(@Mauqt as NVARCHAR(255)),''); ")
         if qt3x in [1, 2, 3, 4]:
-            cs = ['tt', 'maqt', 'mauqtgt', 'tienvl', 'tiennc', 'tienmtc']
+            cs = ['tt', 'maqt', 'mauqtgt', 'tienvl', 'tiennc', 'tienmtc',
+                  'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc']
             cr = ['(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt', '@Maqt as maqt', 'maqtgt as mauqtgt',
-                  'trigiavl', 'trigianc', 'trigiamtc']
-            du = ['maqtgt', 'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc']
+                  'trigiavl', 'trigianc', 'trigiamtc', 'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc']
         else:
             cs = ['tt', 'maqt', 'mauqtgt', 'gia',
-                  'oc_sl', 'on_sl', 'oc_tien', 'on_tien']
+                  'oc_sl', 'on_sl', 'oc_tien', 'on_tien', 'chiphiid']
             cr = ['(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) as tt', '@Maqt as maqt', 'maqtgt as mauqtgt',
-                  'dongia', 'sl1', 'sl2', 'trigia1', 'trigia2']
-            du = ['maqtgt', 'chiphiid']
+                  'dongia', 'sl1', 'sl2', 'trigia1', 'trigia2', 'chiphiid']
         sql += (
-            f"SELECT top 1 {','.join(cs)},{','.join(du)} INTO #bdl FROM {self.xac}.tamqt3{qt3x}; "
-            f"DELETE FROM #bdl; "
+            f"SELECT top 1 {','.join(cs)} INTO #bdl FROM {self.xac}.tamqt3{qt3x} "
+            f"WHERE maqt='sao ma co'; "
             # load Mauqt
-            f"IF DataLength(Isnull(@Mauqt,''))>0 Begin "
-            f"INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) SELECT {','.join(cr)},{','.join(du)} "
+            f"IF DataLength(@Mauqt)>0 Begin "
+            f"INSERT INTO #bdl ({','.join(cs)} SELECT {','.join(cr)} "
             f"FROM {self.xac}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
             f"If Not Exists (Select * From #bdl) "
-            f"INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) SELECT {','.join(cr)},{','.join(du)} "
-            f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
-            f"If Not Exists (Select * From #bdl) If Not Exists (Select * From {self.xac}.tamqt3{qt3x}) "
-            f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{qt3x} Order By lastupdate; "
-            f"INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) SELECT {','.join(cr)},{','.join(du)} "
-            f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
-            f"UPDATE #bdl SET soluong=0; End End "
+            f"INSERT INTO #bdl ({','.join(cs)}) SELECT {','.join(cr)} "
+            f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; End "
             # load normal
-            f"IF DataLength(Isnull(@Mauqt,''))<1 Begin "
-            f"INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) SELECT {','.join(cr)},{','.join(du)} "
+            f"If Not Exists (Select * From #bdl) "
+            f"INSERT INTO #bdl ({','.join(cs)}) SELECT {','.join(cr)} "
             f"FROM {self.xac}.qt3{qt3x} WHERE maqt=@Maqt AND chiphiid>0 ORDER BY tt,chiphiid; "
             f"If Not Exists (Select * From #bdl) "
-            f"INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) SELECT {','.join(cr)},{','.join(du)} "
+            f"INSERT INTO #bdl ({','.join(cs)}) SELECT {','.join(cr)} "
             f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Maqt AND chiphiid>0 ORDER BY tt,chiphiid; "
-            f"If Not Exists (Select * From #bdl) If Not Exists (Select * From {self.xac}.tamqt3{qt3x}) "
-            f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{qt3x} Order By lastupdate; "
-            f"INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) SELECT {','.join(cr)},{','.join(du)} "
+            # load default
+            f"If Not Exists (Select * From #bdl) "
+            f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{qt3x} Order By lastupdate Desc; "
+            f"INSERT INTO #bdl ({','.join(cs)}) SELECT {','.join(cr)} "
             f"FROM {self.kho}.qt3{qt3x} WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
-            f"UPDATE #bdl SET soluong=0; End End "
-            # up maqtgt
+            f"If Not Exists (Select * From #bdl) RETURN ")
+        if qt3x in [1, 2, 3, 4]:
+            sql += f"Else UPDATE #bdl SET soluong=0; End "
+        else:
+            sql += f"Else UPDATE #bdl SET oc_sl=0,on_sl=0; End "
+        # up maqtgt
+        sql += (
             f"UPDATE #bdl SET "
             f"maqtgt=Case When tt<10 Then CONCAT(@Maqt,{qt3x}0,tt) Else CONCAT(@Maqt,{qt3x},tt) End "
             f"WHERE tt>0; ")
@@ -423,7 +425,10 @@ class Qtgt:
             f"CREATE PROC {self.xac}.nap_qtgt "
             f"@Maqt NVARCHAR(50),@Mauqt NVARCHAR(50)='',@Gxd DECIMAL(38,9)=0.0 "
             f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"IF DataLength(Isnull(@Maqt,''))<1 Return; "
+            f"Set @Maqt=Isnull(CAST(@Maqt as NVARCHAR(255)),''); "
+            f"IF DataLength(@Maqt)<1 Return; "
+            f"Set @Mauqt=Isnull(CAST(@Mauqt as NVARCHAR(255)),''); "
+            f"Set @Gxd=Isnull(CAST(@Gxd as DECIMAL(38,9)),0.0); "
             f"Declare @Maq INT=26; ")
         # init data
         cs = ['mauqt', 'baogiaid', 'hesoid', 'plgia']
@@ -442,13 +447,13 @@ class Qtgt:
             f"SELECT top 1 maqt,{','.join(cs)},{','.join(du)} INTO #bdl FROM {self.xac}.tamqt; "
             f"DELETE FROM #bdl; "
             # load gxd
-            f"IF Isnull(@Gxd,0)>0 "
+            f"IF @Gxd>0 "
             f"Begin If Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) "
             f"SELECT TOP 1 {','.join(cr)},{','.join(du)} FROM {self.xac}.qt WHERE gxd=@Gxd; "
             f"If Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) "
             f"SELECT TOP 1 {','.join(cr)},{','.join(du)} FROM {self.kho}.qt WHERE gxd=@Gxd; End "
             # load mauqt
-            f"IF DataLength(Isnull(@Mauqt,''))>0 "
+            f"IF DataLength(@Mauqt)>0 "
             f"Begin If Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) "
             f"SELECT TOP 1 {','.join(cr)},{','.join(du)} FROM {self.xac}.qt WHERE maqt=@Mauqt; "
             f"If Not Exists (Select * From #bdl) INSERT INTO #bdl ({','.join(cs)},{','.join(du)}) "
@@ -485,17 +490,10 @@ class Qtgt:
             f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.dot r ON s.madot=r.madot; ")
         # nap qt3x
         sql += (
-            f"Set @Maqt=CAST(@Maqt as text); "
-            f"Set @Mauqt=CAST(@Mauqt as text); "
-            f"Select concat('EXEC {self.xac}.nap_qt31 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt31 @Maqt, @Mauqt; "
-            f"Select concat('EXEC {self.xac}.nap_qt32 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt32 @Maqt, @Mauqt; "
-            f"Select concat('EXEC {self.xac}.nap_qt33 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt33 @Maqt, @Mauqt; "
-            f"Select concat('EXEC {self.xac}.nap_qt34 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt34 @Maqt, @Mauqt; "
-            f"Select concat('EXEC {self.xac}.nap_qt35 ', @Maqt, @Mauqt, ';') as s; "
             f"EXEC {self.xac}.nap_qt35 @Maqt, @Mauqt; ")
         # up chiphikhuvuc
         sql += (
@@ -541,7 +539,7 @@ class Qtgt:
             f"IF DataLength(Isnull(@Maqt,''))<1 Return; ")
         if qt3x in [1, 2, 3, 4]:
             sql += (
-                f"SELECT maqt,maqtgt,mauqtgt,chiphiid,giavl,gianc,giamtc,tienvl,tiennc,tienmtc, "
+                f"SELECT maqt,maqtgt,chiphiid,giavl,gianc,giamtc,tienvl,tiennc,tienmtc, "
                 f"IDENTITY(INT, 1, 1) AS tt,abs(isnull(soluong,0)) as soluong "
                 f"INTO #bdl FROM {self.xac}.tamqt3{qt3x} WHERE chiphiid>0 ORDER BY tt,chiphiid; "
                 f"If Not Exists (Select * From #bdl) RETURN; "
@@ -565,7 +563,7 @@ class Qtgt:
                 f"tienmtc=dbo.lamtronso(soluong*giamtc,0); ")
         else:
             sql += (
-                f"SELECT maqt,maqtgt,mauqtgt,chiphiid,gia,oc_tien,on_tien, "
+                f"SELECT maqt,maqtgt,chiphiid,gia,oc_tien,on_tien, "
                 f"IDENTITY(INT, 1, 1) AS tt,abs(isnull(oc_sl,0)) as oc_sl,abs(isnull(on_sl,0)) as on_sl "
                 f"INTO #bdl FROM {self.xac}.tamqt3{qt3x} WHERE chiphiid>0 ORDER BY tt,chiphiid; "
                 f"If Not Exists (Select * From #bdl) RETURN; "
@@ -587,10 +585,10 @@ class Qtgt:
         sql += f"Select 'qt3{qt3x} bdl' as test,* from #bdl; "
         # up to tamqt3x
         if qt3x in [1, 2, 3, 4]:
-            cs = ['tt', 'maqt', 'maqtgt', 'mauqtgt', 'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc',
+            cs = ['tt', 'maqt', 'maqtgt', 'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc',
                   'tienvl', 'tiennc', 'tienmtc']
         else:
-            cs = ['tt', 'maqt', 'maqtgt', 'mauqtgt', 'chiphiid',
+            cs = ['tt', 'maqt', 'maqtgt', 'chiphiid',
                   'gia', 'oc_sl', 'on_sl', 'oc_tien', 'on_tien']
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         cr = map(lambda k: f"r.{k}", cs)
@@ -884,7 +882,9 @@ class Qtgt:
             f"CREATE PROC {self.xac}.tinhlai_dot_qtgt "
             f"@Madot NVARCHAR(255)='' "
             f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON "
-            f"DECLARE @Maqt NVARCHAR(255)='',@Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'; "
+            f"Set @Madot=Isnull(CAST(@Madot as NVARCHAR(255)),''); "
+            f"IF DataLength(@Madot)<1 Return; "
+            f"DECLARE @Maqt NVARCHAR(255)='', @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(50)='dutoan'; "
             f"DECLARE mCursor CURSOR FOR "
             f"Select maqt,baogiaid,hesoid,plgia From {self.xac}.qt "
             f"Where madot=@Madot AND Left(Isnull(tinhtrang, ''), 2) Not In ('Fi', 'TN', 'OK', 'oK'); "
@@ -892,15 +892,15 @@ class Qtgt:
             f"BEGIN TRY ")
         # mo cursor
         sql += (
-            f"Fetch Next From mCursor INTO @Maqt,@Baogiaid,@Hesoid,@Plgia; "
+            f"Fetch Next From mCursor INTO @Maqt, @Baogiaid, @Hesoid, @Plgia; "
             f"WHILE @@FETCH_STATUS=0 Begin Begin "
             f"EXEC {self.xac}.nap_qtgt @Maqt; "
             f"EXEC {self.xac}.tinh_qtgt @Baogiaid, @Hesoid, @Plgia; "
             f"EXEC {self.xac}.luu_qtgt; End"
-            f"Fetch Next From mCursor INTO @Maqt,@Baogiaid,@Hesoid,@Plgia; End ")
+            f"Fetch Next From mCursor INTO @Maqt, @Baogiaid, @Hesoid, @Plgia; End ")
         sql += (
             f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH "
-            f"CLOSE mCursor; DEALLOCATE mCursor; END; ")
+            f"CLOSE mCursor; DEALLOCATE mCursor; END ")
         try:
             db.core().execute(sql)
         except:

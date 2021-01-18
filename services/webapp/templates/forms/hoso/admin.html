@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang='vi'>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+  <title>Phòng kế hoạch-{{ escape(handler.settings["webapp_title"]) }}</title>
+  <link rel="stylesheet" href="{{static_url('css/fontawesome.5.11.2.all.css')}}" type="text/css">
+  <link rel="stylesheet" href="{{static_url('css/base.css')}}" type="text/css">
+  {% block cdn %}{% end %}
+  {% block css %}{% end %}
+</head>
+
+<body>
+  <div id="trangxem" class="l w100">
+    <header>
+      <img src="{{ static_url('favicon.png')}}" height="30" alt="logo">
+      {% block panel %}{% end %}
+    </header>
+    <nav>
+      <details>
+        <summary>Bieu mau (forms)</summary>
+        <a href="https://localhost:8888/pkh/forms/hoso" target="_blank">Ho so khach hang</a>
+      </details>
+      {% block menu %}{% end %}
+    </nav>
+    <main>{% block webapp %}{% end %}</main>
+    <footer>Footer</footer>
+  </div>
+  <!-- script  -->
+  <script type="module" src="{{static_url('js/refs/d3.min.js')}}"></script>
+  {% block js %}{% end %}
+  {% block py %}{% end %}
+</body>
+
+</html>
