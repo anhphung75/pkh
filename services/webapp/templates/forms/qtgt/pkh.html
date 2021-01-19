@@ -1,0 +1,83 @@
+{% extends "../../base_d3.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{static_url(r'css/forms/qtgt.css')}}" type="text/css">
+{% end %}
+
+{% block js %}
+<script type="module" src="{{static_url(r'js/forms/qtgt.js')}}"></script>
+{% end %}
+
+{% block panel %}
+<div class="c u fb f6">QUYẾT TOÁN GIÁ TRỊ</div>
+<div></div>
+{% end %}
+
+{% block menu %}
+<details id="forms">
+  <summary class="l fb f1">Biểu mẫu (forms)</summary>
+  <a href="https://localhost:8888/pkh/forms/a" target="_blank">Ho so khach hang</a>
+</details>
+<details id="reports">
+  <summary class="l fb f1">Báo biểu (reports)</summary>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/qtvt" target="_blank">Quyết toán đợt vật tư</a>
+  </div>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/tonghop/dotvl" target="_blank">Bth quyết toán vật liệu (giá)</a>
+  </div>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/tonghop/dotklvl" target="_blank">Bth quyết toán vật liệu (khối lượng)</a>
+  </div>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/tonghop/dotqtgt" target="_blank">Bth đợt Qtgt</a>
+  </div>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/qtgt" target="_blank">Quyết toán giá trị</a>
+  </div>
+</details>
+{% end %}
+
+{% block webapp %}
+<details id="ongcai" class="w100">
+  <summary>Phần ống cais</summary>
+
+  <details id="oc_cpxd">
+    <summary>cpxd</summary>
+    cpxd table
+  </details>
+  <details id="oc_cpvt">
+    <summary>cpxd</summary>
+    cpvt table
+  </details>
+  <details id="oc_cpvl">
+    <summary>cpxd</summary>
+    cpvl table
+  </details>
+</details>
+<details id="ongnganh" class="w100">
+  <summary>Phần ống nganh</summary>
+
+  <details id="on_cpxd">
+    <summary>cpxd</summary>
+    cpxd table
+  </details>
+  <details id="on_cpvt">
+    <summary>cpxd</summary>
+    cpvt table
+  </details>
+  <details id="on_cpvl">
+    <summary>cpxd</summary>
+    cpvl table
+  </details>
+</details>
+<details id="cpql" class="w100">
+  <summary>CPql</summary>
+  cpql
+
+</details>
+<details id="tlmd" class="w100">
+  <summary>Phần tai lap</summary>
+  cptl
+</details>
+{% end %}

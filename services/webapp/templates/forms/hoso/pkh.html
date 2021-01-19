@@ -1,0 +1,110 @@
+{% extends "../../base_d3.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{static_url(r'css/forms/hoso.css')}}" type="text/css">
+{% end %}
+
+{% block js %}
+<script type="module" src="{{static_url(r'js/forms/hoso.js')}}"></script>
+{% end %}
+
+{% block panel %}
+<div class="u fb f7">
+  HỒ SƠ KHÁCH HÀNG
+</div>
+
+<div></div>
+{% end %}
+
+{% block menu %}
+<details id="forms">
+  <summary class="l fb f1">Biểu mẫu (forms)</summary>
+  <div>
+    <a href="https://localhost:8888/pkh/forms/hoso" target="_blank">Ho so khach hang</a>
+  </div>
+
+</details>
+<details id="reports">
+  <summary class="l fb f1">Báo biểu (reports)</summary>
+  <div>Chua lam, hihi</div>
+</details>
+{% end %}
+
+{% block webapp %}
+<section class="hosomau flex">
+  <div class="btbl">
+    <div class="grid hosomau tieude">
+      <div class="c u fb fu">
+        THÔNG TIN
+      </div>
+      <div class="crud">
+        <button type="button" id="in_hoso">
+          <i class="fa fa-print"></i>
+        </button>
+        <button type="button" id="moi_hoso">
+          <i class="fa fa-plus"></i>
+        </button>
+        <button type="button" id="sua_hoso">
+          <i class="fa fa-edit"></i>
+        </button>
+        <button type="button" id="xoa_hoso">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <table id="hosochon" class="l w100">
+    </table>
+  </div>
+  <div class="ba fat">
+    <div class="grid scan tieude">
+      <div class="c u fb fu">
+        HÌNH ẢNH
+      </div>
+      <div class="crud">
+        <button type="button" id="moi_scan">
+          <i class="fa fa-plus"></i>
+        </button>
+        <button type="button" id="xoa_scan">
+          <i class="fa fa-trash"></i>
+        </button>
+      </div>
+    </div>
+    <div id="view_scan" class="r w100" data-scan="{{static_url(r'scan/MP 01-2020( đổi cỡ).pdf',True)}}">
+      <object class="r w100" type="application/pdf" width="500" height="400"
+        data="{{static_url(r'scan/MP04_2020.pdf',True)}}">
+        <p>Insert your error message here, if the PDF cannot be displayed.</p>
+      </object>
+    </div>
+  </div>
+</section>
+
+<details class="vung_search">
+  <summary>
+    NĂM
+    <span class="flex">
+      <select id="namlamviec" data-nam="2020">
+        <option value="2021">2021</option>
+        <option value="2020" selected>2020</option>
+        <option value="2019">2019</option>
+        <option value="2018">2018</option>
+        <option value="2017">2017</option>
+      </select>
+      {% set url_img=static_url(r'images/searchicon.png') %}
+      <input type="text" class="fat" placeholder="tìm không phân biệt chữ hoa, chữ thường" id="stim"
+        style="background-image:url({{url_img}})">
+    </span>
+
+    <div class="flex ba">
+      <button type="button" id="don-otim">
+        <i class="fa fa-trash"></i>
+      </button>
+      <div class="l fat" id="view_otim">
+      </div>
+    </div>
+  </summary>
+  <table id="danhsach" data-hon="{{static_url(r'js/forms/hoso/hon.js',True)}}">
+    <thead class="tieude"></thead>
+    <tbody></tbody>
+  </table>
+</details>
+{% end %}

@@ -17,9 +17,22 @@
     <header>
       <img src="{{ static_url('favicon.png')}}" height="30" alt="logo">
       {% module xsrf_form_html() %}
+      QUYẾT TOÁN GIÁ TRỊ
       {% block panel %}{% end %}
     </header>
     <nav>
+      <details id="forms">
+        <summary>Biểu mẫu (forms)</summary>
+        <a href="https://localhost:8888/pkh/forms/a" target="_blank">Ho so khach hang</a>
+      </details>
+      <details id="reports">
+        <summary>Báo biểu (reports)</summary>
+        <a href="https://localhost:8888/pkh/reports/qtvt" target="_blank">Quyết toán đợt vật tư</a>
+        <a href="https://localhost:8888/pkh/reports/tonghop/dotvl" target="_blank">Bth quyết toán vật liệu (giá)</a>
+        <a href="https://localhost:8888/pkh/reports/tonghop/dotklvl" target="_blank">Bth quyết toán vật liệu (khối lượng)</a>
+        <a href="https://localhost:8888/pkh/reports/tonghop/dotqtgt" target="_blank">Bth đợt Qtgt</a>
+        <a href="https://localhost:8888/pkh/reports/qtgt" target="_blank">Quyết toán giá trị</a>
+      </details>
       {% block menu %}{% end %}
     </nav>
     <main>{% block webapp %}{% end %}</main>

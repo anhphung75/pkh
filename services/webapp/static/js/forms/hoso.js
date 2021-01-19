@@ -448,7 +448,7 @@ var web = {
     row.append("td")
       .attr("class", "l")
       .style("background-color", "coral")
-      .style("width", "10%")
+      //.style("width", "10%")
       .text((d) => d.k);
     row.append("td")
       .attr("class", (d, i) => {

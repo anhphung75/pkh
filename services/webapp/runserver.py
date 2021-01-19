@@ -205,15 +205,19 @@ class Frm_Hoso(WebBase):
         schema = f"{schema}".lower()
         if schema in ['pkh']:
             self.set_secure_cookie("pbd", "Ph0ngK3H0@ch")
+            self.render("forms/hoso/pkh.html", error=None)
         else:
             self.set_secure_cookie("pbd", "kh@chTh@nThi3t")
-        self.render("forms/hoso/main.html", error=None)
 
 
 class Frm_Qtgt(WebBase):
     def get(self, schema):
         schema = schema.lower()
-        self.render("forms/qtgt/main.html", error=None)
+        if schema in ['pkh']:
+            self.set_secure_cookie("pbd", "Ph0ngK3H0@ch")
+            self.render("forms/qtgt/pkh.html", error=None)
+        else:
+            self.set_secure_cookie("pbd", "kh@chTh@nThi3t")
 
 
 class Rpt_Dutoan(WebBase):

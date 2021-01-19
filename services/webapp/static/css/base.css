@@ -5,6 +5,29 @@
   color: black;
 }
 
+/* Works on Firefox */
+
+* {
+  scrollbar-width: 8px;
+  scrollbar-color: red transparent;
+}
+
+/* Works on Chrome, Edge, and Safari */
+
+*::-webkit-scrollbar {
+  width: 8px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: red;
+  border-radius: 10px;
+  border: 1px solid #a9a9a9;
+}
+
 @import url("./font_Opensans.css");
 @import url("./font_UVNTintuc.css");
 html, body {
@@ -269,7 +292,37 @@ html, body {
 #trangxem {
   width: 100vw;
   height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  grid-template-columns: 15vh 1fr;
   overflow: hidden;
+}
+
+#trangxem header {
+  grid-column: 1 / 3;
+  grid-row: 1 / 2;
+  background: #f0e68c;
+  display: flex;
+  justify-content: space-between;
+}
+
+#trangxem nav {
+  grid-column: 1 / 2;
+  grid-row: 2 / 3;
+  background: #C0C0C0;
+}
+
+#trangxem main {
+  grid-row: 2 / 3;
+  grid-column: 2 / 3;
+  background: transparent;
+  overflow: auto;
+}
+
+#trangxem footer {
+  grid-column: 1 / 3;
+  grid-row: 3 / 4;
+  background: lightyellow;
 }
 
 .keep {
