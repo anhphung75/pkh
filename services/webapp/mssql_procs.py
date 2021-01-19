@@ -1039,33 +1039,20 @@ class Upkho:
         self.qt3x(4)
         self.qt3x(5)
 
-    def luu_dbo(self):
-        sql = (f"DROP PROC {self.xac}.luu_dbo")
-        try:
-            db.core().execute(sql)
-        except:
-            pass
-        # main prog
-        sql = (
-            f"CREATE PROC {self.xac}.luu_dbo "
-            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY ")
-
-        sql += f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
-        try:
-            db.core().execute(sql)
-        except:
-            pass
-
     def dot(self):
         cs = [
             'madot', 'hop', 'nam', 'plqt', 'quy', 'sodot', 'nhathauid', 'ngaylendot', 'ngaydshc', 'ngaythicong',
             'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt', 'dautucty', 'dautukhach',
-            'trigianc', 'trigiavl',     'ngaylap', 'nguoilap', 'ghichu', 'tinhtrang',
+            'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'tinhtrang',
             'sophieunhap', 'sophieuxuat', 'ghichuqtvt', 'tinhtrangqtvt']
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
-            f"UPDATE s SET {','.join(du)},s.lastupdate=getdate() "
+            f"UPDATE s SET {','.join(du)},s.lastupdate=getdate(), "
+            f"s.ghichu=Case When s.ghichu=r.ghichu then s.ghichu "
+            f"Else Concat(s.ghichu,r.ghichu) End, "
+            f"s.ghichuqtvt=Case When s.ghichuqtvt=r.ghichuqtvt then s.ghichuqtvt "
+            f"Else Concat(s.ghichuqtvt,r.ghichuqtvt) End "
             f"FROM {self.kho}.dot s INNER JOIN {self.xac}.dot r ON s.madot=r.madot "
             f"WHERE s.lastupdate<r.lastupdate And s.tinhtrang not like '%fin%'; ")
         try:
@@ -1093,17 +1080,21 @@ class Upkho:
         cs = [
             'maqt', 'baogiaid', 'hesoid', 'plgia', 'madot', 'hosoid', 'tt', 'soho',
             'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
-            'gxd', 'dautucty', 'dautukhach', 'ghichu', 'tinhtrang', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
+            'gxd', 'dautucty', 'dautukhach', 'tinhtrang', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
             'sodhn', 'hieudhn', 'chisodhn', 'madshc',
             'hesothauid', 'tvlcai', 'tnccai', 'tmtccai', 'tvlnganh', 'tncnganh', 'tmtcnganh', 'tgxd1kq1', 'tgxd1kq2',
             'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
             'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
             'slcat', 'tiencat', 'slcatnhua', 'tiencatnhua', 'tienvlk', 'nc', 'tiennc', 'mtc', 'tienmtc',
-            'cptt', 'cong', 'thuevat', 'trigiaqtt', 'ghichuqtt', 'tinhtrangqtt']
+            'cptt', 'cong', 'thuevat', 'trigiaqtt', 'tinhtrangqtt']
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
-            f"UPDATE s SET {','.join(du)},s.lastupdate=getdate() "
+            f"UPDATE s SET {','.join(du)},s.lastupdate=getdate(), "
+            f"s.ghichu=Case When s.ghichu=r.ghichu then s.ghichu "
+            f"Else Concat(s.ghichu,r.ghichu) End, "
+            f"s.ghichuqtt=Case When s.ghichuqtt=r.ghichuqtt then s.ghichuqtt "
+            f"Else Concat(s.ghichuqtt,r.ghichuqtt) End "
             f"FROM {self.kho}.qt s INNER JOIN {self.xac}.qt r ON s.maqt=r.maqt "
             f"WHERE s.lastupdate<r.lastupdate And s.tinhtrang not like '%fin%'; ")
         try:
@@ -1139,15 +1130,28 @@ class Upkho:
 
 
 class Upxac:
-    def __init__(self, xac='pkh'):
-        self.xac = xac
+    def __init__(self, xac='pkh', nam):
         self.kho = 'dbo'
+        self.nam = nam
+        self.xac = f"{xac}".lower()
 
-    def dot(self, nam):
+    def dvtc(self):
+        if self.xac in ['qlmlq2']:
+            self.dvtc = ['2']
+        elif self.xac in ['qlmltd', 'qlmlqtd']:
+            self.dvtc = ['4']
+        elif self.xac in ['pkh']:
+            self.dvtc = ['2', '3', '4', '5']
+        elif self.xac in ['pkd']:
+            self.dvtc = ['2', '3', '4']
+        else
+        self.dvtc = None
+
+    def dot(self):
         cs = [
             'madot', 'hop', 'nam', 'plqt', 'quy', 'sodot', 'nhathauid', 'ngaylendot', 'ngaydshc', 'ngaythicong',
             'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt', 'dautucty', 'dautukhach',
-            'trigianc', 'trigiavl',     'ngaylap', 'nguoilap', 'ghichu', 'tinhtrang',
+            'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'ghichu', 'tinhtrang',
             'sophieunhap', 'sophieuxuat', 'ghichuqtvt', 'tinhtrangqtvt']
         # xoa rec thua
         sql = (
@@ -1168,8 +1172,10 @@ class Upxac:
             f"SELECT {','.join(cr)},getdate() as lastupdate "
             f"FROM {self.kho}.dot r LEFT JOIN {self.xac}.dot s ON s.madot=r.madot "
             f"WHERE s.madot Is Null ")
-        if nam:
-            sql += f"And r.nam={nam} ORDER BY r.madot; "
+        if self.dvtc:
+            sql += f"And r.nhathauid in ({','.join(self.dvtc)}) "
+        if self.nam:
+            sql += f"And r.nam={self.nam} ORDER BY r.madot; "
         else:
             sql += f"ORDER BY r.madot; "
         try:
@@ -1200,7 +1206,7 @@ class Upxac:
             f"UPDATE s SET {','.join(du)},s.lastupdate=getdate() "
             f"FROM {self.kho}.qt r INNER JOIN {self.xac}.qt s ON s.maqt=r.maqt "
             f"WHERE s.lastupdate<r.lastupdate And s.tinhtrang not like '%fin%'; ")
-        # add rec chua co
+        # add new rec
         cr = map(lambda k: f"r.{k}", cs)
         sql += (
             f"INSERT INTO s ({','.join(cs)},lastupdate) "
@@ -1208,8 +1214,10 @@ class Upxac:
             f"FROM ({self.kho}.qt r LEFT JOIN {self.xac}.qt s ON s.maqt=r.maqt) "
             f"INNER JOIN {self.xac}.dot dot ON dot.madot=r.madot "
             f"WHERE s.maqt Is Null ")
+        if self.dvtc:
+            sql += f"And dot.nhathauid in ({','.join(self.dvtc)}) "
         if nam:
-            sql += f"And dot.nam={nam} ORDER BY r.madot; "
+            sql += f"And dot.nam={self.nam} ORDER BY r.madot; "
         else:
             sql += f"ORDER BY r.madot; "
         try:
@@ -1219,7 +1227,7 @@ class Upxac:
 
 
 # Csdl("pkh")
-#Qtgt("pkh")
+# Qtgt("pkh")
 Upkho("qlmlq2")
 Upkho("qlmltd")
 Upkho("pkh")
