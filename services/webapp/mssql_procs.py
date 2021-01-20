@@ -383,16 +383,16 @@ class Qtgt:
             # load default
             f"If Not Exists (Select * From #bdl) "
             f"Begin INSERT INTO #bdl ({cs}) SELECT {cs} FROM {self.xac}.tamqt3{i} "
-            f"WHERE chiphiid>0 ORDER BY tt,chiphiid; Set @Mauqt='reset_0'; End "
+            f"WHERE chiphiid>0 ORDER BY tt,chiphiid; Set @Mauqt='moi'; End "
             f"If Not Exists (Select * From #bdl) "
             f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{i} Order By lastupdate Desc; "
             f"INSERT INTO #bdl ({cs}) SELECT {cr} FROM {self.kho}.qt3{i} "
-            f"WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; Set @Mauqt='reset_0'; End "
+            f"WHERE chiphiid>0 AND maqt=@Mauqt ORDER BY tt,chiphiid; Set @Mauqt='moi'; End "
             f"If Not Exists (Select * From #bdl) RETURN; ")
         if i in [1, 2, 3, 4]:
-            sql += f"IF @Mauqt='reset_0' UPDATE #bdl SET soluong=0; "
+            sql += f"IF @Mauqt='moi' UPDATE #bdl SET soluong=0; "
         else:
-            sql += f"IF @Mauqt='reset_0' UPDATE #bdl SET oc_sl=0,on_sl=0; "
+            sql += f"IF @Mauqt='moi' UPDATE #bdl SET oc_sl=0,on_sl=0; "
         # up maqtgt
         sql += (
             f"UPDATE #bdl SET maqt=@Maqt,"
@@ -434,84 +434,80 @@ class Qtgt:
             f"IF DataLength(@Maqt)<1 RETURN; "
             f"Set @Mauqt=Isnull(CAST(@Mauqt as NVARCHAR(255)),''); "
             f"Set @Gxd=Isnull(CAST(@Gxd as DECIMAL(38,9)),0.0); "
-            f"Declare @Maq INT=26; ")
-        sql += (
-            f"IF (SELECT Count(*) FROM {self.xac}.tamqt)<>1 "
-            f"Begin DELETE FROM {self.xac}.tamqt; "
-            F"INSERT INTO {self.xac}.tamqt (maqt) VALUES (@Maqt); End ")
+            f"Declare @Maq INT=26,@Status NVARCHAR(255); ")
         # data init
-        cs = [
-            'madot', 'hosoid', 'tt', 'soho',
-            'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
-            'gxd', 'dautucty', 'dautukhach', 'ghichu', 'tinhtrang', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
-            'sodhn', 'hieudhn', 'chisodhn', 'madshc',
-            'hesothauid', 'tvlcai', 'tnccai', 'tmtccai', 'tvlnganh', 'tncnganh', 'tmtcnganh', 'tgxd1kq1', 'tgxd1kq2',
-            'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
-            'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
-            'slcat', 'tiencat', 'slcatnhua', 'tiencatnhua', 'tienvlk', 'nc', 'tiennc', 'mtc', 'tienmtc',
-            'cptt', 'cong', 'thuevat', 'trigiaqtt', 'ghichuqtt', 'tinhtrangqtt']
-        du = ','.join(map(lambda k: f"s.{k}=r.{k}", cs))
+        refs = ['madot', 'hosoid', 'tt', 'soho', 'tinhtrang', 'ghichu',
+                'hesothauid', 'tinhtrangqtt', 'ghichuqtt']
+        cs = ['baogiaid', 'hesoid', 'plgia', 'sodhn', 'hieudhn', 'chisodhn', 'madshc',
+              'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
+              'gxd', 'dautucty', 'dautukhach', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
+              'tvlcai', 'tnccai', 'tmtccai', 'tvlnganh', 'tncnganh', 'tmtcnganh', 'tgxd1kq1', 'tgxd1kq2',
+              'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
+              'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
+              'slcat', 'tiencat', 'slcatnhua', 'tiencatnhua', 'tienvlk', 'nc', 'tiennc', 'mtc', 'tienmtc',
+              'cptt', 'cong', 'thuevat', 'trigiaqtt']
+        cr = ','.join(refs+cs)
         sql += (
-            # up qtgt
-            f"UPDATE s SET s.maqt=@Maqt,s.mauqt='',{du}, "
-            f"s.baogiaid=Case When Isnull(r.baogiaid,0)<1 Then (Select Top 1 baogiaid From {self.kho}.baogiachiphi "
-            f"Order By baogiaid DESC) Else r.baogiaid End,"
-            f"s.hesoid=Case When Isnull(r.hesoid,0)<1 Then (Select Top 1 hesoid From {self.kho}.hesochiphi "
-            f"Order By hesoid DESC) Else r.hesoid End,"
-            f"s.plgia=Isnull(r.plgia,'dutoan') "
-            f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.qt r ON s.maqt=r.maqt; "
-            f"UPDATE s SET {du},"
-            f"s.baogiaid=Case When Isnull(r.baogiaid,0)<1 Then (Select Top 1 baogiaid From {self.kho}.baogiachiphi "
-            f"Order By baogiaid DESC) Else s.baogiaid End,"
-            f"s.hesoid=Case When Isnull(r.hesoid,0)<1 Then (Select Top 1 hesoid From {self.kho}.hesochiphi "
-            f"Order By hesoid DESC) Else s.hesoid End,"
-            f"s.plgia=Isnull(r.plgia,s.plgia) "
-            f"FROM {self.xac}.tamqt s INNER JOIN {self.xac}.qt r ON s.maqt=r.maqt; "
+            f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; "
+            f"SELECT top 1 maqt,mauqt,{cr} INTO #bdl FROM {self.xac}.tamqt WHERE maqt='Sao ma co'; "
+            # load gxd
+            f"IF @Gxd>0 Begin "
+            f"If Not Exists (Select * From #bdl) "
+            f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
+            f"FROM {self.xac}.qt WHERE gxd=@Gxd Order By lastupdate Desc, maqt Desc; "
+            f"If Not Exists (Select * From #bdl) "
+            f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
+            f"FROM {self.kho}.qt WHERE gxd=@Gxd Order By lastupdate Desc, maqt Desc; End "
+            # load mauqt
+            f"IF DataLength(@Mauqt)>0 Begin "
+            f"If Not Exists (Select * From #bdl) "
+            f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
+            f"FROM {self.xac}.qt WHERE maqt=@Mauqt; "
+            f"If Not Exists (Select * From #bdl) "
+            f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
+            f"FROM {self.kho}.qt WHERE maqt=@Mauqt; " End "
+            # load maqt
+            f"If Not Exists (Select * From #bdl) "
+            f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,'moi',{cr} "
+            f"FROM {self.xac}.qt WHERE maqt=@Maqt; "
+            f"If Not Exists (Select * From #bdl) "
+            f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,'moi',{cr} "
+            f"FROM {self.kho}.qt WHERE maqt=@Maqt; "
+            f"If Not Exists (Select * From #bdl) RETURN; "
+            # up maqt
+            f"UPDATE #bdl SET maqt=@Maqt,"
+            f"baogiaid=Case When Isnull(baogiaid,0)<1 Then (Select Top 1 baogiaid From {self.kho}.baogiachiphi "
+            f"Order By baogiaid DESC) Else baogiaid End,"
+            f"hesoid=Case When Isnull(hesoid,0)<1 Then (Select Top 1 hesoid From {self.kho}.hesochiphi "
+            f"Order By hesoid DESC) Else hesoid End,"
+            f"plgia=Isnull(plgia,'dutoan'); ")
+        # up qtgt ref
+        du = ','.join(map(lambda k: f"s.{k}=r.{k}", refs))
+        sql += (
+            f"UPDATE #bdl SET {du} "
+            f"FROM #bdl s INNER JOIN {self.xac}.qt r ON s.maqt=r.maqt; ")
+        # up to tamqt
+        cs += ['maqt', 'mauqt'] + refs
+        du = ','.join(map(lambda k: f"s.{k}=r.{k}", cs))
+        cr = ','.join(map(lambda k: f"r.{k}", cs))
+        cs = ','.join(cs.copy())
+        sql += (
+            f"MERGE {self.xac}.tamqt AS s USING #bdl AS r ON s.maqt=r.maqt "
+            f"WHEN MATCHED THEN UPDATE SET {du} "
+            f"WHEN NOT MATCHED THEN INSERT ({cs}) VALUES ({cr}) "
+            f"WHEN NOT MATCHED BY SOURCE THEN DELETE; "
             # up hoso
             f"UPDATE s SET "
-            f"s.sohoso=r.sohoso,s.khachhang=r.khachhang,s.diachikhachhang=r.diachikhachhang,s.maq=r.maq,s.maqp=r.maqp "
+            f"s.hosoid=r.hosoid,s.sohoso=r.sohoso,s.khachhang=r.khachhang,s.diachikhachhang=r.diachikhachhang,"
+            f"s.maq=r.maq,s.maqp=r.maqp "
             f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.hoso r ON s.hosoid=r.hosoid; "
             # up dot
             f"UPDATE s SET "
-            f"s.nam=r.nam,s.plqt=r.plqt,s.quy=r.quy,s.sodot=r.sodot,s.nhathauid=r.nhathauid "
+            f"s.madot=r.madot,s.nam=r.nam,s.plqt=r.plqt,s.quy=r.quy,s.sodot=r.sodot,s.nhathauid=r.nhathauid "
             f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.dot r ON s.madot=r.madot; ")
-        # data update
-        cs = [
-            'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
-            'gxd', 'dautucty', 'dautukhach',
-            'hesothauid', 'tvlcai', 'tnccai', 'tmtccai', 'tvlnganh', 'tncnganh', 'tmtcnganh', 'tgxd1kq1', 'tgxd1kq2',
-            'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
-            'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
-            'slcat', 'tiencat', 'slcatnhua', 'tiencatnhua', 'tienvlk', 'nc', 'tiennc', 'mtc', 'tienmtc',
-            'cptt', 'cong', 'thuevat', 'trigiaqtt']
-        du = ','.join(map(lambda k: f"s.{k}=r.{k}", cs))
-        print(f"du={du}")
-        sql += (
-            # load gxd
-            f"IF @Gxd>0 "
-            f"Begin IF DataLength((Select top 1 Isnull(mauqt,'') From {self.xac}.tamqt))<1 "
-            f"UPDATE s SET s.mauqt=r.maqt,{du} "
-            f"FROM {self.xac}.tamqt s INNER JOIN {self.xac}.qt r ON s.maqt=r.maqt "
-            f"WHERE r.maqt IN (Select top 1 maqt From {self.xac}.qt Where gxd=@Gxd "
-            f"Order By lastupdate Desc, maqt Desc); "
-            f"IF DataLength((Select top 1 Isnull(mauqt,'') From {self.xac}.tamqt))<1 "
-            f"UPDATE s SET s.mauqt=r.maqt,{du} "
-            f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.qt r ON s.maqt=r.maqt "
-            f"WHERE r.maqt IN (Select top 1 maqt From {self.kho}.qt Where gxd=@Gxd "
-            f"Order By lastupdate Desc, maqt Desc); End "
-            # load mauqt
-            f"IF DataLength(@Mauqt)>0 "
-            f"Begin IF DataLength((Select top 1 Isnull(mauqt,'') From {self.xac}.tamqt))<1 "
-            f"UPDATE s SET s.mauqt=r.maqt,{du} "
-            f"FROM {self.xac}.tamqt s INNER JOIN {self.xac}.qt r ON s.maqt=r.maqt "
-            f"WHERE r.maqt=@Mauqt; "
-            f"IF DataLength((Select top 1 Isnull(mauqt,'') From {self.xac}.tamqt))<1 "
-            f"UPDATE s SET s.mauqt=r.maqt,{du} "
-            f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.qt r ON s.maqt=r.maqt "
-            f"WHERE r.maqt=@Mauqt; End ")
         # nap qt3x
         sql += (
-            f"Select top 1 @Mauqt=Isnull(mauqt,'') From {self.xac}.tamqt; "
+            f"Select top 1 @Mauqt=Isnull(mauqt,''), @Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
             f"EXEC {self.xac}.nap_qt31 @Maqt, @Mauqt; "
             f"EXEC {self.xac}.nap_qt32 @Maqt, @Mauqt; "
             f"EXEC {self.xac}.nap_qt33 @Maqt, @Mauqt; "
@@ -519,7 +515,7 @@ class Qtgt:
             f"EXEC {self.xac}.nap_qt35 @Maqt, @Mauqt; ")
         # up chiphikhuvuc
         sql += (
-            f"IF DataLength(@Mauqt)>0 BEGIN "
+            f"IF @Status Not Like '%fin%' BEGIN "
             f"Select Top 1 @Maq=maq FROM {self.xac}.tamqt; "
             f"UPDATE s SET "
             f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
