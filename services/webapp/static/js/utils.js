@@ -43,3 +43,7 @@ class Tien {
     return "";
   }
 }
+
+function tachhangso(sothapphan=0, phanle=3){
+  
+}

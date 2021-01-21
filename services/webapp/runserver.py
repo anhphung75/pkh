@@ -84,8 +84,9 @@ class Wss_Hoso(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):
         parsed_origin = urllib.parse.urlparse(origin)
         print(f"parsed_origin={parsed_origin} netloc={parsed_origin.netloc}")
-        return parsed_origin.netloc.startswith("pna")
-        # return True
+        if ('https' in parsed_origin.scheme) and (':8888' in parsed_origin.netloc):
+            return True
+        return False
 
     def open(self, groupid=''):
         Wss_Hoso.pbd = f"{groupid}".lower()

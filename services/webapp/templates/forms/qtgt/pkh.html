@@ -27,7 +27,8 @@
     <a href="https://localhost:8888/pkh/reports/tonghop/dotvl" target="_blank">Bth quyết toán vật liệu (giá)</a>
   </div>
   <div>
-    <a href="https://localhost:8888/pkh/reports/tonghop/dotklvl" target="_blank">Bth quyết toán vật liệu (khối lượng)</a>
+    <a href="https://localhost:8888/pkh/reports/tonghop/dotklvl" target="_blank">Bth quyết toán vật liệu (khối
+      lượng)</a>
   </div>
   <div>
     <a href="https://localhost:8888/pkh/reports/tonghop/dotqtgt" target="_blank">Bth đợt Qtgt</a>
@@ -39,45 +40,52 @@
 {% end %}
 
 {% block webapp %}
-<details id="ongcai" class="w100">
-  <summary>Phần ống cais</summary>
 
-  <details id="oc_cpxd">
-    <summary>cpxd</summary>
-    cpxd table
-  </details>
-  <details id="oc_cpvt">
-    <summary>cpxd</summary>
-    cpvt table
-  </details>
-  <details id="oc_cpvl">
-    <summary>cpxd</summary>
-    cpvl table
-  </details>
-</details>
-<details id="ongnganh" class="w100">
-  <summary>Phần ống nganh</summary>
+<section id="ongcai">
+  <div class="grid ongcai">
+    <div class="c fb">ONG CAI</div>
+    <div class="l">vl</div>
+    <div class="r" id="oc_zvl">1</div>
+    <div class="l">nc</div>
+    <div class="r" id="oc_znc">1</div>
+    <div class="l">mtc</div>
+    <div class="r" id="oc_zmtc">1</div>
+  </div>
+  <table id="oc_cpxd"></table>
+  <table id="oc_cpvt"></table>
+  <table id="oc_cpvl"></table>
+</section>
 
-  <details id="on_cpxd">
-    <summary>cpxd</summary>
-    cpxd table
-  </details>
-  <details id="on_cpvt">
-    <summary>cpxd</summary>
-    cpvt table
-  </details>
-  <details id="on_cpvl">
-    <summary>cpxd</summary>
-    cpvl table
-  </details>
-</details>
-<details id="cpql" class="w100">
-  <summary>CPql</summary>
+
+<section id="ongnganh">
+  <div class="grid ongnganh">
+    <div class="c fb">ONG NGANH</div>
+    <div class="l">vl</div>
+    <div class="r" id="on_zvl">1</div>
+    <div class="l">nc</div>
+    <div class="r" id="on_znc">1</div>
+    <div class="l">mtc</div>
+    <div class="r" id="on_zmtc">1</div>
+  </div>
+  <table id="on_cpxd"></table>
+  <table id="on_cpvt"></table>
+  <table id="on_cpvl"></table>
+</section>
+
+<section id="tlmd">
+  <div class="grid tlmd">
+    <div class="c fb">Tai lap</div>
+    <div class="l">tien ong cai</div>
+    <div class="r" id="oc_ztlmd">1</div>
+    <div class="l">tien ong nganh</div>
+    <div class="r" id="on_ztlmd">1</div>
+  </div>
+  <table id="tlmd"></table>
+</section>
+
+<section id="cpql">
   cpql
 
-</details>
-<details id="tlmd" class="w100">
-  <summary>Phần tai lap</summary>
-  cptl
-</details>
+</section>
+
 {% end %}

@@ -33,3 +33,18 @@
   background-color: DodgerBlue !important;
   color: #ffffff;
 }
+
+.grid.ongcai, .grid.ongnganh {
+  grid: auto-flow minmax(1rem, max-content)/20fr 1fr 5fr 1fr 5fr 1fr 5fr;
+  background-color: magenta;
+}
+
+.grid.tlmd {
+  grid: auto-flow minmax(1rem, max-content)/5fr 1fr 2fr 1fr 2fr;
+  background-color: magenta;
+}
+
+tr:hover {
+  border: 1px solid green;
+  background-color: #9999ff;
+}

@@ -35,6 +35,8 @@ var ga = {
     ];
     ga.url["wss"] = ["wss://", window.location.host, "/", ga.csdl.ten, "/wss/hoso"].join('');
     ga.url["hon"] = d3.select("table[id='danhsach']").attr("data-hon");
+    ga.url["tam"] = d3.select("table[id='danhsach']").attr("data-tam");
+    ga.url["worker"] = d3.select("table[id='danhsach']").attr("data-worker");
   },
 
   lay_idb: () => {
@@ -546,9 +548,11 @@ var api = {
     let w = {}, kq;
     let tin = {
       id: Date.now(),
+      xe: ga.url["wss"],
       ve: [window.location.pathname.split('/')[1], Date.now()].join('.'),
       dl: { bang: bang, gom: nam }
     };
+    //w[0] = new Worker(ga.url["worker"]);
     w[0] = new Worker(sw_api.gom());
     console.log("api.gom gui tin=", JSON.stringify(tin, null, 2));
     w[0].postMessage(tin);
