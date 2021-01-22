@@ -859,5 +859,203 @@ var web = {
   },
 };
 
-web.tao();
-//web.ongcai();
+var sw_api = {
+
+};
+
+var api = {
+
+};
+
+var sw_idb = {
+  nap1_baogia: () => {
+    let sw = `
+    self.onmessage = (ev) => {
+      let tin = ev.data;
+      if (!("bang" in tin) || !("nap" in tin) || !tin.nap || (tin.nap<0)) {
+        self.postMessage({ cv: -1, kq: "nothing to nap" });
+      }
+      try {
+        let cv = 1, db, cs, ce, r, kq = {};
+        ce = new Date(tin.nap.baogia).getTime();
+        cs = parseInt(ce - 3600000*24*60);
+        ce = parseInt(ce + 3600000*24);
+        indexedDB.open("`+ idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+          db = e.target.result;
+          db.transaction(tin.bang, 'readonly')
+            .objectStore(tin.bang)
+            .openCursor(IDBKeyRange.bound(cs, ce))
+            .onsuccess = (e) => {
+              cs = e.target.result;
+              ce = 0;
+              if (cs) {
+                r = cs.value;
+                if (r.refs.baogia > ce && r.refs.baogia <= tin.nap.baogia && r.refs.chiphi.id === tin.nap.chiphi && r.refs.plgia === tin.nap.plgia) {
+                  ce = r.refs.baogia;
+                  kq = { idutc: r.idutc, giavl: r.data.gia, lastupdate: r.lastupdate };
+                }
+                cs.continue();
+              } else {
+                self.postMessage({ cv: cv, kq: kq });
+                self.postMessage({ cv: -1, kq: {} });
+              }
+            }
+        }
+      } catch (err) {
+        self.postMessage({ cv: cv, err: err });
+      };
+    }`;
+    let blob = new Blob([sw], { type: "text/javascript" });
+    let url = (window.URL || window.webkitURL).createObjectURL(blob);
+    return url;
+  },
+};
+
+var idb = {
+  csdl: { ten: 'cntd', cap: 1 },
+  taodb: () => {
+    let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    if (!indexedDB) {
+      return null;
+    };
+    try {
+      let yc = indexedDB.open(idb.csdl.ten, idb.csdl.cap);
+      yc.onupgradeneeded = e => {
+        let db = e.target.result;
+        if (e.oldVersion < idb.csdl.cap) {
+          let idx = db.createObjectStore('tttt', { keyPath: 'tttt' });
+          idx = db.createObjectStore('hoso', { keyPath: 'idutc' });
+          idx = db.createObjectStore('khachhang', { keyPath: 'idutc' });
+          idx = db.createObjectStore('dot', { keyPath: 'idutc' });
+          idx = db.createObjectStore('donvithicong', { keyPath: 'idutc' });
+          idx = db.createObjectStore('hoancong', { keyPath: 'idutc' });
+          idx = db.createObjectStore('chiphi', { keyPath: 'idutc' });
+          idx = db.createObjectStore('cpxd', { keyPath: 'idutc' });
+          idx = db.createObjectStore('cpvl', { keyPath: 'idutc' });
+          idx = db.createObjectStore('cpvt', { keyPath: 'idutc' });
+          idx = db.createObjectStore('chiphiquanly', { keyPath: 'idutc' });
+          idx = db.createObjectStore('khuvuc', { keyPath: 'idutc' });
+          idx = db.createObjectStore('baogia', { keyPath: 'idutc' });
+          idx = db.createObjectStore('bgvl', { keyPath: 'idutc' });
+          idx = db.createObjectStore('bgnc', { keyPath: 'idutc' });
+          idx = db.createObjectStore('bgmtc', { keyPath: 'idutc' });
+          idx = db.createObjectStore('bgtl', { keyPath: 'idutc' });
+
+          idx = db.createObjectStore('nhanvien', { keyPath: 'idutc' });
+
+          idx = db.createObjectStore('scan', { keyPath: 'idutc' });
+        }
+      };
+    } catch (err) { };
+  },
+
+
+  luu: (bang, dl) => {
+    let ii = 0, w = {}, l, tin;
+    if (!Array.isArray(dl)) {
+      dl = [dl];
+    }
+    l = dl.length;
+    while (ii < l) {
+      try {
+        tin = {
+          bang: bang,
+          luu: dl[ii],
+        };
+        console.log("idb.luu gui dl[", ii, "] tin=", JSON.stringify(tin, null, 2));
+        w[ii] = new Worker(sw_idb.luu1());
+        w[ii].postMessage(tin);
+        w[ii].onmessage = (e) => {
+          tin = e.data;
+          console.log("idb.luu tra tin=", JSON.stringify(tin, null, 2));
+          if (("cv" in tin) && (tin.cv < 0)) {
+            try {
+              w[ii].terminate();
+              delete w[ii];
+            } catch (error) { }
+          }
+          if ("err" in tin) {
+            console.log("err=", tin.err);
+            //lam lai sau 2 giay
+            setTimeout(() => { idb.luu(bang, dl[ii]); }, 2000);
+          }
+          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
+            console.log("idb.luu tra tin.kq=", tin.kq);
+          }
+        }
+      } catch (err) {
+        break;
+      }
+      ii++;
+    }
+  },
+  nap: (bang, uid) => {
+
+  },
+
+  nap_bgvl: (baogia, chiphi, plgia = 'dutoan') => {
+    let k, w, wu, gui, tin;
+    k = [baogia, '.', chiphi, '.', plgia].join('');
+    if (!(bgvl in ga)) {
+      ga.bgvl = {};
+    }
+    if (k in ga.bgvl) {
+      return;
+    }
+    try {
+      gui = {
+        bang: 'bgvl',
+        nap: { baogia: baogia, chiphi: chiphi, plgia: plgia },
+      };
+      console.log("idb.nap_bgvl gui=", JSON.stringify(gui, null, 2));
+      wu = sw_idb.nap1_baogia();
+      w = new Worker(wu);
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        console.log("idb.luu tra tin=", JSON.stringify(tin, null, 2));
+        if (("cv" in tin) && (tin.cv < 0)) {
+          try {
+            w.terminate();
+            delete w;
+          } catch (err) { }
+          try {
+            (window.URL || window.webkitURL).revokeObjectURL(wu);
+            delete wu;
+          } catch (err) { }
+        }
+        if ("err" in tin) {
+          console.log("err=", tin.err);
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        }
+        if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
+          console.log("idb.luu tra tin.kq=", tin.kq);
+          ga.bgvl[k] = tin.kq;
+        }
+      }
+    } catch (err) {
+      break;
+    }
+  },
+  nap_bgnc: (baogia, chiphi, plgia = 'dutoan') => {
+    let k;
+    k = [baogia, '.', chiphi, '.', plgia].join('');
+    if (k in ga.bgvl) {
+      return;
+    }
+  },
+  nap_bgmtc: (baogia, chiphi, plgia = 'dutoan') => {
+    let k;
+    k = [baogia, '.', chiphi, '.', plgia].join('');
+    if (k in ga.bgvl) {
+      return;
+    }
+  },
+};
+
+function luanhoi() {
+  web.tao();
+  //web.ongcai();
+}
+luanhoi();
