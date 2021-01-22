@@ -420,6 +420,7 @@ class Qtgt:
             pass
 
     def nap_qtgt(self):
+        sql0=''
         sql = (f"DROP PROC {self.xac}.nap_qtgt")
         try:
             db.core().execute(sql)
@@ -465,7 +466,7 @@ class Qtgt:
             f"FROM {self.xac}.qt WHERE maqt=@Mauqt; "
             f"If Not Exists (Select * From #bdl) "
             f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
-            f"FROM {self.kho}.qt WHERE maqt=@Mauqt; " End "
+            f"FROM {self.kho}.qt WHERE maqt=@Mauqt; End "
             # load maqt
             f"If Not Exists (Select * From #bdl) "
             f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,'moi',{cr} "
@@ -491,22 +492,22 @@ class Qtgt:
         du = ','.join(map(lambda k: f"s.{k}=r.{k}", cs))
         cr = ','.join(map(lambda k: f"r.{k}", cs))
         cs = ','.join(cs.copy())
-        sql += (
+        sql0 += (
             f"MERGE {self.xac}.tamqt AS s USING #bdl AS r ON s.maqt=r.maqt "
             f"WHEN MATCHED THEN UPDATE SET {du} "
             f"WHEN NOT MATCHED THEN INSERT ({cs}) VALUES ({cr}) "
             f"WHEN NOT MATCHED BY SOURCE THEN DELETE; "
             # up hoso
             f"UPDATE s SET "
-            f"s.hosoid=r.hosoid,s.sohoso=r.sohoso,s.khachhang=r.khachhang,s.diachikhachhang=r.diachikhachhang,"
+            f"s.sohoso=r.sohoso,s.khachhang=r.khachhang,s.diachikhachhang=r.diachikhachhang,"
             f"s.maq=r.maq,s.maqp=r.maqp "
             f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.hoso r ON s.hosoid=r.hosoid; "
             # up dot
             f"UPDATE s SET "
-            f"s.madot=r.madot,s.nam=r.nam,s.plqt=r.plqt,s.quy=r.quy,s.sodot=r.sodot,s.nhathauid=r.nhathauid "
+            f"s.nam=r.nam,s.plqt=r.plqt,s.quy=r.quy,s.sodot=r.sodot,s.nhathauid=r.nhathauid "
             f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.dot r ON s.madot=r.madot; ")
         # nap qt3x
-        sql += (
+        sql0 += (
             f"Select top 1 @Mauqt=Isnull(mauqt,''), @Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
             f"EXEC {self.xac}.nap_qt31 @Maqt, @Mauqt; "
             f"EXEC {self.xac}.nap_qt32 @Maqt, @Mauqt; "
@@ -514,7 +515,7 @@ class Qtgt:
             f"EXEC {self.xac}.nap_qt34 @Maqt, @Mauqt; "
             f"EXEC {self.xac}.nap_qt35 @Maqt, @Mauqt; ")
         # up chiphikhuvuc
-        sql += (
+        sql0 += (
             f"IF @Status Not Like '%fin%' BEGIN "
             f"Select Top 1 @Maq=maq FROM {self.xac}.tamqt; "
             f"UPDATE s SET "

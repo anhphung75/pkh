@@ -13,14 +13,28 @@ function lamtronso(solamtron, sole = 0) {
     let kq = Math.trunc(solamtron * le) / le;
     le = Math.pow(10, sole + 1);
     let kt = Math.trunc(solamtron * le) / le;
-    let lech = Math.round((kt - kq) * le);
     let them = 0;
+    let lech = Math.round((kt - kq) * le);
     if (lech > 4) {
       them = 1 / Math.pow(10, sole);
     }
     return parseFloat(kq + them);
   } catch (error) {
     return 0;
+  }
+}
+
+function viewso(sothapphan = 0, phanle = 3) {
+  try {
+    sothapphan = parseFloat(sothapphan);
+    phanle = parseInt(phanle);
+    if (sothapphan) {
+      return new Intl.NumberFormat('vi-VI', { maximumSignificantDigits: phanle }).format(sothapphan);
+    } else {
+      return "- ";
+    }
+  } catch (error) {
+    return sothapphan;
   }
 }
 
@@ -44,6 +58,5 @@ class Tien {
   }
 }
 
-function tachhangso(sothapphan=0, phanle=3){
-  
-}
+export { tao_uuid, lamtronso, viewso };
+export { Tien };
