@@ -24,80 +24,70 @@ class TaoJson():
 
     def chiphiquanly(self):
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:43").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 1},
-              "data": {"vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "data": {"macpql": 1, "hesoid": 1, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:44").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 2},
-              "data": {"vl": 1, "nc": 2.8, "mtc": 1.34, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "data": {"macpql": 2, "hesoid": 2, "vl": 1, "nc": 2.8, "mtc": 1.34, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:45").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 3},
-              "data": {"vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "data": {"macpql": 3, "hesoid": 3, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:46").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 4},
-              "data": {"vl": 1, "nc": 3.857, "mtc": 1.504, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "data": {"macpql": 4, "hesoid": 4, "vl": 1, "nc": 3.857, "mtc": 1.504, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:47").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 5},
-              "data": {"vl": 1, "nc": 5.714, "mtc": 1.82, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "data": {"macpql": 5, "hesoid": 5, "vl": 1, "nc": 5.714, "mtc": 1.82, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:48").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 6},
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "data": {"macpql": 6, "hesoid": 6, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:49").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 7},
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "data": {"macpql": 7, "hesoid": 7, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2019-09-18 12:33:43").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 20190725},
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "data": {"macpql": 20190725, "hesoid": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2020-07-21 12:33:43").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 20200721},
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+              "data": {"macpql": 20200721, "hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"},
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2020-08-27 11:33:43").to('utc').float_timestamp * 1000),
-              "refs": {"macpql": 20200827},
-              "data": {"vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+              "data": {"macpql": 20200827, "hesoid": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                        "cv_cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"},
               "status": "Fin"}
