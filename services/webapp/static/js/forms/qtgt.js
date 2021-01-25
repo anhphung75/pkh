@@ -8,32 +8,19 @@ var ga = {
     cpxd: ['Tt', 'Mô tả công tác', 'Đvt', 'Số lượng', 'Giá vật liệu', 'Giá nhân công', 'Giá mtc', 'Tiền vật liệu', 'Tiền nhân công', 'Tiền mtc'],
     cpvt: ['Tt', 'Mô tả vật tư', 'Đvt', 'Số lượng', 'Giá vật liệu', 'Giá nhân công', 'Giá mtc', 'Tiền vật liệu', 'Tiền nhân công', 'Tiền mtc'],
     cpvl: ['Tt', 'Mô tả vật liệu', 'Đvt', 'Số lượng', 'Giá vật liệu', 'Giá nhân công', 'Giá mtc', 'Tiền vật liệu', 'Tiền nhân công', 'Tiền mtc'],
-    cptl: ['Tt', 'Kết cấu tái lập', 'Đvt', 'Số lượng oc', 'Số lượng on', 'Giá', 'Tiền ống cái', 'Tiền ống nhánh']
+    cptl: ['Tt', 'Kết cấu tái lập', 'Đvt', 'Số lượng oc', 'Số lượng on', 'Giá', 'Tiền ống cái', 'Tiền ống nhánh'],
+    chiphi: ['Mo ta', 'Đvt', 'idutc']
   },
-  oc_cpxd: [
-    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
-    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }],
-  oc_cpvt: [
-    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
-    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }],
-  oc_cpvl: [
-    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
-    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }],
-  on_cpxd: [
-    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
-    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }],
-  on_cpvt: [
-    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
-    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }],
-  on_cpvl: [
-    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
-    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }],
+  chiphi: {
+    xd: [
+      { idutc: 1, mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
+      { idutc: 2, mota: { qtgt: 'cp2', qtvt: 'cp01' }, dvt: 'cai' },
+      { idutc: 3, mota: { qtgt: 'cp3', qtvt: 'cp01' }, dvt: 'cai' },],
+    tl: [
+      { idutc: 1, mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
+      { idutc: 2, mota: { qtgt: 'cp2', qtvt: 'cp01' }, dvt: 'cai' },
+      { idutc: 3, mota: { qtgt: 'cp3', qtvt: 'cp01' }, dvt: 'cai' },],
+  },
   oc: {
     zvl: 0, znc: 0, zmtc: 0, ztl: 0,
     cpxd: [
@@ -142,7 +129,7 @@ var web = {
     });
   },
   dieuhuong: (bang, col = 3, row = 0, keyCode = 0) => {
-    if (!['oc_cpxd', 'oc_cpvt', 'oc_cpvl',
+    if (!['chiphi', 'oc_cpxd', 'oc_cpvt', 'oc_cpvl',
       'on_cpxd', 'on_cpvt', 'on_cpvl', 'cptl'].includes(bang)) {
       return;
     }
@@ -158,8 +145,34 @@ var web = {
         e = d3.select(s).node();
         e.focus();
         e.select();
-      } catch (error) {
+      } catch (err) {
+        switch (bang) {
+          case 'chiphi':
+          case 'cp':
+            break;
+          case 'oc_cpxd':
+            bang = 'oc_cpvt';
+            break;
+          case 'oc_cpvt':
+            bang = 'oc_cpvl';
+            break;
+          case 'oc_cpvl':
+            bang = 'oc_cpxd';
+            break;
+          case 'on_cpxd':
+            bang = 'on_cpvt';
+            break;
+          case 'on_cpvt':
+            bang = 'on_cpvl';
+            break;
+          case 'on_cpvl':
+            bang = 'on_cpxd';
+            break;
+          default:
+            bang = 'cptl';
+        }
         s = ['.', bang, '.col', col, '.row', 0].join('');
+        console.log('goto s=', s);
         e = d3.select(s).node();
         e.focus();
         e.select();
@@ -171,7 +184,32 @@ var web = {
         e = d3.select(s).node();
         e.focus();
         e.select();
-      } catch (error) {
+      } catch (err) {
+        switch (bang) {
+          case 'chiphi':
+          case 'cp':
+            break;
+          case 'oc_cpxd':
+            bang = 'oc_cpvl';
+            break;
+          case 'oc_cpvl':
+            bang = 'oc_cpvt';
+            break;
+          case 'oc_cpvt':
+            bang = 'oc_cpxd';
+            break;
+          case 'on_cpxd':
+            bang = 'on_cpvl';
+            break;
+          case 'on_cpvl':
+            bang = 'on_cpvt';
+            break;
+          case 'on_cpvt':
+            bang = 'on_cpxd';
+            break;
+          default:
+            bang = 'cptl';
+        }
         s = ['.', bang, '.col', col, '.row', het - 1].join('');
         e = d3.select(s).node();
         e.focus();
@@ -369,16 +407,32 @@ var web = {
       row.append('td')
         .attr("class", "bb")
         .append('input')
-        .attr("class", "l b0")
+        .attr("class", (d, i) => "l oc_cpvt col1 row" + i)
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => d.mota)
         .on("change", (ev) => {
+          //try {
           let stt = ev.target.dataset.stt;
           let v = ev.target.value || '';
+          console.log('mota change=', v, ' stt=', stt, ' ev=', ev.target);
           if (v.length > 0) {
-            ga.oc.cpvt[stt].mota = v;
+            let r = ga.oc.cpvt[stt];
+            r.mota = v;
+            //tinh lai gia chi phi
+            idb.tinh.oc.cpvt(stt);
           }
           web.oc.cpvt();
+          web.oc.bth();
+          web.dieuhuong('oc_cpvt', 1, stt, 13);
+          //} catch (err) {
+          //console.log("err=", JSON.stringify(err));
+          //web.oc.cpvt();
+          //}
+        })
+        .on("keydown", function (ev) {
+          if ([13, 40, 38].includes(ev.keyCode)) {
+            web.dieuhuong('oc_cpvt', 1, ev.target.dataset.stt, ev.keyCode);
+          }
         });
       row.append('td')
         .attr("class", "c bb")
@@ -386,16 +440,31 @@ var web = {
       row.append('td')
         .attr("class", "bb")
         .append('input')
-        .attr("class", "r")
+        .attr("class", (d, i) => "r oc_cpvt col3 row" + i)
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt;
-          let v = parseFloat(ev.target.value) || 0;
-          if (v > 0) {
-            ga.oc.cpvt[stt].soluong = v;
+        .on("change", (ev) => {
+          try {
+            let stt = ev.target.dataset.stt;
+            let v = Match.abs(parseFloat(ev.target.value)) || 0;
+            if (v > 0) {
+              let r = ga.oc.cpvt[stt];
+              r.soluong = v;
+              r.tienvl = lamtronso(r.soluong * r.giavl, 0);
+              r.tiennc = lamtronso(r.soluong * r.gianc, 0);
+              r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
+            }
+            web.oc.cpvt();
+            web.oc.bth();
+            web.dieuhuong('oc_cpvt', 3, stt, 13);
+          } catch (err) {
+            web.oc.cpvt();
           }
-          web.oc.cpvt();
+        })
+        .on("keydown", function (ev) {
+          if ([13, 40, 38].includes(ev.keyCode)) {
+            web.dieuhuong('oc_cpvt', 3, ev.target.dataset.stt, ev.keyCode);
+          }
         });
       row.append('td')
         .attr("class", "r bb")
@@ -451,16 +520,32 @@ var web = {
       row.append('td')
         .attr("class", "bb")
         .append('input')
-        .attr("class", "l b0")
+        .attr("class", (d, i) => "l oc_cpvl col1 row" + i)
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => d.mota)
         .on("change", (ev) => {
+          //try {
           let stt = ev.target.dataset.stt;
           let v = ev.target.value || '';
+          console.log('mota change=', v, ' stt=', stt, ' ev=', ev.target);
           if (v.length > 0) {
-            ga.oc.cpvl[stt].mota = v;
+            let r = ga.oc.cpvl[stt];
+            r.mota = v;
+            //tinh lai gia chi phi
+            idb.tinh.oc.cpvl(stt);
           }
           web.oc.cpvl();
+          web.oc.bth();
+          web.dieuhuong('oc_cpvl', 1, stt, 13);
+          //} catch (err) {
+          //console.log("err=", JSON.stringify(err));
+          //web.oc.cpvl();
+          //}
+        })
+        .on("keydown", function (ev) {
+          if ([13, 40, 38].includes(ev.keyCode)) {
+            web.dieuhuong('oc_cpvl', 1, ev.target.dataset.stt, ev.keyCode);
+          }
         });
       row.append('td')
         .attr("class", "c bb")
@@ -468,16 +553,31 @@ var web = {
       row.append('td')
         .attr("class", "bb")
         .append('input')
-        .attr("class", "r")
+        .attr("class", (d, i) => "r oc_cpvl col3 row" + i)
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt;
-          let v = parseFloat(ev.target.value) || 0;
-          if (v > 0) {
-            ga.oc_cpvl[stt].soluong = v;
+        .on("change", (ev) => {
+          try {
+            let stt = ev.target.dataset.stt;
+            let v = Match.abs(parseFloat(ev.target.value)) || 0;
+            if (v > 0) {
+              let r = ga.oc.cpvl[stt];
+              r.soluong = v;
+              r.tienvl = lamtronso(r.soluong * r.giavl, 0);
+              r.tiennc = lamtronso(r.soluong * r.gianc, 0);
+              r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
+            }
+            web.oc.cpvl();
+            web.oc.bth();
+            web.dieuhuong('oc_cpvl', 3, stt, 13);
+          } catch (err) {
+            web.oc.cpvl();
           }
-          web.oc.cpvl();
+        })
+        .on("keydown", function (ev) {
+          if ([13, 40, 38].includes(ev.keyCode)) {
+            web.dieuhuong('oc_cpvl', 3, ev.target.dataset.stt, ev.keyCode);
+          }
         });
       row.append('td')
         .attr("class", "r bb")
@@ -828,25 +928,23 @@ var web = {
         .text((d) => viewso(d, 0));
     },
     cptl: () => {
-      let bang, rec;
-      bang = d3.select("table[id='cptl']")
+      let bang = d3.select("table[id='cptl']")
         .attr("class", "w100")
         .style("table-layout", "auto")
         .style("border-collapse", "separate")
         .style("border-spacing", "1px 1px")
         .style("overflow", "auto")
         .style("margin", "0");
-
       //tieude
       bang.selectAll("th").data(ga.tieude.cptl)
         .enter()
         .append("th")
         .attr("class", "c")
         .text((col) => col);
-
       //rows
       bang.selectAll("tr").remove();
-      rec = bang.selectAll("tr").data(ga.cptl).enter().append("tr");
+      let rec = bang.selectAll("tr").data(ga.cptl).enter().append("tr");
+      //cells
       rec.append('td')
         .attr("class", "c bb")
         .text((d, i) => {
@@ -861,23 +959,39 @@ var web = {
       rec.append('td')
         .attr("class", "bb")
         .append('input')
-        .attr("class", "l b0")
+        .attr("class", (d, i) => "l cptl col1 row" + i)
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => d.mota)
+        .on("input", function (ev) {
+          //hien combobox de lua chi phi
+          web.chiphi(ev.target, ga.chiphi.tl, ev.target.value);
+        })
         .on("change", (ev) => {
           try {
-            let stt = ev.target.dataset.stt;
-            let v = ev.target.value || '';
-            if (v.length > 0) {
-              ga.cptl[stt].mota = v;
+            let stt = ev.target.dataset.stt,
+              idutc = ev.target.dataset.idutc || 0;
+            if (idutc > 0) {
+              ga.cptl[stt].idutc = idutc;
               //tinh lai gia chi phi
               idb.tinh.cptl(stt);
             }
             web.tlmd.cptl();
             web.tlmd.bth();
+            d3.select("table[id='chiphi']").remove();
             web.dieuhuong('cptl', 1, stt, 13);
           } catch (err) {
             web.tlmd.cptl();
+          }
+        })
+        .on("keydown", function (ev) {
+          if ([13].includes(ev.keyCode)) {
+            try {
+              d3.select("table[id='chiphi']").remove();
+            } catch (err) { }
+            web.dieuhuong('cptl', 1, ev.target.dataset.stt, ev.keyCode);
+          }
+          if ([13, 40, 38].includes(ev.keyCode)) {
+            web.dieuhuong('cptl', 1, ev.target.dataset.stt, ev.keyCode);
           }
         });
       rec.append('td')
@@ -886,30 +1000,64 @@ var web = {
       rec.append('td')
         .attr("class", "bb")
         .append('input')
-        .attr("class", "r")
+        .attr("class", (d, i) => "r cptl col3 row" + i)
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => viewso(d.oc_sl, 0))
         .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt;
-          let v = parseFloat(ev.target.value) || 0;
-          if (v > 0) {
-            ga.cptl[stt].oc_sl = v;
+          try {
+            let stt = ev.target.dataset.stt,
+              v = Match.abs(parseFloat(ev.target.value)) || 0;
+            if (v > 0) {
+              let r = ga.cptl[stt];
+              r.oc_sl = v;
+              if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
+                r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
+              } else {
+                r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
+              }
+            }
+            web.tlmd.cptl();
+            web.tlmd.bth();
+            web.dieuhuong('cptl', 3, stt, 13);
+          } catch (err) {
+            web.tlmd.cptl();
           }
-          web.tlmd.cptl();
+        })
+        .on("keydown", function (ev) {
+          if ([13, 40, 38].includes(ev.keyCode)) {
+            web.dieuhuong('cptl', 3, ev.target.dataset.stt, ev.keyCode);
+          }
         });
       rec.append('td')
         .attr("class", "bb")
         .append('input')
-        .attr("class", "r")
+        .attr("class", (d, i) => "r cptl col4 row" + i)
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => viewso(d.on_sl, 0))
         .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt;
-          let v = parseFloat(ev.target.value) || 0;
-          if (v > 0) {
-            ga.cptl[stt].on_sl = v;
+          try {
+            let stt = ev.target.dataset.stt,
+              v = Match.abs(parseFloat(ev.target.value)) || 0;
+            if (v > 0) {
+              let r = ga.cptl[stt];
+              r.on_sl = v;
+              if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
+                r.on_tien = lamtronso(r.gia * r.on_sl, 0);
+              } else {
+                r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
+              }
+            }
+            web.tlmd.cptl();
+            web.tlmd.bth();
+            web.dieuhuong('cptl', 4, stt, 13);
+          } catch (err) {
+            web.tlmd.cptl();
           }
-          web.tlmd.cptl();
+        })
+        .on("keydown", function (ev) {
+          if ([13, 40, 38].includes(ev.keyCode)) {
+            web.dieuhuong('cptl', 4, ev.target.dataset.stt, ev.keyCode);
+          }
         });
       rec.append('td')
         .attr("class", "r bb")
@@ -922,7 +1070,97 @@ var web = {
         .text((d) => viewso(d.on_tien, 0));
     },
   },
-
+  sregexp: (stim) => {
+    if (!stim) {
+      return stim;
+    }
+    let k,
+      ltim = [...stim];
+    let mau = "";
+    for (k in ltim) {
+      if (
+        ["$", "(", ")", "[", ".", "+", "*", "^", "?", "\\"].includes(ltim[k])
+      ) {
+        mau += "\\" + ltim[k];
+      } else {
+        mau += ltim[k];
+      }
+    }
+    return mau;
+  },
+  chiphi: (el, dulieu, stim) => {
+    try {
+      d3.select(el).attr("data-chiphi-id", 0);
+    } catch (err) { return; }
+    //bang
+    let bang = d3.select(el).append("table")
+      .attr("id", "chiphi")
+      .style("table-layout", "auto")
+      .style("border-collapse", "separate")
+      .style("border-spacing", "1px 1px")
+      .style("overflow", "auto")
+      .style("margin", "0")
+      .style("width", "50vw")
+      .style("display", "inline-block");
+    //tieude
+    bang.selectAll("th").data(ga.tieude.chiphi)
+      .enter()
+      .append("th")
+      .attr("class", "c")
+      .text((col) => col);
+    //rows
+    bang.selectAll("tr").remove();
+    let rec = bang.selectAll("tr").data(dulieu).enter().append("tr");
+    rec.attr("class", "l")
+      .filter((d) => {
+        console.log('filter d=', d);
+        stim = stim ? stim.toLowerCase() : "";
+        let s = JSON.stringify(d);
+        return s.includes(stim);
+      })
+      .on("mouseenter", (ev, d) => {
+        console.log("row mouseenter d=", d);
+        d3.select(el).attr("data-chiphi-id", d.idutc);
+      });
+    //cells
+    rec.append('td')
+      .attr("data-stt", (d, i) => i)
+      .attr("class", (d, i) => "l bb chiphi col1 row" + i)
+      .html((d, i) => {
+        if (!stim) {
+          return d.mota.qtgt;
+        }
+        console.log("col d=", d, " i=", i);
+        stim = stim.toString();
+        let zone = d.mota.qtgt.toString(),
+          mau = web.sregexp(stim);
+        console.log("mau func sregexp=", mau);
+        mau = new RegExp(mau, "gi");
+        zone = zone.replace(mau, (m) => {
+          if (m === undefined || m === null || m === "") {
+            return;
+          }
+          console.log("col mau tim duoc=", m, " i=", i);
+          let moi = "<b style='color:red'>" + m + "</b>";
+          return moi;
+        });
+        return zone;
+      })
+      .on("keydown", function (ev, d) {
+        if ([13].includes(ev.keyCode)) {
+          d3.select(el).attr("data-chiphi-id", d.idutc);
+        }
+        if ([40, 38].includes(ev.keyCode)) {
+          web.dieuhuong('chiphi', 1, ev.target.dataset.stt, ev.keyCode);
+        }
+      });
+    rec.append('td')
+      .attr("class", "c bb")
+      .text((d) => { d.dvt });
+    rec.append('td')
+      .attr("class", "c bb")
+      .text((d) => { d.id });
+  },
 };
 
 var sw = {
