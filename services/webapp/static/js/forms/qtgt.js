@@ -9,7 +9,12 @@ var ga = {
     cpvt: ['Tt', 'Mô tả vật tư', 'Đvt', 'Số lượng', 'Giá vật liệu', 'Giá nhân công', 'Giá mtc', 'Tiền vật liệu', 'Tiền nhân công', 'Tiền mtc'],
     cpvl: ['Tt', 'Mô tả vật liệu', 'Đvt', 'Số lượng', 'Giá vật liệu', 'Giá nhân công', 'Giá mtc', 'Tiền vật liệu', 'Tiền nhân công', 'Tiền mtc'],
     cptl: ['Tt', 'Kết cấu tái lập', 'Đvt', 'Số lượng oc', 'Số lượng on', 'Giá', 'Tiền ống cái', 'Tiền ống nhánh'],
-    chiphi: ['Mo ta', 'Đvt', 'idutc']
+    chiphi: {
+      xd: ['Mo ta', 'Đvt', 'idutc'],
+      vt: ['Mo ta', 'Đvt', 'idutc'],
+      vl: ['Mo ta', 'Đvt', 'idutc'],
+      tl: ['Mo ta', 'Đvt', 'idutc']
+    },
   },
   chiphi: {
     xd: [
@@ -18,8 +23,11 @@ var ga = {
       { idutc: 3, mota: { qtgt: 'cp3', qtvt: 'cp01' }, dvt: 'cai' },],
     tl: [
       { idutc: 1, mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
-      { idutc: 2, mota: { qtgt: 'cp2', qtvt: 'cp01' }, dvt: 'cai' },
-      { idutc: 3, mota: { qtgt: 'cp3', qtvt: 'cp01' }, dvt: 'cai' },],
+      { idutc: 2, mota: { qtgt: 'cp2', qtvt: 'cp04' }, dvt: 'cai' },
+      { idutc: 3, mota: { qtgt: 'cp3', qtvt: 'cp05' }, dvt: 'cai' },
+      { idutc: 4, mota: { qtgt: 'cp4', qtvt: 'cp05' }, dvt: 'cai' },
+      { idutc: 5, mota: { qtgt: 'cp5', qtvt: 'cp06' }, dvt: 'cai' },
+      { idutc: 6, mota: { qtgt: 'cp6', qtvt: 'cp08' }, dvt: 'cai' },],
   },
   oc: {
     zvl: 0, znc: 0, zmtc: 0, ztl: 0,
@@ -147,8 +155,7 @@ var web = {
         e.select();
       } catch (err) {
         switch (bang) {
-          case 'chiphi':
-          case 'cp':
+          case 'cptl':
             break;
           case 'oc_cpxd':
             bang = 'oc_cpvt';
@@ -169,7 +176,7 @@ var web = {
             bang = 'on_cpxd';
             break;
           default:
-            bang = 'cptl';
+            bang = 'chiphi';
         }
         s = ['.', bang, '.col', col, '.row', 0].join('');
         console.log('goto s=', s);
@@ -186,8 +193,7 @@ var web = {
         e.select();
       } catch (err) {
         switch (bang) {
-          case 'chiphi':
-          case 'cp':
+          case 'cptl':
             break;
           case 'oc_cpxd':
             bang = 'oc_cpvl';
@@ -208,7 +214,7 @@ var web = {
             bang = 'on_cpxd';
             break;
           default:
-            bang = 'cptl';
+            bang = 'chiphi';
         }
         s = ['.', bang, '.col', col, '.row', het - 1].join('');
         e = d3.select(s).node();
@@ -964,12 +970,14 @@ var web = {
         .attr("value", (d) => d.mota)
         .on("input", function (ev) {
           //hien combobox de lua chi phi
-          web.chiphi(ev.target, ga.chiphi.tl, ev.target.value);
+          web.box.chiphi(ev.target, "tlmd", ev.target.value);
+          console.log("input ev=", ev.target);
         })
         .on("change", (ev) => {
           try {
+            console.log("change ev=", ev.target);
             let stt = ev.target.dataset.stt,
-              idutc = ev.target.dataset.idutc || 0;
+              idutc = ev.target.dataset.chiphi || 0;
             if (idutc > 0) {
               ga.cptl[stt].idutc = idutc;
               //tinh lai gia chi phi
@@ -977,7 +985,7 @@ var web = {
             }
             web.tlmd.cptl();
             web.tlmd.bth();
-            d3.select("table[id='chiphi']").remove();
+            d3.select("div[id='chiphi']").remove();
             web.dieuhuong('cptl', 1, stt, 13);
           } catch (err) {
             web.tlmd.cptl();
@@ -1088,78 +1096,113 @@ var web = {
     }
     return mau;
   },
-  chiphi: (el, dulieu, stim) => {
-    try {
-      d3.select(el).attr("data-chiphi-id", 0);
-    } catch (err) { return; }
-    //bang
-    let bang = d3.select(el).append("table")
-      .attr("id", "chiphi")
-      .style("table-layout", "auto")
-      .style("border-collapse", "separate")
-      .style("border-spacing", "1px 1px")
-      .style("overflow", "auto")
-      .style("margin", "0")
-      .style("width", "50vw")
-      .style("display", "inline-block");
-    //tieude
-    bang.selectAll("th").data(ga.tieude.chiphi)
-      .enter()
-      .append("th")
-      .attr("class", "c")
-      .text((col) => col);
-    //rows
-    bang.selectAll("tr").remove();
-    let rec = bang.selectAll("tr").data(dulieu).enter().append("tr");
-    rec.attr("class", "l")
-      .filter((d) => {
-        console.log('filter d=', d);
-        stim = stim ? stim.toLowerCase() : "";
-        let s = JSON.stringify(d);
-        return s.includes(stim);
-      })
-      .on("mouseenter", (ev, d) => {
-        console.log("row mouseenter d=", d);
-        d3.select(el).attr("data-chiphi-id", d.idutc);
-      });
-    //cells
-    rec.append('td')
-      .attr("data-stt", (d, i) => i)
-      .attr("class", (d, i) => "l bb chiphi col1 row" + i)
-      .html((d, i) => {
-        if (!stim) {
-          return d.mota.qtgt;
-        }
-        console.log("col d=", d, " i=", i);
-        stim = stim.toString();
-        let zone = d.mota.qtgt.toString(),
-          mau = web.sregexp(stim);
-        console.log("mau func sregexp=", mau);
-        mau = new RegExp(mau, "gi");
-        zone = zone.replace(mau, (m) => {
-          if (m === undefined || m === null || m === "") {
-            return;
+  box: {
+    chiphi: (el, plcp, stim) => {
+      console.log("box chiphi el=", el, " plcp=", plcp, " stim=", stim);
+      try {
+        stim = stim.toString().toLowerCase();
+      } catch (err) {
+        stim = '';
+      }
+      let vt, vl, zone, bang, rec, dulieu, tieude;
+      try {
+        d3.select(el).attr("data-chiphi", 0);
+        vl = d3.select(el).style("left");
+        vt = d3.select(el).style("top") + d3.select(el).style("height");
+        d3.select("#chiphi").remove();
+      } catch (err) {
+        //return;
+      }
+      switch (plcp) {
+        case 'tl':
+        case 'tlmd':
+          tieude = ga.tieude.chiphi.tl;
+          dulieu = ga.chiphi.tl.filter((d) => JSON.stringify(d).includes(stim));
+          break;
+        default:
+          tieude = ga.tieude.chiphi.xd;
+          dulieu = ga.chiphi.xd.filter((d) => JSON.stringify(d).includes(stim));
+      }
+      zone = d3.select(el.parentNode).append("div")
+        .attr("id", "chiphi")
+        .style("display", "block")
+        .style("background-color", "white")
+        .style("overflow", "auto")
+        .style("position", "absolute")
+        .style("top", vt)
+        .style("left", vl)
+        .style("margin", "0")
+        .style("width", "20cm")
+        .style("max-height", "3cm")
+        .style("border", "1px solid black");
+      //bang
+      bang = zone.append("table")
+        .style("border-collapse", "collapse")
+        .style("border-spacing", "1px 1px")
+        .style("width", "100%");
+      //tieude
+      bang.selectAll("th").data(tieude)
+        .enter()
+        .append("th")
+        .attr("class", "c")
+        .style("width", (d, i) => {
+          switch (i) {
+            case 0:
+              return "70%";
+            case 1:
+              return "10%";
+            case 2:
+              return "20%";
+            default:
+              return "auto";
           }
-          console.log("col mau tim duoc=", m, " i=", i);
-          let moi = "<b style='color:red'>" + m + "</b>";
-          return moi;
+        })
+        .text((col) => col);
+      //noidung
+      bang.selectAll("tr").remove();
+      rec = bang.selectAll("tr").data(dulieu).enter().append("tr");
+      rec.attr("class", "l")
+        .style("width", "100%")
+        .on("mouseover", (ev, d) => {
+          try {
+            d3.select(el).attr("data-chiphi", d.idutc);
+            d3.select(el).attr("value", d.mota);
+            console.log("row mouseover ev=", ev.target);
+            console.log("row mouseover inp=", d3.select(el));
+          } catch (err) { }
+        })
+        .on("click", (ev, d) => {
+          console.log("row click d=", d);
+          try {
+            d3.select(el).attr("data-chiphi", d.idutc);
+            d3.select(el).attr("value", d.mota);
+          } catch (err) { }
         });
-        return zone;
-      })
-      .on("keydown", function (ev, d) {
-        if ([13].includes(ev.keyCode)) {
-          d3.select(el).attr("data-chiphi-id", d.idutc);
-        }
-        if ([40, 38].includes(ev.keyCode)) {
-          web.dieuhuong('chiphi', 1, ev.target.dataset.stt, ev.keyCode);
-        }
-      });
-    rec.append('td')
-      .attr("class", "c bb")
-      .text((d) => { d.dvt });
-    rec.append('td')
-      .attr("class", "c bb")
-      .text((d) => { d.id });
+      //cells
+      rec.append('td')
+        .attr("data-stt", (d, i) => i)
+        .attr("class", (d, i) => "l chiphi col1 row" + i)
+        .html((d, i) => {
+          if (!stim) { return d.mota.qtgt; }
+          let zone = d.mota.qtgt.toString(),
+            mau = web.sregexp(stim);
+          mau = new RegExp(mau, "gi");
+          zone = zone.replace(mau, (m) => {
+            if (m === undefined || m === null || m === "") { return; }
+            let moi = "<b style='color:red'>" + m + "</b>";
+            return moi;
+          });
+          return zone;
+        });
+      rec.append('td')
+        .attr("class", "c")
+        .text((d) => d.dvt);
+      rec.append('td')
+        .attr("class", "c")
+        .text((d) => d.idutc || d.id);
+    },
+    draft: () => {
+    },
   },
 };
 
@@ -1690,3 +1733,4 @@ function luanhoi() {
   //web.ongcai();
 }
 luanhoi();
+//web.box.chiphi('#test', 'tlmd', null);
