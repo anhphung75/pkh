@@ -17,17 +17,18 @@ var ga = {
     },
   },
   chiphi: {
-    xd: [
-      { idutc: 1, mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
-      { idutc: 2, mota: { qtgt: 'cp2', qtvt: 'cp01' }, dvt: 'cai' },
-      { idutc: 3, mota: { qtgt: 'cp3', qtvt: 'cp01' }, dvt: 'cai' },],
-    tl: [
-      { idutc: 1, mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
-      { idutc: 2, mota: { qtgt: 'cp2', qtvt: 'cp04' }, dvt: 'cai' },
-      { idutc: 3, mota: { qtgt: 'cp3', qtvt: 'cp05' }, dvt: 'cai' },
-      { idutc: 4, mota: { qtgt: 'cp4', qtvt: 'cp05' }, dvt: 'cai' },
-      { idutc: 5, mota: { qtgt: 'cp5', qtvt: 'cp06' }, dvt: 'cai' },
-      { idutc: 6, mota: { qtgt: 'cp6', qtvt: 'cp08' }, dvt: 'cai' },],
+    '1': { idutc: 1, plcp: 'cpxd', mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
+    '2': { idutc: 2, plcp: 'cpxd', mota: { qtgt: 'cp2', qtvt: 'cp01' }, dvt: 'cai' },
+    '3': { idutc: 3, plcp: 'cpxd', mota: { qtgt: 'cp3', qtvt: 'cp01' }, dvt: 'cai' },
+    '4': { idutc: 4, plcp: 'cpxd', mota: { qtgt: 'cp4', qtvt: 'cp01' }, dvt: 'cai' },
+    '5': { idutc: 5, plcp: 'cpxd', mota: { qtgt: 'cp5', qtvt: 'cp01' }, dvt: 'cai' },
+    '6': { idutc: 6, plcp: 'cpxd', mota: { qtgt: 'cp6', qtvt: 'cp01' }, dvt: 'cai' },
+    '7': { idutc: 7, plcp: 'cpvt', mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
+    '8': { idutc: 8, plcp: 'cpvt', mota: { qtgt: 'cp2', qtvt: 'cp01' }, dvt: 'cai' },
+    '9': { idutc: 9, plcp: 'cpvt', mota: { qtgt: 'cp3', qtvt: 'cp01' }, dvt: 'cai' },
+    '10': { idutc: 10, plcp: 'cptl', mota: { qtgt: 'cp4', qtvt: 'cp01' }, dvt: 'cai' },
+    '11': { idutc: 11, plcp: 'cptl', mota: { qtgt: 'cp5', qtvt: 'cp01' }, dvt: 'cai' },
+    '12': { idutc: 12, plcp: 'cptl', mota: { qtgt: 'cp6', qtvt: 'cp01' }, dvt: 'cai' },
   },
   oc: {
     zvl: 0, znc: 0, zmtc: 0, ztl: 0,
@@ -977,12 +978,17 @@ var web = {
           try {
             console.log("change ev=", ev.target);
             let stt = ev.target.dataset.stt,
-              idutc = ev.target.dataset.chiphi || 0;
-            if (idutc > 0) {
+              idutc = ev.target.dataset.chiphi;
+            idutc = idutc === '0' ? 0 : parseInt(idutc) || -1;
+            console.log('stt=', stt, ' idutc=', idutc);
+            console.log(' truoc ga.cptl=', JSON.stringify(ga.cptl));
+            if (idutc > -1) {
               ga.cptl[stt].idutc = idutc;
+              ga.cptl[stt].chiphi = idutc;
               //tinh lai gia chi phi
               idb.tinh.cptl(stt);
             }
+            console.log(' sau ga.cptl=', JSON.stringify(ga.cptl));
             web.tlmd.cptl();
             web.tlmd.bth();
             d3.select("div[id='chiphi']").remove();
@@ -1104,7 +1110,7 @@ var web = {
       } catch (err) {
         stim = '';
       }
-      let vt, vl, zone, bang, rec, dulieu, tieude;
+      let vt, vl, zone, bang, rec, dulieu, tieude, k, r;
       try {
         d3.select(el).attr("data-chiphi", 0);
         vl = d3.select(el).style("left");
@@ -1113,15 +1119,45 @@ var web = {
       } catch (err) {
         //return;
       }
+      dulieu = [];
+      rec = Object.keys(ga.chiphi).sort();
       switch (plcp) {
+        case 'cpvt':
+          tieude = ga.tieude.chiphi.vt;
+          for (k in rec) {
+            r = ga.chiphi[rec[k]];
+            if (r && r.plcp.includes('vt') && JSON.stringify(r).includes(stim)) {
+              dulieu.push(r);
+            }
+          }
+          break;
+        case 'cpvl':
+          tieude = ga.tieude.chiphi.vl;
+          for (k in rec) {
+            r = ga.chiphi[rec[k]];
+            if (r && r.plcp.includes('vl') && JSON.stringify(r).includes(stim)) {
+              dulieu.push(r);
+            }
+          }
+          break;
         case 'tl':
         case 'tlmd':
           tieude = ga.tieude.chiphi.tl;
-          dulieu = ga.chiphi.tl.filter((d) => JSON.stringify(d).includes(stim));
+          for (k in rec) {
+            r = ga.chiphi[rec[k]];
+            if (r && r.plcp.includes('tl') && JSON.stringify(r).includes(stim)) {
+              dulieu.push(r);
+            }
+          }
           break;
         default:
           tieude = ga.tieude.chiphi.xd;
-          dulieu = ga.chiphi.xd.filter((d) => JSON.stringify(d).includes(stim));
+          for (k in rec) {
+            r = ga.chiphi[rec[k]];
+            if (r && r.plcp.includes('xd') && JSON.stringify(r).includes(stim)) {
+              dulieu.push(r);
+            }
+          }
       }
       zone = d3.select(el.parentNode).append("div")
         .attr("id", "chiphi")
@@ -1166,7 +1202,7 @@ var web = {
         .on("mouseover", (ev, d) => {
           try {
             d3.select(el).attr("data-chiphi", d.idutc);
-            d3.select(el).attr("value", d.mota);
+            d3.select(el).attr("value", d.mota.qtgt);
             console.log("row mouseover ev=", ev.target);
             console.log("row mouseover inp=", d3.select(el));
           } catch (err) { }
@@ -1344,19 +1380,20 @@ var idb = {
 
   },
   nap1: {
-    baogia: (bang, baogia, chiphi, plgia = 'dutoan') => {
+    baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
       let k, w, wu, gui, tin;
       if (!bang || !(['bgvl', 'bgnc', 'bgmtc', 'bgtl']).includes(bang)) {
         bang = 'bgvl';
       }
-      k = [plgia, '.', chiphi, '.', baogia].join('');
+      k = [plgia, '.', baogia, '.', chiphi].join('');
       if (!(bang in ga)) {
         ga[bang] = {};
       }
       if (k in ga[bang]) {
-        return;
+        //return;
       }
       ga[bang][k] = 0;
+      console.log("nap1 ga[", bang, '][', k, ']=', ga[bang][k]);
       try {
         gui = {
           bang: bang,
@@ -1403,6 +1440,7 @@ var idb = {
           ii = 0,
           m = ga.oc.cpxd.length || 0;
         if (m < 1) { return; }
+        //nap du lieu
         while (ii < m) {
           try {
             r = ga.oc.cpxd[ii];
@@ -1410,9 +1448,11 @@ var idb = {
             idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap("chiphi", r.chiphi);
           } catch (err) { }
           ii++;
         }
+        //tinh
         stt = stt === '0' ? 0 : parseInt(stt) || -1;
         if (stt < 0) {
           ii = 0;
@@ -1431,6 +1471,8 @@ var idb = {
             r.tienvl = lamtronso(r.giavl * r.soluong, 0);
             r.tiennc = lamtronso(r.gianc * r.soluong, 0);
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
+            r.mota = ga.chiphi[r.chiphi].mota.qtgt;
+            r.dvt = ga.chiphi[r.chiphi].dvt;
           } catch (err) { }
           ii++;
         }
@@ -1637,13 +1679,16 @@ var idb = {
       let r, k,
         ii = 0,
         m = ga.cptl.length || 0;
-      if (m < 1) { return; }
+      if (m < 1) {
+        //return; 
+      }
       while (ii < m) {
-        try {
-          r = ga.cptl[ii];
-          k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-          idb.nap1_baogia('bgtl', ga.mabaogia, r.chiphi, ga.plgia);
-        } catch (err) { }
+        //try {
+        r = ga.cptl[ii];
+        k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+        idb.nap1_baogia('bgtl', r.chiphi, ga.mabaogia, ga.plgia);
+        idb.nap("chiphi", r.chiphi);
+        //} catch (err) { }
         ii++;
       }
       stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -1654,20 +1699,24 @@ var idb = {
         m = stt + 1;
       }
       while (ii < m) {
-        try {
-          r = ga.cptl[ii];
-          k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-          r.oc_sl = lamtronso(Math.abs(r.oc_sl), 3);
-          r.on_sl = lamtronso(Math.abs(r.on_sl), 3);
-          r.gia = lamtronso(ga.bgtl[k], 0);
-          if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
-            r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
-            r.on_tien = lamtronso(r.gia * r.on_sl, 0);
-          } else {
-            r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
-            r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
-          }
-        } catch (err) { }
+        //try {
+        r = ga.cptl[ii];
+        k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+        r.oc_sl = lamtronso(Math.abs(r.oc_sl), 3);
+        r.on_sl = lamtronso(Math.abs(r.on_sl), 3);
+        r.gia = lamtronso(ga.bgtl[k], 0);
+        console.log('k=', k, ' gia=', JSON.stringify(ga.bgtl));
+        if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
+          r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
+          r.on_tien = lamtronso(r.gia * r.on_sl, 0);
+        } else {
+          r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
+          r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
+        }
+        r.mota = ga.chiphi[r.chiphi].mota.qtgt;
+        r.dvt = ga.chiphi[r.chiphi].dvt;
+        console.log('ga.chiphi[', r.chiphi, ']=', JSON.stringify(ga.chiphi[r.chiphi]));
+        //} catch (err) { }
         ii++;
       }
     },
