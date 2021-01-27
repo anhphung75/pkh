@@ -2015,7 +2015,7 @@ var idb = {
       }
     },
     cpql: () => {
-      if (!('cpql' in ga)) { ga.cpql = { macpql=20200827 } };
+      if (!('cpql' in ga)) { ga.cpql = { macpql: 20200827 } };
       if (!('macpql' in ga)) { ga.macpql = 20200827 };
       idb.nap1.cpql(ga.macpql);
       let self = ga.cpql[ga.macpql];
