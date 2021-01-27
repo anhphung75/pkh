@@ -3,6 +3,7 @@ import { lamtronso, viewso } from "./../utils.js"
 var ga = {
   plgia: 'dutoan',
   mabaogia: 20210101,
+  macpql: 20200827,
   namlamviec: new Date().getFullYear().toString(),
   tieude: {
     cpxd: ['Tt', 'Mô tả công tác', 'Đvt', 'Số lượng', 'Giá vật liệu', 'Giá nhân công', 'Giá mtc', 'Tiền vật liệu', 'Tiền nhân công', 'Tiền mtc'],
@@ -1378,7 +1379,7 @@ var sw = {
           url = (window.URL || window.webkitURL).createObjectURL(blob);
         return url;
       },
-      chiphi: () => {
+      idutc: () => {
         let sw = `
         self.onmessage = (ev) => {
           try {
@@ -1400,6 +1401,48 @@ var sw = {
                   if (cs) {
                     kq = cs.value;
                     if (kq) { self.postMessage({ cv: cv, kq: kq }); }
+                    cs.continue();
+                  } else {
+                    self.postMessage({ cv: -1, kq: null });
+                  }
+                }
+            }
+          } catch (err) {
+            self.postMessage({ cv: cv, err: err });
+          };
+        }`,
+          blob = new Blob([sw], { type: "text/javascript" }),
+          url = (window.URL || window.webkitURL).createObjectURL(blob);
+        return url;
+      },
+      makhoa: () => {
+        let sw = `
+        self.onmessage = (ev) => {
+          try {
+            let tin = ev.data,
+              bang = tin.bang.toString().toLowerCase(),
+              sma = tin.nap.sma.toString().toLowerCase(),
+              vma = tin.nap.vma.toString().toLowerCase();
+          } catch (err) {
+            self.postMessage({ cv: -1, kq: "nothing to nap" });
+          }
+          try {
+            let db, cs, kq, cv = 1;
+            indexedDB.open("`+ idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+              db = e.target.result;
+              db.transaction(bang, 'readonly')
+                .objectStore(bang)
+                .openCursor(null, 'prev')
+                .onsuccess = (e) => {
+                  cs = e.target.result;
+                  if (cs) {
+                    kq = cs.value;
+                    try {
+                      if (r.data.sma.toString().toLowerCase()===vma){
+                        self.postMessage({ cv: cv, kq: kq });
+                        self.postMessage({ cv: -1, kq: null });
+                      }
+                    } catch (err) {}
                     cs.continue();
                   } else {
                     self.postMessage({ cv: -1, kq: null });
@@ -1547,6 +1590,104 @@ var idb = {
     } catch (err) { }
   },
   nap1: {
+    idutc: (bang, uid = null) => {
+      try {
+        bang = bang.toString().toLowerCase();
+        if (bang.length < 1) { return; }
+      } catch (err) { return; }
+      try {
+        uid = uid === '0' ? 0 : parseInt(uid) || -1;
+        if (uid < 0) { return; }
+      } catch (err) { return; }
+      //main prog
+      let w, wu, gui, tin;
+      if (!(bang in ga)) { ga[bang] = { uid: {} }; }
+      try {
+        gui = {
+          bang: bang,
+          nap: { idutc: uid },
+        };
+        console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
+        wu = sw.idb.nap1.idutc();
+        w = new Worker(wu);
+        w.postMessage(gui);
+        w.onmessage = (e) => {
+          tin = e.data;
+          console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
+          if (("cv" in tin) && (tin.cv < 0)) {
+            try {
+              w.terminate();
+              w = null;
+            } catch (err) { }
+            try {
+              (window.URL || window.webkitURL).revokeObjectURL(wu);
+              wu = null;
+            } catch (err) { }
+          }
+          if ("err" in tin) {
+            console.log("err=", tin.err);
+            //lam lai sau 2 giay
+            setTimeout(() => { w.postMessage(gui); }, 2000);
+          }
+          //load to ga
+          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
+            console.log("idb.nap1 nhan tin.kq=", tin.kq);
+            ga[bang][uid] = tin.kq;
+          }
+        }
+      } catch (err) { }
+    },
+    makhoa: (bang, sma = null, vma = null) => {
+      try {
+        bang = bang.toString().toLowerCase();
+        if (bang.length < 1) { return; }
+      } catch (err) { return; }
+      try {
+        sma = sma.toString().toLowerCase();
+        if (sma.length < 1) { return; }
+      } catch (err) { return; }
+      try {
+        vma = vma.toString().toLowerCase();
+        if (vma.length < 1) { return; }
+      } catch (err) { return; }
+      //main prog
+      let w, wu, gui, tin;
+      if (!(bang in ga)) { ga[bang] = { vma: {} }; }
+      try {
+        gui = {
+          bang: bang,
+          nap: { sma: sma, vma: vma },
+        };
+        console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
+        wu = sw.idb.nap1.makhoa();
+        w = new Worker(wu);
+        w.postMessage(gui);
+        w.onmessage = (e) => {
+          tin = e.data;
+          console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
+          if (("cv" in tin) && (tin.cv < 0)) {
+            try {
+              w.terminate();
+              w = null;
+            } catch (err) { }
+            try {
+              (window.URL || window.webkitURL).revokeObjectURL(wu);
+              wu = null;
+            } catch (err) { }
+          }
+          if ("err" in tin) {
+            console.log("err=", tin.err);
+            //lam lai sau 2 giay
+            setTimeout(() => { w.postMessage(gui); }, 2000);
+          }
+          //load to ga
+          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
+            console.log("idb.nap1 nhan tin.kq=", tin.kq);
+            ga[bang][vma] = tin.kq;
+          }
+        }
+      } catch (err) { }
+    },
     baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
       try {
         bang = bang.toString().toLowerCase();
@@ -1591,60 +1732,19 @@ var idb = {
       } catch (err) { }
     },
     chiphi: (uid = null) => {
-      try {
-        uid = uid === '0' ? 0 : parseInt(uid) || -1;
-        if (uid < 0) { return; }
-      } catch (err) { return; }
-      let w, wu, gui, tin,
-        bang = 'chiphi';
-      if (!(bang in ga)) { ga[bang] = { uid: {} }; }
-      try {
-        gui = {
-          bang: "chiphi",
-          nap: { idutc: uid },
-        };
-        console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
-        wu = sw.idb.nap1.chiphi();
-        w = new Worker(wu);
-        w.postMessage(gui);
-        w.onmessage = (e) => {
-          tin = e.data;
-          console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
-          if (("cv" in tin) && (tin.cv < 0)) {
-            try {
-              w.terminate();
-              w = null;
-            } catch (err) { }
-            try {
-              (window.URL || window.webkitURL).revokeObjectURL(wu);
-              wu = null;
-            } catch (err) { }
-          }
-          if ("err" in tin) {
-            console.log("err=", tin.err);
-            //lam lai sau 2 giay
-            setTimeout(() => { w.postMessage(gui); }, 2000);
-          }
-          //load to ga
-          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
-            console.log("idb.nap1 nhan tin.kq=", tin.kq);
-            ga[bang][uid] = tin.kq;
-          }
-        }
-      } catch (err) { }
+      idb.nap1.idutc("chiphi", uid);
     },
     cpql: (macpql = 20200827) => {
-
+      idb.nap1.makhoa("cpql", "macpql", ga.macpql || macpql);
     },
+
   },
 
   tinh: {
     oc: {
       cpxd: (stt = null) => {
-        let r, k,
-          ii = 0,
-          m = ga.oc.cpxd.length || 0;
-        if (m < 1) { return; }
+        let r, k, ii = 0, m = 0;
+        try { m = ga.oc.cpxd.length; } catch (err) { return; }
         while (ii < m) {
           try {
             r = ga.oc.cpxd[ii];
@@ -1652,6 +1752,7 @@ var idb = {
             idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.chiphi(r.chiphi);
           } catch (err) { }
           ii++;
         }
@@ -1666,22 +1767,22 @@ var idb = {
           try {
             r = ga.oc.cpxd[ii];
             k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-            r.soluong = lamtronso(Math.abs(r.soluong), 3);
-            r.giavl = lamtronso(ga.bgvl[k], 0);
-            r.gianc = lamtronso(ga.bgnc[k], 0);
-            r.giamtc = lamtronso(ga.bgmtc[k], 0);
+            try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+            try { r.giavl = lamtronso(ga.bgvl[k], 0); } catch (err) { r.giavl = 0; }
+            try { r.gianc = lamtronso(ga.bgnc[k], 0); } catch (err) { r.gianc = 0; }
+            try { r.giamtc = lamtronso(ga.bgmtc[k], 0); } catch (err) { r.giamtc = 0; }
             r.tienvl = lamtronso(r.giavl * r.soluong, 0);
             r.tiennc = lamtronso(r.gianc * r.soluong, 0);
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
+            try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
+            try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
           } catch (err) { }
           ii++;
         }
       },
       cpvt: (stt = null) => {
-        let r, k,
-          ii = 0,
-          m = ga.oc.cpvt.length || 0;
-        if (m < 1) { return; }
+        let r, k, ii = 0, m = 0;
+        try { m = ga.oc.cpvt.length; } catch (err) { return; }
         while (ii < m) {
           try {
             r = ga.oc.cpvt[ii];
@@ -1689,6 +1790,7 @@ var idb = {
             idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.chiphi(r.chiphi);
           } catch (err) { }
           ii++;
         }
@@ -1703,22 +1805,22 @@ var idb = {
           try {
             r = ga.oc.cpvt[ii];
             k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-            r.soluong = lamtronso(Math.abs(r.soluong), 3);
-            r.giavl = lamtronso(ga.bgvl[k], 0);
-            r.gianc = lamtronso(ga.bgnc[k], 0);
-            r.giamtc = lamtronso(ga.bgmtc[k], 0);
+            try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+            try { r.giavl = lamtronso(ga.bgvl[k], 0); } catch (err) { r.giavl = 0; }
+            try { r.gianc = lamtronso(ga.bgnc[k], 0); } catch (err) { r.gianc = 0; }
+            try { r.giamtc = lamtronso(ga.bgmtc[k], 0); } catch (err) { r.giamtc = 0; }
             r.tienvl = lamtronso(r.giavl * r.soluong, 0);
             r.tiennc = lamtronso(r.gianc * r.soluong, 0);
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
+            try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
+            try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
           } catch (err) { }
           ii++;
         }
       },
       cpvl: (stt = null) => {
-        let r, k,
-          ii = 0,
-          m = ga.oc.cpvl.length || 0;
-        if (m < 1) { return; }
+        let r, k, ii = 0, m = 0;
+        try { m = ga.oc.cpvl.length; } catch (err) { return; }
         while (ii < m) {
           try {
             r = ga.oc.cpvl[ii];
@@ -1726,6 +1828,7 @@ var idb = {
             idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.chiphi(r.chiphi);
           } catch (err) { }
           ii++;
         }
@@ -1740,13 +1843,15 @@ var idb = {
           try {
             r = ga.oc.cpvl[ii];
             k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-            r.soluong = lamtronso(Math.abs(r.soluong), 3);
-            r.giavl = lamtronso(ga.bgvl[k], 0);
-            r.gianc = lamtronso(ga.bgnc[k], 0);
-            r.giamtc = lamtronso(ga.bgmtc[k], 0);
+            try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+            try { r.giavl = lamtronso(ga.bgvl[k], 0); } catch (err) { r.giavl = 0; }
+            try { r.gianc = lamtronso(ga.bgnc[k], 0); } catch (err) { r.gianc = 0; }
+            try { r.giamtc = lamtronso(ga.bgmtc[k], 0); } catch (err) { r.giamtc = 0; }
             r.tienvl = lamtronso(r.giavl * r.soluong, 0);
             r.tiennc = lamtronso(r.gianc * r.soluong, 0);
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
+            try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
+            try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
           } catch (err) { }
           ii++;
         }
@@ -1754,18 +1859,16 @@ var idb = {
     },
     on: {
       cpxd: (stt = null) => {
-        let r, k,
-          ii = 0,
-          m = ga.on.cpxd.length || 0;
-        if (l < 1) { return; }
-        ii = 0;
+        let r, k, ii = 0, m = 0;
+        try { m = ga.on.cpxd.length; } catch (err) { return; }
         while (ii < m) {
           try {
             r = ga.on.cpxd[ii];
-            k = [ga.plgia, '.', r.chiphi, '.', ga.mabaogia].join('');
-            idb.nap1_baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap1_baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap1_baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+            idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.chiphi(r.chiphi);
           } catch (err) { }
           ii++;
         }
@@ -1779,33 +1882,31 @@ var idb = {
         while (ii < m) {
           try {
             r = ga.on.cpxd[ii];
-            k = [ga.plgia, '.', r.chiphi, '.', ga.mabaogia].join('');
-            r.giavl = ga.bgvl[k] || 0;
-            r.gianc = ga.bgnc[k] || 0;
-            r.giamtc = ga.bgmtc[k] || 0;
+            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+            try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+            try { r.giavl = lamtronso(ga.bgvl[k], 0); } catch (err) { r.giavl = 0; }
+            try { r.gianc = lamtronso(ga.bgnc[k], 0); } catch (err) { r.gianc = 0; }
+            try { r.giamtc = lamtronso(ga.bgmtc[k], 0); } catch (err) { r.giamtc = 0; }
             r.tienvl = lamtronso(r.giavl * r.soluong, 0);
             r.tiennc = lamtronso(r.gianc * r.soluong, 0);
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
-            r.giavl = lamtronso(ga.bgvl[k], 0);
-            r.gianc = lamtronso(ga.bgnc[k], 0);
-            r.giamtc = lamtronso(ga.bgmtc[k], 0);
-            r.soluong = lamtronso(r.soluong, 3);
+            try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
+            try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
           } catch (err) { }
           ii++;
         }
       },
-      cpvt: () => {
-        let r, k,
-          ii = 0,
-          m = ga.on.cpvt.length || 0;
-        if (l < 1) { return; }
+      cpvt: (stt = null) => {
+        let r, k, ii = 0, m = 0;
+        try { m = ga.on.cpvt.length; } catch (err) { return; }
         while (ii < m) {
           try {
             r = ga.on.cpvt[ii];
-            k = [ga.plgia, '.', r.chiphi, '.', ga.mabaogia].join('');
-            idb.nap1_baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap1_baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap1_baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+            idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.chiphi(r.chiphi);
           } catch (err) { }
           ii++;
         }
@@ -1819,33 +1920,31 @@ var idb = {
         while (ii < m) {
           try {
             r = ga.on.cpvt[ii];
-            k = [ga.plgia, '.', r.chiphi, '.', ga.mabaogia].join('');
-            r.giavl = ga.bgvl[k] || 0;
-            r.gianc = ga.bgnc[k] || 0;
-            r.giamtc = ga.bgmtc[k] || 0;
+            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+            try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+            try { r.giavl = lamtronso(ga.bgvl[k], 0); } catch (err) { r.giavl = 0; }
+            try { r.gianc = lamtronso(ga.bgnc[k], 0); } catch (err) { r.gianc = 0; }
+            try { r.giamtc = lamtronso(ga.bgmtc[k], 0); } catch (err) { r.giamtc = 0; }
             r.tienvl = lamtronso(r.giavl * r.soluong, 0);
             r.tiennc = lamtronso(r.gianc * r.soluong, 0);
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
-            r.giavl = lamtronso(ga.bgvl[k], 0);
-            r.gianc = lamtronso(ga.bgnc[k], 0);
-            r.giamtc = lamtronso(ga.bgmtc[k], 0);
-            r.soluong = lamtronso(r.soluong, 3);
+            try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
+            try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
           } catch (err) { }
           ii++;
         }
       },
-      cpvl: () => {
-        let r, k,
-          ii = 0,
-          m = ga.on.cpvl.length || 0;
-        if (l < 1) { return; }
+      cpvl: (stt = null) => {
+        let r, k, ii = 0, m = 0;
+        try { m = ga.on.cpvl.length; } catch (err) { return; }
         while (ii < m) {
           try {
             r = ga.on.cpvl[ii];
-            k = [ga.plgia, '.', r.chiphi, '.', ga.mabaogia].join('');
-            idb.nap1_baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap1_baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap1_baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+            idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.chiphi(r.chiphi);
           } catch (err) { }
           ii++;
         }
@@ -1859,17 +1958,16 @@ var idb = {
         while (ii < m) {
           try {
             r = ga.on.cpvl[ii];
-            k = [ga.plgia, '.', r.chiphi, '.', ga.mabaogia].join('');
-            r.giavl = ga.bgvl[k] || 0;
-            r.gianc = ga.bgnc[k] || 0;
-            r.giamtc = ga.bgmtc[k] || 0;
+            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+            try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+            try { r.giavl = lamtronso(ga.bgvl[k], 0); } catch (err) { r.giavl = 0; }
+            try { r.gianc = lamtronso(ga.bgnc[k], 0); } catch (err) { r.gianc = 0; }
+            try { r.giamtc = lamtronso(ga.bgmtc[k], 0); } catch (err) { r.giamtc = 0; }
             r.tienvl = lamtronso(r.giavl * r.soluong, 0);
             r.tiennc = lamtronso(r.gianc * r.soluong, 0);
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
-            r.giavl = lamtronso(ga.bgvl[k], 0);
-            r.gianc = lamtronso(ga.bgnc[k], 0);
-            r.giamtc = lamtronso(ga.bgmtc[k], 0);
-            r.soluong = lamtronso(r.soluong, 3);
+            try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
+            try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
           } catch (err) { }
           ii++;
         }
@@ -1884,9 +1982,7 @@ var idb = {
         try {
           r = ga.cptl[ii];
           k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-          if (!(k in ga.bgtl)) { ga.bgtl[k] = 0; }
           idb.nap1.baogia('bgtl', r.chiphi, ga.mabaogia, ga.plgia);
-          if (!(r.chiphi in ga.chiphi)) { ga.chiphi[r.chiphi] = {}; }
           idb.nap1.chiphi(r.chiphi);
         } catch (err) { }
         ii++;
@@ -1902,25 +1998,27 @@ var idb = {
         try {
           r = ga.cptl[ii];
           k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-          r.oc_sl = lamtronso(Math.abs(r.oc_sl), 3);
-          r.on_sl = lamtronso(Math.abs(r.on_sl), 3);
-          r.gia = lamtronso(ga.bgtl[k], 0);
-          if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
+          try { r.oc_sl = lamtronso(Math.abs(r.oc_sl), 3); } catch (err) { r.oc_sl = 0; }
+          try { r.on_sl = lamtronso(Math.abs(r.oc_sl), 3); } catch (err) { r.on_sl = 0; }
+          try { r.gia = lamtronso(ga.bgtl[k], 0); } catch (err) { r.gia = 0; }
+          if ((ga.macpql || ga.cpql.hesoid) >= 20200827) {
             r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
             r.on_tien = lamtronso(r.gia * r.on_sl, 0);
           } else {
             r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
             r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
           }
-          r.mota = ga.chiphi[r.chiphi].mota.qtgt;
-          r.dvt = ga.chiphi[r.chiphi].dvt;
+          try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
+          try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
         } catch (err) { }
         ii++;
       }
     },
     cpql: () => {
-      if (!('cpql' in ga)) { ga.cpql = {} };
-      let self = ga.cpql;
+      if (!('cpql' in ga)) { ga.cpql = { macpql=20200827 } };
+      if (!('macpql' in ga)) { ga.macpql = 20200827 };
+      idb.nap1.cpql(ga.macpql);
+      let self = ga.cpql[ga.macpql];
       try {
         if (!('oc' in self)) { self.oc = {} };
         self.oc.vl = lamtronso(ga.oc.zvl * self.vl, 0);
