@@ -420,7 +420,7 @@ class Qtgt:
             pass
 
     def nap_qtgt(self):
-        sql0=''
+        sql0 = ''
         sql = (f"DROP PROC {self.xac}.nap_qtgt")
         try:
             db.core().execute(sql)
@@ -1056,11 +1056,17 @@ class Upkho:
         self.qt3x(5)
 
     def dot(self):
-        cs = [
-            'madot', 'hop', 'nam', 'plqt', 'quy', 'sodot', 'nhathauid', 'ngaylendot', 'ngaydshc', 'ngaythicong',
-            'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt', 'dautucty', 'dautukhach',
-            'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'tinhtrang',
-            'sophieunhap', 'sophieuxuat', 'ghichuqtvt', 'tinhtrangqtvt']
+        if self.xac in ['pkh', 'pna']:
+            cs = [
+                'madot', 'hop', 'nam', 'plqt', 'quy', 'sodot', 'nhathauid', 'ngaylendot', 'ngaydshc', 'ngaythicong',
+                'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt', 'dautucty', 'dautukhach',
+                'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'tinhtrang',
+                'sophieunhap', 'sophieuxuat', 'tinhtrangqtvt']
+        else:
+            cs = [
+                'quy', 'ngaydshc', 'ngaythicong', 'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt',
+                'dautucty', 'dautukhach', 'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'tinhtrang',
+                'sophieunhap', 'sophieuxuat', 'tinhtrangqtvt']
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
@@ -1093,16 +1099,27 @@ class Upkho:
             pass
 
     def qtgt(self):
-        cs = [
-            'maqt', 'baogiaid', 'hesoid', 'plgia', 'madot', 'hosoid', 'tt', 'soho',
-            'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
-            'gxd', 'dautucty', 'dautukhach', 'tinhtrang', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
-            'sodhn', 'hieudhn', 'chisodhn', 'madshc',
-            'hesothauid', 'tvlcai', 'tnccai', 'tmtccai', 'tvlnganh', 'tncnganh', 'tmtcnganh', 'tgxd1kq1', 'tgxd1kq2',
-            'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
-            'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
-            'slcat', 'tiencat', 'slcatnhua', 'tiencatnhua', 'tienvlk', 'nc', 'tiennc', 'mtc', 'tienmtc',
-            'cptt', 'cong', 'thuevat', 'trigiaqtt', 'tinhtrangqtt']
+        if self.xac in ['pkh', 'pna']:
+            cs = [
+                'maqt', 'baogiaid', 'hesoid', 'plgia', 'madot', 'hosoid', 'tt', 'soho',
+                'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
+                'gxd', 'dautucty', 'dautukhach', 'tinhtrang', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
+                'sodhn', 'hieudhn', 'chisodhn', 'madshc',
+                'hesothauid', 'tvlcai', 'tnccai', 'tmtccai', 'tvlnganh', 'tncnganh', 'tmtcnganh', 'tgxd1kq1', 'tgxd1kq2',
+                'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
+                'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
+                'slcat', 'tiencat', 'slcatnhua', 'tiencatnhua', 'tienvlk', 'nc', 'tiennc', 'mtc', 'tienmtc',
+                'cptt', 'cong', 'thuevat', 'trigiaqtt', 'tinhtrangqtt']
+        else:
+            cs = [
+                'baogiaid', 'hesoid', 'plgia', 'tt', 'soho',
+                'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
+                'gxd', 'dautucty', 'dautukhach', 'tinhtrang', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
+                'sodhn', 'hieudhn', 'chisodhn', 'madshc',
+                'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
+                'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
+                'slcat', 'tiencat', 'slcatnhua', 'tiencatnhua', 'tienvlk', 'nc', 'tiennc', 'mtc', 'tienmtc',
+                'cptt', 'cong', 'thuevat', 'trigiaqtt', 'tinhtrangqtt']
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
@@ -1150,6 +1167,9 @@ class Upxac:
         self.kho = 'dbo'
         self.nam = nam
         self.xac = f"{xac}".lower()
+        self.donvithicong()
+        self.dot()
+        self.qtgt()
 
     def donvithicong(self):
         if self.xac in ['qlmlq2']:
@@ -1172,9 +1192,9 @@ class Upxac:
         # xoa rec thua
         sql = (
             f"DELETE FROM {self.xac}.dot "
-            f"WHERE madot IN (Select madot "
+            f"WHERE madot IN (Select r.madot "
             f"FROM {self.xac}.dot s LEFT JOIN {self.kho}.dot r ON s.madot=r.madot "
-            f"WHERE r.madot Is Null); ")
+            f"WHERE s.madot Is Null); ")
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
@@ -1184,7 +1204,7 @@ class Upxac:
         # add rec chua co
         cr = map(lambda k: f"r.{k}", cs)
         sql += (
-            f"INSERT INTO s ({','.join(cs)},lastupdate) "
+            f"INSERT INTO {self.xac}.dot ({','.join(cs)},lastupdate) "
             f"SELECT {','.join(cr)},getdate() as lastupdate "
             f"FROM {self.kho}.dot r LEFT JOIN {self.xac}.dot s ON s.madot=r.madot "
             f"WHERE s.madot Is Null ")
@@ -1199,7 +1219,7 @@ class Upxac:
         except:
             pass
 
-    def qtgt(self, nam):
+    def qtgt(self):
         cs = [
             'maqt', 'baogiaid', 'hesoid', 'plgia', 'madot', 'hosoid', 'tt', 'soho',
             'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
@@ -1213,9 +1233,9 @@ class Upxac:
         # xoa rec thua
         sql = (
             f"DELETE FROM {self.xac}.qt "
-            f"WHERE maqt IN (Select maqt "
+            f"WHERE maqt IN (Select r.maqt "
             f"FROM {self.xac}.qt s LEFT JOIN {self.kho}.qt r ON s.maqt=r.maqt "
-            f"WHERE r.qt Is Null); ")
+            f"WHERE s.maqt Is Null); ")
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
@@ -1225,14 +1245,14 @@ class Upxac:
         # add new rec
         cr = map(lambda k: f"r.{k}", cs)
         sql += (
-            f"INSERT INTO s ({','.join(cs)},lastupdate) "
+            f"INSERT INTO {self.xac}.qt ({','.join(cs)},lastupdate) "
             f"SELECT {','.join(cr)},getdate() as lastupdate "
             f"FROM ({self.kho}.qt r LEFT JOIN {self.xac}.qt s ON s.maqt=r.maqt) "
             f"INNER JOIN {self.xac}.dot dot ON dot.madot=r.madot "
             f"WHERE s.maqt Is Null ")
         if self.dvtc:
             sql += f"And dot.nhathauid in ({','.join(self.dvtc)}) "
-        if nam:
+        if self.nam:
             sql += f"And dot.nam={self.nam} ORDER BY r.madot; "
         else:
             sql += f"ORDER BY r.madot; "
@@ -1242,8 +1262,15 @@ class Upxac:
             pass
 
 
+def updulieu():
+    Upkho("qlmlq2")
+    Upkho("qlmltd")
+    Upkho("pkh")
+    Upxac('qlmlq2', 2021)
+    Upxac('qlmltd', 2021)
+    #Upxac('pkh', 2021)
 # Csdl("pkh")
-Qtgt("pkh").nap_qtgt()
-# Upkho("qlmlq2")
-# Upkho("qlmltd")
-# Upkho("pkh")
+# Qtgt("pkh").nap_qtgt()
+
+
+updulieu()

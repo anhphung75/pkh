@@ -137,20 +137,52 @@ var web = {
       ga.lay_api();
     });
   },
-  dieuhuong: (bang, col = 3, row = 0, keyCode = 0) => {
-    if (!['chiphi', 'oc_cpxd', 'oc_cpvt', 'oc_cpvl',
-      'on_cpxd', 'on_cpvt', 'on_cpvl', 'cptl'].includes(bang)) {
-      return;
+  dieuhuong: (bang, row = 0, col = 3, keyCode = 0) => {
+    console.log("dieuhuong truoc ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
+    try {
+      bang = bang.toString().toLowerCase();
+      if (bang.length < 1) {
+        return;
+      } else {
+        if (!['chiphi', 'oc_cpxd', 'oc_cpvt', 'oc_cpvl',
+          'on_cpxd', 'on_cpvt', 'on_cpvl', 'cptl'].includes(bang)) {
+          return;
+        }
+      }
+      row = row === '0' ? 0 : parseInt(row) || -1;
+      if (row < 0) { return; }
+      col = col === '0' ? 0 : parseInt(col) || -1;
+      if (col < 0) { return; }
+      keyCode = keyCode === '0' ? 0 : parseInt(keyCode) || -1;
+      if (keyCode < 0) { return; }
+    } catch (err) { return; }
+    let s, e, het;
+    switch (bang) {
+      case 'oc_cpxd':
+        het = ga.oc.cpxd.length || 0;
+        break;
+      case 'oc_cpvt':
+        het = ga.oc.cpvt.length || 0;
+        break;
+      case 'oc_cpvl':
+        het = ga.oc.cpvl.length || 0;
+        break;
+      case 'on_cpxd':
+        het = ga.on.cpxd.length || 0;
+        break;
+      case 'on_cpvt':
+        het = ga.on.cpvt.length || 0;
+        break;
+      case 'on_cpvl':
+        het = ga.on.cpvl.length || 0;
+        break;
+      default:
+        het = ga[bang].length || 0;
     }
-    if (!['1', '3', '4', 1, 3, 4].includes(col)) {
-      return
-    }
-    row = parseInt(row) || 0;
-    keyCode = parseInt(keyCode) || 0;
-    let s, e, het = ga[bang].length || 0;
     if ([13, 40].includes(keyCode)) {
       try {
-        s = ['.', bang, '.col', col, '.row', row + 1].join('');
+        s = ['.', bang, '.row', row + 1, '.col', col].join('');
+        console.log("dieuhuong 13,40 ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
         e = d3.select(s).node();
         e.focus();
         e.select();
@@ -179,8 +211,7 @@ var web = {
           default:
             bang = 'chiphi';
         }
-        s = ['.', bang, '.col', col, '.row', 0].join('');
-        console.log('goto s=', s);
+        s = ['.', bang, '.row', 0, '.col', col].join('');
         e = d3.select(s).node();
         e.focus();
         e.select();
@@ -188,7 +219,7 @@ var web = {
     }
     if ([38].includes(keyCode)) {
       try {
-        s = ['.', bang, '.col', col, '.row', row - 1].join('');
+        s = ['.', bang, '.row', row - 1, '.col', col].join('');
         e = d3.select(s).node();
         e.focus();
         e.select();
@@ -217,7 +248,7 @@ var web = {
           default:
             bang = 'chiphi';
         }
-        s = ['.', bang, '.col', col, '.row', het - 1].join('');
+        s = ['.', bang, '.row', het - 1, '.col', col].join('');
         e = d3.select(s).node();
         e.focus();
         e.select();
@@ -317,7 +348,7 @@ var web = {
           }
           web.oc.cpxd();
           web.oc.bth();
-          web.dieuhuong('oc_cpxd', 1, stt, 13);
+          web.dieuhuong('oc_cpxd', stt, 1, 13);
           //} catch (err) {
           //console.log("err=", JSON.stringify(err));
           //web.oc.cpxd();
@@ -325,7 +356,7 @@ var web = {
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpxd', 1, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('oc_cpxd', ev.target.dataset.stt, 1, ev.keyCode);
           }
         });
       row.append('td')
@@ -350,14 +381,14 @@ var web = {
             }
             web.oc.cpxd();
             web.oc.bth();
-            web.dieuhuong('oc_cpxd', 3, stt, 13);
+            web.dieuhuong('oc_cpxd', stt, 3, 13);
           } catch (err) {
             web.oc.cpxd();
           }
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpxd', 3, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('oc_cpxd', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
       row.append('td')
@@ -430,7 +461,7 @@ var web = {
           }
           web.oc.cpvt();
           web.oc.bth();
-          web.dieuhuong('oc_cpvt', 1, stt, 13);
+          web.dieuhuong('oc_cpvt', stt, 1, 13);
           //} catch (err) {
           //console.log("err=", JSON.stringify(err));
           //web.oc.cpvt();
@@ -438,7 +469,7 @@ var web = {
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpvt', 1, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('oc_cpvt', ev.target.dataset.stt, 1, ev.keyCode);
           }
         });
       row.append('td')
@@ -463,14 +494,14 @@ var web = {
             }
             web.oc.cpvt();
             web.oc.bth();
-            web.dieuhuong('oc_cpvt', 3, stt, 13);
+            web.dieuhuong('oc_cpvt', stt, 3, 13);
           } catch (err) {
             web.oc.cpvt();
           }
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpvt', 3, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('oc_cpvt', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
       row.append('td')
@@ -543,7 +574,7 @@ var web = {
           }
           web.oc.cpvl();
           web.oc.bth();
-          web.dieuhuong('oc_cpvl', 1, stt, 13);
+          web.dieuhuong('oc_cpvl', stt, 1, 13);
           //} catch (err) {
           //console.log("err=", JSON.stringify(err));
           //web.oc.cpvl();
@@ -551,7 +582,7 @@ var web = {
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpvl', 1, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('oc_cpvl', ev.target.dataset.stt, 1, ev.keyCode);
           }
         });
       row.append('td')
@@ -576,14 +607,14 @@ var web = {
             }
             web.oc.cpvl();
             web.oc.bth();
-            web.dieuhuong('oc_cpvl', 3, stt, 13);
+            web.dieuhuong('oc_cpvl', stt, 3, 13);
           } catch (err) {
             web.oc.cpvl();
           }
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpvl', 3, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('oc_cpvl', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
       row.append('td')
@@ -971,6 +1002,7 @@ var web = {
         .attr("value", (d) => d.mota)
         .on("input", function (ev) {
           //hien combobox de lua chi phi
+          d3.select(ev.target).attr("data-isopen", "ok");
           web.box.chiphi(ev.target, "tlmd", ev.target.value);
           console.log("input ev=", ev.target);
         })
@@ -978,20 +1010,18 @@ var web = {
           try {
             console.log("change ev=", ev.target);
             let stt = ev.target.dataset.stt,
-              idutc = ev.target.dataset.chiphi;
-            idutc = idutc === '0' ? 0 : parseInt(idutc) || -1;
-            console.log('stt=', stt, ' idutc=', idutc);
-            console.log(' truoc ga.cptl=', JSON.stringify(ga.cptl));
-            if (idutc > -1) {
+              idutc = ev.target.dataset.chiphi || 0;
+            if (idutc > 0) {
               ga.cptl[stt].idutc = idutc;
               ga.cptl[stt].chiphi = idutc;
-              //tinh lai gia chi phi
+              d3.select(ev.target).attr("data-isopen", "no");
+              try {
+                d3.select("#comb-chiphi").remove();
+              } catch (err) { }
               idb.tinh.cptl(stt);
             }
-            console.log(' sau ga.cptl=', JSON.stringify(ga.cptl));
             web.tlmd.cptl();
             web.tlmd.bth();
-            d3.select("div[id='chiphi']").remove();
             web.dieuhuong('cptl', 1, stt, 13);
           } catch (err) {
             web.tlmd.cptl();
@@ -999,13 +1029,25 @@ var web = {
         })
         .on("keydown", function (ev) {
           if ([13].includes(ev.keyCode)) {
-            try {
-              d3.select("table[id='chiphi']").remove();
-            } catch (err) { }
-            web.dieuhuong('cptl', 1, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('cptl', ev.target.dataset.stt, 1, ev.keyCode);
           }
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('cptl', 1, ev.target.dataset.stt, ev.keyCode);
+          if ([40, 38].includes(ev.keyCode)) {
+            if (ev.target.dataset.isopen === 'ok') {
+              let row;
+              if ('rowchiphi' in ev.target.dataset) {
+                row = ev.target.dataset.rowchiphi;
+                row = row === '0' ? 0 : parseInt(row);
+                d3.select(ev.target).attr("data-rowchiphi", row + 1);
+              } else {
+                row = 0;
+                d3.select(ev.target).attr("data-rowchiphi", row + 1);
+              }
+              console.log("dieuhuong chiphi")
+              web.box.dieuhuong('chiphi', row, 1, ev.keyCode);
+            } else {
+              console.log("dieuhuong cptl")
+              web.dieuhuong('cptl', ev.target.dataset.stt, 1, ev.keyCode);
+            }
           }
         });
       rec.append('td')
@@ -1103,22 +1145,82 @@ var web = {
     return mau;
   },
   box: {
+    dieuhuong: (bang, row = 0, col = 3, keyCode = 0) => {
+      console.log("box dieuhuong ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
+      console.log("box dieuhuong comb=", JSON.stringify(d3.select("#comb-chiphi")));
+      try {
+        bang = bang.toString().toLowerCase();
+        if (bang.length < 1) {
+          return;
+        } else {
+          if (!['chiphi'].includes(bang)) {
+            return;
+          }
+        }
+        row = row === '0' ? 0 : parseInt(row) || -1;
+        if (row < 0) { return; }
+        col = col === '0' ? 0 : parseInt(col) || -1;
+        if (col < 0) { return; }
+        keyCode = keyCode === '0' ? 0 : parseInt(keyCode) || -1;
+        if (keyCode < 0) { return; }
+      } catch (err) { return; }
+      let e,
+        het = ga[bang].length || 0,
+        s = ['.', bang].join('');
+      d3.selectAll(s).classed("mau", false);
+      if ([13, 40].includes(keyCode)) {
+        try {
+          s = ['.', bang, '.row', row + 1, '.col', col].join('');
+          d3.select(s).classed("mau", true);
+        } catch (err) {
+          s = ['.', bang, '.row', 0, '.col', col].join('');
+          console.log("box dieuhuong toi ", s);
+          d3.select(s).classed("mau", true);
+        }
+      }
+      if ([38].includes(keyCode)) {
+        try {
+          s = ['.', bang, '.row', row - 1, '.col', col].join('');
+          d3.select(s).classed("mau", true);
+          console.log("box dieuhuong toi ", s);
+        } catch (err) {
+          s = ['.', bang, '.row', het - 1, '.col', col].join('');
+          d3.select(s).classed("mau", true);
+          console.log("box dieuhuong toi ", s);
+        }
+      }
+    },
     chiphi: (el, plcp, stim) => {
       console.log("box chiphi el=", el, " plcp=", plcp, " stim=", stim);
-      try {
-        stim = stim.toString().toLowerCase();
-      } catch (err) {
-        stim = '';
-      }
+      function kq2el(uid = null, show = null) {
+        try {
+          let zone = d3.select(el);
+          zone.attr("data-chiphi", uid);
+          zone.attr("value", show);
+        } catch (err) { }
+      };
+      function tomau(chuoi, stim, sac = 'red') {
+        try { chuoi = chuoi.toString().toLowerCase(); } catch (err) { return null; }
+        try {
+          stim = stim.toString().toLowerCase();
+          if (stim.length < 1) { return chuoi; }
+        } catch (err) { return chuoi; }
+        let mau = web.sregexp(stim);
+        mau = new RegExp(mau, "gi");
+        chuoi = chuoi.replace(mau, (m) => {
+          if (m === undefined || m === null || m === "") { return; }
+          return ["<b style='color:", sac, "'>", m, "</b>"].join('');
+        });
+        return chuoi;
+      };
+      try { stim = stim.toString().toLowerCase(); } catch (err) { stim = ''; }
       let vt, vl, zone, bang, rec, dulieu, tieude, k, r;
       try {
-        d3.select(el).attr("data-chiphi", 0);
-        vl = d3.select(el).style("left");
-        vt = d3.select(el).style("top") + d3.select(el).style("height");
-        d3.select("#chiphi").remove();
-      } catch (err) {
-        //return;
-      }
+        zone = d3.select(el);
+        vl = zone.style("left");
+        vt = zone.style("top") + zone.style("height");
+        d3.select("#comb-chiphi").remove();
+      } catch (err) { return; }
       dulieu = [];
       rec = Object.keys(ga.chiphi).sort();
       switch (plcp) {
@@ -1160,7 +1262,7 @@ var web = {
           }
       }
       zone = d3.select(el.parentNode).append("div")
-        .attr("id", "chiphi")
+        .attr("id", "comb-chiphi")
         .style("display", "block")
         .style("background-color", "white")
         .style("overflow", "auto")
@@ -1201,35 +1303,20 @@ var web = {
         .style("width", "100%")
         .on("mouseover", (ev, d) => {
           try {
-            d3.select(el).attr("data-chiphi", d.idutc);
-            d3.select(el).attr("value", d.mota.qtgt);
-            console.log("row mouseover ev=", ev.target);
-            console.log("row mouseover inp=", d3.select(el));
+            kq2el(d.idutc, d.mota.qtgt);
           } catch (err) { }
         })
         .on("click", (ev, d) => {
           console.log("row click d=", d);
           try {
-            d3.select(el).attr("data-chiphi", d.idutc);
-            d3.select(el).attr("value", d.mota);
+            kq2el(d.idutc, d.mota.qtgt);
           } catch (err) { }
         });
       //cells
       rec.append('td')
         .attr("data-stt", (d, i) => i)
         .attr("class", (d, i) => "l chiphi col1 row" + i)
-        .html((d, i) => {
-          if (!stim) { return d.mota.qtgt; }
-          let zone = d.mota.qtgt.toString(),
-            mau = web.sregexp(stim);
-          mau = new RegExp(mau, "gi");
-          zone = zone.replace(mau, (m) => {
-            if (m === undefined || m === null || m === "") { return; }
-            let moi = "<b style='color:red'>" + m + "</b>";
-            return moi;
-          });
-          return zone;
-        });
+        .html((d, i) => tomau(d.mota.qtgt, stim));
       rec.append('td')
         .attr("class", "c")
         .text((d) => d.dvt);
@@ -1246,23 +1333,26 @@ var sw = {
   idb: {
     nap1: {
       baogia: () => {
-        if (kq) { self.postMessage({ cv: cv, kq: kq }); }
         let sw = `
         self.onmessage = (ev) => {
-          let tin = ev.data;
-          if (!("bang" in tin) || !("nap" in tin) || !tin.nap || (tin.nap<0)) {
+          try {
+            let tin = ev.data,
+              bang = tin.bang.toString().toLowerCase(),
+              plgia = tin.nap.plgia.toString().toLowerCase(),
+              baogia = tin.nap.baogia === '0' ? 0 : parseInt(tin.nap.baogia) || -1,
+              chiphi = tin.nap.chiphi === '0' ? 0 : parseInt(tin.nap.chiphi) || -1,
+              ce = new Date(baogia).getTime(),
+              cs = parseInt(ce - 3600000 * 24 * 60);
+            ce = parseInt(ce + 3600000 * 24);
+          } catch (err) {
             self.postMessage({ cv: -1, kq: "nothing to nap" });
           }
           try {
-            let db, cs, ce, r, kq;
-            let cv = 1, baogia = tin.nap.baogia, chiphi = tin.nap.baogia, plgia = tin.nap.baogia;
-            ce = new Date(tin.nap.baogia).getTime();
-            cs = parseInt(ce - 3600000*24*60);
-            ce = parseInt(ce + 3600000*24);
+            let db, r, kq, cv = 1;
             indexedDB.open("`+ idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
               db = e.target.result;
-              db.transaction(tin.bang, 'readonly')
-                .objectStore(tin.bang)
+              db.transaction(bang, 'readonly')
+                .objectStore(bang)
                 .openCursor(IDBKeyRange.bound(cs, ce))
                 .onsuccess = (e) => {
                   cs = e.target.result;
@@ -1283,9 +1373,45 @@ var sw = {
           } catch (err) {
             self.postMessage({ cv: cv, err: err });
           };
-        }`;
-        let blob = new Blob([sw], { type: "text/javascript" });
-        let url = (window.URL || window.webkitURL).createObjectURL(blob);
+        }`,
+          blob = new Blob([sw], { type: "text/javascript" }),
+          url = (window.URL || window.webkitURL).createObjectURL(blob);
+        return url;
+      },
+      chiphi: () => {
+        let sw = `
+        self.onmessage = (ev) => {
+          try {
+            let tin = ev.data,
+              bang = tin.bang.toString().toLowerCase(),
+              uid = tin.nap.idutc === '0' ? 0 : parseInt(tin.nap.idutc) || -1;
+          } catch (err) {
+            self.postMessage({ cv: -1, kq: "nothing to nap" });
+          }
+          try {
+            let db, cs, kq, cv = 1;
+            indexedDB.open("`+ idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+              db = e.target.result;
+              db.transaction(bang, 'readonly')
+                .objectStore(bang)
+                .openCursor(IDBKeyRange.only(uid))
+                .onsuccess = (e) => {
+                  cs = e.target.result;
+                  if (cs) {
+                    kq = cs.value;
+                    if (kq) { self.postMessage({ cv: cv, kq: kq }); }
+                    cs.continue();
+                  } else {
+                    self.postMessage({ cv: -1, kq: null });
+                  }
+                }
+            }
+          } catch (err) {
+            self.postMessage({ cv: cv, err: err });
+          };
+        }`,
+          blob = new Blob([sw], { type: "text/javascript" }),
+          url = (window.URL || window.webkitURL).createObjectURL(blob);
         return url;
       },
     },
@@ -1296,7 +1422,12 @@ var sw = {
 };
 
 var api = {
+  nap: {
 
+  },
+  luu: {
+
+  },
 };
 
 var idb = {
@@ -1376,28 +1507,59 @@ var idb = {
       ii++;
     }
   },
-  nap: (bang, uid) => {
+  nap: (bang, nap = { uid: 0 }) => {
+    try {
+      bang = bang.toString().toLowerCase();
+      if (bang.length < 1) { return; }
+    } catch (err) { return; }
+    if (!(bang in ga)) { ga[bang] = {}; }
+    let k, w, wu, gui, tin;
 
+    try {
+      gui = { bang: bang, nap: nap, };
+      console.log("idb.nap gui tin=", JSON.stringify(gui, null, 2));
+      wu = sw.idb.nap1.baogia();
+      w = new Worker(wu);
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
+        if (("cv" in tin) && (tin.cv < 0)) {
+          try {
+            w.terminate();
+            w = null;
+          } catch (err) { }
+          try {
+            (window.URL || window.webkitURL).revokeObjectURL(wu);
+            wu = null;
+          } catch (err) { }
+        }
+        if ("err" in tin) {
+          console.log("err=", tin.err);
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        }
+        if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
+          console.log("idb.nap1 nhan tin.kq=", tin.kq);
+          ga[bang][k] = tin.kq;
+        }
+      }
+    } catch (err) { }
   },
   nap1: {
     baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
-      let k, w, wu, gui, tin;
-      if (!bang || !(['bgvl', 'bgnc', 'bgmtc', 'bgtl']).includes(bang)) {
-        bang = 'bgvl';
-      }
-      k = [plgia, '.', baogia, '.', chiphi].join('');
-      if (!(bang in ga)) {
-        ga[bang] = {};
-      }
-      if (k in ga[bang]) {
-        //return;
-      }
-      ga[bang][k] = 0;
-      console.log("nap1 ga[", bang, '][', k, ']=', ga[bang][k]);
+      try {
+        bang = bang.toString().toLowerCase();
+        if (bang.length < 1) { return; }
+        if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(bang))) { bang = 'bgvl'; }
+      } catch (err) { return; }
+      let w, wu, gui, tin,
+        uid = [plgia, '.', mabaogia, '.', chiphi].join('');
+      if (!(bang in ga)) { ga[bang] = { uid: 0 }; }
       try {
         gui = {
           bang: bang,
-          nap: { plgia: plgia, chiphi: chiphi, baogia: baogia },
+          nap: { chiphi: chiphi, baogia: baogia, plgia: plgia },
         };
         console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
         wu = sw.idb.nap1.baogia();
@@ -1423,7 +1585,50 @@ var idb = {
           }
           if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
             console.log("idb.nap1 nhan tin.kq=", tin.kq);
-            ga[bang][k] = tin.kq;
+            ga[bang][uid] = tin.kq;
+          }
+        }
+      } catch (err) { }
+    },
+    chiphi: (uid = null) => {
+      try {
+        uid = uid === '0' ? 0 : parseInt(uid) || -1;
+        if (uid < 0) { return; }
+      } catch (err) { return; }
+      let w, wu, gui, tin,
+        bang = 'chiphi';
+      if (!(bang in ga)) { ga[bang] = { uid: {} }; }
+      try {
+        gui = {
+          bang: "chiphi",
+          nap: { idutc: uid },
+        };
+        console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
+        wu = sw.idb.nap1.chiphi();
+        w = new Worker(wu);
+        w.postMessage(gui);
+        w.onmessage = (e) => {
+          tin = e.data;
+          console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
+          if (("cv" in tin) && (tin.cv < 0)) {
+            try {
+              w.terminate();
+              w = null;
+            } catch (err) { }
+            try {
+              (window.URL || window.webkitURL).revokeObjectURL(wu);
+              wu = null;
+            } catch (err) { }
+          }
+          if ("err" in tin) {
+            console.log("err=", tin.err);
+            //lam lai sau 2 giay
+            setTimeout(() => { w.postMessage(gui); }, 2000);
+          }
+          //load to ga
+          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
+            console.log("idb.nap1 nhan tin.kq=", tin.kq);
+            ga[bang][uid] = tin.kq;
           }
         }
       } catch (err) { }
@@ -1440,7 +1645,6 @@ var idb = {
           ii = 0,
           m = ga.oc.cpxd.length || 0;
         if (m < 1) { return; }
-        //nap du lieu
         while (ii < m) {
           try {
             r = ga.oc.cpxd[ii];
@@ -1448,11 +1652,9 @@ var idb = {
             idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap("chiphi", r.chiphi);
           } catch (err) { }
           ii++;
         }
-        //tinh
         stt = stt === '0' ? 0 : parseInt(stt) || -1;
         if (stt < 0) {
           ii = 0;
@@ -1471,8 +1673,6 @@ var idb = {
             r.tienvl = lamtronso(r.giavl * r.soluong, 0);
             r.tiennc = lamtronso(r.gianc * r.soluong, 0);
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
-            r.mota = ga.chiphi[r.chiphi].mota.qtgt;
-            r.dvt = ga.chiphi[r.chiphi].dvt;
           } catch (err) { }
           ii++;
         }
@@ -1679,16 +1879,16 @@ var idb = {
       let r, k,
         ii = 0,
         m = ga.cptl.length || 0;
-      if (m < 1) {
-        //return; 
-      }
+      if (m < 1) { return; }
       while (ii < m) {
-        //try {
-        r = ga.cptl[ii];
-        k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-        idb.nap1_baogia('bgtl', r.chiphi, ga.mabaogia, ga.plgia);
-        idb.nap("chiphi", r.chiphi);
-        //} catch (err) { }
+        try {
+          r = ga.cptl[ii];
+          k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+          if (!(k in ga.bgtl)) { ga.bgtl[k] = 0; }
+          idb.nap1.baogia('bgtl', r.chiphi, ga.mabaogia, ga.plgia);
+          if (!(r.chiphi in ga.chiphi)) { ga.chiphi[r.chiphi] = {}; }
+          idb.nap1.chiphi(r.chiphi);
+        } catch (err) { }
         ii++;
       }
       stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -1699,24 +1899,22 @@ var idb = {
         m = stt + 1;
       }
       while (ii < m) {
-        //try {
-        r = ga.cptl[ii];
-        k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-        r.oc_sl = lamtronso(Math.abs(r.oc_sl), 3);
-        r.on_sl = lamtronso(Math.abs(r.on_sl), 3);
-        r.gia = lamtronso(ga.bgtl[k], 0);
-        console.log('k=', k, ' gia=', JSON.stringify(ga.bgtl));
-        if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
-          r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
-          r.on_tien = lamtronso(r.gia * r.on_sl, 0);
-        } else {
-          r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
-          r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
-        }
-        r.mota = ga.chiphi[r.chiphi].mota.qtgt;
-        r.dvt = ga.chiphi[r.chiphi].dvt;
-        console.log('ga.chiphi[', r.chiphi, ']=', JSON.stringify(ga.chiphi[r.chiphi]));
-        //} catch (err) { }
+        try {
+          r = ga.cptl[ii];
+          k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+          r.oc_sl = lamtronso(Math.abs(r.oc_sl), 3);
+          r.on_sl = lamtronso(Math.abs(r.on_sl), 3);
+          r.gia = lamtronso(ga.bgtl[k], 0);
+          if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
+            r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
+            r.on_tien = lamtronso(r.gia * r.on_sl, 0);
+          } else {
+            r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
+            r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
+          }
+          r.mota = ga.chiphi[r.chiphi].mota.qtgt;
+          r.dvt = ga.chiphi[r.chiphi].dvt;
+        } catch (err) { }
         ii++;
       }
     },
