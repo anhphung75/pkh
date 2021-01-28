@@ -32,39 +32,52 @@ var ga = {
     '12': { idutc: 12, plcp: 'cptl', mota: { qtgt: 'cp6', qtvt: 'cp01' }, dvt: 'cai' },
   },
   oc: {
-    zvl: 0, znc: 0, zmtc: 0, ztl: 0,
+    zvl: 0,
+    znc: 0,
+    zmtc: 0,
+    ztl: 0,
     cpxd: [
       { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }],
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
     cpvt: [
       { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }],
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
     cpvl: [
       { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }],
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
   },
   on: {
-    zvl: 0, znc: 0, zmtc: 0, ztl: 0,
+    zvl: 0,
+    znc: 0,
+    zmtc: 0,
+    ztl: 0,
     cpxd: [
       { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }],
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
     cpvt: [
       { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }],
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
     cpvl: [
       { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }],
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
   },
   cptl: [
     { chiphi: 1, mota: 'cp1', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 10 },
     { chiphi: 2, mota: 'cp2', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 200 },
-    { chiphi: 3, mota: 'cp3', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 5510 }],
+    { chiphi: 3, mota: 'cp3', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 5510 }
+  ],
   cpql: { ma: 20200827 },
   bgvl: {
     '001.001': { 'dutoan': 1123, 'ketoan': 1245 },
@@ -117,7 +130,7 @@ var web = {
   },
 
   namlamviec: () => {
-    d3.select("#namlamviec").on("change", function () {
+    d3.select("#namlamviec").on("change", function() {
       let namchu = this.value.toString();
       if (ga["namlamviec"] == namchu) {
         return;
@@ -146,7 +159,8 @@ var web = {
         return;
       } else {
         if (!['chiphi', 'oc_cpxd', 'oc_cpvt', 'oc_cpvl',
-          'on_cpxd', 'on_cpvt', 'on_cpvl', 'cptl'].includes(bang)) {
+            'on_cpxd', 'on_cpvt', 'on_cpvl', 'cptl'
+          ].includes(bang)) {
           return;
         }
       }
@@ -274,20 +288,20 @@ var web = {
       if (!('oc' in ga)) { ga.oc = { zvl: 0, znc: 0, zmtc: 0 }; }
       self = ga.oc;
       try {
-        self.zvl = self.cpxd.reduce(function (z, rec) { return z + rec.tienvl }, 0);
-        self.zvl = self.cpvt.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
-        self.zvl = self.cpvl.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
-      } catch (err) { }
+        self.zvl = self.cpxd.reduce(function(z, rec) { return z + rec.tienvl }, 0);
+        self.zvl = self.cpvt.reduce(function(z, rec) { return z + rec.tienvl }, self.zvl);
+        self.zvl = self.cpvl.reduce(function(z, rec) { return z + rec.tienvl }, self.zvl);
+      } catch (err) {}
       try {
-        self.znc = self.cpxd.reduce(function (z, rec) { return z + rec.tiennc }, 0);
-        self.znc = self.cpvt.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
-        self.znc = self.cpvl.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
-      } catch (err) { }
+        self.znc = self.cpxd.reduce(function(z, rec) { return z + rec.tiennc }, 0);
+        self.znc = self.cpvt.reduce(function(z, rec) { return z + rec.tiennc }, self.znc);
+        self.znc = self.cpvl.reduce(function(z, rec) { return z + rec.tiennc }, self.znc);
+      } catch (err) {}
       try {
-        self.zmtc = self.cpxd.reduce(function (z, rec) { return z + rec.tienmtc }, 0);
-        self.zmtc = self.cpvt.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
-        self.zmtc = self.cpvl.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
-      } catch (err) { }
+        self.zmtc = self.cpxd.reduce(function(z, rec) { return z + rec.tienmtc }, 0);
+        self.zmtc = self.cpvt.reduce(function(z, rec) { return z + rec.tienmtc }, self.zmtc);
+        self.zmtc = self.cpvl.reduce(function(z, rec) { return z + rec.tienmtc }, self.zmtc);
+      } catch (err) {}
       d3.select("div[id='oc_zvl']").data([self.zvl])
         .attr("class", "fb")
         .text((d) => viewso(d, 0));
@@ -355,7 +369,7 @@ var web = {
           //web.oc.cpxd();
           //}
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             web.dieuhuong('oc_cpxd', ev.target.dataset.stt, 1, ev.keyCode);
           }
@@ -387,7 +401,7 @@ var web = {
             web.oc.cpxd();
           }
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             web.dieuhuong('oc_cpxd', ev.target.dataset.stt, 3, ev.keyCode);
           }
@@ -468,7 +482,7 @@ var web = {
           //web.oc.cpvt();
           //}
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             web.dieuhuong('oc_cpvt', ev.target.dataset.stt, 1, ev.keyCode);
           }
@@ -500,7 +514,7 @@ var web = {
             web.oc.cpvt();
           }
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             web.dieuhuong('oc_cpvt', ev.target.dataset.stt, 3, ev.keyCode);
           }
@@ -581,7 +595,7 @@ var web = {
           //web.oc.cpvl();
           //}
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             web.dieuhuong('oc_cpvl', ev.target.dataset.stt, 1, ev.keyCode);
           }
@@ -613,7 +627,7 @@ var web = {
             web.oc.cpvl();
           }
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             web.dieuhuong('oc_cpvl', ev.target.dataset.stt, 3, ev.keyCode);
           }
@@ -657,20 +671,20 @@ var web = {
       if (!('on' in ga)) { ga.on = { zvl: 0, znc: 0, zmtc: 0 }; }
       self = ga.on;
       try {
-        self.zvl = self.cpxd.reduce(function (z, rec) { return z + rec.tienvl }, 0);
-        self.zvl = self.cpvt.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
-        self.zvl = self.cpvl.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
-      } catch (err) { }
+        self.zvl = self.cpxd.reduce(function(z, rec) { return z + rec.tienvl }, 0);
+        self.zvl = self.cpvt.reduce(function(z, rec) { return z + rec.tienvl }, self.zvl);
+        self.zvl = self.cpvl.reduce(function(z, rec) { return z + rec.tienvl }, self.zvl);
+      } catch (err) {}
       try {
-        self.znc = self.cpxd.reduce(function (z, rec) { return z + rec.tiennc }, 0);
-        self.znc = self.cpvt.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
-        self.znc = self.cpvl.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
-      } catch (err) { }
+        self.znc = self.cpxd.reduce(function(z, rec) { return z + rec.tiennc }, 0);
+        self.znc = self.cpvt.reduce(function(z, rec) { return z + rec.tiennc }, self.znc);
+        self.znc = self.cpvl.reduce(function(z, rec) { return z + rec.tiennc }, self.znc);
+      } catch (err) {}
       try {
-        self.zmtc = self.cpxd.reduce(function (z, rec) { return z + rec.tienmtc }, 0);
-        self.zmtc = self.cpvt.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
-        self.zmtc = self.cpvl.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
-      } catch (err) { }
+        self.zmtc = self.cpxd.reduce(function(z, rec) { return z + rec.tienmtc }, 0);
+        self.zmtc = self.cpvt.reduce(function(z, rec) { return z + rec.tienmtc }, self.zmtc);
+        self.zmtc = self.cpvl.reduce(function(z, rec) { return z + rec.tienmtc }, self.zmtc);
+      } catch (err) {}
       d3.select("div[id='on_zvl']").data([self.zvl])
         .attr("class", "fb")
         .text((d) => viewso(d, 0));
@@ -957,8 +971,8 @@ var web = {
           }
         });
       web.tlmd.cptl();
-      ga.oc.ztl = ga.cptl.reduce(function (z, rec) { return z + rec.oc_tien }, 0);
-      ga.on.ztl = ga.cptl.reduce(function (z, rec) { return z + rec.on_tien }, 0);
+      ga.oc.ztl = ga.cptl.reduce(function(z, rec) { return z + rec.oc_tien }, 0);
+      ga.on.ztl = ga.cptl.reduce(function(z, rec) { return z + rec.on_tien }, 0);
       d3.select("div[id='oc_ztl']").data([ga.oc.ztl])
         .attr("class", "fb")
         .text((d) => viewso(d, 0));
@@ -1001,7 +1015,7 @@ var web = {
         .attr("class", (d, i) => "l cptl col1 row" + i)
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => d.mota)
-        .on("input", function (ev) {
+        .on("input", function(ev) {
           //hien combobox de lua chi phi
           d3.select(ev.target).attr("data-isopen", "ok");
           web.box.chiphi(ev.target, "tlmd", ev.target.value);
@@ -1015,14 +1029,14 @@ var web = {
             d3.select(ev.target).attr("data-isopen", "no");
             try {
               d3.select("#comb-chiphi").remove();
-            } catch (err) { }
+            } catch (err) {}
             idb.tinh.cptl(stt);
             web.tlmd.cptl();
             web.tlmd.bth();
           }
           web.dieuhuong('cptl', 1, stt, 13);
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13].includes(ev.keyCode)) {
             web.dieuhuong('cptl', ev.target.dataset.stt, 1, ev.keyCode);
           }
@@ -1073,7 +1087,7 @@ var web = {
           web.tlmd.bth();
           web.dieuhuong('cptl', stt, 3, 13);
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             web.dieuhuong('cptl', ev.target.dataset.stt, 3, ev.keyCode);
           }
@@ -1103,7 +1117,7 @@ var web = {
           web.tlmd.bth();
           web.dieuhuong('cptl', stt, 3, 13);
         })
-        .on("keydown", function (ev) {
+        .on("keydown", function(ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             web.dieuhuong('cptl', ev.target.dataset.stt, 4, ev.keyCode);
           }
@@ -1119,9 +1133,9 @@ var web = {
         .text((d) => viewso(d.on_tien, 0));
     },
   },
-  cpql:()=>{
+  cpql: () => {
     let zone, kiem, bang, rec, self;
-      zone = d3.select("section[id='cpql']");
+    zone = d3.select("section[id='cpql']");
   },
   sregexp: (stim) => {
     if (!stim) {
@@ -1189,13 +1203,15 @@ var web = {
     },
     chiphi: (el, plcp, stim) => {
       console.log("box chiphi el=", el, " plcp=", plcp, " stim=", stim);
+
       function kq2el(uid = null, show = null) {
         try {
           let zone = d3.select(el);
           zone.attr("data-chiphi", uid);
           zone.attr("value", show);
-        } catch (err) { }
+        } catch (err) {}
       };
+
       function tomau(chuoi, stim, sac = 'red') {
         try { chuoi = chuoi.toString().toLowerCase(); } catch (err) { return null; }
         try {
@@ -1315,13 +1331,13 @@ var web = {
         .on("mouseover", (ev, d) => {
           try {
             kq2el(d.idutc, d.mota.qtgt);
-          } catch (err) { }
+          } catch (err) {}
         })
         .on("click", (ev, d) => {
           console.log("row click d=", d);
           try {
             kq2el(d.idutc, d.mota.qtgt);
-          } catch (err) { }
+          } catch (err) {}
         });
       //cells
       rec.append('td')
@@ -1335,8 +1351,7 @@ var web = {
         .attr("class", "c")
         .text((d) => d.idutc || d.id);
     },
-    draft: () => {
-    },
+    draft: () => {},
   },
 };
 
@@ -1360,7 +1375,7 @@ var sw = {
           }
           try {
             let db, r, kq, cv = 1;
-            indexedDB.open("`+ idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+            indexedDB.open("` + idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
               db = e.target.result;
               db.transaction(bang, 'readonly')
                 .objectStore(bang)
@@ -1401,7 +1416,7 @@ var sw = {
           }
           try {
             let db, cs, kq, cv = 1;
-            indexedDB.open("`+ idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+            indexedDB.open("` + idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
               db = e.target.result;
               db.transaction(bang, 'readonly')
                 .objectStore(bang)
@@ -1438,7 +1453,7 @@ var sw = {
           }
           try {
             let db, cs, kq, cv = 1;
-            indexedDB.open("`+ idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+            indexedDB.open("` + idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
               db = e.target.result;
               db.transaction(bang, 'readonly')
                 .objectStore(bang)
@@ -1518,11 +1533,13 @@ var idb = {
           idx = db.createObjectStore('scan', { keyPath: 'idutc' });
         }
       };
-    } catch (err) { };
+    } catch (err) {};
   },
 
   luu: (bang, dl) => {
-    let ii = 0, w = {}, l, tin;
+    let ii = 0,
+      w = {},
+      l, tin;
     if (!Array.isArray(dl)) {
       dl = [dl];
     }
@@ -1543,7 +1560,7 @@ var idb = {
             try {
               w[ii].terminate();
               delete w[ii];
-            } catch (error) { }
+            } catch (error) {}
           }
           if ("err" in tin) {
             console.log("err=", tin.err);
@@ -1581,11 +1598,11 @@ var idb = {
           try {
             w.terminate();
             w = null;
-          } catch (err) { }
+          } catch (err) {}
           try {
             (window.URL || window.webkitURL).revokeObjectURL(wu);
             wu = null;
-          } catch (err) { }
+          } catch (err) {}
         }
         if ("err" in tin) {
           console.log("err=", tin.err);
@@ -1597,7 +1614,7 @@ var idb = {
           ga[bang][k] = tin.kq;
         }
       }
-    } catch (err) { }
+    } catch (err) {}
   },
   nap1: {
     idutc: (bang, uid = null) => {
@@ -1629,11 +1646,11 @@ var idb = {
             try {
               w.terminate();
               w = null;
-            } catch (err) { }
+            } catch (err) {}
             try {
               (window.URL || window.webkitURL).revokeObjectURL(wu);
               wu = null;
-            } catch (err) { }
+            } catch (err) {}
           }
           if ("err" in tin) {
             console.log("err=", tin.err);
@@ -1646,7 +1663,7 @@ var idb = {
             ga[bang][uid] = tin.kq;
           }
         }
-      } catch (err) { }
+      } catch (err) {}
     },
     makhoa: (bang, sma = null, vma = null) => {
       try {
@@ -1681,11 +1698,11 @@ var idb = {
             try {
               w.terminate();
               w = null;
-            } catch (err) { }
+            } catch (err) {}
             try {
               (window.URL || window.webkitURL).revokeObjectURL(wu);
               wu = null;
-            } catch (err) { }
+            } catch (err) {}
           }
           if ("err" in tin) {
             console.log("err=", tin.err);
@@ -1698,7 +1715,7 @@ var idb = {
             ga[bang][vma] = tin.kq;
           }
         }
-      } catch (err) { }
+      } catch (err) {}
     },
     baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
       try {
@@ -1726,11 +1743,11 @@ var idb = {
             try {
               w.terminate();
               w = null;
-            } catch (err) { }
+            } catch (err) {}
             try {
               (window.URL || window.webkitURL).revokeObjectURL(wu);
               wu = null;
-            } catch (err) { }
+            } catch (err) {}
           }
           if ("err" in tin) {
             console.log("err=", tin.err);
@@ -1742,7 +1759,7 @@ var idb = {
             ga[bang][uid] = tin.kq;
           }
         }
-      } catch (err) { }
+      } catch (err) {}
     },
     chiphi: (uid = null) => {
       idb.nap1.idutc("chiphi", uid);
@@ -1756,7 +1773,8 @@ var idb = {
   tinh: {
     oc: {
       cpxd: (stt = null) => {
-        let r, k, ii = 0, m = 0;
+        let r, k, ii = 0,
+          m = 0;
         try { m = ga.oc.cpxd.length; } catch (err) { return; }
         while (ii < m) {
           try {
@@ -1766,7 +1784,7 @@ var idb = {
             idb.nap1.baogia('bgnc', r.chiphi, ga.mabaogia, ga.plgia);
             idb.nap1.baogia('bgmtc', r.chiphi, ga.mabaogia, ga.plgia);
             idb.nap1.chiphi(r.chiphi);
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
         stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -1789,12 +1807,13 @@ var idb = {
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
             try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
             try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
       },
       cpvt: (stt = null) => {
-        let r, k, ii = 0, m = 0;
+        let r, k, ii = 0,
+          m = 0;
         try { m = ga.oc.cpvt.length; } catch (err) { return; }
         while (ii < m) {
           try {
@@ -1804,7 +1823,7 @@ var idb = {
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.chiphi(r.chiphi);
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
         stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -1827,12 +1846,13 @@ var idb = {
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
             try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
             try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
       },
       cpvl: (stt = null) => {
-        let r, k, ii = 0, m = 0;
+        let r, k, ii = 0,
+          m = 0;
         try { m = ga.oc.cpvl.length; } catch (err) { return; }
         while (ii < m) {
           try {
@@ -1842,7 +1862,7 @@ var idb = {
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.chiphi(r.chiphi);
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
         stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -1865,14 +1885,15 @@ var idb = {
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
             try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
             try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
       },
     },
     on: {
       cpxd: (stt = null) => {
-        let r, k, ii = 0, m = 0;
+        let r, k, ii = 0,
+          m = 0;
         try { m = ga.on.cpxd.length; } catch (err) { return; }
         while (ii < m) {
           try {
@@ -1882,7 +1903,7 @@ var idb = {
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.chiphi(r.chiphi);
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
         stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -1905,12 +1926,13 @@ var idb = {
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
             try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
             try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
       },
       cpvt: (stt = null) => {
-        let r, k, ii = 0, m = 0;
+        let r, k, ii = 0,
+          m = 0;
         try { m = ga.on.cpvt.length; } catch (err) { return; }
         while (ii < m) {
           try {
@@ -1920,7 +1942,7 @@ var idb = {
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.chiphi(r.chiphi);
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
         stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -1943,12 +1965,13 @@ var idb = {
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
             try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
             try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
       },
       cpvl: (stt = null) => {
-        let r, k, ii = 0, m = 0;
+        let r, k, ii = 0,
+          m = 0;
         try { m = ga.on.cpvl.length; } catch (err) { return; }
         while (ii < m) {
           try {
@@ -1958,7 +1981,7 @@ var idb = {
             idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
             idb.nap1.chiphi(r.chiphi);
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
         stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -1981,7 +2004,7 @@ var idb = {
             r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
             try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
             try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
-          } catch (err) { }
+          } catch (err) {}
           ii++;
         }
       },
@@ -1997,7 +2020,7 @@ var idb = {
           k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
           idb.nap1.baogia('bgtl', r.chiphi, ga.mabaogia, ga.plgia);
           idb.nap1.chiphi(r.chiphi);
-        } catch (err) { }
+        } catch (err) {}
         ii++;
       }
       stt = stt === '0' ? 0 : parseInt(stt) || -1;
@@ -2023,7 +2046,7 @@ var idb = {
           }
           try { r.mota = ga.chiphi[r.chiphi].mota.qtgt; } catch (err) { r.mota = null; }
           try { r.dvt = ga.chiphi[r.chiphi].dvt; } catch (err) { r.dvt = null; }
-        } catch (err) { }
+        } catch (err) {}
         ii++;
       }
     },
@@ -2053,7 +2076,7 @@ var idb = {
         self.oc.thuetongxaydung = lamtronso(self.oc.tongxaydungtruocthue * 10 / 100, 0);
         self.oc.tongxaydung = self.oc.tongxaydungtruocthue + self.oc.thuetongxaydung;
         self.oc.congtrinh = self.oc.tongxaydung + self.oc.ztl;
-      } catch (err) { }
+      } catch (err) {}
       try {
         if (!('on' in self)) { self.on = {} };
         self.on.vl = lamtronso(ga.on.zvl * self.vl, 0);
@@ -2075,7 +2098,7 @@ var idb = {
         self.on.thuetongxaydung = lamtronso(self.on.tongxaydungtruocthue * 10 / 100, 0);
         self.on.tongxaydung = self.on.tongxaydungtruocthue + self.on.thuetongxaydung;
         self.on.congtrinh = self.on.tongxaydung + self.on.ztl;
-      } catch (err) { }
+      } catch (err) {}
       //tong
       self.xaydung = self.oc.tongxaydung + self.on.tongxaydung
       self.tailap = self.oc.ztl + self.on.ztl
