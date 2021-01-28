@@ -7,6 +7,7 @@ otim = {"2020": 0, "anh": 1}
 
 # cloudtags = showtags + inp
 
+
 def clear_otim(ev):
     otim = {}
 
@@ -18,7 +19,7 @@ def del_otim(k):
 
 def show_cloudtags(ev):
     cloudtags = SPAN(id="cloudtags")
-    
+
     button = BUTTON(
         I(Class="fa fa-trash"),
         id="clear_button",

@@ -63,49 +63,53 @@ odata = {
     },
 }
 
-dsmaqt=['pkh001','pkh002']
-tttt=[]
+dsmaqt = ['pkh001', 'pkh002']
+tttt = []
+
+
 class Qtgt:
     def __init__(self, maqt):
         self.maqt = maqt
         tttt = self.load_tttt()
 
     def load_tttt(self):
-        ##load tttt
-        data = {"maqt": "pkh002", "madot": "2020gmmp242", "mahoso": "113344", "makhachhang": "2020kh001", "madvtc": "qlmltd"}
+        # load tttt
+        data = {"maqt": "pkh002", "madot": "2020gmmp242",
+                "mahoso": "113344", "makhachhang": "2020kh001", "madvtc": "qlmltd"}
         return data
 
     def dvtc(self):
         return 'QLMLTD'
 
-qtgt0={
-    'dvtc':'QLMLTD',
-    'ngaylap':'20200907',
-    'sohoso':'GM01001/20',
-    'sodot':'999/2020MP',
-    'khachhang':'Nguyễn Lan Chi',
-    'diachigandhn':'25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ',
-    'ocCpxd':{},
-    'ocCpvt':{},
-    'ocCpvl':{},
-    'ocCptl':{},
-    'ocVl':0,
-    'ocNc':0,
-    'ocMtc':0,
-    'ocTl':0,
-    'onCpxd':{},
-    'onCpvt':{},
-    'onCpvl':{},
-    'onCptl':{},
-    'onVl':0,
-    'onNc':0,
-    'onMtc':0,
-    'onTl':0,
-    'cpqlid':'20200721',
-    'maubaocao':'on',
-    'hsVl':1,
-    'hsNc':1,
-    'hsMtc':1,
+
+qtgt0 = {
+    'dvtc': 'QLMLTD',
+    'ngaylap': '20200907',
+    'sohoso': 'GM01001/20',
+    'sodot': '999/2020MP',
+    'khachhang': 'Nguyễn Lan Chi',
+    'diachigandhn': '25/5/4A- Đường 9- Kp.5- P.Linh Xuân- Q.TĐ',
+    'ocCpxd': {},
+    'ocCpvt': {},
+    'ocCpvl': {},
+    'ocCptl': {},
+    'ocVl': 0,
+    'ocNc': 0,
+    'ocMtc': 0,
+    'ocTl': 0,
+    'onCpxd': {},
+    'onCpvt': {},
+    'onCpvl': {},
+    'onCptl': {},
+    'onVl': 0,
+    'onNc': 0,
+    'onMtc': 0,
+    'onTl': 0,
+    'cpqlid': '20200721',
+    'maubaocao': 'on',
+    'hsVl': 1,
+    'hsNc': 1,
+    'hsMtc': 1,
     "hsChung": 0.055,
     "hsTructiepkhac": 0,
     "hsGiantiepkhac": 0.02,
@@ -114,7 +118,8 @@ qtgt0={
     "hsThietke": 1.2,
     "hsGiamsat": 0.02566,
 }
-qtgt=qtgt0.copy()
+qtgt = qtgt0.copy()
+
 
 def load_odata():
     global odata
@@ -125,7 +130,7 @@ def load_odata():
 def lamtronso(sothapphan="0.000", phanle=2):
     from decimal import Decimal
     try:
-        somoi = round(Decimal(sothapphan),phanle)
+        somoi = round(Decimal(sothapphan), phanle)
     except:
         somoi = None
     return somoi
@@ -160,7 +165,8 @@ def tinhkinhphi(odl={"hesodutoan": {"hesoid": 20200721, }, "qtgt": {"oc": {}, "o
     kp['oc']['Tructiepkhac'] = lamtronso(
         kp['oc']['Zvlncmtc'] * odl['hesodutoan']['tructiepkhac'], 0)
     kp['oc']['Tructiep'] = kp['oc']['Zvlncmtc'] + kp['oc']['Tructiepkhac']
-    kp['oc']['Chung'] = lamtronso(kp['oc']['Tructiep'] * odl['hesodutoan']['chung'], 0)
+    kp['oc']['Chung'] = lamtronso(
+        kp['oc']['Tructiep'] * odl['hesodutoan']['chung'], 0)
     kp['oc']['Giantiepkhac'] = lamtronso(
         kp['oc']['Tructiep'] * odl['hesodutoan']['giantiepkhac'], 0)
     kp['oc']['Giantiep'] = kp['oc']['Chung'] + kp['oc']['Giantiepkhac']
@@ -181,7 +187,7 @@ def tinhkinhphi(odl={"hesodutoan": {"hesoid": 20200721, }, "qtgt": {"oc": {}, "o
         kp['oc']['Vattongxaydung']
     kp['oc']['Tailap'] = odl['qtgt']['oc']['Tailap']
     kp['oc']['Tailaptruocthue'] = lamtronso(
-        kp['oc']['Tailap'] * 100/110, 0)
+        kp['oc']['Tailap'] * 100 / 110, 0)
     kp['oc']['Vattailap'] = kp['oc']['Tailap'] - kp['oc']['Tailaptruocthue']
     # ong nganh
     kp['on']['Vl'] = lamtronso(
@@ -217,11 +223,11 @@ def tinhkinhphi(odl={"hesodutoan": {"hesoid": 20200721, }, "qtgt": {"oc": {}, "o
         kp['on']['Vattongxaydung']
     kp['on']['Tailap'] = odl['qtgt']['on']['Tailap']
     kp['on']['Tailaptruocthue'] = lamtronso(
-        kp['on']['Tailap'] * 100/110, 0)
+        kp['on']['Tailap'] * 100 / 110, 0)
     kp['on']['Vattailap'] = kp['on']['Tailap'] - kp['on']['Tailaptruocthue']
     # kinh phi chung
     kp['Tongxaydung'] = kp['oc']['Tongxaydung'] + kp['on']['Tongxaydung']
-    kp['Tongtailap'] = kp['oc']['Tailap']+kp['on']['Tailap']
+    kp['Tongtailap'] = kp['oc']['Tailap'] + kp['on']['Tailap']
     kp['Tongcontrinh'] = kp['Tongxaydung'] + kp['Tongtailap']
     # format tien
     for phui in ['oc', 'on']:
