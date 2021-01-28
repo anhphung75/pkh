@@ -372,7 +372,7 @@ var web = {
         .on("change", (ev) => {
           try {
             let stt = ev.target.dataset.stt;
-            let v = Match.abs(parseFloat(ev.target.value)) || 0;
+            let v = Math.abs(parseFloat(ev.target.value)) || 0;
             if (v > 0) {
               let r = ga.oc.cpxd[stt];
               r.soluong = v;
@@ -485,7 +485,7 @@ var web = {
         .on("change", (ev) => {
           try {
             let stt = ev.target.dataset.stt;
-            let v = Match.abs(parseFloat(ev.target.value)) || 0;
+            let v = Math.abs(parseFloat(ev.target.value)) || 0;
             if (v > 0) {
               let r = ga.oc.cpvt[stt];
               r.soluong = v;
@@ -598,7 +598,7 @@ var web = {
         .on("change", (ev) => {
           try {
             let stt = ev.target.dataset.stt;
-            let v = Match.abs(parseFloat(ev.target.value)) || 0;
+            let v = Math.abs(parseFloat(ev.target.value)) || 0;
             if (v > 0) {
               let r = ga.oc.cpvl[stt];
               r.soluong = v;
@@ -1005,28 +1005,22 @@ var web = {
           //hien combobox de lua chi phi
           d3.select(ev.target).attr("data-isopen", "ok");
           web.box.chiphi(ev.target, "tlmd", ev.target.value);
-          console.log("input ev=", ev.target);
         })
         .on("change", (ev) => {
-          try {
-            console.log("change ev=", ev.target);
-            let stt = ev.target.dataset.stt,
-              idutc = ev.target.dataset.chiphi || 0;
-            if (idutc > 0) {
-              ga.cptl[stt].idutc = idutc;
-              ga.cptl[stt].chiphi = idutc;
-              d3.select(ev.target).attr("data-isopen", "no");
-              try {
-                d3.select("#comb-chiphi").remove();
-              } catch (err) { }
-              idb.tinh.cptl(stt);
-            }
+          let stt = ev.target.dataset.stt,
+            idutc = ev.target.dataset.chiphi || 0;
+          if (idutc > 0) {
+            ga.cptl[stt].idutc = idutc;
+            ga.cptl[stt].chiphi = idutc;
+            d3.select(ev.target).attr("data-isopen", "no");
+            try {
+              d3.select("#comb-chiphi").remove();
+            } catch (err) { }
+            idb.tinh.cptl(stt);
             web.tlmd.cptl();
             web.tlmd.bth();
-            web.dieuhuong('cptl', 1, stt, 13);
-          } catch (err) {
-            web.tlmd.cptl();
           }
+          web.dieuhuong('cptl', 1, stt, 13);
         })
         .on("keydown", function (ev) {
           if ([13].includes(ev.keyCode)) {
@@ -1061,28 +1055,27 @@ var web = {
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => viewso(d.oc_sl, 0))
         .on("change", (ev, d) => {
+          let stt = ev.target.dataset.stt,
+            r = ga.cptl[stt];
           try {
-            let stt = ev.target.dataset.stt,
-              v = Match.abs(parseFloat(ev.target.value)) || 0;
-            if (v > 0) {
-              let r = ga.cptl[stt];
-              r.oc_sl = v;
-              if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
-                r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
-              } else {
-                r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
-              }
-            }
-            web.tlmd.cptl();
-            web.tlmd.bth();
-            web.dieuhuong('cptl', 3, stt, 13);
-          } catch (err) {
-            web.tlmd.cptl();
+            r.oc_sl = lamtronso(Math.abs(parseFloat(ev.target.value)), 3);
+          } catch (err) { r.oc_sl = 0; };
+          try {
+            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+            r.gia = lamtronso(ga.bgtl[k], 0);
+          } catch (err) { r.gia = 0; }
+          if ((ga.macpql || ga.cpql.hesoid) >= 20200827) {
+            r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
+          } else {
+            r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
           }
+          web.tlmd.cptl();
+          web.tlmd.bth();
+          web.dieuhuong('cptl', stt, 3, 13);
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('cptl', 3, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('cptl', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
       rec.append('td')
@@ -1092,28 +1085,27 @@ var web = {
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => viewso(d.on_sl, 0))
         .on("change", (ev, d) => {
+          let stt = ev.target.dataset.stt,
+            r = ga.cptl[stt];
           try {
-            let stt = ev.target.dataset.stt,
-              v = Match.abs(parseFloat(ev.target.value)) || 0;
-            if (v > 0) {
-              let r = ga.cptl[stt];
-              r.on_sl = v;
-              if ((ga.cpql.ma || ga.cpql.id) >= 20200827) {
-                r.on_tien = lamtronso(r.gia * r.on_sl, 0);
-              } else {
-                r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
-              }
-            }
-            web.tlmd.cptl();
-            web.tlmd.bth();
-            web.dieuhuong('cptl', 4, stt, 13);
-          } catch (err) {
-            web.tlmd.cptl();
+            r.on_sl = lamtronso(Math.abs(parseFloat(ev.target.value)), 3);
+          } catch (err) { r.on_sl = 0; };
+          try {
+            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
+            r.gia = lamtronso(ga.bgtl[k], 0);
+          } catch (err) { r.gia = 0; }
+          if ((ga.macpql || ga.cpql.hesoid) >= 20200827) {
+            r.on_tien = lamtronso(r.gia * r.on_sl, 0);
+          } else {
+            r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
           }
+          web.tlmd.cptl();
+          web.tlmd.bth();
+          web.dieuhuong('cptl', stt, 3, 13);
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('cptl', 4, ev.target.dataset.stt, ev.keyCode);
+            web.dieuhuong('cptl', ev.target.dataset.stt, 4, ev.keyCode);
           }
         });
       rec.append('td')
@@ -1126,6 +1118,10 @@ var web = {
         .attr("class", "r bb")
         .text((d) => viewso(d.on_tien, 0));
     },
+  },
+  cpql:()=>{
+    let zone, kiem, bang, rec, self;
+      zone = d3.select("section[id='cpql']");
   },
   sregexp: (stim) => {
     if (!stim) {
@@ -1272,8 +1268,22 @@ var web = {
         .style("left", vl)
         .style("margin", "0")
         .style("width", "20cm")
-        .style("max-height", "3cm")
+        .style("max-height", "1.6cm")
         .style("border", "1px solid black");
+      /*.on("scroll", (ev, d) => {
+        let y = ev.target.scrollTop;
+        console.log("scroll y=", y)
+        if (y < 20) {
+          d3.select(ev.target).selectAll("th")
+            .style("position", "relative")
+            .style("top", "0");
+        } else {
+          d3.select(ev.target).selectAll("th")
+            .style("position", "sticky")
+            .style("top", "0");
+        }
+      });*/
+
       //bang
       bang = zone.append("table")
         .style("border-collapse", "collapse")
@@ -1602,6 +1612,7 @@ var idb = {
       //main prog
       let w, wu, gui, tin;
       if (!(bang in ga)) { ga[bang] = { uid: {} }; }
+      if (!(uid in ga[bang])) { ga[bang][uid] = {}; }
       try {
         gui = {
           bang: bang,
@@ -1653,6 +1664,7 @@ var idb = {
       //main prog
       let w, wu, gui, tin;
       if (!(bang in ga)) { ga[bang] = { vma: {} }; }
+      if (!(vma in ga[bang])) { ga[bang][vma] = {}; }
       try {
         gui = {
           bang: bang,
@@ -1697,6 +1709,7 @@ var idb = {
       let w, wu, gui, tin,
         uid = [plgia, '.', mabaogia, '.', chiphi].join('');
       if (!(bang in ga)) { ga[bang] = { uid: 0 }; }
+      if (!(uid in ga[bang])) { ga[bang][uid] = 0; }
       try {
         gui = {
           bang: bang,
@@ -1749,9 +1762,9 @@ var idb = {
           try {
             r = ga.oc.cpxd[ii];
             k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-            idb.nap1.baogia('bgvl', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap1.baogia('bgnc', ga.mabaogia, r.chiphi, ga.plgia);
-            idb.nap1.baogia('bgmtc', ga.mabaogia, r.chiphi, ga.plgia);
+            idb.nap1.baogia('bgvl', r.chiphi, ga.mabaogia, ga.plgia);
+            idb.nap1.baogia('bgnc', r.chiphi, ga.mabaogia, ga.plgia);
+            idb.nap1.baogia('bgmtc', r.chiphi, ga.mabaogia, ga.plgia);
             idb.nap1.chiphi(r.chiphi);
           } catch (err) { }
           ii++;
@@ -2078,4 +2091,8 @@ function luanhoi() {
   //web.ongcai();
 }
 luanhoi();
-//web.box.chiphi('#test', 'tlmd', null);
+//let mabaogia = 20200827,
+//  chiphi = '001',
+//  plgia = 'dutoan';
+//idb.nap1.baogia('bgvl', chiphi, mabaogia, plgia);
+//console.log("ga.bgvl=", JSON.stringify(ga.bgvl));

@@ -25,80 +25,212 @@ class TaoJson():
     def chiphiquanly(self):
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:43").to('utc').float_timestamp * 1000),
               "data": {"macpql": 1, "hesoid": 1, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
+                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:44").to('utc').float_timestamp * 1000),
               "data": {"macpql": 2, "hesoid": 2, "vl": 1, "nc": 2.8, "mtc": 1.34, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
+                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:45").to('utc').float_timestamp * 1000),
               "data": {"macpql": 3, "hesoid": 3, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
+                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:46").to('utc').float_timestamp * 1000),
               "data": {"macpql": 4, "hesoid": 4, "vl": 1, "nc": 3.857, "mtc": 1.504, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
+                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:47").to('utc').float_timestamp * 1000),
               "data": {"macpql": 5, "hesoid": 5, "vl": 1, "nc": 5.714, "mtc": 1.82, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
+                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:48").to('utc').float_timestamp * 1000),
               "data": {"macpql": 6, "hesoid": 6, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
+                       "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:49").to('utc').float_timestamp * 1000),
               "data": {"macpql": 7, "hesoid": 7, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
+                       "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2019-09-18 12:33:43").to('utc').float_timestamp * 1000),
               "data": {"macpql": 20190725, "hesoid": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"},
+                       "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2020-07-21 12:33:43").to('utc').float_timestamp * 1000),
               "data": {"macpql": 20200721, "hesoid": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"},
+                       "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2020-08-27 11:33:43").to('utc').float_timestamp * 1000),
               "data": {"macpql": 20200827, "hesoid": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
-                       "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566, "cv_cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-                       "cv_cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"},
+                       "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
+                       "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+                                  "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"}, },
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
 
 class DoiJson():
-    def __init__(self, schema='web'):
+    def __init__(self, schema='web', nam=2020):
         self.schema = schema
+        self.nam = nam
+
+    def hoso_khachhang(self):
+        # loadd full
+        sql = (
+            f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid, "
+            f"dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid "
+            f"From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid) "
+            f"LEFT JOIN dbo.dot dot ON dot.madot=qt.madot "
+            f"Where datalength(dot.ngaylendot)>0 And dot.nam={self.nam} "
+            f"Order By dot.ngaylendot,hoso.hosoid"
+        )
+        print(f"hoso_khachhang sql={sql}")
+        ld = engine.runsql(sql)
+        if ((ld is None) or (not ld)):
+            return None
+        khach = {}
+        hoso = {}
+        for r in ld:
+            for k in r:
+                if r[k] is None:
+                    r[k] = ''
+            print(f"r={json.dumps(r, ensure_ascii=False)}")
+            idutc = int(arrow.get(r["ngaylendot"]).to(
+                'utc').float_timestamp * 1000)
+            # khach chuyen dulieu json
+            idkhach = idutc
+            while True:
+                if idkhach in khach:
+                    idkhach += 1
+                else:
+                    break
+            dc = r["diachi"].replace("- ", ", ")
+            dc = ' '.join(dc.split())
+            khach[idkhach] = {
+                "idutc": idkhach,
+                "refs": {
+                    "dot": {"id": [r['dotid']], "ma": [r['madot']]},
+                    "qtgt": {"id": [r['qtid']], "ma": [r['maqt']]},
+                    "hoso": {"id": [r['hosoid']]}, },
+                "data": {
+                    "khachhang": (' '.join(r["khachhang"].split())).upper(),
+                    "diachi": dc,
+                    "lienhe": ' '.join(r["lienhe"].split())},
+                "status": "chuyen json"}
+            # hoso chuyen dulieu json
+            idutc = int(arrow.get(r["ngaylendot"]).to(
+                'utc').float_timestamp * 1000)
+            while True:
+                if idutc in hoso:
+                    idutc += 1
+                else:
+                    break
+            hoso[idutc] = {
+                "idutc": idutc,
+                "refs": {
+                    "dot": {"id": [r['dotid']], "ma": [r['madot']]},
+                    "qtgt": {"id": [r['qtid']], "ma": [r['maqt']]},
+                    "hoso": {"id": [r['hosoid']]}, },
+                "data": {
+                    "id": {
+                        "khachhang": idkhach},
+                    "ma": {
+                        "khachhang": f"KH{self.nam}.{idkhach}"},
+                    "khachhang": khach[idkhach]["data"]["khachhang"],
+                    "diachi": khach[idkhach]["data"]["diachi"],
+                    "lienhe": khach[idkhach]["data"]["lienhe"], },
+                "status": "chuyen json"}
+            # xoa rong
+            khach[idkhach] = xoarong(khach[idkhach])
+            hoso[idutc] = xoarong(hoso[idutc])
+        print(f"khach={json.dumps(khach, ensure_ascii=False)}")
+        print(f"hoso={json.dumps(hoso, ensure_ascii=False)}")
+
+    def nap1_hoso(self, uid):
+        sql = (
+            f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
+            f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
+            f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
+            f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
+            f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
+            f" Order By hoso.hosoid,dot.ngaylendot"
+        )
+        print("nap1_hoso sql={sql}")
+        r = engine.runsql(sql)
+        if ((r is None) or (not r)):
+            return None
+        print(f"dulieu r={r}")
+        r = r[0]
+        for k in r:
+            if r[k] is None:
+                r[k] = ''
+        # chuyen dulieu
+        dl = {}
+        dl["idutc"] = int(arrow.get(r["ngaylendot"]).to(
+            'utc').float_timestamp * 1000)
+        dl["refs"] = {
+            "dot": {"id": r['dotid'], "ma": r['madot']},
+            "qtgt": {"id": r['qtid'], "ma": r['maqt']},
+            "hoso": {"id": r['hosoid']}, }
+        dl["data"] = {}
+
+        if r["khachhang"]:
+            dl["data"]["khachhang"] = (
+                ' '.join(r["khachhang"].split())).upper()
+        if r["diachi"]:
+            dc = r["diachi"].replace("- ", ", ")
+            dc = ' '.join(dc.split())
+            dl["data"]["diachi"] = dc
+        if r["lienhe"]:
+            dl["data"]["lienhe"] = ' '.join(r["lienhe"].split())
+        dl["status"] = "chuyen json"
+        # xoa rong
+        dl = xoarong(dl)
+        print(f"dulieu json={dl}")
+        return dl
 
     def nap1_khachhang(self, uid):
+        '''
+        SELECT Min(dbo_dot.ngaylendot) AS ngaylendot, dbo_hoso.khachhang, dbo_hoso.diachikhachhang, dbo_hoso.lienhe
+        FROM (dbo_hoso RIGHT JOIN dbo_qt ON dbo_hoso.hosoid = dbo_qt.hosoid) LEFT JOIN dbo_dot ON dbo_qt.madot = dbo_dot.madot
+        GROUP BY dbo_hoso.khachhang, dbo_hoso.diachikhachhang, dbo_hoso.lienhe
+        ORDER BY Min(dbo_dot.ngaylendot), dbo_hoso.khachhang, dbo_hoso.diachikhachhang, dbo_hoso.lienhe;
+        '''
         sql = (
             f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
             f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
@@ -194,61 +326,6 @@ class DoiJson():
         # print(f"dulieu json={dl}")
         return dl
 
-    def nap1_hoso(self, uid):
-        sql = (
-            f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid,"
-            f" dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid"
-            f" From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid)"
-            f" LEFT JOIN dbo.dot dot ON dot.madot=qt.madot"
-            f" Where hoso.hosoid={uid} and datalength(dot.ngaylendot)>0"
-            f" Order By hoso.hosoid,dot.ngaylendot"
-        )
-        print("nap1_hoso sql={sql}")
-        r = engine.runsql(sql)
-        if ((r is None) or (not r)):
-            return None
-        print(f"dulieu r={r}")
-        r = r[0]
-        for k in r:
-            if r[k] is None:
-                r[k] = ''
-        # chuyen dulieu
-        dl = {}
-        dl["idutc"] = int(arrow.get(r["ngaylendot"]).to(
-            'utc').float_timestamp * 1000)
-        dl["refs"] = {
-            "dot": {"id": r['dotid'], "ma": r['madot']},
-            "qtgt": {"id": r['qtid'], "ma": r['maqt']},
-            "hoso": {"id": r['hosoid']}, }
-        dl["data"] = {}
-        if r["khachhang"]:
-            dl["data"]["khachhang"] = (
-                ' '.join(r["khachhang"].split())).upper()
-        if r["diachi"]:
-            dc = r["diachi"].replace("- ", ", ")
-            dc = ' '.join(dc.split())
-            dl["data"]["diachi"] = dc
-        if r["lienhe"]:
-            dl["data"]["lienhe"] = ' '.join(r["lienhe"].split())
-        dl["status"] = "chuyen json"
-        # xoa rong
-        dl = xoarong(dl)
-        print(f"dulieu json={dl}")
-        return dl
-
-    def khachhang(self):
-        uid = 124455
-        maxloop = 124540
-        try:
-            while True and uid < maxloop:
-                print(f"Chuyen hoso id={uid:06d} *****")
-                dl = self.nap1_khachhang(uid)
-                if dl != None:
-                    Rest("web").moi("khachhang", dl)
-                uid += 1
-        except:
-            return None
-
     def nap1_chiphi(self, uid):
         # load
         sql = (
@@ -304,6 +381,19 @@ class DoiJson():
         dl = xoarong(dl)
         # print(f"dulieu json={dl}")
         return dl
+
+    def khachhang(self):
+        uid = 124455
+        maxloop = 124540
+        try:
+            while True and uid < maxloop:
+                print(f"Chuyen hoso id={uid:06d} *****")
+                dl = self.nap1_khachhang(uid)
+                if dl != None:
+                    Rest("web").moi("khachhang", dl)
+                uid += 1
+        except:
+            return None
 
     def dot(self, nam):
         sql = (
@@ -364,4 +454,4 @@ def drop_tables(schema='web'):
 
 # drop_tables()
 # TaoJson("web").chiphiquanly()
-DoiJson("web").hoso(2020)
+DoiJson("web", 2020).hoso_khachhang()
