@@ -85,17 +85,21 @@
 </section>
 
 <section id="cpql">
-
-  <table id="cpql1">
-    <tr>
-      <td id='test'>
-        <input type="text" value='test'>
-        <table id="chiphi1"></table>
-      </td>
-      <td>dvt</td>
-    </tr>
-  </table>
-
+  <header id="cpql_td" class="grid cpql">
+    <div class="l u fb">Chi phí quản lý</div>
+    <select id="ga_cpql" data-macpql="20200827">
+      <option value="20200827" selected>20200827</option>
+      <option value="20200721">20200721</option>
+      <option value="7">7</option>
+      <option value="6">6</option>
+      <option value="5">5</option>
+    </select>
+    <div class="l">Ống cái</div>
+    <div class="r" id="oc_tongxaydung">1</div>
+    <div class="l">Ống ngánh</div>
+    <div class="r" id="on_tongxaydung">1</div>
+  </header>
+  <div id="cpql_nd"></div>
 </section>
 
 {% end %}

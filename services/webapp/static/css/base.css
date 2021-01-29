@@ -1,19 +1,19 @@
 @charset "UTF-8";
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
   background-color: transparent;
   color: black;
 }
 
 /* Works on Firefox */
-
 * {
   scrollbar-width: 8px;
   scrollbar-color: red transparent;
 }
 
 /* Works on Chrome, Edge, and Safari */
-
 *::-webkit-scrollbar {
   width: 8px;
 }
@@ -30,8 +30,10 @@
 
 @import url("./font_Opensans.css");
 @import url("./font_UVNTintuc.css");
-html, body {
-  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
+html,
+body {
+  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep",
+    "UVN Tin Tuc Hep Them", sans-serif;
   /* font-size: 16pt; */
   margin: 0;
   border: 0;
@@ -44,7 +46,6 @@ html, body {
 }
 
 /* tetx */
-
 .l {
   text-align: left;
   padding: 1pt;
@@ -201,7 +202,8 @@ html, body {
   border: 0;
 }
 
-.ba, .btrbl {
+.ba,
+.btrbl {
   border: 1px solid black;
 }
 
@@ -273,7 +275,10 @@ html, body {
   background-color: lightgreen;
 }
 
-.hide, .an, .dau, .che {
+.hide,
+.an,
+.dau,
+.che {
   display: none;
 }
 
@@ -318,7 +323,7 @@ input {
 #trangxem nav {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
-  background: #C0C0C0;
+  background: #c0c0c0;
 }
 
 #trangxem main {
@@ -366,7 +371,9 @@ input {
 }
 
 @media print {
-  *, *:before, *:after {
+  *,
+  *:before,
+  *:after {
     box-sizing: border-box;
     background-color: transparent;
     color: black;
@@ -384,7 +391,8 @@ input {
 }
 
 @media screen {
-  .test, .mau {
+  .test,
+  .mau {
     border: 1px solid green;
     border-radius: 10px;
     background: yellow;
