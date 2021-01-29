@@ -171,7 +171,7 @@ class DoiJson():
                             "qtgt": {"id": {}, "ma": {}},
                             "hoso": {"id": {}},
                             "maq": r['maq'], "maqp": r['maqp']},
-                        "makhachhang": f"{self.nam}.khach.{stt["khach"]:06}",
+                        "makhachhang": f"{self.nam}.khach.{stt['khach']:06}",
                         "lienhe": ' '.join(r["lienhe"].split())},
                     "status": "chuyen json"}
             # update khach
