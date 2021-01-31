@@ -24,8 +24,8 @@ class TaoJson():
 
     def chiphiquanly(self):
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:43").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:1"},
-              "data": {"refscu": {"hesoid": 1}, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 1},
+              "data": {"macpql": 1, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
@@ -33,8 +33,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:44").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:2"},
-              "data": {"refscu": {"hesoid": 2}, "vl": 1, "nc": 2.8, "mtc": 1.34, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 2},
+              "data": {"macpql": 2, "vl": 1, "nc": 2.8, "mtc": 1.34, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
@@ -42,8 +42,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:45").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:3"},
-              "data": {"refscu": {"hesoid": 3}, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 3},
+              "data": {"macpql": 3, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
@@ -51,8 +51,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:46").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:4"},
-              "data": {"refscu": {"hesoid": 4}, "vl": 1, "nc": 3.857, "mtc": 1.504, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 4},
+              "data": {"macpql": 4, "vl": 1, "nc": 3.857, "mtc": 1.504, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
@@ -60,8 +60,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:47").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:5"},
-              "data": {"refscu": {"hesoid": 5}, "vl": 1, "nc": 5.714, "mtc": 1.82, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 5},
+              "data": {"macpql": 5, "vl": 1, "nc": 5.714, "mtc": 1.82, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
@@ -69,8 +69,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:48").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:6"},
-              "data": {"refscu": {"hesoid": 6}, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 6},
+              "data": {"macpql": 6, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
@@ -78,8 +78,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2017-06-27 22:33:49").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:7"},
-              "data": {"refscu": {"hesoid": 7}, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 7},
+              "data": {"macpql": 7, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
@@ -87,8 +87,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2019-09-18 12:33:43").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:20190725"},
-              "data": {"refscu": {"hesoid": 20190725}, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 20190725},
+              "data": {"macpql": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"}, },
@@ -96,8 +96,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2020-07-21 12:33:43").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:20200721"},
-              "data": {"refscu": {"hesoid": 20200721}, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 20200721},
+              "data": {"macpql": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"}, },
@@ -105,8 +105,8 @@ class TaoJson():
         Rest("web").moi("chiphiquanly", dl)
 
         dl = {"idutc": int(arrow.get("2020-08-27 11:33:43").to('utc').float_timestamp * 1000),
-              "refs": {"macpql:20200827"},
-              "data": {"refscu": {"hesoid": 20200827}, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+              "refs": {"hesoid": 20200827, "ghichu": "quy ước làm tròn sl=3, tiền=0"},
+              "data": {"macpql": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
                        "phaply": {"cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
                                   "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"}, },
@@ -123,7 +123,8 @@ class DoiJson():
         # loadd full
         sql = (
             f"Select top 1 khachhang, diachikhachhang as diachi, lienhe, hoso.hosoid, "
-            f"dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid, hoso.maq, hoso.maqp "
+            f"dot.ngaylendot, dot.madot, dot.dotid, qt.maqt, qt.qtid, hoso.maq, hoso.maqp, "
+            f"dot.nhathauid as dvtcid "
             f"From (dbo.hoso hoso RIGHT JOIN dbo.qt qt ON hoso.hosoid=qt.hosoid) "
             f"LEFT JOIN dbo.dot dot ON dot.madot=qt.madot "
             f"Where datalength(dot.ngaylendot)>0 And dot.nam={self.nam} "
@@ -135,7 +136,7 @@ class DoiJson():
             return None
         khach = {}
         hoso = {}
-        stt = {"khach": 1, "hoso": 0}
+        stt = {"khach": 0, "hoso": 1}
         for r in ld:
             for k in r:
                 if r[k] is None:
@@ -146,13 +147,15 @@ class DoiJson():
             # khach chuyen dulieu json
             dc = r["diachi"].replace("- ", ", ")
             dc = ' '.join(dc.split())
-            ref = {
+            _data = {
                 "khachhang": (' '.join(r["khachhang"].split())).upper(),
                 "diachi": dc}
             isnew = True
             for idkhach in khach:
-                rec = khach[idkhach]["refs"]
-                if f"{rec}" == f"{ref}":
+                rec = khach[idkhach]["data"].copy()
+                if 'makhachhang' in rec:
+                    del rec['makhachhang']
+                if f"{rec}" == f"{_data}":
                     isnew = False
                     break
             if isnew:
@@ -162,20 +165,21 @@ class DoiJson():
                         idkhach += 1
                     else:
                         break
+                stt['khach'] += 1
+                _data['makhachhang'] = f"{self.nam}.khach.{stt['khach']:06}"
                 khach[idkhach] = {
                     "idutc": idkhach,
-                    "refs": rec,
-                    "data": {
+                    "refs": {
                         "refscu": {
                             "dot": {"id": {}, "ma": {}},
                             "qtgt": {"id": {}, "ma": {}},
                             "hoso": {"id": {}},
                             "maq": r['maq'], "maqp": r['maqp']},
-                        "makhachhang": f"{self.nam}.khach.{stt['khach']:06}",
                         "lienhe": ' '.join(r["lienhe"].split())},
+                    "data": _data,
                     "status": "chuyen json"}
             # update khach
-            ref = khach[idkhach]["data"]["refscu"]
+            ref = khach[idkhach]["refs"]["refscu"]
             try:
                 ref['dot']['ma'][r['madot']] = 1
                 ref['dot']['id'][r['dotid']] = 1
@@ -192,18 +196,21 @@ class DoiJson():
                 pass
             # hoso chuyen dulieu json
             rec = khach[idkhach]["data"]
-            ref = {
+            _data = {
                 "bang": {
                     "khachhang": {"id": idkhach, "ma": rec["makhachhang"]},
                     "dot": {"id": r['dotid'], "ma": r['madot']},
                     "qtgt": {"id": r['qtid'], "ma": r['maqt']},
+                    "donvithicong": {"id": r['dvtcid'], "ma": r['dvtcid']},
                     "khuvuc": {"maq": r['maq'], "maqp": r['maqp']}},
                 "khachsai": rec["khachhang"],
                 "noigandhn": rec["diachi"]}
             isnew = True
             for idutc in hoso:
-                rec = hoso[idutc]["refs"]
-                if f"{rec}" == f"{ref}":
+                rec = hoso[idutc]["data"].copy()
+                if 'mahoso' in rec:
+                    del rec['mahoso']
+                if f"{rec}" == f"{_data}":
                     isnew = False
                     break
             if isnew:
@@ -214,20 +221,15 @@ class DoiJson():
                         idutc += 1
                     else:
                         break
+                stt['hoso'] += 1
+                _data['mahoso'] = f"{self.nam}.hoso.{stt['hoso']:06}"
                 hoso[idutc] = {
                     "idutc": idutc,
                     "refs": {
-                        "bang": {
-                            "khachhang": {"id": idkhach, "ma": ref["makhachhang"]},
-                            "dot": {"id": r['dotid'], "ma": r['madot']},
-                            "qtgt": {"id": r['qtid'], "ma": r['maqt']},
-                            "khuvuc": {"maq": r['maq'], "maqp": r['maqp']}},
-                        "khachsai": ref["khachhang"],
-                        "noigandhn": ref["diachi"]},
-                    "data": {
                         "refscu": {"hoso": {"id": {}}},
                         "mahoso": f"{self.nam}.hoso.{stt['hoso']:06}",
                         "lienhe": ref["lienhe"]},
+                    "data": _data,
                     "status": "chuyen json"}
             # update hoso
             rec = khach[idkhach]["data"]
