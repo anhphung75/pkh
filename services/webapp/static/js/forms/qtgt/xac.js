@@ -1,5 +1,3 @@
-import { lamtronso, viewso } from "./../utils.js"
-
 var ga = {
   gom: null,
   tientrinh: 100,
@@ -1409,17 +1407,6 @@ var web = {
         .attr("value", (d) => d.k)
         .text((d) => d.v);
     },
-  },
-};
-
-
-
-var api = {
-  nap: {
-
-  },
-  luu: {
-
   },
 };
 
