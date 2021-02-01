@@ -1,6 +1,8 @@
 import { lamtronso, viewso } from "./../utils.js"
 
 var ga = {
+  gom: null,
+  tientrinh: 100,
   plgia: 'dutoan',
   mabaogia: 20210101,
   macpql: 20200827,
@@ -1155,6 +1157,21 @@ var web = {
     }
     return mau;
   },
+  tientrinh: () => {
+    let hg, zone = d3.select("#tientrinh")
+    if (ga.tientrinh === 100) {
+      zone.selectAll("*").remove();
+      clearTimeout(hg);
+    } else {
+      zone.selectAll("*").remove();
+      zone.append("label").text("Tiến trình ");
+      zone.append("progress")
+        .attr("max", 100)
+        .attr("value", ga.tientrinh)
+        .text([ga.tientrinh, "%"].join(''));
+      hg = setTimeout(web.tientrinh(), 300);
+    }
+  },
   box: {
     dieuhuong: (bang, row = 0, col = 3, keyCode = 0) => {
       console.log("box dieuhuong ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
@@ -1351,12 +1368,176 @@ var web = {
         .attr("class", "c")
         .text((d) => d.idutc || d.id);
     },
-    draft: () => { },
+    cpql: () => {
+      let zond = d3.select("ga_cpql").attr("data-macpql", "20200827");
+      zone.selectAll("option").data(ga.tieude.cptl)
+        .enter()
+        .append("option")
+        .attr("class", "c")
+        .text((col) => col);
+    },
+  },
+  datalist: {
+    nam: () => {
+      let dl = [{ k: 0, v: "All" }],
+        nam = new Date().getFullYear();
+      for (i in [0, 1, 2, 3, 4, 5]) {
+        let k = (nam - i).toString(),
+          v = nam - i;
+        dl.push({ k: k, v: v });
+      }
+      let zone = d3.select("webapp").append("datalist")
+        .attr("id", "dl_nam");
+      zone.selectAll("option").data(dl)
+        .enter()
+        .append("option")
+        .attr("value", (d) => d.k)
+        .text((d) => d.v);
+    },
+    cpql: () => {
+      idb.gom("cpql", 0);
+      if (ga.tientrinh !== 100) { return null; }
+      let zone, k, dl = new Set();
+      for (k in Object.keys(ga.gom).sort((a, b) => b - a)) {
+        dl.add({ k: k, v: ga.gom[k].macpql })
+      }
+      zone = d3.select("webapp").append("datalist")
+        .attr("id", "dl_cpql");
+      zone.selectAll("option").data(dl)
+        .enter()
+        .append("option")
+        .attr("value", (d) => d.k)
+        .text((d) => d.v);
+    },
   },
 };
 
 var sw = {
   idb: {
+    gom: () => {
+      let sw = `
+      self.onmessage = (ev) => {
+        try {
+          let tin = ev.data,
+            bang = tin.bang.toString().toLowerCase(),
+            uid = tin.gom.nam === '0' ? 0 : parseInt(tin.gom.nam) || -1;
+        } catch (err) {
+          self.postMessage({ cv: -1, kq: "nothing to nap" });
+        }
+        try {
+          let db, cs, kq, cv = 1;
+          indexedDB.open("` + idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+            db = e.target.result;
+            db.transaction(bang, 'readonly')
+              .objectStore(bang)
+              .openCursor(IDBKeyRange.only(uid))
+              .onsuccess = (e) => {
+                cs = e.target.result;
+                if (cs) {
+                  kq = cs.value;
+                  if (kq) { 
+                    self.postMessage({ cv: cv, kq: kq }); 
+                    cv++;
+                  }
+                  cs.continue();
+                } else {
+                  self.postMessage({ cv: -1, kq: null });
+                }
+              }
+          }
+        } catch (err) {
+          self.postMessage({ cv: cv, err: err });
+        };
+      }`,
+        blob = new Blob([sw], { type: "text/javascript" }),
+        url = (window.URL || window.webkitURL).createObjectURL(blob);
+      return url;
+    },
+    draft: () => {
+      self.onmessage = (ev) => {
+        try {
+          let db, cs, rs, k, sx,
+            tin = ev.data,
+            bang = tin.bang.toString().toLowerCase(),
+            rr = tin.luu,
+            idutc = rr.idutc,
+            cv = 1;
+        } catch (err) {
+          self.postMessage({ cv: -1, kq: "not obj to luu" });
+        }
+
+        console.log("sw idb luu1=", JSON.stringify(tin, null, 2))
+        try {
+          indexedDB.open("` + idb.csdl.ten + `", ` + idb.csdl.cap + `).onsuccess = (e) => {
+            db = e.target.result;
+            db.transaction(bang, 'readwrite')
+              .objectStore(bang)
+              .openCursor(IDBKeyRange.only(idutc))
+              .onsuccess = (e) => {
+                cs = e.target.result;
+                if (cs) {
+                  rs = cs.value;
+                  if (rs['lastupdate'] > rr['lastupdate']) {
+                    cv++;
+                    cs.continue();
+                  }
+                  for (k in rr) {
+                    if (rr[k]) {
+                      if (rr[k].length > 0 || rr[k].size > 0) {
+                        rs[k] = rr[k];
+                      } else {
+                        if (['ghichu', 'notes'].includes(k)) {
+                          rs[k] = rr[k];
+                        }
+                      }
+                    }
+                  }
+                  rs['lastupdate'] = Date.now();
+                  sx = cs.update(rs);
+                  sx.onsuccess = () => {
+                    self.postMessage({ cv: -1, kq: "save fin" });
+                  };
+                  cv++;
+                  cs.continue();
+                } else {
+                  ///new data
+                  rr['lastupdate'] = Date.now();
+                  indexedDB.open("`+ idb.csdl.ten + `", ` + idb.csdl.cap + `).onsuccess = (e) => {
+                    let db1 = e.target.result
+                      .transaction(bang, 'readwrite')
+                      .objectStore(bang)
+                      .put(rr);
+                    db1.onsuccess = () => {
+                      self.postMessage({ cv: -1, kq: "save fin" });
+                    }
+                  }
+                }
+              }
+          }
+        } catch (err) {
+          self.postMessage({ cv: cv, err: err });
+        };
+      }
+    },
+    luu1: () => {
+      let sw = `
+      self.onmessage = (ev) => {
+        try {
+          let db, cs, rs, k, sx,
+            tin = ev.data,
+            bang = tin.bang.toString().toLowerCase(),
+            rr = tin.luu,
+            idutc = rr.idutc,
+            cv = 1;
+        } catch (err) {
+          self.postMessage({ cv: -1, kq: "not obj to luu" });
+        }
+        console.log("sw idb luu1=", JSON.stringify(tin, null, 2))
+      }`,
+        blob = new Blob([sw]),
+        url = (window.URL || window.webkitURL).createObjectURL(blob);
+      return url;
+    },
     nap1: {
       baogia: () => {
         let sw = `
@@ -1537,13 +1718,20 @@ var idb = {
   },
 
   luu: (bang, dl) => {
-    let ii = 0,
+    try {
+      bang = bang.toString().toLowerCase();
+      if (bang.length < 1) { return; }
+    } catch (err) { return; }
+    try {
+      if (!Array.isArray(dl)) {
+        dl = [dl];
+      }
+    } catch (err) { return; }
+    let k, v, gui, tin,
+      ii = 0,
       w = {},
-      l, tin;
-    if (!Array.isArray(dl)) {
-      dl = [dl];
-    }
-    l = dl.length;
+      wu = {},
+      l = dl.length;
     while (ii < l) {
       try {
         tin = {
@@ -1551,31 +1739,79 @@ var idb = {
           luu: dl[ii],
         };
         console.log("idb.luu gui dl[", ii, "] tin=", JSON.stringify(tin, null, 2));
-        w[ii] = new Worker(sw_idb.luu1());
+        wu[ii] = sw.idb.luu1();
+        console.log("idb.luu gui wu[", ii, "]=", JSON.stringify(wu[ii], null, 2));
+        w[ii] = new Worker(wu);
+        console.log("idb.luu gui w[", ii, "]=", JSON.stringify(w[ii], null, 2));
         w[ii].postMessage(tin);
         w[ii].onmessage = (e) => {
           tin = e.data;
-          console.log("idb.luu tra tin=", JSON.stringify(tin, null, 2));
+          console.log("idb.luu nhan tin=", JSON.stringify(tin, null, 2));
           if (("cv" in tin) && (tin.cv < 0)) {
             try {
               w[ii].terminate();
-              delete w[ii];
-            } catch (error) { }
+              w[ii] = null;
+            } catch (err) { }
+            try {
+              (window.URL || window.webkitURL).revokeObjectURL(wu[ii]);
+              wu[ii] = null;
+            } catch (err) { }
           }
           if ("err" in tin) {
             console.log("err=", tin.err);
             //lam lai sau 2 giay
-            setTimeout(() => { idb.luu(bang, dl[ii]); }, 2000);
+            setTimeout(() => { w[ii].postMessage(gui); }, 2000);
           }
           if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
-            console.log("idb.luu tra tin.kq=", tin.kq);
+            console.log("idb.luu nhan tin.kq=", tin.kq);
           }
         }
-      } catch (err) {
-        break;
-      }
+      } catch (err) { console.log("idb.luu  err=", err); }
       ii++;
     }
+  },
+  gom: (bang, nam = 0) => {
+    try {
+      bang = bang.toString().toLowerCase();
+      if (bang.length < 1) { return; }
+    } catch (err) { return; }
+    try {
+      nam = parseInt(nam);
+    } catch (err) { nam = 0; }
+    ga.gom = {};
+    let k, v, w, wu, gui, tin;
+    try {
+      gui = { bang: bang, gom: { nam: nam }, };
+      console.log("idb.gom gui tin=", JSON.stringify(gui, null, 2));
+      wu = sw.idb.gom();
+      w = new Worker(wu);
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        console.log("idb.gom nhan tin=", JSON.stringify(tin, null, 2));
+        if (("cv" in tin) && (tin.cv < 0)) {
+          try {
+            w.terminate();
+            w = null;
+          } catch (err) { }
+          try {
+            (window.URL || window.webkitURL).revokeObjectURL(wu);
+            wu = null;
+          } catch (err) { }
+        }
+        if ("err" in tin) {
+          console.log("err=", tin.err);
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        }
+        if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
+          console.log("idb.gom nhan tin.kq=", tin.kq);
+          v = tin.kq;
+          k = v.idutc;
+          ga.gom[k] = v;
+        }
+      }
+    } catch (err) { }
   },
   nap: (bang, nap = { uid: 0 }) => {
     try {
@@ -2119,3 +2355,52 @@ luanhoi();
 //  plgia = 'dutoan';
 //idb.nap1.baogia('bgvl', chiphi, mabaogia, plgia);
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));
+
+function test_dulieu() {
+  let dl = [
+    {
+      "idutc": 2001,
+      "refs": { "hesoid": 20190725 },
+      "data": {
+        "macpql": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
+        "phaply": {
+          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+          "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"
+        },
+      },
+      "status": "Fin",
+      "lastupdate": Date.now()
+    },
+    {
+      "idutc": 2002,
+      "refs": { "hesoid": 20200721 },
+      "data": {
+        "macpql": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
+        "phaply": {
+          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+          "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
+        },
+      },
+      "status": "Fin",
+      "lastupdate": Date.now()
+    },
+    {
+      "idutc": 2003,
+      "refs": { "hesoid": 20200827, "ghichu": "quy ước làm tròn sl=3, tiền=0" },
+      "data": {
+        "macpql": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
+        "phaply": {
+          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+          "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
+        },
+      },
+      "status": "Fin",
+      "lastupdate": Date.now()
+    },
+  ]
+  idb.luu("chiphiquanly", dl)
+}
+test_dulieu();
