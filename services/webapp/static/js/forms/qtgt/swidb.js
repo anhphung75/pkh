@@ -266,69 +266,81 @@ var idb = {
     return rs;
   },
   luu1: (bang, luu) => {
-    try {
-      let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc);
-    } catch (err) {
-      self.postMessage({ cv: -1, kq: "not obj to luu" });
-    }
+    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
+    if (uid < 0) { self.postMessage({ cv: -1, kq: "not obj to luu" }); }
     //main
-    try {
-      let db, cs, rr, rs, sx,
-        cv = 1;
-      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
-        db = e.target.result;
-        db.transaction(bang, 'readwrite')
-          .objectStore(bang)
-          .openCursor(IDBKeyRange.only(uid))
-          .onsuccess = (e) => {
-            cs = e.target.result;
-            if (cs) {
-              rr = cs.value;
-              if (rr['lastupdate'] > luu['lastupdate']) {
-                cv++;
-                cs.continue();
-              }
-              rs['refs'] = idb.upkey(rr['refs'], luu['refs']);
-              rs['data'] = idb.upkey(rr['data'], luu['data']);
-              rs['status'] = luu['status'];
-              rs['lastupdate'] = Date.now();
-              sx = cs.update(rs);
-              sx.onsuccess = () => {
-                self.postMessage({ cv: -1, kq: "save fin" });
-              };
+    //try {
+    let db, db1, cs, rr, rs, sx,
+      cv = 1;
+    indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+      db = e.target.result;
+      db.transaction(bang, 'readwrite')
+        .objectStore(bang)
+        .openCursor(IDBKeyRange.only(uid))
+        .onsuccess = (e) => {
+          cs = e.target.result;
+          if (cs) {
+            rr = cs.value;
+            if (rr['lastupdate'] > luu['lastupdate']) {
               cv++;
               cs.continue();
             }
+            rs['refs'] = idb.upkey(rr['refs'], luu['refs']);
+            rs['data'] = idb.upkey(rr['data'], luu['data']);
+            rs['status'] = luu['status'];
+            rs['lastupdate'] = Date.now();
+            sx = cs.update(rs);
+            sx.onsuccess = () => {
+              self.postMessage({ cv: -1, kq: "save fin" });
+            };
+            cv++;
+            cs.continue();
+          } else {
+            ///new data
+            rr['lastupdate'] = Date.now();
+            self.postMessage({ cv: 0, csdl: idb.csdl, new: rr });
+            indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+              db1 = e.target.result
+                .transaction(bang, 'readwrite')
+                .objectStore(bang)
+                .put(rr);
+              db1.onsuccess = () => {
+                self.postMessage({ cv: -1, kq: "save fin" });
+              }
+            }
           }
-      }
-    } catch (err) {
-      self.postMessage({ cv: cv, err: err });
+        }
     }
+    //} catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
 
 
 
 };
 
+
 //main worker
 self.onmessage = (ev) => {
+  self.postMessage({ cv: 0, kq: "swidb active" });
   try {
     let tin = ev.data,
       csdl_ten = tin.csdl.ten.toString().toLowerCase(),
       csdl_cap = tin.csdl.cap === '0' ? 0 : parseInt(tin.csdl.cap) || 0,
       bang = tin.bang.toString().toLowerCase();
+
+    idb.csdl = { ten: csdl_ten, cap: csdl_cap };
+    self.postMessage({ cv: 0, bang: bang, tin: tin });
+    if ('gom' in tin) {
+
+    }
+    if ('nap1' in tin) {
+
+    }
+    if ('luu1' in tin) {
+      self.postMessage({ cv: 0, bang: bang, luu: tin.luu1 });
+      idb.luu1(bang, tin.luu1);
+    }
   } catch (err) {
     self.postMessage({ cv: -1, kq: "nothing to do" });
-  }
-  idb.csdl = { ten: csdl_ten, cap: csdl_cap };
-  if ('gom' in tin) {
-
-  }
-  if ('nap1' in tin) {
-
-  }
-  if ('luu1' in tin) {
-    idb.luu1(bang, tin.luu1);
-  }
-
+  };
 }

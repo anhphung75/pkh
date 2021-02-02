@@ -1,3 +1,6 @@
+import { lamtronso, viewso } from "./../../utils.js"
+import {idb} from "./../../../idb.js"
+
 var ga = {
   gom: null,
   tientrinh: 100,
@@ -110,25 +113,32 @@ var ga = {
   noidung: [],
   colsBE: [],
   url: {},
-
-
 };
 
 var web = {
   tao: () => {
+    web.sw_url();
     //web.namlamviec();
-    web.oc.cpxd();
-    web.oc.cpvt();
-    web.oc.cpvl();
-    web.oc.bth();
+    //web.oc.cpxd();
+    //web.oc.cpvt();
+    //web.oc.cpvl();
+    //web.oc.bth();
     //web.on.cpxd();
     //web.on_cpvt();
     //web.on_cpvl();
     //web.ongnganh();
-    web.tlmd.cptl();
-    web.tlmd.bth();
+    //web.tlmd.cptl();
+    //web.tlmd.bth();
   },
-
+  sw_url: () => {
+    ga.url["api"] = [
+      ["https://", window.location.host, "/", idb.csdl.ten, "/api/hoso/", ga.namlamviec].join(''),
+      ["https://", window.location.host, "/", idb.csdl.ten, "/api/dshc/", ga.namlamviec].join(''),
+    ];
+    ga.url["wss"] = ["wss://", window.location.host, "/", idb.csdl.ten, "/wss/hoso"].join('');
+    ga.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
+    ga.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
+  },
   namlamviec: () => {
     d3.select("#namlamviec").on("change", function () {
       let namchu = this.value.toString();
@@ -1410,7 +1420,7 @@ var web = {
   },
 };
 
-var idb = {
+var swidb = {
   csdl: { ten: 'cntd', cap: 1 },
   taodb: () => {
     let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -1452,53 +1462,46 @@ var idb = {
     try {
       bang = bang.toString().toLowerCase();
       if (bang.length < 1) { return; }
-    } catch (err) { return; }
-    try {
-      if (!Array.isArray(dl)) {
+      if (dl.constructor !== Array) {
         dl = [dl];
       }
     } catch (err) { return; }
+    //main
     let k, v, gui, tin,
       ii = 0,
       w = {},
-      wu = {},
       l = dl.length;
     while (ii < l) {
-      try {
-        tin = {
-          csdl:idb.csdl,
-          bang: bang,
-          luu: dl[ii],
-        };
-        console.log("idb.luu gui dl[", ii, "] tin=", JSON.stringify(tin, null, 2));
-        wu[ii] = sw.idb.luu1();
-        console.log("idb.luu gui wu[", ii, "]=", JSON.stringify(wu[ii], null, 2));
-        w[ii] = new Worker(wu);
-        console.log("idb.luu gui w[", ii, "]=", JSON.stringify(w[ii], null, 2));
-        w[ii].postMessage(tin);
-        w[ii].onmessage = (e) => {
-          tin = e.data;
-          console.log("idb.luu nhan tin=", JSON.stringify(tin, null, 2));
-          if (("cv" in tin) && (tin.cv < 0)) {
-            try {
-              w[ii].terminate();
-              w[ii] = null;
-            } catch (err) { }
-            try {
-              (window.URL || window.webkitURL).revokeObjectURL(wu[ii]);
-              wu[ii] = null;
-            } catch (err) { }
+      tin = {
+        csdl: idb.csdl,
+        bang: bang,
+        luu1: dl[ii],
+      };
+      w[ii] = new Worker(ga.url['swidb']);
+      console.log("idb.luu gui tin=", JSON.stringify(tin, null, 2));
+      w[ii].postMessage(tin);
+      w[ii].onmessage = (e) => {
+        tin = e.data;
+        try {
+          if (tin.cv < 0) {
+            w[ii].terminate();
+            w[ii] = null;
+          } else if (tin.cv > 0) {
+            console.log("swidb tin=", JSON.stringify(tin, null, 2));
+          } else {
+            console.log("swidb tin=", JSON.stringify(tin, null, 2));
           }
-          if ("err" in tin) {
-            console.log("err=", tin.err);
-            //lam lai sau 2 giay
-            setTimeout(() => { w[ii].postMessage(gui); }, 2000);
-          }
-          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
-            console.log("idb.luu nhan tin.kq=", tin.kq);
-          }
+        } catch (err) {
+          try {
+            if ("err" in tin) {
+              console.log("err=", tin.err);
+              //lam lai sau 2 giay
+              setTimeout(() => { w[ii].postMessage(gui); }, 2000);
+            }
+          } catch (err) { }
         }
-      } catch (err) { console.log("idb.luu  err=", err); }
+
+      }
       ii++;
     }
   },
@@ -2077,8 +2080,11 @@ var idb = {
   },
 };
 
+
+
 function luanhoi() {
   web.tao();
+  swidb.taodb();
   //web.ongcai();
 }
 luanhoi();
@@ -2087,52 +2093,3 @@ luanhoi();
 //  plgia = 'dutoan';
 //idb.nap1.baogia('bgvl', chiphi, mabaogia, plgia);
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));
-
-function test_dulieu() {
-  let dl = [
-    {
-      "idutc": 2001,
-      "refs": { "hesoid": 20190725 },
-      "data": {
-        "macpql": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
-        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
-        "phaply": {
-          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-          "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"
-        },
-      },
-      "status": "Fin",
-      "lastupdate": Date.now()
-    },
-    {
-      "idutc": 2002,
-      "refs": { "hesoid": 20200721 },
-      "data": {
-        "macpql": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
-        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
-        "phaply": {
-          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-          "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
-        },
-      },
-      "status": "Fin",
-      "lastupdate": Date.now()
-    },
-    {
-      "idutc": 2003,
-      "refs": { "hesoid": 20200827, "ghichu": "quy ước làm tròn sl=3, tiền=0" },
-      "data": {
-        "macpql": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
-        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
-        "phaply": {
-          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
-          "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
-        },
-      },
-      "status": "Fin",
-      "lastupdate": Date.now()
-    },
-  ]
-  idb.luu("chiphiquanly", dl)
-}
-test_dulieu();

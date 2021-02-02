@@ -5,7 +5,8 @@
 {% end %}
 
 {% block js %}
-<script type="module" src="{{static_url(r'js/forms/qtgt.js')}}"></script>
+<script type="module" src="{{static_url(r'js/forms/qtgt/xac.js')}}"></script>
+<script type="module" src="{{static_url(r'js/forms/qtgt/idb.js')}}"></script>
 {% end %}
 
 {% block panel %}
@@ -57,7 +58,6 @@
   <table id="oc_cpvt"></table>
   <table id="oc_cpvl"></table>
 </section>
-
 <section id="ongnganh">
   <div class="grid ongnganh">
     <div class="l u fb">Phần ống ngánh</div>
@@ -72,18 +72,6 @@
   <table id="on_cpvt"></table>
   <table id="on_cpvl"></table>
 </section>
-
-<section id="tlmd">
-  <div class="grid tlmd">
-    <div class="l u fb">Tái lập mặt đường</div>
-    <div class="l">Ống cái</div>
-    <div class="r" id="oc_ztl">1</div>
-    <div class="l">Ống ngánh</div>
-    <div class="r" id="on_ztl">1</div>
-  </div>
-  <table id="cptl"></table>
-</section>
-
 <section id="cpql">
   <header id="cpql_td" class="grid cpql">
     <div class="l u fb">Chi phí quản lý</div>
@@ -101,5 +89,21 @@
   </header>
   <div id="cpql_nd"></div>
 </section>
+<section id="tlmd">
+  <div class="grid tlmd">
+    <div class="l u fb">Tái lập mặt đường</div>
+    <div class="l">Ống cái</div>
+    <div class="r" id="oc_ztl">1</div>
+    <div class="l">Ống ngánh</div>
+    <div class="r" id="on_ztl">1</div>
+  </div>
+  <table id="cptl"></table>
+</section>
+<div id="qtgt" data-swidb="{{static_url(r'js/forms/qtgt/swidb.js',True)}}"
+  data-swapi="{{static_url(r'js/forms/qtgt/swapi.js',True)}}"
+  onclick="console.log(this)">
+swidb={{static_url(r'js/forms/qtgt/swidb.js',True)}}
+</div>
+
 
 {% end %}
