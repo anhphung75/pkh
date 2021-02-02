@@ -1,8 +1,8 @@
 var idb = {
   csdl: { ten: 'cntd', cap: 1 },
-
-  upkey: (rs, rr, cap = 1) => {
-    let k, k1, v1;
+  upkey: (rs, rr) => {
+    let k, k1, v1,
+      keyxoa = ['notes', 'ghichu', 'old_'];
     //object
     if (rr === null || rr === undefined) {
       return rs;
@@ -19,21 +19,26 @@ var idb = {
             rs[k] = {};
             rs[k][k1] = v1;
           } else { }
-          rs[k] = idb.upkey(rs[k], rr[k], cap++);
+          rs[k] = idb.upkey(rs[k], rr[k]);
         } else if (rr[k].constructor === Array) {
           if (rs[k] === null || rs[k] === undefined) {
             rs[k] = [];
           } else if (rs[k].constructor !== Array) {
             rs[k] = [rs[k]];
           } else { }
-          rs[k] = idb.upkey(rs[k], rr[k], cap++);
+          rs[k] = idb.upkey(rs[k], rr[k]);
         } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
           rs[k] = rr[k];
         } else if (rr[k].constructor === String) {
           if (rr[k].length > 0) {
             rs[k] = rr[k];
-          } else if (['ghichu', 'notes'].includes(k) && k in rs) {
-            delete rs[k];
+          } else {
+            for (k1 in keyxoa) {
+              if (k.includes(keyxoa[k1]) && k in rs) {
+                delete rs[k];
+                break;
+              }
+            }
           }
         } else { }
       }
@@ -51,14 +56,14 @@ var idb = {
             rs[k] = {};
             rs[k][k1] = v1;
           } else { }
-          rs[k] = idb.upkey(rs[k], rr[k], cap++);
+          rs[k] = idb.upkey(rs[k], rr[k]);
         } else if (rr[k].constructor === Array) {
           if (rs[k] === null || rs[k] === undefined) {
             rs[k] = [];
           } else if (rs[k].constructor !== Array) {
             rs[k] = [rs[k]];
           } else { }
-          rs[k] = idb.upkey(rs[k], rr[k], cap++);
+          rs[k] = idb.upkey(rs[k], rr[k]);
         } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
           rs.push(rr[k]);
         } else if (rr[k].constructor === String) {
@@ -82,9 +87,7 @@ var idb = {
   },
   luu1: (bang, luu) => {
     let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
-    console.log("idb luu1 uid=", uid);
     if (uid < 0) { return; }
-    //main
     //try {
     let db, db1, cs, rr, rs, sx,
       cv = 1;
@@ -103,16 +106,21 @@ var idb = {
             }
             rs['refs'] = idb.upkey(rs['refs'], luu['refs']);
             rs['data'] = idb.upkey(rs['data'], luu['data']);
+            rs['refs'] = idb.upkey({}, luu['refs']);
+            rs['data'] = idb.upkey({}, luu['data']);
             rs['status'] = luu['status'];
             rs['lastupdate'] = Date.now();
             sx = cs.update(rs);
             sx.onsuccess = () => {
               console.log("save fin");
+              //self.postMessage({ cv: -1, kq: "save fin" });
             };
             cv++;
             cs.continue();
           } else {
             ///new data
+            luu['refs'] = idb.upkey({}, luu['refs']);
+            luu['data'] = idb.upkey({}, luu['data']);
             luu['lastupdate'] = Date.now();
             indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
               db1 = e.target.result
@@ -129,6 +137,103 @@ var idb = {
     }
     //} catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
+  nap1: {
+    baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
+      if (bang) {
+        bang = bang.toString().toLowerCase();
+      } else { return 0; };
+      chiphi = chiphi === '0' ? 0 : parseInt(chiphi) || -1;
+      if (chiphi < 0) { return 0; }
+      baogia = baogia === '0' ? 0 : parseInt(baogia) || -1;
+      if (baogia < 0) { return 0; }
+      if (plgia) {
+        plgia = plgia.toString().toLowerCase();
+      } else { plgia = 'dutoan'; };
+      console.log(['baogia=', baogia, ' chiphi=', chiphi, ' plgia=', plgia].join(''));
+      //try {
+      let db, r, v, k0,k1, k = 0, kq = {},
+        ce = new Date(baogia).getTime(),
+        cs = parseInt(ce - 3600000 * 24 * 366 * 5);
+      console.log(['cs=', cs, ' ce=', ce].join(''));
+      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+        db = e.target.result;
+        db.transaction(bang, 'readwrite')
+          .objectStore(bang)
+          //.openCursor(IDBKeyRange.lowerBound(cs))
+          .openCursor(null, 'prev')
+          .onsuccess = (e) => {
+            cs = e.target.result;
+            ce = 0;
+            if (cs) {
+              r = cs.value;
+              ce = parseInt(r.data.mabaogia);
+              if (r.data.chiphi === chiphi && plgia in r.data && ce <= baogia && ce > k) {
+                k = ce;
+                v = Math.abs(r.data[plgia]);
+                if (!(k in kq)) {
+                  kq[k] = v;
+                  console.log(['id=', r.idutc, ' add ', bang, '=', JSON.stringify(kq)].join(''));
+                  for (k1 in kq) {
+                    if (k1 < k) { delete kq[k1]; }
+                  }
+                  console.log(['id=', r.idutc, ' del ', bang, '=', JSON.stringify(kq)].join(''));
+                }
+              }
+              cs.continue();
+              console.log(['if kq ', bang, '=', kq].join(''));
+            } else {
+              for (k in kq) {
+                break;
+                //return kq[k];
+              }
+              console.log([' else kq ', bang, '=', JSON.stringify(kq)].join(''));
+              console.log([' else kq[',k,'] ', bang, '=', JSON.stringify(kq)].join(''));
+              return kq;
+              
+              //self.postMessage({ cv: cv, kq: kq });
+              //self.postMessage({ cv: -1, kq: "fin" });
+            }
+          }
+      }
+      //} catch (err) { self.postMessage({ cv: cv, err: err }); }
+    },
+    idutc: () => {
+      let sw = `
+        self.onmessage = (ev) => {
+          try {
+            let tin = ev.data,
+              bang = tin.bang.toString().toLowerCase(),
+              uid = tin.nap.idutc === '0' ? 0 : parseInt(tin.nap.idutc) || -1;
+          } catch (err) {
+            self.postMessage({ cv: -1, kq: "nothing to nap" });
+          }
+          try {
+            let db, cs, kq, cv = 1;
+            indexedDB.open("` + idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+              db = e.target.result;
+              db.transaction(bang, 'readonly')
+                .objectStore(bang)
+                .openCursor(IDBKeyRange.only(uid))
+                .onsuccess = (e) => {
+                  cs = e.target.result;
+                  if (cs) {
+                    kq = cs.value;
+                    if (kq) { self.postMessage({ cv: cv, kq: kq }); }
+                    cs.continue();
+                  } else {
+                    self.postMessage({ cv: -1, kq: null });
+                  }
+                }
+            }
+          } catch (err) {
+            self.postMessage({ cv: cv, err: err });
+          };
+        }`,
+        blob = new Blob([sw], { type: "text/javascript" }),
+        url = (window.URL || window.webkitURL).createObjectURL(blob);
+      return url;
+    },
+  }
 }
 
 function test_dulieu() {
@@ -177,11 +282,9 @@ function test_dulieu() {
     },
   ]
   idb.luu1("chiphiquanly", dl[0])
+  idb.luu1("chiphiquanly", dl[1])
+  idb.luu1("chiphiquanly", dl[2])
 }
 //test_dulieu();
-
-let dl = { "hesoid": 20190725, "ghichu": ["quy ước làm tròn sl=3, tiền=0", "quy ước làm tròn sl=3"] };
-let dl1 = { "hesoid": [20190725, 1234, { "id": 456, "ma": "hs123456" }], ghichu: { "bdg": 'lamtron', "pbd": 'ko lam tron' }, "test": ["test1", '0', "test2", '', null], "stringne": 'anh hai day' };
-let k1, k = 'ghichu';
-console.log("k1=", ['old_', k].join(''));
-console.log("kq=", idb.upkey(dl, dl1));
+let s = ["s=", idb.nap1.baogia("bgvl", 100, 20190728, 'dutoan')].join('');
+console.log(s);

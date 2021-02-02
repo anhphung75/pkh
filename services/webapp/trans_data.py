@@ -149,7 +149,8 @@ class DoiJson():
             dc = ' '.join(dc.split())
             _data = {
                 "khachhang": (' '.join(r["khachhang"].split())).upper(),
-                "diachi": dc}
+                "diachi": dc,
+                "maq": r['maq'], "maqp": r['maqp']}
             isnew = True
             for idkhach in khach:
                 rec = khach[idkhach]["data"].copy()
@@ -170,26 +171,12 @@ class DoiJson():
                 khach[idkhach] = {
                     "idutc": idkhach,
                     "refs": {
-                        "refscu": {
-                            "dot": {"id": {}, "ma": {}},
-                            "qtgt": {"id": {}, "ma": {}},
-                            "hoso": {"id": {}},
-                            "maq": r['maq'], "maqp": r['maqp']},
+                        "refscu": {"hoso": {"id": {}}, },
                         "lienhe": ' '.join(r["lienhe"].split())},
                     "data": _data,
                     "status": "chuyen json"}
             # update khach
             ref = khach[idkhach]["refs"]["refscu"]
-            try:
-                ref['dot']['ma'][r['madot']] = 1
-                ref['dot']['id'][r['dotid']] = 1
-            except:
-                pass
-            try:
-                ref['qtgt']['ma'][r['maqt']] = 1
-                ref['qtgt']['id'][r['qtid']] = 1
-            except:
-                pass
             try:
                 ref['hoso']['id'][r['hosoid']] = 1
             except:

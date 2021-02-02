@@ -1,5 +1,4 @@
 import { lamtronso, viewso } from "./../../utils.js"
-import {idb} from "./../../../idb.js"
 
 var ga = {
   gom: null,
@@ -132,10 +131,10 @@ var web = {
   },
   sw_url: () => {
     ga.url["api"] = [
-      ["https://", window.location.host, "/", idb.csdl.ten, "/api/hoso/", ga.namlamviec].join(''),
-      ["https://", window.location.host, "/", idb.csdl.ten, "/api/dshc/", ga.namlamviec].join(''),
+      ["https://", window.location.host, "/", swidb.csdl.ten, "/api/hoso/", ga.namlamviec].join(''),
+      ["https://", window.location.host, "/", swidb.csdl.ten, "/api/dshc/", ga.namlamviec].join(''),
     ];
-    ga.url["wss"] = ["wss://", window.location.host, "/", idb.csdl.ten, "/wss/hoso"].join('');
+    ga.url["wss"] = ["wss://", window.location.host, "/", swidb.csdl.ten, "/wss/hoso"].join('');
     ga.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
     ga.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
   },
@@ -1433,26 +1432,43 @@ var swidb = {
         let db = e.target.result;
         if (e.oldVersion < idb.csdl.cap) {
           let idx = db.createObjectStore('tttt', { keyPath: 'tttt' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('hoso', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('khachhang', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('dot', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('donvithicong', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('hoancong', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('chiphi', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('cpxd', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('cpvl', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('cpvt', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('chiphiquanly', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('khuvuc', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('baogia', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('bgvl', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('bgnc', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('bgmtc', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('bgtl', { keyPath: 'idutc' });
-
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('nhanvien', { keyPath: 'idutc' });
-
+          idx.createIndex("dataid", "data", { unique: true });
           idx = db.createObjectStore('scan', { keyPath: 'idutc' });
+          idx.createIndex("dataid", "data", { unique: true });
         }
       };
     } catch (err) { };
@@ -1467,28 +1483,30 @@ var swidb = {
       }
     } catch (err) { return; }
     //main
-    let k, v, gui, tin,
-      ii = 0,
+    let gui, tin,
+      t = 0,
       w = {},
-      l = dl.length;
-    while (ii < l) {
+      d = dl.length;
+    while (t < d) {
       tin = {
-        csdl: idb.csdl,
+        csdl: swidb.csdl,
         bang: bang,
-        luu1: dl[ii],
+        luu1: dl[t],
       };
-      w[ii] = new Worker(ga.url['swidb']);
+      w[t] = new Worker(ga.url['swidb']);
       console.log("idb.luu gui tin=", JSON.stringify(tin, null, 2));
-      w[ii].postMessage(tin);
-      w[ii].onmessage = (e) => {
+      w[t].postMessage(tin);
+      w[t].onmessage = (e) => {
         tin = e.data;
         try {
           if (tin.cv < 0) {
-            w[ii].terminate();
-            w[ii] = null;
+            w[t].terminate();
+            w[t] = null;
           } else if (tin.cv > 0) {
+            //ok action
             console.log("swidb tin=", JSON.stringify(tin, null, 2));
           } else {
+            //info
             console.log("swidb tin=", JSON.stringify(tin, null, 2));
           }
         } catch (err) {
@@ -1496,15 +1514,15 @@ var swidb = {
             if ("err" in tin) {
               console.log("err=", tin.err);
               //lam lai sau 2 giay
-              setTimeout(() => { w[ii].postMessage(gui); }, 2000);
+              setTimeout(() => { w[t].postMessage(gui); }, 2000);
             }
           } catch (err) { }
         }
-
       }
-      ii++;
+      t++;
     }
   },
+
   gom: (bang, nam = 0) => {
     try {
       bang = bang.toString().toLowerCase();
@@ -2088,6 +2106,112 @@ function luanhoi() {
   //web.ongcai();
 }
 luanhoi();
+
+function test_dulieu() {
+  let dl = [
+    {
+      "idutc": 2001,
+      "refs": { "hesoid": 20190725, "ghichu": "quy ước làm tròn sl=3, tiền=0", "test": '', "test2": '' },
+      "data": {
+        "macpql": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
+        "phaply": {
+          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+          "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"
+        },
+      },
+      "status": "Fin",
+      "lastupdate": Date.now()
+    },
+    {
+      "idutc": 2002,
+      "refs": { "hesoid": 20200721 },
+      "data": {
+        "macpql": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
+        "phaply": {
+          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+          "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
+        },
+      },
+      "status": "Fin",
+      "lastupdate": Date.now()
+    },
+    {
+      "idutc": 2003,
+      "refs": { "hesoid": 20200827, "ghichu": "quy ước làm tròn sl=3, tiền=0" },
+      "data": {
+        "macpql": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
+        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
+        "phaply": {
+          "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+          "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
+        },
+      },
+      "status": "Fin",
+      "lastupdate": Date.now()
+    },
+  ]
+  swidb.luu("chiphiquanly", dl);
+
+  dl = [
+    {
+      "idutc": Date.now(),
+      "refs": { "chiphiid": 100 },
+      "data": {
+        "mabaogia": 20190825, "chiphi": 100,
+        "dutoan": 1525.4, "ketoan": 1525,
+      },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+    {
+      "idutc": Date.now() + 1,
+      "refs": { "chiphiid": 100 },
+      "data": {
+        "mabaogia": 20190725, "chiphi": 100,
+        "dutoan": 4432.68, "ketoan": 4432,
+      },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+    {
+      "idutc": Date.now() + 2,
+      "refs": { "chiphiid": 100 },
+      "data": {
+        "mabaogia": 20190721, "chiphi": 100,
+        "dutoan": 5247.35, "ketoan": 5247,
+      },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+    {
+      "idutc": Date.now() + 3,
+      "refs": { "chiphiid": 200 },
+      "data": {
+        "mabaogia": 20190825, "chiphi": 200,
+        "dutoan": 1250.4, "ketoan": 1250,
+      },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+    {
+      "idutc": Date.now() + 4,
+      "refs": { "chiphiid": 300 },
+      "data": {
+        "mabaogia": 20190721, "chiphi": 300,
+        "dutoan": 1254.4, "ketoan": 1254,
+      },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+  ]
+  swidb.luu("bgvl", dl);
+  swidb.luu("bgnc", dl);
+  swidb.luu("bgmtc", dl);
+  swidb.luu("bgtl", dl);
+}
+//test_dulieu();
 //let mabaogia = 20200827,
 //  chiphi = '001',
 //  plgia = 'dutoan';

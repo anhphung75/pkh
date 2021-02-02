@@ -1,5 +1,141 @@
 var idb = {
   csdl: { ten: 'cntd', cap: 1 },
+  upkey: (rs, rr) => {
+    let k, k1, v1,
+      keyxoa = ['notes', 'ghichu', 'old_'];
+    if (rr === null || rr === undefined) {
+      return rs;
+    } else if (rr.constructor === Object) {
+      if (!rs || rs.constructor !== Object) { rs = {}; }
+      for (k in rr) {
+        if (rr[k] === null || rr[k] === undefined) {
+        } else if (rr[k].constructor === Object) {
+          if (rs[k] === null || rs[k] === undefined) {
+            rs[k] = {};
+          } else if (rs[k].constructor !== Object) {
+            k1 = ["old", k].join("_");
+            v1 = rs[k];
+            rs[k] = {};
+            rs[k][k1] = v1;
+          } else { }
+          rs[k] = idb.upkey(rs[k], rr[k]);
+        } else if (rr[k].constructor === Array) {
+          if (rs[k] === null || rs[k] === undefined) {
+            rs[k] = [];
+          } else if (rs[k].constructor !== Array) {
+            rs[k] = [rs[k]];
+          } else { }
+          rs[k] = idb.upkey(rs[k], rr[k]);
+        } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
+          rs[k] = rr[k];
+        } else if (rr[k].constructor === String) {
+          if (rr[k].length > 0) {
+            rs[k] = rr[k];
+          } else {
+            for (k1 in keyxoa) {
+              if (k.includes(keyxoa[k1]) && k in rs) {
+                delete rs[k];
+                break;
+              }
+            }
+          }
+        } else { }
+      }
+      if (Object.keys(rs).length == 0) { return null; }
+    } else if (rr.constructor === Array) {
+      if (!rs || rs.constructor !== Array) { rs = []; }
+      for (k in rr) {
+        if (rr[k] === null || rr[k] === undefined) {
+        } else if (rr[k].constructor === Object) {
+          if (rs[k] === null || rs[k] === undefined) {
+            rs[k] = {};
+          } else if (rs[k].constructor !== Object) {
+            k1 = ["old", k, rs[k]].join("_");
+            v1 = rs[k];
+            rs[k] = {};
+            rs[k][k1] = v1;
+          } else { }
+          rs[k] = idb.upkey(rs[k], rr[k]);
+        } else if (rr[k].constructor === Array) {
+          if (rs[k] === null || rs[k] === undefined) {
+            rs[k] = [];
+          } else if (rs[k].constructor !== Array) {
+            rs[k] = [rs[k]];
+          } else { }
+          rs[k] = idb.upkey(rs[k], rr[k]);
+        } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
+          rs.push(rr[k]);
+        } else if (rr[k].constructor === String) {
+          if (rr[k].length > 0) {
+            rs.push(rr[k]);
+          }
+        } else { }
+      }
+      rs = [...new Set(rs)];
+      if (rs.length == 0) { return null; }
+    } else if (rr.constructor === Number || rr.constructor === Boolean) {
+      rs = rr;
+    } else if (rr.constructor === String) {
+      if (rr.length > 0) {
+        rs = rr;
+      } else {
+        return null;
+      }
+    } else { }
+    return rs;
+  },
+  luu1: (bang, luu) => {
+    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
+    if (uid < 0) { self.postMessage({ cv: -1, kq: "no uid to save" }); }
+    try {
+      let db, db1, cs, rr, rs, sx,
+        cv = 1;
+      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+        db = e.target.result;
+        db.transaction(bang, 'readwrite')
+          .objectStore(bang)
+          .openCursor(IDBKeyRange.only(uid))
+          .onsuccess = (e) => {
+            cs = e.target.result;
+            if (cs) {
+              rs = cs.value;
+              if (rs['lastupdate'] > luu['lastupdate']) {
+                self.postMessage({ cv: -1, kq: "data too old" });
+                cv++;
+                cs.continue();
+              }
+              rs['refs'] = idb.upkey(rs['refs'], luu['refs']);
+              rs['data'] = idb.upkey(rs['data'], luu['data']);
+              rs['refs'] = idb.upkey({}, luu['refs']);
+              rs['data'] = idb.upkey({}, luu['data']);
+              rs['status'] = luu['status'];
+              rs['lastupdate'] = Date.now();
+              sx = cs.update(rs);
+              sx.onsuccess = () => {
+                self.postMessage({ cv: -1, kq: "save fin" });
+              };
+              cv++;
+              cs.continue();
+            } else {
+              ///new data
+              luu['refs'] = idb.upkey({}, luu['refs']);
+              luu['data'] = idb.upkey({}, luu['data']);
+              luu['lastupdate'] = Date.now();
+              indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+                db1 = e.target.result
+                  .transaction(bang, 'readwrite')
+                  .objectStore(bang)
+                  .put(luu);
+                db1.onsuccess = () => {
+                  self.postMessage({ cv: -1, kq: "save fin" });
+                }
+              }
+            }
+          }
+      }
+    } catch (err) { self.postMessage({ cv: cv, err: err }); }
+  },
+  
   gom: (bang, nam = 0) => {
     try {
       let db, cs, kq,
@@ -153,166 +289,7 @@ var idb = {
       return url;
     },
   },
-  draft: () => {
-    self.onmessage = (ev) => {
-      try {
-        let db, cs, rs, k, sx,
-          tin = ev.data,
-          bang = tin.bang.toString().toLowerCase(),
-          rr = tin.luu,
-          idutc = rr.idutc,
-          cv = 1;
-      } catch (err) {
-        self.postMessage({ cv: -1, kq: "not obj to luu" });
-      }
-
-      console.log("sw idb luu1=", JSON.stringify(tin, null, 2))
-      try {
-        indexedDB.open("` + idb.csdl.ten + `", ` + idb.csdl.cap + `).onsuccess = (e) => {
-          db = e.target.result;
-          db.transaction(bang, 'readwrite')
-            .objectStore(bang)
-            .openCursor(IDBKeyRange.only(idutc))
-            .onsuccess = (e) => {
-              cs = e.target.result;
-              if (cs) {
-                rs = cs.value;
-                if (rs['lastupdate'] > rr['lastupdate']) {
-                  cv++;
-                  cs.continue();
-                }
-                for (k in rr) {
-                  if (rr[k]) {
-                    if (rr[k].length > 0 || rr[k].size > 0) {
-                      rs[k] = rr[k];
-                    } else {
-                      if (['ghichu', 'notes'].includes(k)) {
-                        rs[k] = rr[k];
-                      }
-                    }
-                  }
-                }
-                rs['lastupdate'] = Date.now();
-                sx = cs.update(rs);
-                sx.onsuccess = () => {
-                  self.postMessage({ cv: -1, kq: "save fin" });
-                };
-                cv++;
-                cs.continue();
-              } else {
-                ///new data
-                rr['lastupdate'] = Date.now();
-                indexedDB.open("`+ idb.csdl.ten + `", ` + idb.csdl.cap + `).onsuccess = (e) => {
-                  let db1 = e.target.result
-                    .transaction(bang, 'readwrite')
-                    .objectStore(bang)
-                    .put(rr);
-                  db1.onsuccess = () => {
-                    self.postMessage({ cv: -1, kq: "save fin" });
-                  }
-                }
-              }
-            }
-        }
-      } catch (err) {
-        self.postMessage({ cv: cv, err: err });
-      };
-    }
-  },
-  upkey: (rs, rr, cap = 1) => {
-    let k, st = false;
-    //object
-    if (rr.constructor === Object) {
-      if (rs.constructor !== Object) { rs = {}; }
-      for (k in Object.keys(rr)) {
-        if (rr[k].constructor === Object) {
-          if (rs[k].constructor !== Object) { rs[k] = {}; }
-          idb.upkey(rs[k], rr[k], cap++);
-        } else if (rr[k].constructor === Array) {
-          if (rs[k].constructor !== Array) { rs[k] = []; }
-          idb.upkey(rs[k], rr[k], cap++);
-        } else {
-          if (rr[k] in rs) {
-            if (['ghichu', 'notes'].includes(rr[k])) {
-              rs[k] = rr[k];
-            } else {
-              if (rr[k].length > 0 || rr[k].size > 0) { rs[k] = rr[k]; }
-            }
-          } else { rs[k] = rr[k]; }
-        }
-      }
-    } else if (rr.constructor === Array) {
-      if (rs.constructor !== Array) { rs = []; }
-      for (k in rr) {
-        if (rr[k].constructor === Object) {
-          if (rs[k].constructor !== Object) { rs[k] = {}; }
-          idb.upkey(rs[k], rr[k], cap++);
-        } else if (rr[k].constructor === Array) {
-          if (rs[k].constructor !== Array) { rs[k] = []; }
-          idb.upkey(rs[k], rr[k], cap++);
-        } else {
-          if (rs.includes(rr[k])) {
-            if (['ghichu', 'notes'].includes(rr[k])) {
-              rs[k] = rr[k];
-            } else {
-              if (rr[k].length > 0 || rr[k].size > 0) { rs[k] = rr[k]; }
-            }
-          } else { rs[k] = rr[k]; }
-        }
-      }
-    } else {
-      if (rr.length > 0 || rr.size > 0) { rs = rr; }
-    }
-    return rs;
-  },
-  luu1: (bang, luu) => {
-    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
-    if (uid < 0) { self.postMessage({ cv: -1, kq: "not obj to luu" }); }
-    //main
-    //try {
-    let db, db1, cs, rr, rs, sx,
-      cv = 1;
-    indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
-      db = e.target.result;
-      db.transaction(bang, 'readwrite')
-        .objectStore(bang)
-        .openCursor(IDBKeyRange.only(uid))
-        .onsuccess = (e) => {
-          cs = e.target.result;
-          if (cs) {
-            rr = cs.value;
-            if (rr['lastupdate'] > luu['lastupdate']) {
-              cv++;
-              cs.continue();
-            }
-            rs['refs'] = idb.upkey(rr['refs'], luu['refs']);
-            rs['data'] = idb.upkey(rr['data'], luu['data']);
-            rs['status'] = luu['status'];
-            rs['lastupdate'] = Date.now();
-            sx = cs.update(rs);
-            sx.onsuccess = () => {
-              self.postMessage({ cv: -1, kq: "save fin" });
-            };
-            cv++;
-            cs.continue();
-          } else {
-            ///new data
-            rr['lastupdate'] = Date.now();
-            self.postMessage({ cv: 0, csdl: idb.csdl, new: rr });
-            indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
-              db1 = e.target.result
-                .transaction(bang, 'readwrite')
-                .objectStore(bang)
-                .put(rr);
-              db1.onsuccess = () => {
-                self.postMessage({ cv: -1, kq: "save fin" });
-              }
-            }
-          }
-        }
-    }
-    //} catch (err) { self.postMessage({ cv: cv, err: err }); }
-  },
+  
 
 
 
@@ -337,7 +314,6 @@ self.onmessage = (ev) => {
 
     }
     if ('luu1' in tin) {
-      self.postMessage({ cv: 0, bang: bang, luu: tin.luu1 });
       idb.luu1(bang, tin.luu1);
     }
   } catch (err) {
