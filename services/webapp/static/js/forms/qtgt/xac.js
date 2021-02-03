@@ -131,10 +131,10 @@ var web = {
   },
   sw_url: () => {
     ga.url["api"] = [
-      ["https://", window.location.host, "/", swidb.csdl.ten, "/api/hoso/", ga.namlamviec].join(''),
-      ["https://", window.location.host, "/", swidb.csdl.ten, "/api/dshc/", ga.namlamviec].join(''),
+      ["https://", window.location.host, "/", idb.csdl.ten, "/api/hoso/", ga.namlamviec].join(''),
+      ["https://", window.location.host, "/", idb.csdl.ten, "/api/dshc/", ga.namlamviec].join(''),
     ];
-    ga.url["wss"] = ["wss://", window.location.host, "/", swidb.csdl.ten, "/wss/hoso"].join('');
+    ga.url["wss"] = ["wss://", window.location.host, "/", idb.csdl.ten, "/wss/hoso"].join('');
     ga.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
     ga.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
   },
@@ -1419,140 +1419,148 @@ var web = {
   },
 };
 
-var swidb = {
+var idb = {
   csdl: { ten: 'cntd', cap: 1 },
   taodb: () => {
     let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
     if (!indexedDB) { return null; };
     try {
       let db, idx,
-        ten = swidb.csdl.ten,
-        cap = swidb.csdl.cap,
+        ten = idb.csdl.ten,
+        cap = idb.csdl.cap,
         yc = indexedDB.open(ten, cap);
       yc.onupgradeneeded = e => {
         db = e.target.result;
         if (e.oldVersion < cap) {
           idx = db.createObjectStore('tttt', { keyPath: 'tttt' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('hoso', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('khachhang', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('khuvuc', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('dot', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('donvithicong', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('hoancong', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('trongai', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           //chiphi
           idx = db.createObjectStore('chiphi', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('chiphiquanly', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           //baogia
           idx = db.createObjectStore('bgvl', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('bgnc', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('bgmtc', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('bgtl', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           //qtvt
           idx = db.createObjectStore('qtvt', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('qtvt_cpvt', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           //qtgt
           idx = db.createObjectStore('qtgt', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('qtgt_cpxd', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('qtgt_cpvl', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('qtgt_cpvt', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('qtgt_cptl', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           //scan
           idx = db.createObjectStore('scan', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
           //web
           idx = db.createObjectStore('nhanvien', { keyPath: 'idutc' });
-          idx.createIndex("data", "data", { unique: true });
         }
       };
     } catch (err) { };
   },
-
   luu: (bang, dl) => {
-    try {
+    if (bang) {
       bang = bang.toString().toLowerCase();
-      if (bang.length < 1) { return; }
-      if (dl.constructor !== Array) {
-        dl = [dl];
-      }
-    } catch (err) { return; }
+    } else { return; }
     //main
-    let gui, tin,
+    if (dl.constructor !== Array) {
+      dl = [dl];
+    }
+    let gui, tin, v,
       t = 0,
       w = {},
       d = dl.length;
     while (t < d) {
+      console.log("ga.url=", JSON.stringify(ga.url));
       w[t] = new Worker(ga.url['swidb']);
-      //kiemtra data trung
-      tin = {
-        csdl: swidb.csdl,
+      gui = {
+        csdl: idb.csdl,
         bang: bang,
-        data2uid: dl[t],
+        luu1: dl[t],
+        gang: 0,
       };
-      console.log("idb.luu gui ktra data trung tin=", JSON.stringify(tin, null, 2));
-      w[t].postMessage(tin);
+      console.log("idb.luu gui tin=", JSON.stringify(gui, null, 2));
+      w[t].postMessage(gui);
       w[t].onmessage = (e) => {
         tin = e.data;
-        try {
-          if (tin.cv < 0) {
-            w[t].terminate();
-            w[t] = null;
-            console.log("swidb fin=", JSON.stringify(tin, null, 2));
-          } else if (tin.cv > 0) {
-            if ('data2uid' in tin) {
-              if (tin.data2uid > 0) { dl[t].idutc = tin.data2uid; }
-              tin = {
-                csdl: swidb.csdl,
-                bang: bang,
-                luu1: dl[t],
-              };
-              console.log("idb.luu gui luu1 tin=", JSON.stringify(tin, null, 2));
-              w[t].postMessage(tin);
-            }
-            if ('luu1' in tin && tin.luu1 > 0) {
-              //ok action
-              console.log("swidb tin=", JSON.stringify(tin, null, 2));
-            }
-          } else {
-            //info
-            console.log("swidb info=", JSON.stringify(tin, null, 2));
+        if (tin.cv < 0) {
+          if (w[t]) { w[t].terminate(); }
+          w[t] = null;
+          console.log("idb fin=", JSON.stringify(tin, null, 2));
+        } else if (tin.cv > 0) {
+          if ('luu1' in tin && tin.luu1 > 0) {
+            //ok action
+            console.log("idb tin=", JSON.stringify(tin, null, 2));
           }
-        } catch (err) {
-          try {
-            if ("err" in tin) {
-              console.log("err=", tin.err);
-              //lam lai sau 2 giay
-              setTimeout(() => { w[t].postMessage(gui); }, 2000);
-            }
-          } catch (err) { }
+        } else if ("err" in tin) {
+          console.log("err=", tin.err);
+          gui.gang += 1;
+          //lam lai sau 2 giay
+          setTimeout(() => { w[t].postMessage(gui); }, 2000);
+        } else {
+          //info
+          console.log("idb info=", JSON.stringify(tin, null, 2));
         }
       }
       t++;
     }
   },
-
-  gom: (bang, nam = 0) => {
+  nap1: {
+    baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
+      if (bang) {
+        bang = bang.toString().toLowerCase();
+        if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(bang))) { bang = 'bgvl'; }
+      } else { return; }
+      let w, gui, tin,
+        uid = [plgia, '.', mabaogia, '.', chiphi].join('');
+      if (!(bang in ga)) {
+        ga[bang] = {};
+        ga[bang][uid] = 0;
+      }
+      if (!(uid in ga[bang])) { ga[bang][uid] = 0; }
+      //main
+      w = new Worker(ga.url['swidb']);
+      gui = {
+        csdl: idb.csdl,
+        bang: bang,
+        nap1: { chiphi: chiphi, baogia: baogia, plgia: plgia },
+        gang: 0,
+      };
+      console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        if (tin.cv < 0) {
+          if (w) { w.terminate(); }
+          w = null;
+          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+        } else if (tin.cv > 0) {
+          if ('nap1' in tin && tin.nap1 > 0) {
+            //ok action
+            console.log("swidb tin=", JSON.stringify(tin, null, 2));
+            ga[bang][uid] = tin.nap1;
+          }
+        } else if ("err" in tin) {
+          console.log("err=", tin.err);
+          gui.gang += 1;
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        } else {
+          //info
+          console.log("swidb info=", JSON.stringify(tin, null, 2));
+        }
+      }
+    },
+  },
+  
+  old_gom: (bang, nam = 0) => {
     try {
       bang = bang.toString().toLowerCase();
       if (bang.length < 1) { return; }
@@ -1634,7 +1642,7 @@ var swidb = {
       }
     } catch (err) { }
   },
-  nap1: {
+  old_nap1: {
     idutc: (bang, uid = null) => {
       try {
         bang = bang.toString().toLowerCase();
@@ -1735,50 +1743,7 @@ var swidb = {
         }
       } catch (err) { }
     },
-    baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
-      try {
-        bang = bang.toString().toLowerCase();
-        if (bang.length < 1) { return; }
-        if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(bang))) { bang = 'bgvl'; }
-      } catch (err) { return; }
-      let w, wu, gui, tin,
-        uid = [plgia, '.', mabaogia, '.', chiphi].join('');
-      if (!(bang in ga)) { ga[bang] = { uid: 0 }; }
-      if (!(uid in ga[bang])) { ga[bang][uid] = 0; }
-      try {
-        gui = {
-          bang: bang,
-          nap: { chiphi: chiphi, baogia: baogia, plgia: plgia },
-        };
-        console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
-        wu = sw.idb.nap1.baogia();
-        w = new Worker(wu);
-        w.postMessage(gui);
-        w.onmessage = (e) => {
-          tin = e.data;
-          console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
-          if (("cv" in tin) && (tin.cv < 0)) {
-            try {
-              w.terminate();
-              w = null;
-            } catch (err) { }
-            try {
-              (window.URL || window.webkitURL).revokeObjectURL(wu);
-              wu = null;
-            } catch (err) { }
-          }
-          if ("err" in tin) {
-            console.log("err=", tin.err);
-            //lam lai sau 2 giay
-            setTimeout(() => { w.postMessage(gui); }, 2000);
-          }
-          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
-            console.log("idb.nap1 nhan tin.kq=", tin.kq);
-            ga[bang][uid] = tin.kq;
-          }
-        }
-      } catch (err) { }
-    },
+
     chiphi: (uid = null) => {
       idb.nap1.idutc("chiphi", uid);
     },
@@ -2131,7 +2096,7 @@ var swidb = {
 
 function luanhoi() {
   web.tao();
-  swidb.taodb();
+  idb.taodb();
   //web.ongcai();
 }
 luanhoi();
@@ -2139,7 +2104,7 @@ luanhoi();
 function test_dulieu() {
   let dl = [
     {
-      "idutc": 2001,
+      "idutc": Date.now() + 1,
       "refs": { "hesoid": 20190725, "ghichu": "quy ước làm tròn sl=3, tiền=0", "test": '', "test2": '' },
       "data": {
         "macpql": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
@@ -2153,7 +2118,7 @@ function test_dulieu() {
       "lastupdate": Date.now()
     },
     {
-      "idutc": 2002,
+      "idutc": Date.now() + 2,
       "refs": { "hesoid": 20200721 },
       "data": {
         "macpql": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
@@ -2163,11 +2128,11 @@ function test_dulieu() {
           "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
         },
       },
-      "status": "Fin",
+      "status": "ok",
       "lastupdate": Date.now()
     },
     {
-      "idutc": 2003,
+      "idutc": Date.now() + 3,
       "refs": { "hesoid": 20200827, "ghichu": "quy ước làm tròn sl=3, tiền=0" },
       "data": {
         "macpql": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
@@ -2177,11 +2142,11 @@ function test_dulieu() {
           "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
         },
       },
-      "status": "Fin",
+      "status": "ok",
       "lastupdate": Date.now()
     },
   ]
-  swidb.luu("chiphiquanly", dl);
+  idb.luu("chiphiquanly", dl);
 
   dl = [
     {
@@ -2235,10 +2200,10 @@ function test_dulieu() {
       "lastupdate": Date.now()
     },
   ]
-  //swidb.luu("bgvl", dl);
-  //swidb.luu("bgnc", dl);
-  //swidb.luu("bgmtc", dl);
-  //swidb.luu("bgtl", dl);
+  idb.luu("bgvl", dl);
+  idb.luu("bgnc", dl);
+  idb.luu("bgmtc", dl);
+  idb.luu("bgtl", dl);
 }
 test_dulieu();
 //let mabaogia = 20200827,

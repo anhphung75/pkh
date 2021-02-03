@@ -437,8 +437,7 @@ def main():
         db = svPostgre(thamso.db_user, thamso.db_pwd,
                        thamso.db_host, thamso.db_name)
     else:
-        db = svSqlite(thamso.db_user, thamso.db_pwd,
-                      thamso.db_host, thamso.db_name)
+        pass
 
     # creat webapp
     app = make_app()

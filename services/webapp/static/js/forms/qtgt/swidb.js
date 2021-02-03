@@ -1,16 +1,18 @@
-var idb = {
+var sw = {
   csdl: { ten: 'cntd', cap: 1 },
-  data2uid: (bang, luu) => {
+  data1: (bang, luu) => {
     if (bang) {
       bang = bang.toString().toLowerCase();
-    } else { return; };
-    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
-    if (uid < 0) { return; }
+    } else { self.postMessage({ cv: -1, kq: "not bang to save" }); };
+    let cv = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
+    if (cv < 0) { self.postMessage({ cv: -1, kq: "not uid to save" }); }
+    cv = luu.gang === '0' ? 0 : parseInt(luu.gang) || -1;
+    if (cv > 3) { self.postMessage({ cv: -1, kq: "bat qua tam" }); }
+    let db, cs, rr,
+      rs = JSON.stringify(luu.data);
+    cv = 1;
     try {
-      let db, cs, rr, kq,
-        cv = 1,
-        rs = JSON.stringify(luu.data);
-      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+      indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
         db = e.target.result;
         db.transaction(bang, 'readwrite')
           .objectStore(bang)
@@ -18,17 +20,17 @@ var idb = {
           .onsuccess = (e) => {
             cs = e.target.result;
             if (cs) {
-              rr = idb.upkey({}, cs.value.data);
+              rr = sw.upkey({}, cs.value.data);
               rr = JSON.stringify(rr);
               if (rs === rr) {
-                kq = cs.value.idutc ? cs.value.idutc : -1;
-                self.postMessage({ cv: cv, data2uid: kq });
-                self.postMessage({ cv: -1, info: "trung uid" });
+                luu.idutc = cs.value.idutc;
+                sw.luu1(bang, luu);
+                return;
               }
               cs.continue();
             } else {
-              self.postMessage({ cv: cv, data2uid: -1 });
-              self.postMessage({ cv: -1, info: "fin khong trung" });
+              sw.luu1(bang, luu);
+              return;
             }
           }
       }
@@ -52,14 +54,14 @@ var idb = {
             rs[k] = {};
             rs[k][k1] = v1;
           } else { }
-          rs[k] = idb.upkey(rs[k], rr[k]);
+          rs[k] = sw.upkey(rs[k], rr[k]);
         } else if (rr[k].constructor === Array) {
           if (rs[k] === null || rs[k] === undefined) {
             rs[k] = [];
           } else if (rs[k].constructor !== Array) {
             rs[k] = [rs[k]];
           } else { }
-          rs[k] = idb.upkey(rs[k], rr[k]);
+          rs[k] = sw.upkey(rs[k], rr[k]);
         } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
           rs[k] = rr[k];
         } else if (rr[k].constructor === String) {
@@ -89,14 +91,14 @@ var idb = {
             rs[k] = {};
             rs[k][k1] = v1;
           } else { }
-          rs[k] = idb.upkey(rs[k], rr[k]);
+          rs[k] = sw.upkey(rs[k], rr[k]);
         } else if (rr[k].constructor === Array) {
           if (rs[k] === null || rs[k] === undefined) {
             rs[k] = [];
           } else if (rs[k].constructor !== Array) {
             rs[k] = [rs[k]];
           } else { }
-          rs[k] = idb.upkey(rs[k], rr[k]);
+          rs[k] = sw.upkey(rs[k], rr[k]);
         } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
           rs.push(rr[k]);
         } else if (rr[k].constructor === String) {
@@ -119,12 +121,15 @@ var idb = {
     return rs;
   },
   luu1: (bang, luu) => {
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else { self.postMessage({ cv: -1, kq: "not bang to save" }); };
     let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
-    if (uid < 0) { self.postMessage({ cv: -1, kq: "no uid to save" }); }
+    if (uid < 0) { self.postMessage({ cv: -1, kq: "not uid to save" }); }
+    let db, db1, cs, rs, st, sx,
+      cv = 1;
     try {
-      let db, db1, cs, rr, rs, sx,
-        cv = 1;
-      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+      indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
         db = e.target.result;
         db.transaction(bang, 'readwrite')
           .objectStore(bang)
@@ -133,30 +138,30 @@ var idb = {
             cs = e.target.result;
             if (cs) {
               rs = cs.value;
-              if (rs['lastupdate'] > luu['lastupdate']) {
-                self.postMessage({ cv: -1, kq: "data too old" });
-                cv++;
-                cs.continue();
+              st = rs.status ? rs.status.toString().toLowerCase() : '';
+              if (st.includes('fin') || rs['lastupdate'] > luu['lastupdate']) {
+                self.postMessage({ cv: -1, kq: "rec fin or rec to old" });
+              } else {
+                rs['refs'] = sw.upkey(rs['refs'], luu['refs']);
+                rs['data'] = sw.upkey(rs['data'], luu['data']);
+                rs['refs'] = sw.upkey({}, luu['refs']);
+                rs['data'] = sw.upkey({}, luu['data']);
+                rs['status'] = luu['status'];
+                rs['lastupdate'] = Date.now();
+                sx = cs.update(rs);
+                sx.onsuccess = () => {
+                  self.postMessage({ cv: cv, luu1: luu['idutc'] });
+                  self.postMessage({ cv: -1, kq: "save fin" });
+                  cv++;
+                };
               }
-              rs['refs'] = idb.upkey(rs['refs'], luu['refs']);
-              rs['data'] = idb.upkey(rs['data'], luu['data']);
-              rs['refs'] = idb.upkey({}, luu['refs']);
-              rs['data'] = idb.upkey({}, luu['data']);
-              rs['status'] = luu['status'];
-              rs['lastupdate'] = Date.now();
-              sx = cs.update(rs);
-              sx.onsuccess = () => {
-                self.postMessage({ cv: cv, luu1: luu['idutc'] });
-                self.postMessage({ cv: -1, kq: "save fin" });
-              };
-              cv++;
               cs.continue();
             } else {
               ///new data
-              luu['refs'] = idb.upkey({}, luu['refs']);
-              luu['data'] = idb.upkey({}, luu['data']);
+              luu['refs'] = sw.upkey({}, luu['refs']);
+              luu['data'] = sw.upkey({}, luu['data']);
               luu['lastupdate'] = Date.now();
-              indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+              indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
                 db1 = e.target.result
                   .transaction(bang, 'readwrite')
                   .objectStore(bang)
@@ -177,10 +182,12 @@ var idb = {
     } else { self.postMessage({ cv: -1, kq: "nothing to delete" }); };
     let uid = xoa.idutc === '0' ? 0 : parseInt(xoa.idutc) || -1;
     if (uid < 0) { self.postMessage({ cv: -1, kq: "nothing to delete" }); }
+    let cv = xoa.gang === '0' ? 0 : parseInt(xoa.gang) || -1;
+    if (cv > 3) { self.postMessage({ cv: -1, kq: "bat qua tam" }); }
+    let db, cs, rs, st;
+    cv = 1;
     try {
-      let db, cs, rs, st,
-        cv = 1;
-      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+      indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
         db = e.target.result;
         db.transaction(bang, 'readwrite')
           .objectStore(bang)
@@ -216,11 +223,11 @@ var idb = {
       if (plgia) {
         plgia = plgia.toString().toLowerCase();
       } else { plgia = 'dutoan'; };
+      let db, r, v, dk, cs, k1,
+        k = 0,
+        kq = {};
       try {
-        let db, r, v, dk, cs, k1,
-          k = 0,
-          kq = {};
-        indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+        indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
           db = e.target.result;
           db.transaction(bang, 'readwrite')
             .objectStore(bang)
@@ -260,7 +267,7 @@ var idb = {
     try {
       let db, cs, kq,
         cv = 1;
-      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+      indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
         db = e.target.result;
         db.transaction(bang, 'readonly')
           .objectStore(bang)
@@ -301,7 +308,7 @@ var idb = {
           }
           try {
             let db, r, kq, cv = 1;
-            indexedDB.open("` + idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+            indexedDB.open("` + sw.csdl.ten + `",` + sw.csdl.cap + `).onsuccess = (e) => {
               db = e.target.result;
               db.transaction(bang, 'readonly')
                 .objectStore(bang)
@@ -342,7 +349,7 @@ var idb = {
           }
           try {
             let db, cs, kq, cv = 1;
-            indexedDB.open("` + idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+            indexedDB.open("` + sw.csdl.ten + `",` + sw.csdl.cap + `).onsuccess = (e) => {
               db = e.target.result;
               db.transaction(bang, 'readonly')
                 .objectStore(bang)
@@ -379,7 +386,7 @@ var idb = {
           }
           try {
             let db, cs, kq, cv = 1;
-            indexedDB.open("` + idb.csdl.ten + `",` + idb.csdl.cap + `).onsuccess = (e) => {
+            indexedDB.open("` + sw.csdl.ten + `",` + sw.csdl.cap + `).onsuccess = (e) => {
               db = e.target.result;
               db.transaction(bang, 'readonly')
                 .objectStore(bang)
@@ -418,14 +425,14 @@ var idb = {
 
 //main worker
 self.onmessage = (ev) => {
-  self.postMessage({ cv: 0, kq: "swidb active" });
+  self.postMessage({ cv: 0, kq: "sw active" });
   try {
     let tin = ev.data,
       csdl_ten = tin.csdl.ten.toString().toLowerCase(),
       csdl_cap = tin.csdl.cap === '0' ? 0 : parseInt(tin.csdl.cap) || 0,
       bang = tin.bang.toString().toLowerCase();
 
-    idb.csdl = { ten: csdl_ten, cap: csdl_cap };
+    sw.csdl = { ten: csdl_ten, cap: csdl_cap };
     self.postMessage({ cv: 0, bang: bang, tin: tin });
     if ('gom' in tin) {
 
@@ -433,11 +440,11 @@ self.onmessage = (ev) => {
     if ('nap1' in tin) {
 
     }
-    if ('data2uid' in tin) {
-      idb.data2uid(bang, tin.data2uid);
+    if ('data1' in tin) {
+      sw.data1(bang, tin.luu1);
     }
     if ('luu1' in tin) {
-      idb.luu1(bang, tin.luu1);
+      sw.data1(bang, tin.luu1);
     }
   } catch (err) {
     self.postMessage({ cv: -1, kq: "nothing to do" });
