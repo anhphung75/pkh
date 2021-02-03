@@ -1,5 +1,39 @@
 var idb = {
   csdl: { ten: 'cntd', cap: 1 },
+  data2uid: (bang, luu) => {
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else { return; };
+    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
+    if (uid < 0) { return; }
+    try {
+      let db, cs, rr, kq,
+        cv = 1,
+        rs = JSON.stringify(luu.data);
+      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+        db = e.target.result;
+        db.transaction(bang, 'readwrite')
+          .objectStore(bang)
+          .openCursor(null, 'prev')
+          .onsuccess = (e) => {
+            cs = e.target.result;
+            if (cs) {
+              rr = idb.upkey({}, cs.value.data);
+              rr = JSON.stringify(rr);
+              if (rs === rr) {
+                kq = cs.value.idutc ? cs.value.idutc : -1;
+                self.postMessage({ cv: cv, data2uid: kq });
+                self.postMessage({ cv: -1, info: "trung uid" });
+              }
+              cs.continue();
+            } else {
+              self.postMessage({ cv: cv, data2uid: -1 });
+              self.postMessage({ cv: -1, info: "fin khong trung" });
+            }
+          }
+      }
+    } catch (err) { self.postMessage({ cv: cv, err: err }); }
+  },
   upkey: (rs, rr) => {
     let k, k1, v1,
       keyxoa = ['notes', 'ghichu', 'old_'];
@@ -112,6 +146,7 @@ var idb = {
               rs['lastupdate'] = Date.now();
               sx = cs.update(rs);
               sx.onsuccess = () => {
+                self.postMessage({ cv: cv, luu1: luu['idutc'] });
                 self.postMessage({ cv: -1, kq: "save fin" });
               };
               cv++;
@@ -127,6 +162,7 @@ var idb = {
                   .objectStore(bang)
                   .put(luu);
                 db1.onsuccess = () => {
+                  self.postMessage({ cv: cv, luu1: luu['idutc'] });
                   self.postMessage({ cv: -1, kq: "save fin" });
                 }
               }
@@ -135,8 +171,92 @@ var idb = {
       }
     } catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
-  
-  gom: (bang, nam = 0) => {
+  xoa1: (bang, xoa) => {
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else { self.postMessage({ cv: -1, kq: "nothing to delete" }); };
+    let uid = xoa.idutc === '0' ? 0 : parseInt(xoa.idutc) || -1;
+    if (uid < 0) { self.postMessage({ cv: -1, kq: "nothing to delete" }); }
+    try {
+      let db, cs, rs, st,
+        cv = 1;
+      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+        db = e.target.result;
+        db.transaction(bang, 'readwrite')
+          .objectStore(bang)
+          .openCursor(IDBKeyRange.only(uid))
+          .onsuccess = (e) => {
+            cs = e.target.result;
+            if (cs) {
+              rs = cs.value;
+              st = rs.status ? rs.status.toString().toLowerCase() : '';
+              if (st.includes('fin')) {
+                self.postMessage({ cv: -1, kq: "rec fin" });
+              } else {
+                cs.delete();
+                cv++;
+              }
+              cs.continue();
+            } else {
+              self.postMessage({ cv: -1, kq: "delete fin" });
+            }
+          }
+      }
+    } catch (err) { self.postMessage({ cv: cv, err: err }); }
+  },
+  nap1: {
+    baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
+      if (bang) {
+        bang = bang.toString().toLowerCase();
+      } else { return 0; };
+      chiphi = chiphi === '0' ? 0 : parseInt(chiphi) || -1;
+      if (chiphi < 0) { return 0; }
+      baogia = baogia === '0' ? 0 : parseInt(baogia) || -1;
+      if (baogia < 0) { return 0; }
+      if (plgia) {
+        plgia = plgia.toString().toLowerCase();
+      } else { plgia = 'dutoan'; };
+      try {
+        let db, r, v, dk, cs, k1,
+          k = 0,
+          kq = {};
+        indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+          db = e.target.result;
+          db.transaction(bang, 'readwrite')
+            .objectStore(bang)
+            .openCursor(null, 'prev')
+            .onsuccess = (e) => {
+              cs = e.target.result;
+              dk = 0;
+              if (cs) {
+                r = cs.value;
+                dk = parseInt(r.data.mabaogia);
+                if (r.data.chiphi === chiphi && plgia in r.data && dk <= baogia && dk > k) {
+                  k = dk;
+                  v = Math.abs(r.data[plgia]);
+                  if (!(k in kq)) {
+                    kq[k] = v;
+                    for (k1 in kq) {
+                      if (k1 < k) { delete kq[k1]; }
+                    }
+                  }
+                }
+                cs.continue();
+              } else {
+                for (k in kq) {
+                  break;
+                }
+                kq = kq[k] ? kq[k] : 0;
+                self.postMessage({ cv: cv, kq: kq });
+                self.postMessage({ cv: -1, kq: "fin" });
+              }
+            }
+        }
+      } catch (err) { self.postMessage({ cv: cv, err: err }); }
+    },
+  },
+
+  old_gom: (bang, nam = 0) => {
     try {
       let db, cs, kq,
         cv = 1;
@@ -163,7 +283,7 @@ var idb = {
       self.postMessage({ cv: cv, err: err });
     };
   },
-  nap1: {
+  old_nap1: {
     baogia: () => {
       let sw = `
         self.onmessage = (ev) => {
@@ -289,7 +409,7 @@ var idb = {
       return url;
     },
   },
-  
+
 
 
 
@@ -312,6 +432,9 @@ self.onmessage = (ev) => {
     }
     if ('nap1' in tin) {
 
+    }
+    if ('data2uid' in tin) {
+      idb.data2uid(bang, tin.data2uid);
     }
     if ('luu1' in tin) {
       idb.luu1(bang, tin.luu1);

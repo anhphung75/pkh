@@ -1,5 +1,43 @@
 var idb = {
   csdl: { ten: 'cntd', cap: 1 },
+  data2uid: (bang, luu) => {
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else { return; };
+    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
+    if (uid < 0) { return; }
+    //try {
+    let db, cs, rr, kq,
+      cv = 1,
+      rs = JSON.stringify(luu.data);
+    indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+      db = e.target.result;
+      db.transaction(bang, 'readwrite')
+        .objectStore(bang)
+        .openCursor(null, 'prev')
+        .onsuccess = (e) => {
+          cs = e.target.result;
+          if (cs) {
+            rr = idb.upkey({}, cs.value.data);
+            rr = JSON.stringify(rr);
+            if (rs === rr) {
+              kq = cs.value.idutc ? cs.value.idutc : -1;
+              //self.postMessage({ cv: cv, data2uid: kq });
+              //self.postMessage({ cv: -1, kq: "fin" });
+              console.log("have bang=", bang, " uid=", kq);
+              return kq;
+            }
+            cs.continue();
+          } else {
+            console.log("end proc uid=", uid);
+            //self.postMessage({ cv: cv, data2uid: -1 });
+            //self.postMessage({ cv: -1, kq: "fin" });
+            return -1;
+          }
+        }
+    }
+    //} catch (err) { self.postMessage({ cv: cv, err: err }); }
+  },
   upkey: (rs, rr) => {
     let k, k1, v1,
       keyxoa = ['notes', 'ghichu', 'old_'];
@@ -85,11 +123,14 @@ var idb = {
     } else { }
     return rs;
   },
-  luu1: (bang, luu) => {
-    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
+  xoa1: (bang, xoa) => {
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else { return; };
+    let uid = xoa.idutc === '0' ? 0 : parseInt(xoa.idutc) || -1;
     if (uid < 0) { return; }
     //try {
-    let db, db1, cs, rr, rs, sx,
+    let db, cs, rs, st,
       cv = 1;
     indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
       db = e.target.result;
@@ -100,36 +141,93 @@ var idb = {
           cs = e.target.result;
           if (cs) {
             rs = cs.value;
-            if (rs['lastupdate'] > luu['lastupdate']) {
+            st = rs.status ? rs.status.toString().toLowerCase() : '';
+            if (st.includes('fin')) {
+              return;
+            } else {
+              cs.delete();
               cv++;
-              cs.continue();
             }
-            rs['refs'] = idb.upkey(rs['refs'], luu['refs']);
-            rs['data'] = idb.upkey(rs['data'], luu['data']);
-            rs['refs'] = idb.upkey({}, luu['refs']);
-            rs['data'] = idb.upkey({}, luu['data']);
-            rs['status'] = luu['status'];
-            rs['lastupdate'] = Date.now();
-            sx = cs.update(rs);
-            sx.onsuccess = () => {
-              console.log("save fin");
-              //self.postMessage({ cv: -1, kq: "save fin" });
-            };
-            cv++;
+            cs.continue();
+          } else {
+            console.log("del rec=", cv);
+            return;
+          }
+        }
+    }
+    //} catch (err) { self.postMessage({ cv: cv, err: err }); }
+  },
+  luu1: (bang, luu) => {
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else { return; };
+    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
+    if (uid < 0) { return; }
+    //try {
+    let db, db1, cs, rs, st, sx,
+      cv = 1;
+    indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+      db = e.target.result;
+      db.transaction(bang, 'readwrite')
+        .objectStore(bang)
+        .openCursor(IDBKeyRange.only(uid))
+        .onsuccess = (e) => {
+          cs = e.target.result;
+          if (cs) {
+            rs = cs.value;
+            st = rs.status ? rs.status.toString().toLowerCase() : '';
+            if (st.includes('fin') || rs['lastupdate'] > luu['lastupdate']) {
+              console.log("fin or to old to save uid=", uid);
+              return;
+            } else {
+              rs['data'] = idb.upkey(rs['data'], luu['data']);
+              rs['data'] = idb.upkey({}, luu['data']);
+              uid = idb.data2uid(bang, rs['data']);
+              console.log("save cur uid=", luu['idutc'], ' old uid=', uid);
+              if (uid > 0) {
+                luu['idutc'] = uid;
+                console.log("pass save to uid=", luu['idutc']);
+                idb.luu1(bang, luu);
+                return;
+                //self.postMessage({ cv: -1, kq: "save fin" });
+              } else {
+                rs['refs'] = idb.upkey(rs['refs'], luu['refs']);
+                rs['refs'] = idb.upkey({}, luu['refs']);
+                rs['status'] = luu['status'];
+                rs['lastupdate'] = Date.now();
+                sx = cs.update(rs);
+                sx.onsuccess = () => {
+                  console.log("cv=", cv, " save old fin uid=", luu['idutc']);
+                  cv++;
+                  return;
+                  //self.postMessage({ cv: -1, kq: "save fin" });
+                }
+              }
+            }
             cs.continue();
           } else {
             ///new data
-            luu['refs'] = idb.upkey({}, luu['refs']);
             luu['data'] = idb.upkey({}, luu['data']);
-            luu['lastupdate'] = Date.now();
-            indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
-              db1 = e.target.result
-                .transaction(bang, 'readwrite')
-                .objectStore(bang)
-                .put(luu);
-              db1.onsuccess = () => {
-                console.log("save fin");
-                //self.postMessage({ cv: -1, kq: "save fin" });
+            console.log("check bang=", bang, " old data=", JSON.stringify(luu['data']));
+            uid = idb.data2uid(bang, luu['data']);
+            console.log("save new uid=", luu['idutc'], ' old uid=', uid);
+            if (uid > 0) {
+              luu['idutc'] = uid;
+              console.log("pass save to uid=", luu['idutc']);
+              idb.luu1(bang, luu);
+              return;
+            } else {
+              luu['refs'] = idb.upkey({}, luu['refs']);
+              luu['lastupdate'] = Date.now();
+              indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+                db1 = e.target.result
+                  .transaction(bang, 'readwrite')
+                  .objectStore(bang)
+                  .put(luu);
+                db1.onsuccess = () => {
+                  console.log("cv=", cv, " save new fin uid=", luu['idutc']);
+                  //self.postMessage({ cv: -1, kq: "save fin" });
+                }
               }
             }
           }
@@ -149,47 +247,39 @@ var idb = {
       if (plgia) {
         plgia = plgia.toString().toLowerCase();
       } else { plgia = 'dutoan'; };
-      console.log(['baogia=', baogia, ' chiphi=', chiphi, ' plgia=', plgia].join(''));
       //try {
-      let db, r, v, k0,k1, k = 0, kq = {},
-        ce = new Date(baogia).getTime(),
-        cs = parseInt(ce - 3600000 * 24 * 366 * 5);
-      console.log(['cs=', cs, ' ce=', ce].join(''));
+      let db, r, v, dk, cs, k1,
+        k = 0,
+        kq = {};
       indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
         db = e.target.result;
         db.transaction(bang, 'readwrite')
           .objectStore(bang)
-          //.openCursor(IDBKeyRange.lowerBound(cs))
           .openCursor(null, 'prev')
           .onsuccess = (e) => {
             cs = e.target.result;
-            ce = 0;
+            dk = 0;
             if (cs) {
               r = cs.value;
-              ce = parseInt(r.data.mabaogia);
-              if (r.data.chiphi === chiphi && plgia in r.data && ce <= baogia && ce > k) {
-                k = ce;
+              dk = parseInt(r.data.mabaogia);
+              if (r.data.chiphi === chiphi && plgia in r.data && dk <= baogia && dk > k) {
+                k = dk;
                 v = Math.abs(r.data[plgia]);
                 if (!(k in kq)) {
                   kq[k] = v;
-                  console.log(['id=', r.idutc, ' add ', bang, '=', JSON.stringify(kq)].join(''));
                   for (k1 in kq) {
                     if (k1 < k) { delete kq[k1]; }
                   }
-                  console.log(['id=', r.idutc, ' del ', bang, '=', JSON.stringify(kq)].join(''));
                 }
               }
               cs.continue();
-              console.log(['if kq ', bang, '=', kq].join(''));
             } else {
               for (k in kq) {
                 break;
-                //return kq[k];
               }
-              console.log([' else kq ', bang, '=', JSON.stringify(kq)].join(''));
-              console.log([' else kq[',k,'] ', bang, '=', JSON.stringify(kq)].join(''));
-              return kq;
-              
+              console.log([' else kq[', k, '] ', bang, '=', JSON.stringify(kq)].join(''));
+              return kq[k];
+
               //self.postMessage({ cv: cv, kq: kq });
               //self.postMessage({ cv: -1, kq: "fin" });
             }
@@ -239,7 +329,7 @@ var idb = {
 function test_dulieu() {
   let dl = [
     {
-      "idutc": 2001,
+      "idutc": Date.now(),
       "refs": { "hesoid": 20190725, "ghichu": "quy ước làm tròn sl=3, tiền=0", "test": '', "test2": '' },
       "data": {
         "macpql": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
@@ -249,11 +339,11 @@ function test_dulieu() {
           "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"
         },
       },
-      "status": "Fin",
+      "status": "ok",
       "lastupdate": Date.now()
     },
     {
-      "idutc": 2002,
+      "idutc": Date.now() + 1,
       "refs": { "hesoid": 20200721 },
       "data": {
         "macpql": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
@@ -263,11 +353,11 @@ function test_dulieu() {
           "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
         },
       },
-      "status": "Fin",
+      "status": "ok",
       "lastupdate": Date.now()
     },
     {
-      "idutc": 2003,
+      "idutc": Date.now() + 2,
       "refs": { "hesoid": 20200827, "ghichu": "quy ước làm tròn sl=3, tiền=0" },
       "data": {
         "macpql": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
@@ -286,5 +376,20 @@ function test_dulieu() {
   idb.luu1("chiphiquanly", dl[2])
 }
 //test_dulieu();
-let s = ["s=", idb.nap1.baogia("bgvl", 100, 20190728, 'dutoan')].join('');
-console.log(s);
+//let s = ["s=", idb.xoa1("bgvl", { "idutc": 1612321134188 })].join('');
+//console.log(s);
+let dl = {
+  "idutc": Date.now(),
+  "refs": { "hesoid": 20190725, "ghichu": "quy ước làm tròn sl=3, tiền=0", "test": '', "test2": '' },
+  "data": {
+    "macpql": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
+    "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
+    "phaply": {
+      "cptl": "CV số 327/BGTLMĐ ngày 01/04/2014",
+      "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"
+    },
+  },
+  "status": "ok",
+  "lastupdate": Date.now()
+};
+//idb.data2uid("chiphiquanly", dl);

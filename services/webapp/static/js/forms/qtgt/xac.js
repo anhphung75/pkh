@@ -1423,52 +1423,67 @@ var swidb = {
   csdl: { ten: 'cntd', cap: 1 },
   taodb: () => {
     let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    if (!indexedDB) {
-      return null;
-    };
+    if (!indexedDB) { return null; };
     try {
-      let yc = indexedDB.open(idb.csdl.ten, idb.csdl.cap);
+      let db, idx,
+        ten = swidb.csdl.ten,
+        cap = swidb.csdl.cap,
+        yc = indexedDB.open(ten, cap);
       yc.onupgradeneeded = e => {
-        let db = e.target.result;
-        if (e.oldVersion < idb.csdl.cap) {
-          let idx = db.createObjectStore('tttt', { keyPath: 'tttt' });
-          idx.createIndex("dataid", "data", { unique: true });
+        db = e.target.result;
+        if (e.oldVersion < cap) {
+          idx = db.createObjectStore('tttt', { keyPath: 'tttt' });
+          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('hoso', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
+          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('khachhang', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('dot', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('donvithicong', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('hoancong', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('chiphi', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('cpxd', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('cpvl', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('cpvt', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('chiphiquanly', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
+          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('khuvuc', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('baogia', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('dot', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('donvithicong', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('hoancong', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('trongai', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          //chiphi
+          idx = db.createObjectStore('chiphi', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('chiphiquanly', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          //baogia
           idx = db.createObjectStore('bgvl', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
+          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('bgnc', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
+          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('bgmtc', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
+          idx.createIndex("data", "data", { unique: true });
           idx = db.createObjectStore('bgtl', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
-          idx = db.createObjectStore('nhanvien', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
+          idx.createIndex("data", "data", { unique: true });
+          //qtvt
+          idx = db.createObjectStore('qtvt', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('qtvt_cpvt', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          //qtgt
+          idx = db.createObjectStore('qtgt', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('qtgt_cpxd', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('qtgt_cpvl', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('qtgt_cpvt', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          idx = db.createObjectStore('qtgt_cptl', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
+          //scan
           idx = db.createObjectStore('scan', { keyPath: 'idutc' });
-          idx.createIndex("dataid", "data", { unique: true });
+          idx.createIndex("data", "data", { unique: true });
+          //web
+          idx = db.createObjectStore('nhanvien', { keyPath: 'idutc' });
+          idx.createIndex("data", "data", { unique: true });
         }
       };
     } catch (err) { };
@@ -1488,13 +1503,14 @@ var swidb = {
       w = {},
       d = dl.length;
     while (t < d) {
+      w[t] = new Worker(ga.url['swidb']);
+      //kiemtra data trung
       tin = {
         csdl: swidb.csdl,
         bang: bang,
-        luu1: dl[t],
+        data2uid: dl[t],
       };
-      w[t] = new Worker(ga.url['swidb']);
-      console.log("idb.luu gui tin=", JSON.stringify(tin, null, 2));
+      console.log("idb.luu gui ktra data trung tin=", JSON.stringify(tin, null, 2));
       w[t].postMessage(tin);
       w[t].onmessage = (e) => {
         tin = e.data;
@@ -1502,12 +1518,25 @@ var swidb = {
           if (tin.cv < 0) {
             w[t].terminate();
             w[t] = null;
+            console.log("swidb fin=", JSON.stringify(tin, null, 2));
           } else if (tin.cv > 0) {
-            //ok action
-            console.log("swidb tin=", JSON.stringify(tin, null, 2));
+            if ('data2uid' in tin) {
+              if (tin.data2uid > 0) { dl[t].idutc = tin.data2uid; }
+              tin = {
+                csdl: swidb.csdl,
+                bang: bang,
+                luu1: dl[t],
+              };
+              console.log("idb.luu gui luu1 tin=", JSON.stringify(tin, null, 2));
+              w[t].postMessage(tin);
+            }
+            if ('luu1' in tin && tin.luu1 > 0) {
+              //ok action
+              console.log("swidb tin=", JSON.stringify(tin, null, 2));
+            }
           } else {
             //info
-            console.log("swidb tin=", JSON.stringify(tin, null, 2));
+            console.log("swidb info=", JSON.stringify(tin, null, 2));
           }
         } catch (err) {
           try {
@@ -2206,12 +2235,12 @@ function test_dulieu() {
       "lastupdate": Date.now()
     },
   ]
-  swidb.luu("bgvl", dl);
-  swidb.luu("bgnc", dl);
-  swidb.luu("bgmtc", dl);
-  swidb.luu("bgtl", dl);
+  //swidb.luu("bgvl", dl);
+  //swidb.luu("bgnc", dl);
+  //swidb.luu("bgmtc", dl);
+  //swidb.luu("bgtl", dl);
 }
-//test_dulieu();
+test_dulieu();
 //let mabaogia = 20200827,
 //  chiphi = '001',
 //  plgia = 'dutoan';
