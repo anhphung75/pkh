@@ -1,16 +1,16 @@
 var sw = {
   csdl: { ten: 'cntd', cap: 1 },
-  data1: (bang, luu) => {
+  data1: (bang, luu, gang = 0) => {
+    gang = gang === '0' ? 0 : parseInt(gang) || -1;
+    if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
     if (bang) {
       bang = bang.toString().toLowerCase();
     } else { self.postMessage({ cv: -1, kq: "not bang to save" }); };
-    let cv = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
-    if (cv < 0) { self.postMessage({ cv: -1, kq: "not uid to save" }); }
-    cv = luu.gang === '0' ? 0 : parseInt(luu.gang) || -1;
-    if (cv > 3) { self.postMessage({ cv: -1, kq: "bat qua tam" }); }
+    let uid = luu.idutc === '0' ? 0 : parseInt(luu.idutc) || -1;
+    if (uid < 0) { self.postMessage({ cv: -1, kq: "not uid to save" }); }
     let db, cs, rr,
+      cv = 1,
       rs = JSON.stringify(luu.data);
-    cv = 1;
     try {
       indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
         db = e.target.result;
@@ -24,12 +24,12 @@ var sw = {
               rr = JSON.stringify(rr);
               if (rs === rr) {
                 luu.idutc = cs.value.idutc;
-                sw.luu1(bang, luu);
+                sw.luu1(bang, luu, 0);
                 return;
               }
               cs.continue();
             } else {
-              sw.luu1(bang, luu);
+              sw.luu1(bang, luu, 0);
               return;
             }
           }
@@ -120,7 +120,9 @@ var sw = {
     } else { }
     return rs;
   },
-  luu1: (bang, luu) => {
+  luu1: (bang, luu, gang = 0) => {
+    gang = gang === '0' ? 0 : parseInt(gang) || -1;
+    if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
     if (bang) {
       bang = bang.toString().toLowerCase();
     } else { self.postMessage({ cv: -1, kq: "not bang to save" }); };
@@ -176,14 +178,14 @@ var sw = {
       }
     } catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
-  xoa1: (bang, xoa) => {
+  xoa1: (bang, xoa, gang = 0) => {
+    gang = gang === '0' ? 0 : parseInt(gang) || -1;
+    if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
     if (bang) {
       bang = bang.toString().toLowerCase();
     } else { self.postMessage({ cv: -1, kq: "nothing to delete" }); };
     let uid = xoa.idutc === '0' ? 0 : parseInt(xoa.idutc) || -1;
     if (uid < 0) { self.postMessage({ cv: -1, kq: "nothing to delete" }); }
-    let cv = xoa.gang === '0' ? 0 : parseInt(xoa.gang) || -1;
-    if (cv > 3) { self.postMessage({ cv: -1, kq: "bat qua tam" }); }
     let db, cs, rs, st;
     cv = 1;
     try {
@@ -212,14 +214,28 @@ var sw = {
     } catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
   nap1: {
-    baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
+    baogia: (bang, chiphi, baogia, plgia = 'dutoan', gang = 0) => {
+      gang = gang === '0' ? 0 : parseInt(gang) || -1;
+      if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
       if (bang) {
         bang = bang.toString().toLowerCase();
-      } else { return 0; };
+      } else {
+        self.postMessage({ cv: 1, baogia: 0 });
+        self.postMessage({ cv: -1, kq: "Bảng không tồn tại, trả giá mặc định" });
+        return;
+      };
       chiphi = chiphi === '0' ? 0 : parseInt(chiphi) || -1;
-      if (chiphi < 0) { return 0; }
+      if (chiphi < 0) {
+        self.postMessage({ cv: 1, baogia: 0 });
+        self.postMessage({ cv: -1, kq: "Chi phí không tồn tại, trả giá mặc định" });
+        return;
+      }
       baogia = baogia === '0' ? 0 : parseInt(baogia) || -1;
-      if (baogia < 0) { return 0; }
+      if (baogia < 0) {
+        self.postMessage({ cv: 1, baogia: 0 });
+        self.postMessage({ cv: -1, kq: "Báo giá không tồn tại, trả giá mặc định" });
+        return;
+      }
       if (plgia) {
         plgia = plgia.toString().toLowerCase();
       } else { plgia = 'dutoan'; };
@@ -254,7 +270,7 @@ var sw = {
                   break;
                 }
                 kq = kq[k] ? kq[k] : 0;
-                self.postMessage({ cv: cv, kq: kq });
+                self.postMessage({ cv: cv, baogia: kq });
                 self.postMessage({ cv: -1, kq: "fin" });
               }
             }
@@ -262,6 +278,170 @@ var sw = {
       } catch (err) { self.postMessage({ cv: cv, err: err }); }
     },
   },
+  gom: (bang, gom = null, gang = 0) => {
+    gang = gang === '0' ? 0 : parseInt(gang) || -1;
+    if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else { self.postMessage({ cv: -1, kq: "bảng chưa tạo" }); };
+    let db, tr, rec, r, i, cs, k, kq,
+      zr = 0,
+      cv = 0;
+    if (gom === undefined || gom === null) {
+      gom = null;
+      kq = [];
+    } else if (gom.constructor === Array) {
+      //makhoa
+      kq = {};
+      for (i in gom) { kq[gom[i]] = new Set(); }
+    } else if (gom.constructor === Object) {
+      //tim theo dieu kien
+      kq = [];
+    } else if (gom.constructor === String) {
+      //makhoa
+      gom = gom.split(' ').join('');
+      if (gom.length < 1) {
+        gom = null;
+        kq = [];
+      } else {
+        kq = {};
+        gom = [gom];
+        kq[gom] = new Set();
+      }
+    } else {
+      gom = null;
+      kq = [];
+    }
+    try {
+      indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
+        db = e.target.result;
+        tr = db.transaction(bang, 'readonly')
+        tr.objectStore(bang)
+          .count()
+          .onsuccess = (e) => { zr = e.target.result; }
+
+        tr = db.transaction(bang, 'readonly')
+        tr.objectStore(bang)
+          .openCursor(null, 'prev')
+          .onsuccess = (e) => {
+            cs = e.target.result;
+            if (cs) {
+              rec = cs.value;
+              if (gom === undefined || gom === null) {
+                kq.push(rec);
+              } else if (gom.constructor === Array) {
+                for (i in gom) {
+                  r = cs.value.data;
+                  if (gom[i] in r) { kq[gom[i]].add(r[gom[i]]); }
+                  r = cs.value.refs;
+                  if (gom[i] in r) { kq[gom[i]].add(r[gom[i]]); }
+                }
+              } else if (gom.constructor === Object) {
+                for (k in gom) {
+                  r = cs.value.data;
+                  if (k in r && r[k] === gom[k]) { kq.push(rec); }
+                  r = cs.value.refs;
+                  if (k in r && r[k] === gom[k]) { kq.push(rec); }
+                }
+              } else {
+                kq.push(rec);
+              }
+              cv++;
+              self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
+              cs.continue();
+            } else {
+              for (k in kq) { kq[k] = [...kq[k]]; }
+              self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
+              self.postMessage({ cv: -1, kq: "fin" });
+            }
+          }
+      }
+    } catch (err) { self.postMessage({ cv: cv, err: err }); }
+  },
+  nap: (bang, nap = null, gang = 0) => {
+    gang = gang === '0' ? 0 : parseInt(gang) || -1;
+    if (gang > 3) {
+      self.postMessage({ cv: -1, kq: "bất quá tam" });
+      return;
+    }
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else {
+      self.postMessage({ cv: -1, kq: "bảng chưa tạo" });
+      return;
+    };
+    let db, tr, rec, r, i, cs, k, kq,
+      zr = 0,
+      cv = 0,
+      kq = [];
+    if (nap === undefined || nap === null) {
+      self.postMessage({ cv: -1, kq: "không yêu cầu" });
+      return;
+    } else if (nap.constructor === Object) {
+      //tim theo dict dieu kien
+    } else if (nap.constructor === Array) {
+      //search theo list dieu kien
+    } else if (nap.constructor === String || nap.constructor === Number) {
+      //search
+      nap = nap.toString().toLowerCase();
+      nap = nap.split(' ').join(' ');
+      if (nap.split(' ').join('') === '') {
+        self.postMessage({ cv: -1, kq: "không rõ yêu cầu" });
+        return;
+      } else {
+        nap = [nap];
+      }
+    } else {
+      self.postMessage({ cv: -1, kq: "không rõ yêu cầu" });
+      return;
+    }
+    //try {
+    indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
+      db = e.target.result;
+      tr = db.transaction(bang, 'readonly')
+      tr.objectStore(bang)
+        .count()
+        .onsuccess = (e) => { zr = e.target.result; }
+
+      tr = db.transaction(bang, 'readonly')
+      tr.objectStore(bang)
+        .openCursor(null, 'prev')
+        .onsuccess = (e) => {
+          cs = e.target.result;
+          if (cs) {
+            rec = cs.value;
+            if (gom === undefined || gom === null) {
+              kq.push(rec);
+            } else if (gom.constructor === Array) {
+              for (i in gom) {
+                r = cs.value.data;
+                if (gom[i] in r) { kq[gom[i]].add(r[gom[i]]); }
+                r = cs.value.refs;
+                if (gom[i] in r) { kq[gom[i]].add(r[gom[i]]); }
+              }
+            } else if (gom.constructor === Object) {
+              for (k in gom) {
+                r = cs.value.data;
+                if (k in r && r[k] === gom[k]) { kq.push(rec); }
+                r = cs.value.refs;
+                if (k in r && r[k] === gom[k]) { kq.push(rec); }
+              }
+            } else {
+              kq.push(rec);
+            }
+            cv++;
+            self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
+            cs.continue();
+          } else {
+            for (k in kq) { kq[k] = [...kq[k]]; }
+            self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
+            self.postMessage({ cv: -1, kq: "fin" });
+          }
+        }
+    }
+    //} catch (err) { self.postMessage({ cv: cv, err: err }); }
+  },
+
 
   old_gom: (bang, nam = 0) => {
     try {
@@ -434,18 +614,12 @@ self.onmessage = (ev) => {
 
     sw.csdl = { ten: csdl_ten, cap: csdl_cap };
     self.postMessage({ cv: 0, bang: bang, tin: tin });
-    if ('gom' in tin) {
-
+    if ('baogia' in tin) {
+      sw.nap1.baogia(bang, tin.baogia.chiphi, tin.baogia.baogia, tin.baogia.plgia);
     }
-    if ('nap1' in tin) {
-
-    }
-    if ('data1' in tin) {
-      sw.data1(bang, tin.luu1);
-    }
-    if ('luu1' in tin) {
-      sw.data1(bang, tin.luu1);
-    }
+    if ('gom' in tin) { sw.gom(bang, tin.gom, tin.gang); }
+    if ('nap1' in tin) { }
+    if ('luu1' in tin || 'data1' in tin) { sw.data1(bang, tin.luu1, tin.gang); }
   } catch (err) {
     self.postMessage({ cv: -1, kq: "nothing to do" });
   };

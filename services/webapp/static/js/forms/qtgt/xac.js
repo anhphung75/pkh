@@ -1530,7 +1530,7 @@ var idb = {
       gui = {
         csdl: idb.csdl,
         bang: bang,
-        nap1: { chiphi: chiphi, baogia: baogia, plgia: plgia },
+        baogia: { chiphi: chiphi, baogia: baogia, plgia: plgia },
         gang: 0,
       };
       console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
@@ -1542,10 +1542,10 @@ var idb = {
           w = null;
           console.log("swidb fin=", JSON.stringify(tin, null, 2));
         } else if (tin.cv > 0) {
-          if ('nap1' in tin && tin.nap1 > 0) {
+          if ('baogia' in tin) {
             //ok action
             console.log("swidb tin=", JSON.stringify(tin, null, 2));
-            ga[bang][uid] = tin.nap1;
+            ga[bang][uid] = tin.baogia || 0;
           }
         } else if ("err" in tin) {
           console.log("err=", tin.err);
@@ -1559,7 +1559,44 @@ var idb = {
       }
     },
   },
-  
+  gom: (bang, makhoa) => {
+    if (bang) {
+      bang = bang.toString().toLowerCase();
+    } else { return; }
+    let w, gui, tin;
+    //main
+    w = new Worker(ga.url['swidb']);
+    gui = {
+      csdl: idb.csdl,
+      bang: bang,
+      gom: makhoa,
+      gang: 0,
+    };
+    console.log("idb.gom gui tin=", JSON.stringify(gui, null, 2));
+    w.postMessage(gui);
+    w.onmessage = (e) => {
+      tin = e.data;
+      if (tin.cv < 0) {
+        if (w) { w.terminate(); }
+        w = null;
+        console.log("swidb fin=", JSON.stringify(tin, null, 2));
+      } else if (tin.cv > 0) {
+        if ('gom' in tin) {
+          //ok action
+          console.log("swidb tin=", JSON.stringify(tin, null, 2));
+        }
+      } else if ("err" in tin) {
+        console.log("err=", tin.err);
+        gui.gang += 1;
+        //lam lai sau 2 giay
+        setTimeout(() => { w.postMessage(gui); }, 2000);
+      } else {
+        //info
+        console.log("swidb info=", JSON.stringify(tin, null, 2));
+      }
+    }
+  },
+
   old_gom: (bang, nam = 0) => {
     try {
       bang = bang.toString().toLowerCase();
@@ -2205,9 +2242,9 @@ function test_dulieu() {
   idb.luu("bgmtc", dl);
   idb.luu("bgtl", dl);
 }
-test_dulieu();
+//test_dulieu();
 //let mabaogia = 20200827,
 //  chiphi = '001',
 //  plgia = 'dutoan';
-//idb.nap1.baogia('bgvl', chiphi, mabaogia, plgia);
+idb.gom('chiphiquanly', { "ghichu": "quy ước làm tròn sl=3, tiền=0" });
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));
