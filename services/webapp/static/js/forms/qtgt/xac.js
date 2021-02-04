@@ -2246,5 +2246,5 @@ function test_dulieu() {
 //let mabaogia = 20200827,
 //  chiphi = '001',
 //  plgia = 'dutoan';
-idb.gom('chiphiquanly', { "ghichu": "quy ước làm tròn sl=3, tiền=0" });
+idb.gom('chiphiquanly', "phaply");
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));

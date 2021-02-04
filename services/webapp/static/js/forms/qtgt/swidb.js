@@ -65,7 +65,8 @@ var sw = {
         } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
           rs[k] = rr[k];
         } else if (rr[k].constructor === String) {
-          if (rr[k].length > 0) {
+          rr[k] = rr[k].replace(/\s\s+/g, ' ');
+          if (rr[k].split(' ').join('') !== '') {
             rs[k] = rr[k];
           } else {
             for (k1 in keyxoa) {
@@ -102,7 +103,8 @@ var sw = {
         } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
           rs.push(rr[k]);
         } else if (rr[k].constructor === String) {
-          if (rr[k].length > 0) {
+          rr[k] = rr[k].replace(/\s\s+/g, ' ');
+          if (rr[k].split(' ').join('') !== '') {
             rs.push(rr[k]);
           }
         } else { }
@@ -112,7 +114,8 @@ var sw = {
     } else if (rr.constructor === Number || rr.constructor === Boolean) {
       rs = rr;
     } else if (rr.constructor === String) {
-      if (rr.length > 0) {
+      rr = rr.replace(/\s\s+/g, ' ');
+      if (rr.split(' ').join('') !== '') {
         rs = rr;
       } else {
         return null;
@@ -278,13 +281,100 @@ var sw = {
       } catch (err) { self.postMessage({ cv: cv, err: err }); }
     },
   },
+  isdict: (dl, ma) => {
+    if (dl === undefined || dl === null) {
+      return false;
+    } else if (dl.constructor === Object) {
+    } else { return false; }
+    if (ma === undefined || ma === null) {
+      return false;
+    } else if (ma.constructor === Object) {
+      ma = sw.upkey({}, ma);
+    } else { return false; }
+    //main
+    let isok, k, k0, kt, v, v0;
+    for (k in ma) {
+      isok = false;
+      v = ma[k];
+      for (k0 in dl) {
+        v0 = dl[k0];
+        if (k === k0 && v === v0) {
+          isok = true;
+          break;
+        } else {
+          v0 = dl[k0] || '';
+          if (ma.constructor === Object) {
+            kt = sw.isdict(v0, ma);
+            if (kt) {
+              isok = true;
+              break;
+            }
+          }
+        }
+      }
+      if (isok === false) { return false; }
+    }
+    return true;
+  },
+  gomkey: (rs, dl, ma) => {
+    if (ma === undefined || ma === null) {
+      return rs;
+    } else if (ma.constructor === Array) {
+    } else if (ma.constructor === String) {
+      ma = ma.replace(/\s\s+/g, ' ');
+      if (ma.split(' ').join('') !== '') { return rs; }
+      ma = [ma];
+    } else { return rs; }
+    let i, k, k0, kt, v, v0;
+    if (rs === undefined || rs === null) {
+      return rs;
+    } else if (rs.constructor === Object) {
+      for (i in ma) {
+        k = ma[i];
+        if (k in rs) {
+          for (v in rs[k]) {
+            rs[k][v] = JSON.stringify(rs[k][v]);
+          }
+          rs[k] = new Set(rs[k]);
+        } else {
+          rs[k] = new Set();
+        }
+      }
+    } else { return rs; }
+    //main
+    for (i in ma) {
+      k = ma[i];
+      if (dl === undefined || dl === null) {
+        return rs;
+      } else if (dl.constructor === Object) {
+        for (k0 in dl) {
+          v = dl[k0];
+          if (k === k0) {
+            rs[k].add(JSON.stringify(v));
+          } else {
+            if (v === undefined || v === null) {
+            } else if (v.constructor === Object) {
+              rs = sw.gomkey(rs, v, ma);
+            } else { }
+          }
+        }
+      } else { }
+    }
+    for (k in rs) {
+      for (v in rs[k]) {
+        rs[k][v] = JSON.parse(rs[k][v]);
+      }
+      rs[k] = [...rs[k]];
+    }
+    return rs;
+  },
   gom: (bang, gom = null, gang = 0) => {
     gang = gang === '0' ? 0 : parseInt(gang) || -1;
     if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
     if (bang) {
       bang = bang.toString().toLowerCase();
     } else { self.postMessage({ cv: -1, kq: "bảng chưa tạo" }); };
-    let db, tr, rec, r, i, cs, k, kq,
+    let db, tr, rec, r, i, cs, k, k0, v, kq,
       zr = 0,
       cv = 0;
     if (gom === undefined || gom === null) {
@@ -312,51 +402,50 @@ var sw = {
       gom = null;
       kq = [];
     }
-    try {
-      indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
-        db = e.target.result;
-        tr = db.transaction(bang, 'readonly')
-        tr.objectStore(bang)
-          .count()
-          .onsuccess = (e) => { zr = e.target.result; }
+    //try {
+    indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
+      db = e.target.result;
+      tr = db.transaction(bang, 'readonly')
+      tr.objectStore(bang)
+        .count()
+        .onsuccess = (e) => { zr = e.target.result; }
 
-        tr = db.transaction(bang, 'readonly')
-        tr.objectStore(bang)
-          .openCursor(null, 'prev')
-          .onsuccess = (e) => {
-            cs = e.target.result;
-            if (cs) {
-              rec = cs.value;
-              if (gom === undefined || gom === null) {
-                kq.push(rec);
-              } else if (gom.constructor === Array) {
-                for (i in gom) {
-                  r = cs.value.data;
-                  if (gom[i] in r) { kq[gom[i]].add(r[gom[i]]); }
-                  r = cs.value.refs;
-                  if (gom[i] in r) { kq[gom[i]].add(r[gom[i]]); }
-                }
-              } else if (gom.constructor === Object) {
-                for (k in gom) {
-                  r = cs.value.data;
-                  if (k in r && r[k] === gom[k]) { kq.push(rec); }
-                  r = cs.value.refs;
-                  if (k in r && r[k] === gom[k]) { kq.push(rec); }
-                }
-              } else {
-                kq.push(rec);
-              }
-              cv++;
-              self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
-              cs.continue();
+      tr = db.transaction(bang, 'readonly')
+      tr.objectStore(bang)
+        .openCursor(null, 'prev')
+        .onsuccess = (e) => {
+          cs = e.target.result;
+          if (cs) {
+            rec = cs.value;
+            if (gom === undefined || gom === null) {
+              kq.push(rec);
+            } else if (gom.constructor === Array) {
+              kq = sw.gomkey(kq, rec, gom);
+              //for (i in gom) {
+              //  k = gom[i];
+              //  for (k0 in rec) {
+              //    v = rec[k0];
+              //    if (k === k0) { kq[k].add(v); }
+              //  }
+              //}
+            } else if (gom.constructor === Object) {
+              if (sw.isdict(rec, gom)) { kq.push(rec); }
             } else {
-              for (k in kq) { kq[k] = [...kq[k]]; }
-              self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
-              self.postMessage({ cv: -1, kq: "fin" });
+              kq.push(rec);
             }
+            cv++;
+            self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
+            cs.continue();
+          } else {
+            if (kq.constructor === Object) {
+              for (k in kq) { kq[k] = [...new Set(kq[k])]; }
+            }
+            self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
+            self.postMessage({ cv: -1, kq: "fin" });
           }
-      }
-    } catch (err) { self.postMessage({ cv: cv, err: err }); }
+        }
+    }
+    //} catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
   nap: (bang, nap = null, gang = 0) => {
     gang = gang === '0' ? 0 : parseInt(gang) || -1;
@@ -370,7 +459,7 @@ var sw = {
       self.postMessage({ cv: -1, kq: "bảng chưa tạo" });
       return;
     };
-    let db, tr, rec, r, i, cs, k, kq,
+    let db, tr, rec, r, i, cs, k,
       zr = 0,
       cv = 0,
       kq = [];
