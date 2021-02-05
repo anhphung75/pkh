@@ -1559,87 +1559,83 @@ var idb = {
       }
     },
   },
-  gom: (bang, makhoa) => {
-    if (bang) {
-      bang = bang.toString().toLowerCase();
-    } else { return; }
-    let w, gui, tin;
-    //main
-    w = new Worker(ga.url['swidb']);
-    gui = {
-      csdl: idb.csdl,
-      bang: bang,
-      gom: makhoa,
-      gang: 0,
-    };
-    console.log("idb.gom gui tin=", JSON.stringify(gui, null, 2));
-    w.postMessage(gui);
-    w.onmessage = (e) => {
-      tin = e.data;
-      if (tin.cv < 0) {
-        if (w) { w.terminate(); }
-        w = null;
-        console.log("swidb fin=", JSON.stringify(tin, null, 2));
-      } else if (tin.cv > 0) {
-        if ('gom' in tin) {
-          //ok action
-          console.log("swidb tin=", JSON.stringify(tin, null, 2));
-        }
-      } else if ("err" in tin) {
-        console.log("err=", tin.err);
-        gui.gang += 1;
-        //lam lai sau 2 giay
-        setTimeout(() => { w.postMessage(gui); }, 2000);
-      } else {
-        //info
-        console.log("swidb info=", JSON.stringify(tin, null, 2));
-      }
-    }
-  },
-
-  old_gom: (bang, nam = 0) => {
-    try {
-      bang = bang.toString().toLowerCase();
-      if (bang.length < 1) { return; }
-    } catch (err) { return; }
-    try {
-      nam = parseInt(nam);
-    } catch (err) { nam = 0; }
-    ga.gom = {};
-    let k, v, w, wu, gui, tin;
-    try {
-      gui = { bang: bang, gom: { nam: nam }, };
-      console.log("idb.gom gui tin=", JSON.stringify(gui, null, 2));
-      wu = sw.idb.gom();
-      w = new Worker(wu);
+  gom: {
+    key: (bang, makhoa) => {
+      if (bang) {
+        bang = bang.toString().toLowerCase();
+      } else { return; }
+      let w, gui, tin;
+      //main
+      w = new Worker(ga.url['swidb']);
+      gui = {
+        csdl: idb.csdl,
+        bang: bang,
+        gomkey: makhoa,
+        gang: 0,
+      };
+      console.log("idb.gom.key gui tin=", JSON.stringify(gui, null, 2));
       w.postMessage(gui);
       w.onmessage = (e) => {
         tin = e.data;
-        console.log("idb.gom nhan tin=", JSON.stringify(tin, null, 2));
-        if (("cv" in tin) && (tin.cv < 0)) {
-          try {
-            w.terminate();
-            w = null;
-          } catch (err) { }
-          try {
-            (window.URL || window.webkitURL).revokeObjectURL(wu);
-            wu = null;
-          } catch (err) { }
-        }
-        if ("err" in tin) {
+        if (tin.cv < 0) {
+          if (w) { w.terminate(); }
+          w = null;
+          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+        } else if (tin.cv > 0) {
+          if ('gomkey' in tin) {
+            //ok action
+            console.log("swidb tin=", JSON.stringify(tin, null, 2));
+          }
+        } else if ("err" in tin) {
           console.log("err=", tin.err);
+          gui.gang += 1;
           //lam lai sau 2 giay
           setTimeout(() => { w.postMessage(gui); }, 2000);
-        }
-        if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
-          console.log("idb.gom nhan tin.kq=", tin.kq);
-          v = tin.kq;
-          k = v.idutc;
-          ga.gom[k] = v;
+        } else {
+          //info
+          console.log("swidb info=", JSON.stringify(tin, null, 2));
         }
       }
-    } catch (err) { }
+    },
+    val: (bang, makhoa) => {
+      if (bang) {
+        bang = bang.toString().toLowerCase();
+      } else { return; }
+      let w, gui, tin;
+      //main
+      w = new Worker(ga.url['swidb']);
+      gui = {
+        csdl: idb.csdl,
+        bang: bang,
+        gomval: makhoa,
+        gang: 0,
+      };
+      console.log("idb.gom.key gui tin=", JSON.stringify(gui, null, 2));
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        if (tin.cv < 0) {
+          if (w) { w.terminate(); }
+          w = null;
+          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+        } else if (tin.cv > 0) {
+          if ('gomval' in tin) {
+            //ok action
+            console.log("swidb tin=", JSON.stringify(tin, null, 2));
+          }
+        } else if ("err" in tin) {
+          console.log("err=", tin.err);
+          gui.gang += 1;
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        } else {
+          //info
+          console.log("swidb info=", JSON.stringify(tin, null, 2));
+        }
+      }
+    },
   },
+
   nap: (bang, nap = { uid: 0 }) => {
     try {
       bang = bang.toString().toLowerCase();
@@ -2246,5 +2242,5 @@ function test_dulieu() {
 //let mabaogia = 20200827,
 //  chiphi = '001',
 //  plgia = 'dutoan';
-idb.gom('chiphiquanly', "phaply");
+idb.gom.val('chiphiquanly', "327/bgtlmđ" );
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));
