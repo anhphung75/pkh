@@ -140,65 +140,25 @@ var web = {
   },
   otim: {
     nam: () => {
-      let zone, inp, box, i, k, v, dl = [{ k: 0, v: "All" }],
-        curnam = new Date().getFullYear();
-      for (i in [0, 1, 2, 3, 4, 5]) {
-        k = (curnam - i).toString(),
-          v = curnam - i;
-        dl.push({ k: k, v: v });
-      }
-      if (!('qtgt' in ga)) {
-        ga.qtgt = {};
-        ga.qtgt.nam = curnam;
-      }
+      let zone, _zone, inp,
+        curnam = new Date().getFullYear();;
       zone = d3.select("#qtgt").select(".grid.otim")
         .append("div")
-        .style("width", "100%")
-      //input
-      inp = zone.append("div")
-        .style("width", "100%")
-        .attr("class", "l flex")
-        .html("Năm")
-        .append("input")
+        .attr("class", "l flex");
+      zone.append("input")
+        .attr("value", "Năm");
+
+      _zone = zone.append("div")
+        .attr("class", "l")
+        .style("width", "100%");
+
+      inp = _zone.append("input")
         .attr("id", "in_nam")
-        .attr("class", "c fit")
+        .attr("class", "l")
         .attr("autocomplete", "off")
-        .attr("list", null)
         .attr("value", curnam)
         .on("focus", (ev) => {
-          //inp.attr("list", "dl_nam");
-        })
-        .on("blur", (ev) => {
-          //inp.attr("list", null);
-        })
-        .on("mouseover", (ev, d) => {
-          //ev.preventDefault();
-          console.log("inp mouseover ev=", ev.target);
-          console.log("inp mouseover d=", JSON.stringify(d));
-          //ga.qtgt.nam = d.k;
-          //inp.attr("value", d.v);
-        });
-      //combobox
-      box = zone.append("ol")
-        .attr("id", "combobox")
-        .style("padding-left", "1rem");
-      box.selectAll("li").data(dl)
-        .enter()
-        .append("li")
-        .attr("data-id", (d) => d.k)
-        .text((d) => d.v)
-        .on("click", (ev, d) => {
-          //ev.preventDefault();
-          console.log("option click d=", JSON.stringify(d));
-          ga.qtgt.nam = d.k;
-          inp.attr("value", d.v);
-          inp.node().value = d.v;
-        })
-        .on("mouseover", (ev, d) => {
-          //ev.preventDefault();
-          console.log("option mouseover d=", JSON.stringify(d));
-          //ga.qtgt.nam = d.k;
-          //inp.attr("value", d.v);
+          web.box.nam(_zone, inp);
         });
     },
   },
@@ -1223,6 +1183,54 @@ var web = {
     }
   },
   box: {
+    hov: { mau1: "#9999ff" },
+    nam: (zone, inp) => {
+      let i, k, v, dl = [{ k: 0, v: "All" }],
+        curnam = new Date().getFullYear();
+      for (i in [0, 1, 2, 3, 4, 5]) {
+        k = (curnam - i).toString(),
+          v = curnam - i;
+        dl.push({ k: k, v: v });
+      }
+      if (!('qtgt' in ga)) {
+        ga.qtgt = {};
+        ga.qtgt.nam = curnam;
+      }
+      d3.selectAll("#combobox").remove();
+      zone.style("position", "relative");
+      let _box = zone.append("ol")
+        .attr("id", "combobox")
+        .style("background-color", "white")
+        .style("position", "absolute")
+        .style("top", "6px")
+        .style("left", 0)
+        .style("z-index", 99)
+        .style("border-style", "solid")
+        .style("border-color", "#d4d4d4")
+        .style("border-width", "0 1px 0 1px")
+        .style("width", "12cm")
+        .style("padding-left", "1rem")
+        .style("display", "grid")
+        .style("grid", "auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr");
+      _box.selectAll("li").data(dl)
+        .enter()
+        .append("li")
+        .attr("data-id", (d) => d.k)
+        .text((d) => d.v)
+        .on("mouseover", (ev) => {
+          ev.target.style.backgroundColor = web.box.hov.mau1;
+        })
+        .on("mouseout", (ev) => {
+          ev.target.style.backgroundColor = "white";
+        })
+        .on("click", (ev, d) => {
+          ga.qtgt.nam = d.k;
+          inp.node().value = d.v;
+          console.log("option click d=", JSON.stringify(d));
+          console.log("option click ga.qtgt=", JSON.stringify(ga.qtgt));
+          _box.remove();
+        });
+    },
     dieuhuong: (bang, row = 0, col = 3, keyCode = 0) => {
       console.log("box dieuhuong ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
       console.log("box dieuhuong comb=", JSON.stringify(d3.select("#comb-chiphi")));
@@ -1425,39 +1433,6 @@ var web = {
         .append("option")
         .attr("class", "c")
         .text((col) => col);
-    },
-  },
-  datalist: {
-    nam: () => {
-      let dl = [{ k: 0, v: "All" }],
-        nam = new Date().getFullYear();
-      for (i in [0, 1, 2, 3, 4, 5]) {
-        let k = (nam - i).toString(),
-          v = nam - i;
-        dl.push({ k: k, v: v });
-      }
-      let zone = d3.select("webapp").append("datalist")
-        .attr("id", "dl_nam");
-      zone.selectAll("option").data(dl)
-        .enter()
-        .append("option")
-        .attr("value", (d) => d.k)
-        .text((d) => d.v);
-    },
-    cpql: () => {
-      idb.gom("cpql", 0);
-      if (ga.tientrinh !== 100) { return null; }
-      let zone, k, dl = new Set();
-      for (k in Object.keys(ga.gom).sort((a, b) => b - a)) {
-        dl.add({ k: k, v: ga.gom[k].macpql })
-      }
-      zone = d3.select("webapp").append("datalist")
-        .attr("id", "dl_cpql");
-      zone.selectAll("option").data(dl)
-        .enter()
-        .append("option")
-        .attr("value", (d) => d.k)
-        .text((d) => d.v);
     },
   },
 };

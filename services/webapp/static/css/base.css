@@ -1,4 +1,5 @@
 @charset "UTF-8";
+
 *,
 *:before,
 *:after {
@@ -30,6 +31,7 @@
 
 @import url("./font_Opensans.css");
 @import url("./font_UVNTintuc.css");
+
 html,
 body {
   font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep",
@@ -73,7 +75,6 @@ body {
 }
 
 /* font */
-
 .fb {
   font-weight: bold;
 }
@@ -151,7 +152,6 @@ body {
 }
 
 /* chieu cao */
-
 .c3 {
   height: calc(1rem + 3pt);
   padding-top: 2pt;
@@ -191,13 +191,11 @@ body {
 }
 
 /* word break */
-
 .wb {
   word-break: break-all;
 }
 
 /* border */
-
 .b0 {
   border: 0;
 }
@@ -297,6 +295,8 @@ body {
 input {
   width: 100%;
   height: 100%;
+  margin: 0;
+  padding: 0;
   border: 0;
   outline: none;
   background-color: transparent;
@@ -357,7 +357,6 @@ input {
 }
 
 /*210mm=595.275pt => trangin= 555pt */
-
 .trangin {
   margin-left: 20pt;
   margin-right: 20pt;
@@ -371,6 +370,7 @@ input {
 }
 
 @media print {
+
   *,
   *:before,
   *:after {
@@ -378,11 +378,13 @@ input {
     background-color: transparent;
     color: black;
   }
+
   .A4doc {
     width: 210mm;
     height: 297mm;
     background: transparent;
   }
+
   .A4ngang {
     width: 297mm;
     height: 210mm;
@@ -391,6 +393,7 @@ input {
 }
 
 @media screen {
+
   .test,
   .mau {
     border: 1px solid green;
