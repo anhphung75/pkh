@@ -117,7 +117,7 @@ var ga = {
 var web = {
   tao: () => {
     web.sw_url();
-    //web.namlamviec();
+    web.otim.nam();
     //web.oc.cpxd();
     //web.oc.cpvt();
     //web.oc.cpvl();
@@ -138,28 +138,71 @@ var web = {
     ga.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
     ga.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
   },
-  namlamviec: () => {
-    d3.select("#namlamviec").on("change", function () {
-      let namchu = this.value.toString();
-      if (ga["namlamviec"] == namchu) {
-        return;
+  otim: {
+    nam: () => {
+      let zone, inp, box, i, k, v, dl = [{ k: 0, v: "All" }],
+        curnam = new Date().getFullYear();
+      for (i in [0, 1, 2, 3, 4, 5]) {
+        k = (curnam - i).toString(),
+          v = curnam - i;
+        dl.push({ k: k, v: v });
       }
-      if (/^\d+$/.test(namchu)) {
-        ga["namlamviec"] = namchu;
-      } else {
-        switch (namchu) {
-          case "":
-          case "all":
-          case "tat":
-            ga["namlamviec"] = "";
-            break;
-          default:
-            ga["namlamviec"] = new Date().getFullYear().toString();
-        }
+      if (!('qtgt' in ga)) {
+        ga.qtgt = {};
+        ga.qtgt.nam = curnam;
       }
-      ga.lay_api();
-    });
+      zone = d3.select("#qtgt").select(".grid.otim")
+        .append("div")
+        .style("width", "100%")
+      //input
+      inp = zone.append("div")
+        .style("width", "100%")
+        .attr("class", "l flex")
+        .html("Năm")
+        .append("input")
+        .attr("id", "in_nam")
+        .attr("class", "c fit")
+        .attr("autocomplete", "off")
+        .attr("list", null)
+        .attr("value", curnam)
+        .on("focus", (ev) => {
+          //inp.attr("list", "dl_nam");
+        })
+        .on("blur", (ev) => {
+          //inp.attr("list", null);
+        })
+        .on("mouseover", (ev, d) => {
+          //ev.preventDefault();
+          console.log("inp mouseover ev=", ev.target);
+          console.log("inp mouseover d=", JSON.stringify(d));
+          //ga.qtgt.nam = d.k;
+          //inp.attr("value", d.v);
+        });
+      //combobox
+      box = zone.append("ol")
+        .attr("id", "combobox")
+        .style("padding-left", "1rem");
+      box.selectAll("li").data(dl)
+        .enter()
+        .append("li")
+        .attr("data-id", (d) => d.k)
+        .text((d) => d.v)
+        .on("click", (ev, d) => {
+          //ev.preventDefault();
+          console.log("option click d=", JSON.stringify(d));
+          ga.qtgt.nam = d.k;
+          inp.attr("value", d.v);
+          inp.node().value = d.v;
+        })
+        .on("mouseover", (ev, d) => {
+          //ev.preventDefault();
+          console.log("option mouseover d=", JSON.stringify(d));
+          //ga.qtgt.nam = d.k;
+          //inp.attr("value", d.v);
+        });
+    },
   },
+
   dieuhuong: (bang, row = 0, col = 3, keyCode = 0) => {
     console.log("dieuhuong truoc ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
     try {
@@ -1635,157 +1678,6 @@ var idb = {
       }
     },
   },
-
-  nap: (bang, nap = { uid: 0 }) => {
-    try {
-      bang = bang.toString().toLowerCase();
-      if (bang.length < 1) { return; }
-    } catch (err) { return; }
-    if (!(bang in ga)) { ga[bang] = {}; }
-    let k, w, wu, gui, tin;
-
-    try {
-      gui = { bang: bang, nap: nap, };
-      console.log("idb.nap gui tin=", JSON.stringify(gui, null, 2));
-      wu = sw.idb.nap1.baogia();
-      w = new Worker(wu);
-      w.postMessage(gui);
-      w.onmessage = (e) => {
-        tin = e.data;
-        console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
-        if (("cv" in tin) && (tin.cv < 0)) {
-          try {
-            w.terminate();
-            w = null;
-          } catch (err) { }
-          try {
-            (window.URL || window.webkitURL).revokeObjectURL(wu);
-            wu = null;
-          } catch (err) { }
-        }
-        if ("err" in tin) {
-          console.log("err=", tin.err);
-          //lam lai sau 2 giay
-          setTimeout(() => { w.postMessage(gui); }, 2000);
-        }
-        if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
-          console.log("idb.nap1 nhan tin.kq=", tin.kq);
-          ga[bang][k] = tin.kq;
-        }
-      }
-    } catch (err) { }
-  },
-  old_nap1: {
-    idutc: (bang, uid = null) => {
-      try {
-        bang = bang.toString().toLowerCase();
-        if (bang.length < 1) { return; }
-      } catch (err) { return; }
-      try {
-        uid = uid === '0' ? 0 : parseInt(uid) || -1;
-        if (uid < 0) { return; }
-      } catch (err) { return; }
-      //main prog
-      let w, wu, gui, tin;
-      if (!(bang in ga)) { ga[bang] = { uid: {} }; }
-      if (!(uid in ga[bang])) { ga[bang][uid] = {}; }
-      try {
-        gui = {
-          bang: bang,
-          nap: { idutc: uid },
-        };
-        console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
-        wu = sw.idb.nap1.idutc();
-        w = new Worker(wu);
-        w.postMessage(gui);
-        w.onmessage = (e) => {
-          tin = e.data;
-          console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
-          if (("cv" in tin) && (tin.cv < 0)) {
-            try {
-              w.terminate();
-              w = null;
-            } catch (err) { }
-            try {
-              (window.URL || window.webkitURL).revokeObjectURL(wu);
-              wu = null;
-            } catch (err) { }
-          }
-          if ("err" in tin) {
-            console.log("err=", tin.err);
-            //lam lai sau 2 giay
-            setTimeout(() => { w.postMessage(gui); }, 2000);
-          }
-          //load to ga
-          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
-            console.log("idb.nap1 nhan tin.kq=", tin.kq);
-            ga[bang][uid] = tin.kq;
-          }
-        }
-      } catch (err) { }
-    },
-    makhoa: (bang, sma = null, vma = null) => {
-      try {
-        bang = bang.toString().toLowerCase();
-        if (bang.length < 1) { return; }
-      } catch (err) { return; }
-      try {
-        sma = sma.toString().toLowerCase();
-        if (sma.length < 1) { return; }
-      } catch (err) { return; }
-      try {
-        vma = vma.toString().toLowerCase();
-        if (vma.length < 1) { return; }
-      } catch (err) { return; }
-      //main prog
-      let w, wu, gui, tin;
-      if (!(bang in ga)) { ga[bang] = { vma: {} }; }
-      if (!(vma in ga[bang])) { ga[bang][vma] = {}; }
-      try {
-        gui = {
-          bang: bang,
-          nap: { sma: sma, vma: vma },
-        };
-        console.log("idb.nap1 gui tin=", JSON.stringify(gui, null, 2));
-        wu = sw.idb.nap1.makhoa();
-        w = new Worker(wu);
-        w.postMessage(gui);
-        w.onmessage = (e) => {
-          tin = e.data;
-          console.log("idb.nap1 nhan tin=", JSON.stringify(tin, null, 2));
-          if (("cv" in tin) && (tin.cv < 0)) {
-            try {
-              w.terminate();
-              w = null;
-            } catch (err) { }
-            try {
-              (window.URL || window.webkitURL).revokeObjectURL(wu);
-              wu = null;
-            } catch (err) { }
-          }
-          if ("err" in tin) {
-            console.log("err=", tin.err);
-            //lam lai sau 2 giay
-            setTimeout(() => { w.postMessage(gui); }, 2000);
-          }
-          //load to ga
-          if (("cv" in tin) && (tin.cv > 0) && ("kq" in tin)) {
-            console.log("idb.nap1 nhan tin.kq=", tin.kq);
-            ga[bang][vma] = tin.kq;
-          }
-        }
-      } catch (err) { }
-    },
-
-    chiphi: (uid = null) => {
-      idb.nap1.idutc("chiphi", uid);
-    },
-    cpql: (macpql = 20200827) => {
-      idb.nap1.makhoa("cpql", "macpql", ga.macpql || macpql);
-    },
-
-  },
-
   tinh: {
     oc: {
       cpxd: (stt = null) => {
@@ -2242,5 +2134,5 @@ function test_dulieu() {
 //let mabaogia = 20200827,
 //  chiphi = '001',
 //  plgia = 'dutoan';
-idb.gom.val('chiphiquanly', "327/bgtlmđ" );
+idb.gom.val('chiphiquanly', "327/bgtlmđ");
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));

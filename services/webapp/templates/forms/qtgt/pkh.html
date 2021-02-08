@@ -40,7 +40,22 @@
 {% end %}
 
 {% block webapp %}
-<section id="hoso">
+<section id="qtgt" data-swidb="{{static_url(r'js/forms/qtgt/swidb.js',True)}}"
+  data-swapi="{{static_url(r'js/forms/qtgt/swapi.js',True)}}">
+  <div class="grid otim">
+
+  </div>
+  <div class="grid hoso">
+    <div id="qrcode">qrcode</div>
+    <div id="barcode">barcode</div>
+    <div><input id="in_mahoso" value='1' /></div>
+    <div><input id="in_idhoso" value='1' /></div>
+    <div><input id="in_sodot" value='1' /></div>
+    <div><input id="in_sohoso" value='1' /></div>
+    <div><input id="in_khachhang" value='1' /></div>
+    <div><input id="in_diachi" value='1' /></div>
+  </div>
+
 
 </section>
 <section id="ongcai">
@@ -98,11 +113,5 @@
   </div>
   <table id="cptl"></table>
 </section>
-<div id="qtgt" data-swidb="{{static_url(r'js/forms/qtgt/swidb.js',True)}}"
-  data-swapi="{{static_url(r'js/forms/qtgt/swapi.js',True)}}"
-  onclick="console.log(this)">
-swidb={{static_url(r'js/forms/qtgt/swidb.js',True)}}
-</div>
-
 
 {% end %}

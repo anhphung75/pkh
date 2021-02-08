@@ -34,13 +34,18 @@
   color: #ffffff;
 }
 
-.grid.ongcai, .grid.ongnganh {
-  grid: auto-flow minmax(1rem, max-content)/20fr 1fr 5fr 1fr 5fr 1fr 5fr;
+.grid.otim {
+  grid-template-columns: repeat(auto-fit, minmax(max-content, 1fr));
+  grid-template-rows: minmax(1rem, max-content);
+}
+.grid.ongcai,
+.grid.ongnganh {
+  grid: auto-flow minmax(1rem, max-content) / 20fr 1fr 5fr 1fr 5fr 1fr 5fr;
   background-color: magenta;
 }
 
 .grid.tlmd {
-  grid: auto-flow minmax(1rem, max-content)/5fr 1fr 2fr 1fr 2fr;
+  grid: auto-flow minmax(1rem, max-content) / 5fr 1fr 2fr 1fr 2fr;
   background-color: magenta;
 }
 
