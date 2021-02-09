@@ -115,6 +115,7 @@ var ga = {
 };
 
 var web = {
+  hov: { mau1: "yellow", mau2: "#9999ff" },
   tao: () => {
     web.sw_url();
     web.otim.nam();
@@ -140,147 +141,220 @@ var web = {
   },
   otim: {
     nam: () => {
-      let zone, _zone, inp,
-        curnam = new Date().getFullYear();;
+      let zone, box, box1, box2, inp, i, k, v,
+        dl = [{ k: 0, v: "All" }],
+        curnam = new Date().getFullYear();
+      if (!('qtgt' in ga)) {
+        ga.qtgt = {};
+        ga.qtgt.nam = curnam;
+      }
+      if (!('maxrbox' in ga)) {
+        ga.maxrbox = {};
+        ga.maxrbox.nam = 6;
+      }
+      if (!('macrbox' in ga)) {
+        ga.maxcbox = {};
+        ga.maxcbox.nam = 0;
+      }
+      for (i in [0, 1, 2, 3, 4, 5]) {
+        k = (curnam - i).toString(),
+          v = curnam - i;
+        dl.push({ k: k, v: v });
+      }
+
       zone = d3.select("#qtgt").select(".grid.otim")
         .append("div")
         .attr("class", "l flex");
-      zone.append("input")
+
+      box1 = zone.append("input")
         .attr("value", "Năm");
 
-      _zone = zone.append("div")
+      box2 = zone.append("div")
         .attr("class", "l")
-        .style("width", "100%");
+        .style("width", "100%")
+        .style("position", "relative");
 
-      inp = _zone.append("input")
+      inp = box2.append("input")
         .attr("id", "in_nam")
+        .attr("data-curid", "nam__-1__0")
         .attr("class", "l")
-        .attr("autocomplete", "off")
         .attr("value", curnam)
-        .on("focus", (ev) => {
-          web.box.nam(_zone, inp);
+        .on("focus", () => {
+          combobox();
+        })
+        .on("keydown", function (ev) {
+          let curid = ev.target.dataset.curid;
+          switch (ev.keyCode) {
+            case 27: //Esc
+              ev.target.value = null;
+              break;
+            case 40: //downArrow
+            case 39: //arrowRight
+              inp_newid(curid, 1);
+              break;
+            case 38: //arrowUp
+            case 37: //arrowLeft
+              inp_newid(curid, -1);
+              break;
+            case 13: //Enter
+              curid = web.move2id(ev.target.dataset.curid);
+              let id = d3.select(curid).attr("data-id"),
+                show = d3.select(curid).attr("data-show");
+              ga.qtgt.nam = id;
+              inp.node().value = show;
+              if (box) { box.remove(); }
+              break;
+            default:
+          }
+          web.move2id(ev.target.dataset.curid);
         });
+      function combobox() {
+        d3.selectAll("#combobox").remove();
+        box = box2.append("ol")
+          .attr("id", "combobox")
+          .style("background-color", "white")
+          .style("position", "absolute")
+          .style("top", "2rem")
+          .style("left", 0)
+          .style("z-index", 99)
+          .style("border-style", "solid")
+          .style("border-color", "#d4d4d4")
+          .style("border-width", "0 1px 0 1px")
+          .style("list-style-type", "decimal")
+          .style("list-style-position", "inside")
+          .style("margin", 0)
+          .style("padding-left", "1rem")
+          .style("width", "12cm")
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr");
+
+        box.selectAll("li").data(dl)
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => ['nam', i, 0].join('__'))
+          .attr("class", 'l nam')
+          .attr("data-id", (d) => d.k)
+          .attr("data-show", (d) => d.v)
+          .text((d) => d.v)
+          .on("mouseover", (ev) => {
+            ev.target.style.backgroundColor = web.hov.mau2;
+          })
+          .on("mouseout", (ev) => {
+            ev.target.style.backgroundColor = "white";
+          })
+          .on("click", (ev, d) => {
+            ga.qtgt.nam = d.k;
+            inp.node().value = d.v;
+            console.log("option click d=", JSON.stringify(d));
+            console.log("option click ga.qtgt=", JSON.stringify(ga.qtgt));
+            box.remove();
+          });
+      };
+      function inp_newid(curid, step = -1) {
+        if (!curid) { return; }
+        curid = curid.toString().split('__');
+        step = step === -1 ? step : 1;
+        let bang = curid[0],
+          row = parseInt(curid[1]),
+          col = parseInt(curid[2]),
+          newid = [bang, row + step, col].join('__');
+        inp.attr("data-curid", newid);
+      }
     },
   },
 
-  dieuhuong: (bang, row = 0, col = 3, keyCode = 0) => {
-    console.log("dieuhuong truoc ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
-    try {
-      bang = bang.toString().toLowerCase();
-      if (bang.length < 1) {
-        return;
-      } else {
-        if (!['chiphi', 'oc_cpxd', 'oc_cpvt', 'oc_cpvl',
-          'on_cpxd', 'on_cpvt', 'on_cpvl', 'cptl'
-        ].includes(bang)) {
-          return;
-        }
-      }
-      row = row === '0' ? 0 : parseInt(row) || -1;
-      if (row < 0) { return; }
-      col = col === '0' ? 0 : parseInt(col) || -1;
-      if (col < 0) { return; }
-      keyCode = keyCode === '0' ? 0 : parseInt(keyCode) || -1;
-      if (keyCode < 0) { return; }
-    } catch (err) { return; }
-    let s, e, het;
-    switch (bang) {
+  move2id: (elid) => {
+    console.log("start move2id=", elid);
+    if (!elid) { return; }
+    elid = elid.toString().split('__');
+    let box = elid[0],
+      row = parseInt(elid[1]),
+      col = parseInt(elid[2]);
+    if (col > ga.maxcbox[box]) {
+      col = 0;
+    };
+    if (col < 0) {
+      col = ga.maxcbox[box];
+    };
+    switch (box) {
       case 'oc_cpxd':
-        het = ga.oc.cpxd.length || 0;
+        if (row > ga.maxrbox[box]) {
+          row = row % (ga.maxrbox[box] + 1);
+          box = 'oc_cpvt';
+        };
+        if (row < 0) {
+          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          box = 'oc_cpvl';
+        };
         break;
       case 'oc_cpvt':
-        het = ga.oc.cpvt.length || 0;
+        if (row > ga.maxrbox[box]) {
+          row = row % (ga.maxrbox[box] + 1);
+          box = 'oc_cpvl';
+        };
+        if (row < 0) {
+          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          box = 'oc_cpxd';
+        };
         break;
       case 'oc_cpvl':
-        het = ga.oc.cpvl.length || 0;
+        if (row > ga.maxrbox[box]) {
+          row = row % (ga.maxrbox[box] + 1);
+          box = 'oc_cpxd';
+        };
+        if (row < 0) {
+          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          box = 'oc_cpvt';
+        };
         break;
       case 'on_cpxd':
-        het = ga.on.cpxd.length || 0;
+        if (row > ga.maxrbox[box]) {
+          row = row % (ga.maxrbox[box] + 1);
+          box = 'on_cpvt';
+        };
+        if (row < 0) {
+          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          box = 'on_cpvl';
+        };
         break;
       case 'on_cpvt':
-        het = ga.on.cpvt.length || 0;
+        if (row > ga.maxrbox[box]) {
+          row = row % (ga.maxrbox[box] + 1);
+          box = 'on_cpvl';
+        };
+        if (row < 0) {
+          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          box = 'on_cpxd';
+        };
         break;
       case 'on_cpvl':
-        het = ga.on.cpvl.length || 0;
+        if (row > ga.maxrbox[box]) {
+          row = row % (ga.maxrbox[box] + 1);
+          box = 'on_cpxd';
+        };
+        if (row < 0) {
+          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          box = 'on_cpvt';
+        };
         break;
       default:
-        het = ga[bang].length || 0;
+        if (row > ga.maxrbox[box]) {
+          row = row % (ga.maxrbox[box] + 1);
+        };
+        if (row < 0) {
+          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+        };
     }
-    if ([13, 40].includes(keyCode)) {
-      try {
-        s = ['.', bang, '.row', row + 1, '.col', col].join('');
-        console.log("dieuhuong 13,40 ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
-        e = d3.select(s).node();
-        e.focus();
-        e.select();
-      } catch (err) {
-        switch (bang) {
-          case 'cptl':
-            break;
-          case 'oc_cpxd':
-            bang = 'oc_cpvt';
-            break;
-          case 'oc_cpvt':
-            bang = 'oc_cpvl';
-            break;
-          case 'oc_cpvl':
-            bang = 'oc_cpxd';
-            break;
-          case 'on_cpxd':
-            bang = 'on_cpvt';
-            break;
-          case 'on_cpvt':
-            bang = 'on_cpvl';
-            break;
-          case 'on_cpvl':
-            bang = 'on_cpxd';
-            break;
-          default:
-            bang = 'chiphi';
-        }
-        s = ['.', bang, '.row', 0, '.col', col].join('');
-        e = d3.select(s).node();
-        e.focus();
-        e.select();
-      }
-    }
-    if ([38].includes(keyCode)) {
-      try {
-        s = ['.', bang, '.row', row - 1, '.col', col].join('');
-        e = d3.select(s).node();
-        e.focus();
-        e.select();
-      } catch (err) {
-        switch (bang) {
-          case 'cptl':
-            break;
-          case 'oc_cpxd':
-            bang = 'oc_cpvl';
-            break;
-          case 'oc_cpvl':
-            bang = 'oc_cpvt';
-            break;
-          case 'oc_cpvt':
-            bang = 'oc_cpxd';
-            break;
-          case 'on_cpxd':
-            bang = 'on_cpvl';
-            break;
-          case 'on_cpvl':
-            bang = 'on_cpvt';
-            break;
-          case 'on_cpvt':
-            bang = 'on_cpxd';
-            break;
-          default:
-            bang = 'chiphi';
-        }
-        s = ['.', bang, '.row', het - 1, '.col', col].join('');
-        e = d3.select(s).node();
-        e.focus();
-        e.select();
-      }
-    }
+    elid = ['.', box].join('');
+    d3.selectAll(elid).classed('mau', false);
+    elid = '#' + [box, row, col].join('__');
+    box = d3.select(elid).classed('mau', true);
+    console.log("end move2id=", elid);
+    try {
+      box.node().focus();
+      box.node().select();
+    } catch (err) { };
+    return elid;
   },
   oc: {
     bth: () => {
@@ -375,7 +449,7 @@ var web = {
           }
           web.oc.cpxd();
           web.oc.bth();
-          web.dieuhuong('oc_cpxd', stt, 1, 13);
+          web.move2id('oc_cpxd', stt, 1, 13);
           //} catch (err) {
           //console.log("err=", JSON.stringify(err));
           //web.oc.cpxd();
@@ -383,7 +457,7 @@ var web = {
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpxd', ev.target.dataset.stt, 1, ev.keyCode);
+            web.move2id('oc_cpxd', ev.target.dataset.stt, 1, ev.keyCode);
           }
         });
       row.append('td')
@@ -408,14 +482,14 @@ var web = {
             }
             web.oc.cpxd();
             web.oc.bth();
-            web.dieuhuong('oc_cpxd', stt, 3, 13);
+            web.move2id('oc_cpxd', stt, 3, 13);
           } catch (err) {
             web.oc.cpxd();
           }
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpxd', ev.target.dataset.stt, 3, ev.keyCode);
+            web.move2id('oc_cpxd', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
       row.append('td')
@@ -488,7 +562,7 @@ var web = {
           }
           web.oc.cpvt();
           web.oc.bth();
-          web.dieuhuong('oc_cpvt', stt, 1, 13);
+          web.move2id('oc_cpvt', stt, 1, 13);
           //} catch (err) {
           //console.log("err=", JSON.stringify(err));
           //web.oc.cpvt();
@@ -496,7 +570,7 @@ var web = {
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpvt', ev.target.dataset.stt, 1, ev.keyCode);
+            web.move2id('oc_cpvt', ev.target.dataset.stt, 1, ev.keyCode);
           }
         });
       row.append('td')
@@ -521,14 +595,14 @@ var web = {
             }
             web.oc.cpvt();
             web.oc.bth();
-            web.dieuhuong('oc_cpvt', stt, 3, 13);
+            web.move2id('oc_cpvt', stt, 3, 13);
           } catch (err) {
             web.oc.cpvt();
           }
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpvt', ev.target.dataset.stt, 3, ev.keyCode);
+            web.move2id('oc_cpvt', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
       row.append('td')
@@ -601,7 +675,7 @@ var web = {
           }
           web.oc.cpvl();
           web.oc.bth();
-          web.dieuhuong('oc_cpvl', stt, 1, 13);
+          web.move2id('oc_cpvl', stt, 1, 13);
           //} catch (err) {
           //console.log("err=", JSON.stringify(err));
           //web.oc.cpvl();
@@ -609,7 +683,7 @@ var web = {
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpvl', ev.target.dataset.stt, 1, ev.keyCode);
+            web.move2id('oc_cpvl', ev.target.dataset.stt, 1, ev.keyCode);
           }
         });
       row.append('td')
@@ -634,14 +708,14 @@ var web = {
             }
             web.oc.cpvl();
             web.oc.bth();
-            web.dieuhuong('oc_cpvl', stt, 3, 13);
+            web.move2id('oc_cpvl', stt, 3, 13);
           } catch (err) {
             web.oc.cpvl();
           }
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('oc_cpvl', ev.target.dataset.stt, 3, ev.keyCode);
+            web.move2id('oc_cpvl', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
       row.append('td')
@@ -1046,11 +1120,11 @@ var web = {
             web.tlmd.cptl();
             web.tlmd.bth();
           }
-          web.dieuhuong('cptl', 1, stt, 13);
+          web.move2id('cptl', 1, stt, 13);
         })
         .on("keydown", function (ev) {
           if ([13].includes(ev.keyCode)) {
-            web.dieuhuong('cptl', ev.target.dataset.stt, 1, ev.keyCode);
+            web.move2id('cptl', ev.target.dataset.stt, 1, ev.keyCode);
           }
           if ([40, 38].includes(ev.keyCode)) {
             if (ev.target.dataset.isopen === 'ok') {
@@ -1063,11 +1137,11 @@ var web = {
                 row = 0;
                 d3.select(ev.target).attr("data-rowchiphi", row + 1);
               }
-              console.log("dieuhuong chiphi")
-              web.box.dieuhuong('chiphi', row, 1, ev.keyCode);
+              console.log("move2id chiphi")
+              web.box.move2id('chiphi', row, 1, ev.keyCode);
             } else {
-              console.log("dieuhuong cptl")
-              web.dieuhuong('cptl', ev.target.dataset.stt, 1, ev.keyCode);
+              console.log("move2id cptl")
+              web.move2id('cptl', ev.target.dataset.stt, 1, ev.keyCode);
             }
           }
         });
@@ -1097,11 +1171,11 @@ var web = {
           }
           web.tlmd.cptl();
           web.tlmd.bth();
-          web.dieuhuong('cptl', stt, 3, 13);
+          web.move2id('cptl', stt, 3, 13);
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('cptl', ev.target.dataset.stt, 3, ev.keyCode);
+            web.move2id('cptl', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
       rec.append('td')
@@ -1127,11 +1201,11 @@ var web = {
           }
           web.tlmd.cptl();
           web.tlmd.bth();
-          web.dieuhuong('cptl', stt, 3, 13);
+          web.move2id('cptl', stt, 3, 13);
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.dieuhuong('cptl', ev.target.dataset.stt, 4, ev.keyCode);
+            web.move2id('cptl', ev.target.dataset.stt, 4, ev.keyCode);
           }
         });
       rec.append('td')
@@ -1185,55 +1259,11 @@ var web = {
   box: {
     hov: { mau1: "#9999ff" },
     nam: (zone, inp) => {
-      let i, k, v, dl = [{ k: 0, v: "All" }],
-        curnam = new Date().getFullYear();
-      for (i in [0, 1, 2, 3, 4, 5]) {
-        k = (curnam - i).toString(),
-          v = curnam - i;
-        dl.push({ k: k, v: v });
-      }
-      if (!('qtgt' in ga)) {
-        ga.qtgt = {};
-        ga.qtgt.nam = curnam;
-      }
-      d3.selectAll("#combobox").remove();
-      zone.style("position", "relative");
-      let _box = zone.append("ol")
-        .attr("id", "combobox")
-        .style("background-color", "white")
-        .style("position", "absolute")
-        .style("top", "6px")
-        .style("left", 0)
-        .style("z-index", 99)
-        .style("border-style", "solid")
-        .style("border-color", "#d4d4d4")
-        .style("border-width", "0 1px 0 1px")
-        .style("width", "12cm")
-        .style("padding-left", "1rem")
-        .style("display", "grid")
-        .style("grid", "auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr");
-      _box.selectAll("li").data(dl)
-        .enter()
-        .append("li")
-        .attr("data-id", (d) => d.k)
-        .text((d) => d.v)
-        .on("mouseover", (ev) => {
-          ev.target.style.backgroundColor = web.box.hov.mau1;
-        })
-        .on("mouseout", (ev) => {
-          ev.target.style.backgroundColor = "white";
-        })
-        .on("click", (ev, d) => {
-          ga.qtgt.nam = d.k;
-          inp.node().value = d.v;
-          console.log("option click d=", JSON.stringify(d));
-          console.log("option click ga.qtgt=", JSON.stringify(ga.qtgt));
-          _box.remove();
-        });
+
     },
-    dieuhuong: (bang, row = 0, col = 3, keyCode = 0) => {
-      console.log("box dieuhuong ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
-      console.log("box dieuhuong comb=", JSON.stringify(d3.select("#comb-chiphi")));
+    move2id: (bang, row = 0, col = 3, keyCode = 0) => {
+      console.log("box move2id ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
+      console.log("box move2id comb=", JSON.stringify(d3.select("#comb-chiphi")));
       try {
         bang = bang.toString().toLowerCase();
         if (bang.length < 1) {
@@ -1260,7 +1290,7 @@ var web = {
           d3.select(s).classed("mau", true);
         } catch (err) {
           s = ['.', bang, '.row', 0, '.col', col].join('');
-          console.log("box dieuhuong toi ", s);
+          console.log("box move2id toi ", s);
           d3.select(s).classed("mau", true);
         }
       }
@@ -1268,11 +1298,11 @@ var web = {
         try {
           s = ['.', bang, '.row', row - 1, '.col', col].join('');
           d3.select(s).classed("mau", true);
-          console.log("box dieuhuong toi ", s);
+          console.log("box move2id toi ", s);
         } catch (err) {
           s = ['.', bang, '.row', het - 1, '.col', col].join('');
           d3.select(s).classed("mau", true);
-          console.log("box dieuhuong toi ", s);
+          console.log("box move2id toi ", s);
         }
       }
     },
