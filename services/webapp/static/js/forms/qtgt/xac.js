@@ -148,19 +148,20 @@ var web = {
         ga.qtgt = {};
         ga.qtgt.nam = curnam;
       }
-      if (!('maxrbox' in ga)) {
-        ga.maxrbox = {};
-        ga.maxrbox.nam = 6;
-      }
-      if (!('macrbox' in ga)) {
-        ga.maxcbox = {};
-        ga.maxcbox.nam = 0;
-      }
       for (i in [0, 1, 2, 3, 4, 5]) {
         k = (curnam - i).toString(),
           v = curnam - i;
         dl.push({ k: k, v: v });
       }
+      if (!('maxrbox' in ga)) {
+        ga.maxrbox = {};
+        ga.maxrbox.nam = 6;
+      }
+      if (!('maxcbox' in ga)) {
+        ga.maxcbox = {};
+        ga.maxcbox.nam = 0;
+      }
+
 
       zone = d3.select("#qtgt").select(".grid.otim")
         .append("div")
@@ -176,39 +177,35 @@ var web = {
 
       inp = box2.append("input")
         .attr("id", "in_nam")
-        .attr("data-curid", "nam__-1__0")
+        .attr("data-tagid", "nam__-1__0")
         .attr("class", "l")
         .attr("value", curnam)
         .on("focus", () => {
-          combobox();
+          combobox(dl);
         })
         .on("keydown", function (ev) {
-          let curid = ev.target.dataset.curid;
+          let tagid = ev.target.dataset.tagid;
           switch (ev.keyCode) {
             case 27: //Esc
               ev.target.value = null;
               break;
             case 40: //downArrow
             case 39: //arrowRight
-              inp_newid(curid, 1);
+              inp_sua(web.move2id(tagid, 1, 0));
               break;
             case 38: //arrowUp
             case 37: //arrowLeft
-              inp_newid(curid, -1);
+              inp_sua(web.move2id(tagid, -1, 0));
               break;
             case 13: //Enter
-              curid = web.move2id(ev.target.dataset.curid);
-              let id = d3.select(curid).attr("data-id"),
-                show = d3.select(curid).attr("data-show");
-              ga.qtgt.nam = id;
-              inp.node().value = show;
+              inp_sua(web.move2id(tagid, 0, 0));
               if (box) { box.remove(); }
               break;
             default:
           }
-          web.move2id(ev.target.dataset.curid);
         });
-      function combobox() {
+      function combobox(dl) {
+        //if (dl.constructor !== Object) { return; }
         d3.selectAll("#combobox").remove();
         box = box2.append("ol")
           .attr("id", "combobox")
@@ -234,6 +231,7 @@ var web = {
           .attr("id", (d, i) => ['nam', i, 0].join('__'))
           .attr("class", 'l nam')
           .attr("data-id", (d) => d.k)
+          .attr("data-val", (d) => d.k)
           .attr("data-show", (d) => d.v)
           .text((d) => d.v)
           .on("mouseover", (ev) => {
@@ -250,26 +248,31 @@ var web = {
             box.remove();
           });
       };
-      function inp_newid(curid, step = -1) {
-        if (!curid) { return; }
-        curid = curid.toString().split('__');
-        step = step === -1 ? step : 1;
-        let bang = curid[0],
-          row = parseInt(curid[1]),
-          col = parseInt(curid[2]),
-          newid = [bang, row + step, col].join('__');
-        inp.attr("data-curid", newid);
+      function inp_sua(dl) {
+        if (dl.constructor !== Object) { return; }
+        try {
+          inp.attr("data-tagid", dl.tagid);
+          inp.attr("data-id", dl.id);
+          inp.attr("data-val", dl.val);
+          inp.attr("data-show", dl.show);
+          ga.qtgt.nam = dl.id;
+          inp.node().value = dl.show;
+        } catch (err) { }
       }
     },
   },
 
-  move2id: (elid) => {
-    console.log("start move2id=", elid);
-    if (!elid) { return; }
-    elid = elid.toString().split('__');
-    let box = elid[0],
-      row = parseInt(elid[1]),
-      col = parseInt(elid[2]);
+  move2id: (tagid, row = 0, col = 0) => {
+    console.log("start move2id=", tagid, " row=", row, " col=", col);
+    if (!tagid) { return null; }
+    let box, tag, kq = {};
+    try {
+      tagid = tagid.toString().split('__');
+      box = tagid[0];
+      row = parseInt(tagid[1]) + parseInt(row);
+      col = parseInt(tagid[2]) + parseInt(col);
+    } catch (err) { return null; }
+    console.log("start parse move2id=", tagid, " row=", row, " col=", col);
     if (col > ga.maxcbox[box]) {
       col = 0;
     };
@@ -283,7 +286,7 @@ var web = {
           box = 'oc_cpvt';
         };
         if (row < 0) {
-          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
           box = 'oc_cpvl';
         };
         break;
@@ -293,7 +296,7 @@ var web = {
           box = 'oc_cpvl';
         };
         if (row < 0) {
-          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
           box = 'oc_cpxd';
         };
         break;
@@ -303,7 +306,7 @@ var web = {
           box = 'oc_cpxd';
         };
         if (row < 0) {
-          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
           box = 'oc_cpvt';
         };
         break;
@@ -313,7 +316,7 @@ var web = {
           box = 'on_cpvt';
         };
         if (row < 0) {
-          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
           box = 'on_cpvl';
         };
         break;
@@ -323,7 +326,7 @@ var web = {
           box = 'on_cpvl';
         };
         if (row < 0) {
-          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
           box = 'on_cpxd';
         };
         break;
@@ -333,7 +336,7 @@ var web = {
           box = 'on_cpxd';
         };
         if (row < 0) {
-          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
           box = 'on_cpvt';
         };
         break;
@@ -342,19 +345,26 @@ var web = {
           row = row % (ga.maxrbox[box] + 1);
         };
         if (row < 0) {
-          row = ga.maxrbox[box] + (row % (ga.maxrbox[box] + 1));
+          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
         };
     }
-    elid = ['.', box].join('');
-    d3.selectAll(elid).classed('mau', false);
-    elid = '#' + [box, row, col].join('__');
-    box = d3.select(elid).classed('mau', true);
-    console.log("end move2id=", elid);
-    try {
+    tag = ['.', box].join('');
+    d3.selectAll(tag).classed('mau', false);
+    tag = [box, row, col].join('__');
+    tagid = ['#', tag].join('');
+    box = d3.select(tagid);
+    box.classed('mau', true);
+    console.log("end move2id=", tagid);
+    if (box.node() && ['INPUT'].includes(box.node().tagName)) {
       box.node().focus();
       box.node().select();
-    } catch (err) { };
-    return elid;
+    } else {
+      kq.tagid = tag;
+      kq.id = box.attr("data-id") || -1;
+      kq.val = box.attr("data-val") || '';
+      kq.show = box.attr("data-show") || '';
+      return kq;
+    }
   },
   oc: {
     bth: () => {
