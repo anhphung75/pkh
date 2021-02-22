@@ -1,12 +1,15 @@
-import { lamtronso, viewso } from "./../../utils.js"
+import { d2l, lamtronso, viewso } from "./../../utils.js"
 
-var ga = {
-  gom: null,
-  tientrinh: 100,
+var app = {
+  prog: 100,
+  nam: new Date().getFullYear().toString(),
   plgia: 'dutoan',
   mabaogia: 20210101,
   macpql: 20200827,
-  namlamviec: new Date().getFullYear().toString(),
+
+};
+
+var ga = {
   tieude: {
     cpxd: ['Tt', 'Mô tả công tác', 'Đvt', 'Số lượng', 'Giá vật liệu', 'Giá nhân công', 'Giá mtc', 'Tiền vật liệu', 'Tiền nhân công', 'Tiền mtc'],
     cpvt: ['Tt', 'Mô tả vật tư', 'Đvt', 'Số lượng', 'Giá vật liệu', 'Giá nhân công', 'Giá mtc', 'Tiền vật liệu', 'Tiền nhân công', 'Tiền mtc'],
@@ -18,6 +21,12 @@ var ga = {
       vl: ['Mo ta', 'Đvt', 'idutc'],
       tl: ['Mo ta', 'Đvt', 'idutc']
     },
+  },
+  nam: {
+    '0': { val: '', show: 'chon het' },
+    '2021': { val: '2021', show: '2021' },
+    '2020': { val: '2020', show: '2020' },
+    '2019': { val: '2019', show: '2019' },
   },
   chiphi: {
     '1': { idutc: 1, plcp: 'cpxd', mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
@@ -140,9 +149,134 @@ var web = {
     ga.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
   },
   otim: {
-    nam: () => {
+    nam_old: () => {
       let zone, box, box1, box2, inp, i, k, v,
         dl = [{ k: 0, v: "All" }],
+        curnam = new Date().getFullYear();
+      if (!('qtgt' in ga)) {
+        ga.qtgt = {};
+        ga.qtgt.nam = curnam;
+      }
+      for (i in [0, 1, 2, 3, 4, 5]) {
+        k = (curnam - i).toString(),
+          v = curnam - i;
+        dl.push({ k: k, v: v });
+      }
+      if (!('maxrbox' in ga)) {
+        ga.maxrbox = {};
+        ga.maxrbox.nam = 6;
+      }
+      if (!('maxcbox' in ga)) {
+        ga.maxcbox = {};
+        ga.maxcbox.nam = 0;
+      }
+
+
+      zone = d3.select("#qtgt").select(".grid.otim")
+        .append("div")
+        .attr("class", "l flex");
+
+      box1 = zone.append("input")
+        .attr("value", "Năm");
+
+      box2 = zone.append("div")
+        .attr("class", "l")
+        .style("width", "100%")
+        .style("position", "relative");
+
+      inp = box2.append("input")
+        .attr("id", "in_nam")
+        .attr("data-tagid", "nam__-1__0")
+        .attr("class", "l")
+        .attr("value", curnam)
+        .on("focus", () => {
+          combobox(dl);
+        })
+        .on("keydown", function (ev) {
+          let tagid = ev.target.dataset.tagid;
+          switch (ev.keyCode) {
+            case 27: //Esc
+              ev.target.value = null;
+              break;
+            case 40: //downArrow
+            case 39: //arrowRight
+              inp_sua(web.move2id(tagid, 1, 0));
+              break;
+            case 38: //arrowUp
+            case 37: //arrowLeft
+              inp_sua(web.move2id(tagid, -1, 0));
+              break;
+            case 13: //Enter
+              inp_sua(web.move2id(tagid, 0, 0));
+              if (box) { box.remove(); }
+              break;
+            default:
+          }
+        });
+      function combobox(dl) {
+        //if (dl.constructor !== Object) { return; }
+        d3.selectAll("#combobox").remove();
+        box = box2.append("ol")
+          .attr("id", "combobox")
+          .style("background-color", "white")
+          .style("position", "absolute")
+          .style("top", "2rem")
+          .style("left", 0)
+          .style("z-index", 99)
+          .style("border-style", "solid")
+          .style("border-color", "#d4d4d4")
+          .style("border-width", "0 1px 0 1px")
+          .style("list-style-type", "decimal")
+          .style("list-style-position", "inside")
+          .style("margin", 0)
+          .style("padding-left", "1rem")
+          .style("width", "12cm")
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr");
+
+        box.selectAll("li").data(dl)
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => ['nam', i, 0].join('__'))
+          .attr("class", 'l nam')
+          .attr("data-id", (d) => d.k)
+          .attr("data-val", (d) => d.k)
+          .attr("data-show", (d) => d.v)
+          .text((d) => d.v)
+          .on("mouseover", (ev) => {
+            ev.target.style.backgroundColor = web.hov.mau2;
+          })
+          .on("mouseout", (ev) => {
+            ev.target.style.backgroundColor = "white";
+          })
+          .on("click", (ev, d) => {
+            ga.qtgt.nam = d.k;
+            inp.node().value = d.v;
+            console.log("option click d=", JSON.stringify(d));
+            console.log("option click ga.qtgt=", JSON.stringify(ga.qtgt));
+            box.remove();
+          });
+      };
+      function inp_sua(dl) {
+        if (dl.constructor !== Object) { return; }
+        try {
+          inp.attr("data-tagid", dl.tagid);
+          inp.attr("data-id", dl.id);
+          inp.attr("data-val", dl.val);
+          inp.attr("data-show", dl.show);
+          ga.qtgt.nam = dl.id;
+          inp.node().value = dl.show;
+        } catch (err) { }
+      }
+    },
+    nam: () => {
+      if (ga.nam.constructor !== Object) {
+        //load nam
+        ga.nam = {}
+      }
+      //dict to list
+      let zone, box, box1, box2, inp, i, k, v,
+        dl = d2l(ga.nam),
         curnam = new Date().getFullYear();
       if (!('qtgt' in ga)) {
         ga.qtgt = {};
@@ -1253,16 +1387,16 @@ var web = {
   },
   tientrinh: () => {
     let hg, zone = d3.select("#tientrinh")
-    if (ga.tientrinh === 100) {
+    if (app.prog === 100) {
       zone.selectAll("*").remove();
-      clearTimeout(hg);
+      if (hg) { clearTimeout(hg); }
     } else {
       zone.selectAll("*").remove();
       zone.append("label").text("Tiến trình ");
       zone.append("progress")
         .attr("max", 100)
-        .attr("value", ga.tientrinh)
-        .text([ga.tientrinh, "%"].join(''));
+        .attr("value", app.prog)
+        .text([app.prog, "%"].join(''));
       hg = setTimeout(web.tientrinh(), 300);
     }
   },
@@ -1678,6 +1812,45 @@ var idb = {
           console.log("swidb fin=", JSON.stringify(tin, null, 2));
         } else if (tin.cv > 0) {
           if ('gomval' in tin) {
+            //ok action
+            console.log("swidb tin=", JSON.stringify(tin, null, 2));
+          }
+        } else if ("err" in tin) {
+          console.log("err=", tin.err);
+          gui.gang += 1;
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        } else {
+          //info
+          console.log("swidb info=", JSON.stringify(tin, null, 2));
+        }
+      }
+    },
+    nam: (bang = 'hoso', makhoa = 'nam') => {
+      if (bang) {
+        bang = bang.toString().toLowerCase();
+      } else { return; }
+      let w, gui, tin;
+      //main
+      w = new Worker(ga.url['swidb']);
+      gui = {
+        csdl: idb.csdl,
+        bang: bang,
+        gomkey: makhoa,
+        gang: 0,
+      };
+      console.log("idb.gom.key gui tin=", JSON.stringify(gui, null, 2));
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        if (tin.cv < 0) {
+          if (w) { w.terminate(); }
+          w = null;
+          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+        } else if (tin.cv > 0) {
+          app.prog = tin.cv;
+          web.tientrinh();
+          if ('gomkey' in tin) {
             //ok action
             console.log("swidb tin=", JSON.stringify(tin, null, 2));
           }

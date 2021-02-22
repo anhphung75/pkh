@@ -7,6 +7,16 @@ function tao_uuid() {
   // vd tao_uuid()= f6ca05c0-fad5-46fc-a237-a8e930e7cb49
 }
 
+function d2l(dict) {
+  if (dict.constructor !== Object) { return null; }
+  let k, r, kq = [];
+  for (k in dict) {
+    r = dict[k];
+    kq.push(r);
+  }
+  return kq;
+};
+
 function lamtronso(solamtron, sole = 0) {
   try {
     let le = Math.pow(10, sole);
@@ -58,5 +68,5 @@ class Tien {
   }
 }
 
-export { tao_uuid, lamtronso, viewso };
+export { tao_uuid, lamtronso, viewso, d2l };
 export { Tien };

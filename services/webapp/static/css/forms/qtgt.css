@@ -36,8 +36,11 @@
 
 .grid.otim {
   grid-template-columns: repeat(auto-fit, minmax(max-content, 1fr));
-  grid-template-rows: minmax(1rem, max-content);
+  grid-template-rows: minmax(1rem, max-content) auto;
+  grid-auto-flow: column;
+  overflow-y: auto;
 }
+
 .grid.ongcai,
 .grid.ongnganh {
   grid: auto-flow minmax(1rem, max-content) / 20fr 1fr 5fr 1fr 5fr 1fr 5fr;

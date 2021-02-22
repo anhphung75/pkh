@@ -266,7 +266,7 @@ body {
 }
 
 .hov:hover {
-  background-color: yellow;
+  background-color: #999fff;
 }
 
 .hov1:hover {
@@ -393,7 +393,6 @@ input {
 }
 
 @media screen {
-
   .test,
   .mau {
     border: 1px solid green;
