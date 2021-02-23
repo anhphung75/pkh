@@ -12,6 +12,7 @@ function d2l(dict) {
   let k, r, kq = [];
   for (k in dict) {
     r = dict[k];
+    r.id = k;
     kq.push(r);
   }
   return kq;

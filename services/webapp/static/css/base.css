@@ -6,6 +6,7 @@
   box-sizing: border-box;
   background-color: transparent;
   color: black;
+  z-index:0;
 }
 
 /* Works on Firefox */
