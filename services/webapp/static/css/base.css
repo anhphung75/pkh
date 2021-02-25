@@ -6,7 +6,7 @@
   box-sizing: border-box;
   background-color: transparent;
   color: black;
-  z-index:0;
+  z-index: 0;
 }
 
 /* Works on Firefox */
@@ -267,11 +267,16 @@ body {
 }
 
 .hov:hover {
-  background-color: #999fff;
+  background-color: yellow;
 }
 
 .hov1:hover {
   background-color: lightgreen;
+}
+
+.mau,
+.hov2:hover {
+  background-color: #999fff;
 }
 
 .hide,
@@ -371,7 +376,6 @@ input {
 }
 
 @media print {
-
   *,
   *:before,
   *:after {

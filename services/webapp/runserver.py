@@ -216,7 +216,7 @@ class Frm_Qtgt(WebBase):
         schema = schema.lower()
         if schema in ['pkh']:
             self.set_secure_cookie("pbd", "Ph0ngK3H0@ch")
-            self.render("forms/qtgt/pkh.html", error=None)
+            self.render("forms/qtgt/pkh_py.html", error=None)
         else:
             self.set_secure_cookie("pbd", "kh@chTh@nThi3t")
 

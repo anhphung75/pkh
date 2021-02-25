@@ -1,0 +1,115 @@
+{% extends "../../base_brython.html" %}
+
+{% block css %}
+<link rel="stylesheet" href="{{static_url(r'css/forms/qtgt.css')}}" type="text/css">
+{% end %}
+
+{% block py %}
+<script type="text/python" src="{{static_url(r'py/forms/qtgt/xac.py')}}"></script>
+{% end %}
+
+{% block panel %}
+<div class="c u fb f6">QUYẾT TOÁN GIÁ TRỊ</div>
+<div id="tientrinh"></div>
+{% end %}
+
+{% block menu %}
+<details id="forms">
+  <summary class="l fb f1">Biểu mẫu (forms)</summary>
+  <a href="https://localhost:8888/pkh/forms/qtgt" target="_blank">Ho so khach hang</a>
+</details>
+<details id="reports">
+  <summary class="l fb f1">Báo biểu (reports)</summary>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/qtvt" target="_blank">Quyết toán đợt vật tư</a>
+  </div>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/tonghop/dotvl" target="_blank">Bth quyết toán vật liệu (giá)</a>
+  </div>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/tonghop/dotklvl" target="_blank">Bth quyết toán vật liệu (khối
+      lượng)</a>
+  </div>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/tonghop/dotqtgt" target="_blank">Bth đợt Qtgt</a>
+  </div>
+  <div>
+    <a href="https://localhost:8888/pkh/reports/qtgt" target="_blank">Quyết toán giá trị</a>
+  </div>
+</details>
+{% end %}
+
+{% block webapp %}
+<div class="grid hoso">
+    <div id="qrcode">qrcode</div>
+    <div id="barcode">barcode</div>
+    <div><input id="in_mahoso" value='1' /></div>
+    <div><input id="in_idhoso" value='1' /></div>
+    <div><input id="in_sodot" value='1' /></div>
+    <div><input id="in_sohoso" value='1' /></div>
+    <div><input id="in_khachhang" value='1' /></div>
+    <div><input id="in_diachi" value='1' /></div>
+  </div>
+<section id="qtgt" data-swidb="{{static_url(r'js/forms/qtgt/swidb.js',True)}}"
+  data-swapi="{{static_url(r'js/forms/qtgt/swapi.js',True)}}">
+  
+  <div class="grid otim" id="otim"> 
+  </div>
+</section>
+<section id="ongcai">
+  <div class="grid ongcai">
+    <div class="l u fb">Phần ống cái</div>
+    <div class="l">Vl</div>
+    <div class="r" id="oc_zvl">1</div>
+    <div class="l">Nc</div>
+    <div class="r" id="oc_znc">1</div>
+    <div class="l">Mtc</div>
+    <div class="r" id="oc_zmtc">1</div>
+  </div>
+  <table id="oc_cpxd"></table>
+  <table id="oc_cpvt"></table>
+  <table id="oc_cpvl"></table>
+</section>
+<section id="ongnganh">
+  <div class="grid ongnganh">
+    <div class="l u fb">Phần ống ngánh</div>
+    <div class="l">Vl</div>
+    <div class="r" id="on_zvl">1</div>
+    <div class="l">Nc</div>
+    <div class="r" id="on_znc">1</div>
+    <div class="l">Mtc</div>
+    <div class="r" id="on_zmtc">1</div>
+  </div>
+  <table id="on_cpxd"></table>
+  <table id="on_cpvt"></table>
+  <table id="on_cpvl"></table>
+</section>
+<section id="cpql">
+  <header id="cpql_td" class="grid cpql">
+    <div class="l u fb">Chi phí quản lý</div>
+    <select id="ga_cpql" data-macpql="20200827">
+      <option value="20200827" selected>20200827</option>
+      <option value="20200721">20200721</option>
+      <option value="7">7</option>
+      <option value="6">6</option>
+      <option value="5">5</option>
+    </select>
+    <div class="l">Ống cái</div>
+    <div class="r" id="oc_tongxaydung">1</div>
+    <div class="l">Ống ngánh</div>
+    <div class="r" id="on_tongxaydung">1</div>
+  </header>
+  <div id="cpql_nd"></div>
+</section>
+<section id="tlmd">
+  <div class="grid tlmd">
+    <div class="l u fb">Tái lập mặt đường</div>
+    <div class="l">Ống cái</div>
+    <div class="r" id="oc_ztl">1</div>
+    <div class="l">Ống ngánh</div>
+    <div class="r" id="on_ztl">1</div>
+  </div>
+  <table id="cptl"></table>
+</section>
+
+{% end %}
