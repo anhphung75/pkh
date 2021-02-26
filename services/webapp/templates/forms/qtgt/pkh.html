@@ -41,19 +41,35 @@
 
 {% block webapp %}
 <div class="grid hoso">
-    <div id="qrcode">qrcode</div>
-    <div id="barcode">barcode</div>
-    <div><input id="in_mahoso" value='1' /></div>
-    <div><input id="in_idhoso" value='1' /></div>
-    <div><input id="in_sodot" value='1' /></div>
-    <div><input id="in_sohoso" value='1' /></div>
-    <div><input id="in_khachhang" value='1' /></div>
-    <div><input id="in_diachi" value='1' /></div>
-  </div>
+  <div id="qrcode">qrcode</div>
+  <div id="barcode">barcode</div>
+  <div><input id="in_mahoso" value='1' /></div>
+  <div><input id="in_idhoso" value='1' /></div>
+  <div><input id="in_sodot" value='1' /></div>
+  <div><input id="in_sohoso" value='1' /></div>
+  <div><input id="in_khachhang" value='1' /></div>
+  <div><input id="in_diachi" value='1' /></div>
+</div>
 <section id="qtgt" data-swidb="{{static_url(r'js/forms/qtgt/swidb.js',True)}}"
   data-swapi="{{static_url(r'js/forms/qtgt/swapi.js',True)}}">
-  
-  <div class="grid otim"> </div>
+
+  <ol class="grid otim">
+    <li class="c">Năm</li>
+    <li class="l"><input id="app_nam" value="..." /></li>
+    <li class="c">Plqt</li>
+    <li class="l"><input id="app_plqt" value="GMMP" /></li>
+    <li class="c">Dvtc</li>
+    <li class="l">
+      <input id="app_dvtc" value="QLMLTD" />
+      <ol>
+        <li>qlmlq2</li>
+        <li>qlmlq9</li>
+        <li>qlmltd</li>
+      </ol>
+    </li>
+    <li class="c">Dot</li>
+    <li class="l"><input id="app_dot" value="001/MP21" /></li>
+  </ol>
 </section>
 <section id="ongcai">
   <div class="grid ongcai">

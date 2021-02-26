@@ -3,6 +3,7 @@ import { d2l, lamtronso, viewso } from "./../../utils.js"
 var app = {
   prog: 100,
   nam: new Date().getFullYear().toString(),
+  plqt: "GMMP",
   plgia: 'dutoan',
   mabaogia: 20210101,
   macpql: 20200827,
@@ -27,6 +28,12 @@ var ga = {
     '2021': { val: '2021', show: '2021' },
     '2020': { val: '2020', show: '2020' },
     '2019': { val: '2019', show: '2019' },
+  },
+  plqt: {
+    'GMMP': { val: 'GMMP', show: 'GMMP' },
+    'GMDT': { val: 'GMDT', show: 'GMDT' },
+    'TLMP': { val: 'TLMP', show: 'TLMP' },
+    'TLDT': { val: 'TLDT', show: 'TLDT' },
   },
   chiphi: {
     '1': { idutc: 1, plcp: 'cpxd', mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
@@ -128,6 +135,7 @@ var web = {
   tao: () => {
     web.sw_url();
     web.otim.nam();
+    web.otim.plqt();
     //web.oc.cpxd();
     //web.oc.cpvt();
     //web.oc.cpvl();
@@ -190,7 +198,7 @@ var web = {
         .attr("class", "l")
         .attr("value", curnam)
         .on("focus", () => {
-          combobox(dl);
+          show_chon(dl);
         })
         .on("keydown", function (ev) {
           let tagid = ev.target.dataset.tagid;
@@ -213,11 +221,11 @@ var web = {
             default:
           }
         });
-      function combobox(dl) {
+      function show_chon(dl) {
         //if (dl.constructor !== Object) { return; }
-        d3.selectAll("#combobox").remove();
+        d3.selectAll("#show_chon").remove();
         box = box2.append("ol")
-          .attr("id", "combobox")
+          .attr("id", "show_chon")
           .style("background-color", "white")
           .style("position", "absolute")
           .style("top", "2rem")
@@ -275,79 +283,31 @@ var web = {
         ga.nam = {}
       }
       //dict to list
-      let k, r,
+      let inp, k, r,
         ds = [];
       for (k in ga.nam) {
         r = ga.nam[k];
         r.id = k;
         ds.push(r);
       }
-      d3.select("#qtgt").select(".grid.otim")
-        //title
-        .append("div")
-        .attr("class", "c")
-        .text("Năm")
-        //app-nam
-        .append("div")
-        .attr("id", "app_nam")
-        .attr("class", "l")
-        .style("display", "block")
-        .html(ga.nam[app.nam].show)
+      inp = d3.select("#app_nam")
+        .classed('l w100', true)
+        .attr("type", "search")
+        .attr("data-id", app.nam)
+        .attr("value", ga.nam[app.nam].show)
+        .attr("autofocus", true)
+        .style("height", "1rem")
+        .style("padding-left", "3px")
         .on("click", (ev) => {
-          if (!d3.select("#combobox").node()) {
-            console.log("app_nam click=", d3.select("#combobox").node());
-            combobox(ds);
-          }
+          show_chon(ev.target.parentNode, ds);
         });
 
-      function combobox(dlbox) {
+      function show_chon(el, dlbox) {
         if (dlbox.constructor !== Array) { return; }
-        let zone = d3.select("#app_nam");
-        zone.html(null);
-        d3.selectAll("#combobox").remove();
-        zone = zone.append("div")
-          .attr("id", "combobox")
-          .attr("class", "l w100");
-        console.log("combobox zone=", JSON.stringify(zone.node()));
-        let inp = zone.append("input")
-          .attr("id", "inbox")
-          .attr("data-tagid", "nam__-1__0")
-          .attr("class", "l w100")
-          .attr("type", "search")
-          .attr("value", app.nam)
-          .attr("autofocus", true)
-          .style("height", "1rem")
-          .style("padding-left", "3px")
-          .on("input", (ev) => {
-            console.log("inp oninput=", ev.target);
-          })
-          .on("mouseover", (ev) => {
-            console.log("inp mouseover=", ev.target);
-          })
-          .on("keydown", function (ev) {
-            let tagid = ev.target.dataset.tagid;
-            switch (ev.keyCode) {
-              case 27: //Esc
-                ev.target.value = null;
-                break;
-              case 40: //downArrow
-              case 39: //arrowRight
-                inp_sua(web.move2id(tagid, 1, 0));
-                break;
-              case 38: //arrowUp
-              case 37: //arrowLeft
-                inp_sua(web.move2id(tagid, -1, 0));
-                break;
-              case 13: //Enter
-                inp_sua(web.move2id(tagid, 0, 0));
-                d3.selectAll("#combobox").remove();
-                d3.select("#app_nam").html(ga.nam[app.nam].show);
-                break;
-              default:
-            }
-          });
-        let box = zone.append("ol")
-          .attr("id", "outbox")
+        d3.selectAll("#chon").remove();
+        //chon.text(null);
+        let box = d3.select(el).append("ol")
+          .attr("id", "chon")
           .attr("class", "l")
           .style("background-color", "white")
           .style("z-index", 99)
@@ -376,28 +336,74 @@ var web = {
           })
           .on("click", (ev, d) => {
             app.nam = d.id;
-            inp.node().value = d.show;
-            if (zone) { zone.remove(); }
-            d3.select("#app_nam")
-              .attr("value", app.nam)
-              .text(app.nam)
-              .html(app.nam);
-            console.log("option click app=", JSON.stringify(app));
-            console.log("option click ga.nam=", JSON.stringify(ga.nam));
+            web.otim.nam();
+            box.remove();
           });
       };
-      function inp_sua(dl) {
-        if (dl.constructor !== Object) { return; }
-        try {
-          let inp = d3.select("#inbox")
-            .attr("data-tagid", dl.tagid)
-            .attr("data-id", dl.id)
-            .attr("data-val", dl.val)
-            .attr("data-show", dl.show);
-          app.nam = dl.id;
-          inp.node().value = dl.show;
-        } catch (err) { }
+    },
+    plqt: () => {
+      if (ga.plqt.constructor !== Object) {
+        //load plqt
+        ga.plqt = {}
       }
+      //dict to list
+      let inp, k, r,
+        ds = [];
+      for (k in ga.plqt) {
+        r = ga.plqt[k];
+        r.id = k;
+        ds.push(r);
+      }
+      inp = d3.select("#app_plqt")
+        .classed('l w100', true)
+        .attr("type", "search")
+        .attr("data-id", app.plqt)
+        .attr("value", ga.plqt[app.plqt].show)
+        .attr("autofocus", true)
+        .style("height", "1rem")
+        .style("padding-left", "3px")
+        .on("click", (ev) => {
+          show_chon(ev.target.parentNode, ds);
+        });
+
+      function show_chon(el, dlbox) {
+        if (dlbox.constructor !== Array) { return; }
+        d3.selectAll("#chon").remove();
+        //chon.text(null);
+        let box = d3.select(el).append("ol")
+          .attr("id", "chon")
+          .attr("class", "l")
+          .style("background-color", "white")
+          .style("z-index", 99)
+          .style("border-style", "solid")
+          .style("border-color", "#d4d4d4")
+          .style("border-width", "1px 1px 1px 1px")
+          .style("list-style-type", "none")
+          .style("list-style-position", "inside")
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / 1fr");
+        box.selectAll("li").data(dlbox)
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => ['plqt', i, 0].join('__'))
+          .attr("class", 'l plqt')
+          .attr("data-id", (d) => d.id)
+          .attr("data-val", (d) => d.val)
+          .attr("data-show", (d) => d.show)
+          .text((d) => d.show)
+          .on("mouseover", (ev) => {
+            ev.target.style.backgroundColor = web.hov.mau2;
+            console.log("li=", ev.target);
+          })
+          .on("mouseout", (ev) => {
+            ev.target.style.backgroundColor = "white";
+          })
+          .on("click", (ev, d) => {
+            app.plqt = d.id;
+            web.otim.plqt();
+            box.remove();
+          });
+      };
     },
   },
 
@@ -1251,7 +1257,7 @@ var web = {
         .attr("data-stt", (d, i) => i)
         .attr("value", (d) => d.mota)
         .on("input", function (ev) {
-          //hien combobox de lua chi phi
+          //hien show_chon de lua chi phi
           d3.select(ev.target).attr("data-isopen", "ok");
           web.box.chiphi(ev.target, "tlmd", ev.target.value);
         })

@@ -1,9 +1,11 @@
 import datetime
-from browser import html, document as docu
+from browser import window, html, document as docu
+import javascript as js
 
 app = {
     "prog": 100,
-    "nam": datetime.date.today().year,
+    "nam": f"{datetime.date.today().year}",
+    "plqt": "GMMP",
     "plgia": 'dutoan',
     "mabaogia": 20210101,
     "macpql": 20200827,
@@ -51,55 +53,51 @@ def hov_tag(ev):
 
 
 class Web:
-    def __init__(self):
-        self.tagid = ''
-        self.otim_nam()
-
-    def clear_combobox(self):
-        print("clear combobox")
-        for el in docu.select('inbox'):
-            el.remove()
-        for el in docu.select('outbox'):
-            el.remove()
-
     def otim_nam(self):
-        def get_val(ev):
+        def app_val(ev=None):
             tag = ev.target
             app['nam'] = tag.dataset.id
-            docu['app_nam'].text = app['nam']
-            for el in docu.select('li'):
-                el.unbind("mouseenter", hov_tag)
-            Web.clear_combobox(self)
+            el = docu['app_nam']
+            txt = f"{ga['nam'][app['nam']]['show']}"
+            el.clear()
+            el.innerHTML = txt
 
-        def combobox(ev):
-            chon = docu['app_nam']
-            chon.text = ''
-            inp = html.INPUT(
-                value=f"{app['nam']}", id="inbox",
-                type="search", Class="l w100",
-                style=dict(height="1rem"))
-            box = html.OL(id="outbox", Class="l")
-            box.clear()
+        def web_chon(ev=None):
+            for el in docu.select('#chon'):
+                el.remove()
+            box = html.OL(id="chon", Class="l")
             i = 0
             for k in ga['nam']:
                 txt = ga['nam'][k]['show']
-                _li = html.LI(txt, id=f"nam__{i}__0", Class=f"l nam r{i} c0")
-                _li.attrs['data-id'] = k
-                _li.attrs['data-show'] = txt
-                _li.attrs['data-val'] = ga['nam'][k]['val']
+                card = html.LI(
+                    txt, id=f"nam__{i}__0", Class=f"l nam r{i} c0")
+                card.attrs['data-id'] = k
+                card.attrs['data-show'] = txt
+                card.attrs['data-val'] = ga['nam'][k]['val']
                 i += 1
-                box <= _li
-                _li.bind("click", get_val)
-            chon <= inp+box
-            for el in docu.select('li'):
+                box <= card
+            return box
+
+        def web_vungchon(ev=None):
+            zone = docu['app_nam']
+            zone.clear()
+            inp = html.INPUT(
+                id="kiem",
+                value=f"{ga['nam'][app['nam']]['show']}",
+                type="search", Class="l w100",
+                style=dict(height="1rem"))
+            box = web_chon()
+            zone <= inp+box
+            for el in docu.select('#chon li'):
                 el.bind("mouseenter", hov_tag)
+                el.bind("click", app_val)
+            #inp.bind("input", web_chon)
             inp.focus()
 
-        zone = docu.select("#qtgt .grid.otim")[0]
-        tag = html.DIV("Năm", Class="c")
-        inp = html.DIV(f"{app['nam']}", id="app_nam", Class="l")
-        zone <= tag + inp
-        inp.bind("click", combobox)
+        el = docu['app_nam']
+        el.clear()
+        el.innerHTML = f"{ga['nam'][app['nam']]['show']}"
+        el.bind("click", web_vungchon)
 
 
-Web()
+Web().otim_nam()

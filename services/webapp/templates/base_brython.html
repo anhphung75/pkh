@@ -12,7 +12,7 @@
   {% block css %}{% end %}
 </head>
 
-<body onload="brython({debug: 1, indexedDB: true})">
+<body onload="brython({debug: 2,indexedDB:true})">
   <div id="trangxem" class="l w100">
     <header>
       <img src="{{ static_url('favicon.png')}}" height="30" alt="logo">
@@ -25,9 +25,12 @@
     <main id="webapp">{% block webapp %}{% end %}</main>
     <footer>Footer</footer>
   </div>
-  <!-- script  -->
+  <!-- script  
   <script type="text/javascript" src="{{static_url('js/refs/brython.js')}}"></script>
   <script type="text/javascript" src="{{static_url('js/refs/brython_stdlib.js')}}"></script>
+  -->
+  <script src="https://raw.githack.com/brython-dev/brython/master/www/src/brython.js"></script>
+  <script src="https://raw.githack.com/brython-dev/brython/master/www/src/brython_stdlib.js"></script>
   {% block js %}{% end %}
   {% block py %}{% end %}
 </body>
