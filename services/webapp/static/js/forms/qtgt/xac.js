@@ -4,6 +4,10 @@ var app = {
   prog: 100,
   nam: new Date().getFullYear().toString(),
   plqt: "GMMP",
+  dvtc: '1',
+  dot: '1',
+  hoso: '1',
+  qtgt: '1',
   plgia: 'dutoan',
   mabaogia: 20210101,
   macpql: 20200827,
@@ -24,16 +28,53 @@ var ga = {
     },
   },
   nam: {
-    '0': { val: '', show: '...' },
-    '2021': { val: '2021', show: '2021' },
-    '2020': { val: '2020', show: '2020' },
-    '2019': { val: '2019', show: '2019' },
+    'tieude': { show: 'Năm', mota: 'Mô tả' },
+    '0': { show: '...', mota: '(không chọn)' },
+    '2021': { show: '2021', mota: '2021' },
+    '2020': { show: '2020', mota: '2020' },
+    '2019': { show: '2019', mota: '2019' },
   },
   plqt: {
-    'GMMP': { val: 'GMMP', show: 'GMMP' },
-    'GMDT': { val: 'GMDT', show: 'GMDT' },
-    'TLMP': { val: 'TLMP', show: 'TLMP' },
-    'TLDT': { val: 'TLDT', show: 'TLDT' },
+    'tieude': { show: 'Plqt', mota: 'Mô tả' },
+    '0': { show: '...', mota: '(không chọn)' },
+    'GMMP': { show: 'GMMP', mota: 'Gắn mới miễn phí' },
+    'GMDT': { show: 'GMDT', mota: 'Gắn mới đóng tiền' },
+    'TLMP': { show: 'TLMP', mota: 'Tái lập danh bộ miễn phí' },
+    'TLDT': { show: 'TLDT', mota: 'Tái lập danh bộ đống tiền' },
+  },
+  dvtc: {
+    'tieude': { show: 'Đvtc', mota: 'Mô tả' },
+    '0': { show: '...', mota: '(không chọn)' },
+    '1': { show: 'PKH', mota: 'Phòng kế hoạch' },
+    '2': { show: 'QLMLQ2', mota: 'Quản lý mạng lưới quận 2' },
+    '3': { show: 'QLMLQ9', mota: 'Quản lý mạng lưới quận 9' },
+    '4': { show: 'QLMLTD', mota: 'Quản lý mạng lưới quận Thủ Đức' },
+  },
+  dot: {
+    'tieude': { show: 'Mã đợt', mota: 'Số đợt' },
+    '0': { show: '...', mota: '(không chọn)' },
+    '1': { show: 'GMMP001', mota: '001/21MP' },
+    '2': { show: 'GMMP002', mota: '002/21MP' },
+    '3': { show: 'GMMP003', mota: '003/21MP' },
+    '4': { show: 'GMMP004', mota: '004/21MP' },
+    '5': { show: 'GMMP005', mota: '005/21MP' },
+    '6': { show: 'GMMP006', mota: '006/21MP' },
+    '7': { show: 'GMMP007', mota: '007/21MP' },
+    '8': { show: 'GMMP008', mota: '008/21MP' },
+    '9': { show: 'GMMP009', mota: '009/21MP' },
+  },
+  hoso: {
+    'tieude': { show: 'Mã hồ sơ', mota: 'Số hồ sơ' },
+    '0': { show: '...', mota: '(không chọn)' },
+    '1': { show: 'GMMP001', mota: '001/21MP' },
+    '2': { show: 'GMMP002', mota: '002/21MP' },
+    '3': { show: 'GMMP003', mota: '003/21MP' },
+    '4': { show: 'GMMP004', mota: '004/21MP' },
+    '5': { show: 'GMMP005', mota: '005/21MP' },
+    '6': { show: 'GMMP006', mota: '006/21MP' },
+    '7': { show: 'GMMP007', mota: '007/21MP' },
+    '8': { show: 'GMMP008', mota: '008/21MP' },
+    '9': { show: 'GMMP009', mota: '009/21MP' },
   },
   chiphi: {
     '1': { idutc: 1, plcp: 'cpxd', mota: { qtgt: 'cp1', qtvt: 'cp01' }, dvt: 'cai' },
@@ -136,6 +177,9 @@ var web = {
     web.sw_url();
     web.otim.nam();
     web.otim.plqt();
+    web.otim.dvtc();
+    web.otim.dot();
+    web.otim.hoso();
     //web.oc.cpxd();
     //web.oc.cpvt();
     //web.oc.cpvl();
@@ -278,55 +322,47 @@ var web = {
       }
     },
     nam: () => {
-      if (ga.nam.constructor !== Object) {
-        //load nam
-        ga.nam = {}
-      }
-      //dict to list
-      let inp, k, r,
-        ds = [];
-      for (k in ga.nam) {
-        r = ga.nam[k];
-        r.id = k;
-        ds.push(r);
-      }
-      inp = d3.select("#app_nam")
+      let inp = d3.select("#app_nam")
         .classed('l w100', true)
         .attr("type", "search")
         .attr("data-id", app.nam)
         .attr("value", ga.nam[app.nam].show)
-        .attr("autofocus", true)
         .style("height", "1rem")
         .style("padding-left", "3px")
         .on("click", (ev) => {
-          show_chon(ev.target.parentNode, ds);
+          show_chon(ev.target.parentNode);
         });
 
-      function show_chon(el, dlbox) {
-        if (dlbox.constructor !== Array) { return; }
+      function show_chon(el) {
+        let zdl = ga.nam;
+        if (zdl.constructor !== Object) { return; }
+        let k, r, box, rec,
+          dulieu = [zdl.tieude];
+        for (k in zdl) {
+          if (k !== 'tieude') {
+            r = zdl[k];
+            r.id = k;
+            dulieu.push(r);
+          }
+        }
         d3.selectAll("#chon").remove();
-        //chon.text(null);
-        let box = d3.select(el).append("ol")
+        box = d3.select(el).append("ol")
           .attr("id", "chon")
           .attr("class", "l")
           .style("background-color", "white")
           .style("z-index", 99)
-          .style("border-style", "solid")
-          .style("border-color", "#d4d4d4")
-          .style("border-width", "1px 1px 1px 1px")
-          .style("list-style-type", "none")
-          .style("list-style-position", "inside")
-          .style("display", "grid")
-          .style("grid", "auto-flow minmax(1rem, max-content) / 1fr");
-        box.selectAll("li").data(dlbox)
+          .style("max-height", "10.25rem")
+          .style("overflow-x", "auto")
+          .style("border", "1px solid #d4d4d4")
+          .style("list-style", "none");
+        //noidung
+        rec = box.selectAll("li").data(dulieu)
           .enter()
           .append("li")
           .attr("id", (d, i) => ['nam', i, 0].join('__'))
-          .attr("class", 'l nam')
-          .attr("data-id", (d) => d.id)
-          .attr("data-val", (d) => d.val)
-          .attr("data-show", (d) => d.show)
-          .text((d) => d.show)
+          .attr("class", 'l')
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / minmax(max-content,1fr) minmax(max-content,4fr)")
           .on("mouseover", (ev) => {
             ev.target.style.backgroundColor = web.hov.mau2;
             console.log("li=", ev.target);
@@ -335,62 +371,76 @@ var web = {
             ev.target.style.backgroundColor = "white";
           })
           .on("click", (ev, d) => {
-            app.nam = d.id;
-            web.otim.nam();
-            box.remove();
+            if (d.id !== 'tieude') {
+              app.nam = d.id;
+              inp.node().value = d.show;
+              if (box) { box.remove(); }
+            }
           });
+        rec.append("div")
+          .attr("id", (d, i) => ['nam', i, 1].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb nam r', i, ' c1'].join('');
+            } else {
+              return ['l fb nam r', i, ' c1'].join('');
+            }
+          })
+          .text(d => d.show);
+        rec.append("div")
+          .attr("id", (d, i) => ['nam', i, 2].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb nam r', i, ' c2'].join('');
+            } else {
+              return ['l bl nam r', i, ' c2'].join('');
+            }
+          })
+          .text(d => d.mota);
       };
     },
     plqt: () => {
-      if (ga.plqt.constructor !== Object) {
-        //load plqt
-        ga.plqt = {}
-      }
-      //dict to list
-      let inp, k, r,
-        ds = [];
-      for (k in ga.plqt) {
-        r = ga.plqt[k];
-        r.id = k;
-        ds.push(r);
-      }
-      inp = d3.select("#app_plqt")
+      let inp = d3.select("#app_plqt")
         .classed('l w100', true)
         .attr("type", "search")
         .attr("data-id", app.plqt)
         .attr("value", ga.plqt[app.plqt].show)
-        .attr("autofocus", true)
         .style("height", "1rem")
         .style("padding-left", "3px")
         .on("click", (ev) => {
-          show_chon(ev.target.parentNode, ds);
+          show_chon(ev.target.parentNode);
         });
 
-      function show_chon(el, dlbox) {
-        if (dlbox.constructor !== Array) { return; }
+      function show_chon(el) {
+        let zdl = ga.plqt;
+        if (zdl.constructor !== Object) { return; }
+        let k, r, box, rec,
+          dulieu = [zdl.tieude];
+        for (k in zdl) {
+          if (k !== 'tieude') {
+            r = zdl[k];
+            r.id = k;
+            dulieu.push(r);
+          }
+        }
         d3.selectAll("#chon").remove();
-        //chon.text(null);
-        let box = d3.select(el).append("ol")
+        box = d3.select(el).append("ol")
           .attr("id", "chon")
           .attr("class", "l")
           .style("background-color", "white")
           .style("z-index", 99)
-          .style("border-style", "solid")
-          .style("border-color", "#d4d4d4")
-          .style("border-width", "1px 1px 1px 1px")
-          .style("list-style-type", "none")
-          .style("list-style-position", "inside")
-          .style("display", "grid")
-          .style("grid", "auto-flow minmax(1rem, max-content) / 1fr");
-        box.selectAll("li").data(dlbox)
+          .style("max-height", "10.25rem")
+          .style("overflow-x", "auto")
+          .style("border", "1px solid #d4d4d4")
+          .style("list-style", "none");
+        //noidung
+        rec = box.selectAll("li").data(dulieu)
           .enter()
           .append("li")
           .attr("id", (d, i) => ['plqt', i, 0].join('__'))
-          .attr("class", 'l plqt')
-          .attr("data-id", (d) => d.id)
-          .attr("data-val", (d) => d.val)
-          .attr("data-show", (d) => d.show)
-          .text((d) => d.show)
+          .attr("class", 'l')
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / minmax(max-content,1fr) minmax(max-content,4fr)")
           .on("mouseover", (ev) => {
             ev.target.style.backgroundColor = web.hov.mau2;
             console.log("li=", ev.target);
@@ -399,10 +449,266 @@ var web = {
             ev.target.style.backgroundColor = "white";
           })
           .on("click", (ev, d) => {
-            app.plqt = d.id;
-            web.otim.plqt();
-            box.remove();
+            if (d.id !== 'tieude') {
+              app.plqt = d.id;
+              inp.node().value = d.show;
+              if (box) { box.remove(); }
+            }
           });
+        rec.append("div")
+          .attr("id", (d, i) => ['plqt', i, 1].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb plqt r', i, ' c1'].join('');
+            } else {
+              return ['l fb plqt r', i, ' c1'].join('');
+            }
+          })
+          .text(d => d.show);
+        rec.append("div")
+          .attr("id", (d, i) => ['plqt', i, 2].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb plqt r', i, ' c2'].join('');
+            } else {
+              return ['l bl plqt r', i, ' c2'].join('');
+            }
+          })
+          .text(d => d.mota);
+      };
+    },
+    dvtc: () => {
+      let inp = d3.select("#app_dvtc")
+        .classed('l w100', true)
+        .attr("type", "search")
+        .attr("data-id", app.dvtc)
+        .attr("value", ga.dvtc[app.dvtc].show)
+        .style("height", "1rem")
+        .style("padding-left", "3px")
+        .on("click", (ev) => {
+          show_chon(ev.target.parentNode);
+        });
+
+      function show_chon(el) {
+        let zdl = ga.dvtc;
+        if (zdl.constructor !== Object) { return; }
+        let k, r, box, rec,
+          dulieu = [zdl.tieude];
+        for (k in zdl) {
+          if (k !== 'tieude') {
+            r = zdl[k];
+            r.id = k;
+            dulieu.push(r);
+          }
+        }
+        d3.selectAll("#chon").remove();
+        box = d3.select(el).append("ol")
+          .attr("id", "chon")
+          .attr("class", "l")
+          .style("background-color", "white")
+          .style("z-index", 99)
+          .style("max-height", "10.25rem")
+          .style("overflow-x", "auto")
+          .style("border", "1px solid #d4d4d4")
+          .style("list-style", "none");
+        //noidung
+        rec = box.selectAll("li").data(dulieu)
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => ['dvtc', i, 0].join('__'))
+          .attr("class", 'l')
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / minmax(max-content,1fr) minmax(max-content,4fr)")
+          .on("mouseover", (ev) => {
+            ev.target.style.backgroundColor = web.hov.mau2;
+            console.log("li=", ev.target);
+          })
+          .on("mouseout", (ev) => {
+            ev.target.style.backgroundColor = "white";
+          })
+          .on("click", (ev, d) => {
+            if (d.id !== 'tieude') {
+              app.dvtc = d.id;
+              inp.node().value = d.show;
+              if (box) { box.remove(); }
+            }
+          });
+        rec.append("div")
+          .attr("id", (d, i) => ['dvtc', i, 1].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb dvtc r', i, ' c1'].join('');
+            } else {
+              return ['l fb dvtc r', i, ' c1'].join('');
+            }
+          })
+          .text(d => d.show);
+        rec.append("div")
+          .attr("id", (d, i) => ['dvtc', i, 2].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb dvtc r', i, ' c2'].join('');
+            } else {
+              return ['l bl dvtc r', i, ' c2'].join('');
+            }
+          })
+          .text(d => d.mota);
+      };
+    },
+    dot: () => {
+      let inp = d3.select("#app_dot")
+        .classed('l w100', true)
+        .attr("type", "search")
+        .attr("data-id", app.dot)
+        .attr("value", ga.dot[app.dot].show)
+        .style("height", "1rem")
+        .style("padding-left", "3px")
+        .on("click", (ev) => {
+          show_chon(ev.target.parentNode);
+        });
+
+      function show_chon(el) {
+        let zdl = ga.dot;
+        if (zdl.constructor !== Object) { return; }
+        let k, r, box, rec,
+          dulieu = [zdl.tieude];
+        for (k in zdl) {
+          if (k !== 'tieude') {
+            r = zdl[k];
+            r.id = k;
+            dulieu.push(r);
+          }
+        }
+        d3.selectAll("#chon").remove();
+        box = d3.select(el).append("ol")
+          .attr("id", "chon")
+          .attr("class", "l")
+          .style("background-color", "white")
+          .style("z-index", 99)
+          .style("max-height", "10.25rem")
+          .style("overflow-x", "auto")
+          .style("border", "1px solid #d4d4d4")
+          .style("list-style", "none");
+        //noidung
+        rec = box.selectAll("li").data(dulieu)
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => ['dot', i, 0].join('__'))
+          .attr("class", 'l')
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / minmax(max-content,1fr) minmax(max-content,4fr)")
+          .on("mouseover", (ev) => {
+            ev.target.style.backgroundColor = web.hov.mau2;
+            console.log("li=", ev.target);
+          })
+          .on("mouseout", (ev) => {
+            ev.target.style.backgroundColor = "white";
+          })
+          .on("click", (ev, d) => {
+            if (d.id !== 'tieude') {
+              app.dot = d.id;
+              inp.node().value = d.show;
+              if (box) { box.remove(); }
+            }
+          });
+        rec.append("div")
+          .attr("id", (d, i) => ['dot', i, 1].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb dot r', i, ' c1'].join('');
+            } else {
+              return ['l fb dot r', i, ' c1'].join('');
+            }
+          })
+          .text(d => d.show);
+        rec.append("div")
+          .attr("id", (d, i) => ['dot', i, 2].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb dot r', i, ' c2'].join('');
+            } else {
+              return ['l bl dot r', i, ' c2'].join('');
+            }
+          })
+          .text(d => d.mota);
+      };
+    },
+    hoso: () => {
+      let inp = d3.select("#app_hoso")
+        .classed('l w100', true)
+        .attr("type", "search")
+        .attr("data-id", app.hoso)
+        .attr("value", ga.hoso[app.hoso].show)
+        .style("height", "1rem")
+        .style("padding-left", "3px")
+        .on("click", (ev) => {
+          show_chon(ev.target.parentNode);
+        });
+
+      function show_chon(el) {
+        let zdl = ga.hoso;
+        if (zdl.constructor !== Object) { return; }
+        let k, r, box, rec,
+          dulieu = [zdl.tieude];
+        for (k in zdl) {
+          if (k !== 'tieude') {
+            r = zdl[k];
+            r.id = k;
+            dulieu.push(r);
+          }
+        }
+        d3.selectAll("#chon").remove();
+        box = d3.select(el).append("ol")
+          .attr("id", "chon")
+          .attr("class", "l")
+          .style("background-color", "white")
+          .style("z-index", 99)
+          .style("max-height", "10.25rem")
+          .style("overflow-x", "auto")
+          .style("border", "1px solid #d4d4d4")
+          .style("list-style", "none");
+        //noidung
+        rec = box.selectAll("li").data(dulieu)
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => ['hoso', i, 0].join('__'))
+          .attr("class", 'l')
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / minmax(max-content,1fr) minmax(max-content,4fr)")
+          .on("mouseover", (ev) => {
+            ev.target.style.backgroundColor = web.hov.mau2;
+            console.log("li=", ev.target);
+          })
+          .on("mouseout", (ev) => {
+            ev.target.style.backgroundColor = "white";
+          })
+          .on("click", (ev, d) => {
+            if (d.id !== 'tieude') {
+              app.hoso = d.id;
+              inp.node().value = d.show;
+              if (box) { box.remove(); }
+            }
+          });
+        rec.append("div")
+          .attr("id", (d, i) => ['hoso', i, 1].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb hoso r', i, ' c1'].join('');
+            } else {
+              return ['l fb hoso r', i, ' c1'].join('');
+            }
+          })
+          .text(d => d.show);
+        rec.append("div")
+          .attr("id", (d, i) => ['hoso', i, 2].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb hoso r', i, ' c2'].join('');
+            } else {
+              return ['l bl hoso r', i, ' c2'].join('');
+            }
+          })
+          .text(d => d.mota);
       };
     },
   },

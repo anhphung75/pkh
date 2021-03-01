@@ -35,9 +35,11 @@
 }
 
 .grid.otim {
-  list-style:none;
-  grid-template-columns: repeat(auto-fit, minmax(max-content, max-content));
-  grid-template-rows: minmax(1rem, max-content) auto;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  grid-template-rows: minmax(1rem, max-content);
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
   grid-auto-flow: column;
   overflow-y: auto;
 }
