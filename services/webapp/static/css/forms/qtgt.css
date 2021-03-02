@@ -34,14 +34,15 @@
   color: #ffffff;
 }
 
-.grid.otim {
+.vung_otim {
   padding: 0;
   margin: 0;
   list-style: none;
-  grid-template-rows: minmax(1rem, max-content);
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  grid-auto-flow: column;
+  white-space: nowrap;
   overflow-y: auto;
+}
+.vung_otim li {
+  display: inline-block;
 }
 
 .grid.ongcai,

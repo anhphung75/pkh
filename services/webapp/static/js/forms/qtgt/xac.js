@@ -201,142 +201,44 @@ var web = {
     ga.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
   },
   otim: {
-    nam_old: () => {
-      let zone, box, box1, box2, inp, i, k, v,
-        dl = [{ k: 0, v: "All" }],
-        curnam = new Date().getFullYear();
-      if (!('qtgt' in ga)) {
-        ga.qtgt = {};
-        ga.qtgt.nam = curnam;
-      }
-      for (i in [0, 1, 2, 3, 4, 5]) {
-        k = (curnam - i).toString(),
-          v = curnam - i;
-        dl.push({ k: k, v: v });
-      }
-      if (!('maxrbox' in ga)) {
-        ga.maxrbox = {};
-        ga.maxrbox.nam = 6;
-      }
-      if (!('maxcbox' in ga)) {
-        ga.maxcbox = {};
-        ga.maxcbox.nam = 0;
-      }
-
-
-      zone = d3.select("#qtgt").select(".grid.otim")
-        .append("div")
-        .attr("class", "l flex");
-
-      box1 = zone.append("input")
-        .attr("value", "Năm");
-
-      box2 = zone.append("div")
-        .attr("class", "l")
-        .style("width", "100%")
-        .style("position", "relative");
-
-      inp = box2.append("input")
-        .attr("id", "in_nam")
-        .attr("data-tagid", "nam__-1__0")
-        .attr("class", "l")
-        .attr("value", curnam)
-        .on("focus", () => {
-          show_chon(dl);
-        })
-        .on("keydown", function (ev) {
-          let tagid = ev.target.dataset.tagid;
-          switch (ev.keyCode) {
-            case 27: //Esc
-              ev.target.value = null;
-              break;
-            case 40: //downArrow
-            case 39: //arrowRight
-              inp_sua(web.move2id(tagid, 1, 0));
-              break;
-            case 38: //arrowUp
-            case 37: //arrowLeft
-              inp_sua(web.move2id(tagid, -1, 0));
-              break;
-            case 13: //Enter
-              inp_sua(web.move2id(tagid, 0, 0));
-              if (box) { box.remove(); }
-              break;
-            default:
-          }
-        });
-      function show_chon(dl) {
-        //if (dl.constructor !== Object) { return; }
-        d3.selectAll("#show_chon").remove();
-        box = box2.append("ol")
-          .attr("id", "show_chon")
-          .style("background-color", "white")
-          .style("position", "absolute")
-          .style("top", "2rem")
-          .style("left", 0)
-          .style("z-index", 99)
-          .style("border-style", "solid")
-          .style("border-color", "#d4d4d4")
-          .style("border-width", "0 1px 0 1px")
-          .style("list-style-type", "decimal")
-          .style("list-style-position", "inside")
-          .style("margin", 0)
-          .style("padding-left", "1rem")
-          .style("width", "12cm")
-          .style("display", "grid")
-          .style("grid", "auto-flow minmax(1rem, max-content) / 1fr 1fr 1fr");
-
-        box.selectAll("li").data(dl)
-          .enter()
-          .append("li")
-          .attr("id", (d, i) => ['nam', i, 0].join('__'))
-          .attr("class", 'l nam')
-          .attr("data-id", (d) => d.k)
-          .attr("data-val", (d) => d.k)
-          .attr("data-show", (d) => d.v)
-          .text((d) => d.v)
-          .on("mouseover", (ev) => {
-            ev.target.style.backgroundColor = web.hov.mau2;
-          })
-          .on("mouseout", (ev) => {
-            ev.target.style.backgroundColor = "white";
-          })
-          .on("click", (ev, d) => {
-            ga.qtgt.nam = d.k;
-            inp.node().value = d.v;
-            console.log("option click d=", JSON.stringify(d));
-            console.log("option click ga.qtgt=", JSON.stringify(ga.qtgt));
-            box.remove();
-          });
-      };
-      function inp_sua(dl) {
-        if (dl.constructor !== Object) { return; }
-        try {
-          inp.attr("data-tagid", dl.tagid);
-          inp.attr("data-id", dl.id);
-          inp.attr("data-val", dl.val);
-          inp.attr("data-show", dl.show);
-          ga.qtgt.nam = dl.id;
-          inp.node().value = dl.show;
-        } catch (err) { }
-      }
-    },
     nam: () => {
-      let inp = d3.select("#app_nam")
+      let zone, inp, box,
+        zdl = ga.nam,
+        v0 = zdl[app.nam].show;
+      if (zdl.constructor !== Object) { return; }
+      zone = d3.select("#app_nam")
         .classed('l w100', true)
-        .attr("type", "search")
-        .attr("data-id", app.nam)
-        .attr("value", ga.nam[app.nam].show)
-        .style("height", "1rem")
-        .style("padding-left", "3px")
-        .on("click", (ev) => {
-          show_chon(ev.target.parentNode);
-        });
+        .text(v0)
+        .on("click", (ev) => tao_chon(ev.target));
+      if (d3.select("#nap").node()) { d3.selectAll("#nap").remove(); }
+      if (d3.select("#xem").node()) { d3.selectAll("#xem").remove(); }
 
-      function show_chon(el) {
-        let zdl = ga.nam;
-        if (zdl.constructor !== Object) { return; }
-        let k, r, box, rec,
+      function tao_chon(el) {
+        console.log("tao_chon");
+        zone = d3.select(el)
+          .classed('l w100', true)
+          .text(null)
+        inp = zone.append("input")
+          .attr("id", "nap")
+          .classed('l w100', true)
+          .attr("type", "search")
+          .attr("value", v0)
+          .style("height", "1rem")
+          .style("padding-left", "3px")
+          .on("click", (ev) => {
+            if (d3.select("#xem").node()) {
+              web.otim.nam();
+            } else {
+              xem_chon(ev.target.parentNode);
+              ev.target.focus();
+              ev.target.select();
+            }
+          });
+        inp.node().dispatchEvent(new MouseEvent("click"));
+      }
+
+      function xem_chon(el) {
+        let k, r, rec,
           dulieu = [zdl.tieude];
         for (k in zdl) {
           if (k !== 'tieude') {
@@ -345,9 +247,9 @@ var web = {
             dulieu.push(r);
           }
         }
-        d3.selectAll("#chon").remove();
+        d3.selectAll("#xem").remove();
         box = d3.select(el).append("ol")
-          .attr("id", "chon")
+          .attr("id", "xem")
           .attr("class", "l")
           .style("background-color", "white")
           .style("z-index", 99)
@@ -373,8 +275,7 @@ var web = {
           .on("click", (ev, d) => {
             if (d.id !== 'tieude') {
               app.nam = d.id;
-              inp.node().value = d.show;
-              if (box) { box.remove(); }
+              web.otim.nam();
             }
           });
         rec.append("div")
@@ -400,21 +301,43 @@ var web = {
       };
     },
     plqt: () => {
-      let inp = d3.select("#app_plqt")
+      let zone, inp, box,
+        zdl = ga.plqt,
+        v0 = zdl[app.plqt].show;
+      if (zdl.constructor !== Object) { return; }
+      zone = d3.select("#app_plqt")
         .classed('l w100', true)
-        .attr("type", "search")
-        .attr("data-id", app.plqt)
-        .attr("value", ga.plqt[app.plqt].show)
-        .style("height", "1rem")
-        .style("padding-left", "3px")
-        .on("click", (ev) => {
-          show_chon(ev.target.parentNode);
-        });
+        .text(v0)
+        .on("click", (ev) => tao_chon(ev.target));
+      if (d3.select("#nap").node()) { d3.selectAll("#nap").remove(); }
+      if (d3.select("#xem").node()) { d3.selectAll("#xem").remove(); }
 
-      function show_chon(el) {
-        let zdl = ga.plqt;
-        if (zdl.constructor !== Object) { return; }
-        let k, r, box, rec,
+      function tao_chon(el) {
+        console.log("tao_chon");
+        zone = d3.select(el)
+          .classed('l w100', true)
+          .text(null)
+        inp = zone.append("input")
+          .attr("id", "nap")
+          .classed('l w100', true)
+          .attr("type", "search")
+          .attr("value", v0)
+          .style("height", "1rem")
+          .style("padding-left", "3px")
+          .on("click", (ev) => {
+            if (d3.select("#xem").node()) {
+              web.otim.plqt();
+            } else {
+              xem_chon(ev.target.parentNode);
+              ev.target.focus();
+              ev.target.select();
+            }
+          });
+        inp.node().dispatchEvent(new MouseEvent("click"));
+      }
+
+      function xem_chon(el) {
+        let k, r, rec,
           dulieu = [zdl.tieude];
         for (k in zdl) {
           if (k !== 'tieude') {
@@ -423,9 +346,9 @@ var web = {
             dulieu.push(r);
           }
         }
-        d3.selectAll("#chon").remove();
+        d3.selectAll("#xem").remove();
         box = d3.select(el).append("ol")
-          .attr("id", "chon")
+          .attr("id", "xem")
           .attr("class", "l")
           .style("background-color", "white")
           .style("z-index", 99)
@@ -451,8 +374,7 @@ var web = {
           .on("click", (ev, d) => {
             if (d.id !== 'tieude') {
               app.plqt = d.id;
-              inp.node().value = d.show;
-              if (box) { box.remove(); }
+              web.otim.plqt();
             }
           });
         rec.append("div")
@@ -478,21 +400,43 @@ var web = {
       };
     },
     dvtc: () => {
-      let inp = d3.select("#app_dvtc")
+      let zone, inp, box,
+        zdl = ga.dvtc,
+        v0 = zdl[app.dvtc].show;
+      if (zdl.constructor !== Object) { return; }
+      zone = d3.select("#app_dvtc")
         .classed('l w100', true)
-        .attr("type", "search")
-        .attr("data-id", app.dvtc)
-        .attr("value", ga.dvtc[app.dvtc].show)
-        .style("height", "1rem")
-        .style("padding-left", "3px")
-        .on("click", (ev) => {
-          show_chon(ev.target.parentNode);
-        });
+        .text(v0)
+        .on("click", (ev) => tao_chon(ev.target));
+      if (d3.select("#nap").node()) { d3.selectAll("#nap").remove(); }
+      if (d3.select("#xem").node()) { d3.selectAll("#xem").remove(); }
 
-      function show_chon(el) {
-        let zdl = ga.dvtc;
-        if (zdl.constructor !== Object) { return; }
-        let k, r, box, rec,
+      function tao_chon(el) {
+        console.log("tao_chon");
+        zone = d3.select(el)
+          .classed('l w100', true)
+          .text(null)
+        inp = zone.append("input")
+          .attr("id", "nap")
+          .classed('l w100', true)
+          .attr("type", "search")
+          .attr("value", v0)
+          .style("height", "1rem")
+          .style("padding-left", "3px")
+          .on("click", (ev) => {
+            if (d3.select("#xem").node()) {
+              web.otim.dvtc();
+            } else {
+              xem_chon(ev.target.parentNode);
+              ev.target.focus();
+              ev.target.select();
+            }
+          });
+        inp.node().dispatchEvent(new MouseEvent("click"));
+      }
+
+      function xem_chon(el) {
+        let k, r, rec,
           dulieu = [zdl.tieude];
         for (k in zdl) {
           if (k !== 'tieude') {
@@ -501,9 +445,9 @@ var web = {
             dulieu.push(r);
           }
         }
-        d3.selectAll("#chon").remove();
+        d3.selectAll("#xem").remove();
         box = d3.select(el).append("ol")
-          .attr("id", "chon")
+          .attr("id", "xem")
           .attr("class", "l")
           .style("background-color", "white")
           .style("z-index", 99)
@@ -529,8 +473,7 @@ var web = {
           .on("click", (ev, d) => {
             if (d.id !== 'tieude') {
               app.dvtc = d.id;
-              inp.node().value = d.show;
-              if (box) { box.remove(); }
+              web.otim.dvtc();
             }
           });
         rec.append("div")
@@ -556,21 +499,43 @@ var web = {
       };
     },
     dot: () => {
-      let inp = d3.select("#app_dot")
+      let zone, inp, box,
+        zdl = ga.dot,
+        v0 = zdl[app.dot].show;
+      if (zdl.constructor !== Object) { return; }
+      zone = d3.select("#app_dot")
         .classed('l w100', true)
-        .attr("type", "search")
-        .attr("data-id", app.dot)
-        .attr("value", ga.dot[app.dot].show)
-        .style("height", "1rem")
-        .style("padding-left", "3px")
-        .on("click", (ev) => {
-          show_chon(ev.target.parentNode);
-        });
+        .text(v0)
+        .on("click", (ev) => tao_chon(ev.target));
+      if (d3.select("#nap").node()) { d3.selectAll("#nap").remove(); }
+      if (d3.select("#xem").node()) { d3.selectAll("#xem").remove(); }
 
-      function show_chon(el) {
-        let zdl = ga.dot;
-        if (zdl.constructor !== Object) { return; }
-        let k, r, box, rec,
+      function tao_chon(el) {
+        console.log("tao_chon");
+        zone = d3.select(el)
+          .classed('l w100', true)
+          .text(null)
+        inp = zone.append("input")
+          .attr("id", "nap")
+          .classed('l w100', true)
+          .attr("type", "search")
+          .attr("value", v0)
+          .style("height", "1rem")
+          .style("padding-left", "3px")
+          .on("click", (ev) => {
+            if (d3.select("#xem").node()) {
+              web.otim.dot();
+            } else {
+              xem_chon(ev.target.parentNode);
+              ev.target.focus();
+              ev.target.select();
+            }
+          });
+        inp.node().dispatchEvent(new MouseEvent("click"));
+      }
+
+      function xem_chon(el) {
+        let k, r, rec,
           dulieu = [zdl.tieude];
         for (k in zdl) {
           if (k !== 'tieude') {
@@ -579,9 +544,9 @@ var web = {
             dulieu.push(r);
           }
         }
-        d3.selectAll("#chon").remove();
+        d3.selectAll("#xem").remove();
         box = d3.select(el).append("ol")
-          .attr("id", "chon")
+          .attr("id", "xem")
           .attr("class", "l")
           .style("background-color", "white")
           .style("z-index", 99)
@@ -607,8 +572,7 @@ var web = {
           .on("click", (ev, d) => {
             if (d.id !== 'tieude') {
               app.dot = d.id;
-              inp.node().value = d.show;
-              if (box) { box.remove(); }
+              web.otim.dot();
             }
           });
         rec.append("div")
@@ -634,21 +598,43 @@ var web = {
       };
     },
     hoso: () => {
-      let inp = d3.select("#app_hoso")
+      let zone, inp, box,
+        zdl = ga.hoso,
+        v0 = zdl[app.hoso].show;
+      if (zdl.constructor !== Object) { return; }
+      zone = d3.select("#app_hoso")
         .classed('l w100', true)
-        .attr("type", "search")
-        .attr("data-id", app.hoso)
-        .attr("value", ga.hoso[app.hoso].show)
-        .style("height", "1rem")
-        .style("padding-left", "3px")
-        .on("click", (ev) => {
-          show_chon(ev.target.parentNode);
-        });
+        .text(v0)
+        .on("click", (ev) => tao_chon(ev.target));
+      if (d3.select("#nap").node()) { d3.selectAll("#nap").remove(); }
+      if (d3.select("#xem").node()) { d3.selectAll("#xem").remove(); }
 
-      function show_chon(el) {
-        let zdl = ga.hoso;
-        if (zdl.constructor !== Object) { return; }
-        let k, r, box, rec,
+      function tao_chon(el) {
+        console.log("tao_chon");
+        zone = d3.select(el)
+          .classed('l w100', true)
+          .text(null)
+        inp = zone.append("input")
+          .attr("id", "nap")
+          .classed('l w100', true)
+          .attr("type", "search")
+          .attr("value", v0)
+          .style("height", "1rem")
+          .style("padding-left", "3px")
+          .on("click", (ev) => {
+            if (d3.select("#xem").node()) {
+              web.otim.hoso();
+            } else {
+              xem_chon(ev.target.parentNode);
+              ev.target.focus();
+              ev.target.select();
+            }
+          });
+        inp.node().dispatchEvent(new MouseEvent("click"));
+      }
+
+      function xem_chon(el) {
+        let k, r, rec,
           dulieu = [zdl.tieude];
         for (k in zdl) {
           if (k !== 'tieude') {
@@ -657,9 +643,9 @@ var web = {
             dulieu.push(r);
           }
         }
-        d3.selectAll("#chon").remove();
+        d3.selectAll("#xem").remove();
         box = d3.select(el).append("ol")
-          .attr("id", "chon")
+          .attr("id", "xem")
           .attr("class", "l")
           .style("background-color", "white")
           .style("z-index", 99)
@@ -685,8 +671,7 @@ var web = {
           .on("click", (ev, d) => {
             if (d.id !== 'tieude') {
               app.hoso = d.id;
-              inp.node().value = d.show;
-              if (box) { box.remove(); }
+              web.otim.hoso();
             }
           });
         rec.append("div")
