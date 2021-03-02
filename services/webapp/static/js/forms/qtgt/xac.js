@@ -11,7 +11,53 @@ var app = {
   plgia: 'dutoan',
   mabaogia: 20210101,
   macpql: 20200827,
-
+  oc: {
+    zvl: 0,
+    znc: 0,
+    zmtc: 0,
+    ztl: 0,
+    cpxd: [
+      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
+    cpvt: {
+      '0': { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      '1': { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      '2': { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    },
+    cpvl: {
+      '0': { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      '1': { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      '2': { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    },
+  },
+  on: {
+    zvl: 0,
+    znc: 0,
+    zmtc: 0,
+    ztl: 0,
+    cpxd: {
+      '1': { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      '2': { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      '3': { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    },
+    cpvt: {
+      '1': { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      '2': { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      '3': { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    },
+    cpvl: {
+      '1': { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      '2': { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      '3': { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    },
+  },
+  cptl: {
+    '1': { chiphi: 1, mota: 'cp1', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 10 },
+    '2': { chiphi: 2, mota: 'cp2', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 200 },
+    '3': { chiphi: 3, mota: 'cp3', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 5510 }
+  },
 };
 
 var ga = {
@@ -90,53 +136,8 @@ var ga = {
     '11': { idutc: 11, plcp: 'cptl', mota: { qtgt: 'cp5', qtvt: 'cp01' }, dvt: 'cai' },
     '12': { idutc: 12, plcp: 'cptl', mota: { qtgt: 'cp6', qtvt: 'cp01' }, dvt: 'cai' },
   },
-  oc: {
-    zvl: 0,
-    znc: 0,
-    zmtc: 0,
-    ztl: 0,
-    cpxd: [
-      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    ],
-    cpvt: [
-      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    ],
-    cpvl: [
-      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    ],
-  },
-  on: {
-    zvl: 0,
-    znc: 0,
-    zmtc: 0,
-    ztl: 0,
-    cpxd: [
-      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    ],
-    cpvt: [
-      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    ],
-    cpvl: [
-      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    ],
-  },
-  cptl: [
-    { chiphi: 1, mota: 'cp1', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 10 },
-    { chiphi: 2, mota: 'cp2', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 200 },
-    { chiphi: 3, mota: 'cp3', dvt: 'cai', oc_sl: 0, on_sl: 0, gia: 0, oc_tien: 0, on_tien: 5510 }
-  ],
+
+
   cpql: { ma: 20200827 },
   bgvl: {
     '001.001': { 'dutoan': 1123, 'ketoan': 1245 },
@@ -172,6 +173,7 @@ var ga = {
 };
 
 var web = {
+  tagid: '',
   hov: { mau1: "yellow", mau2: "#9999ff" },
   tao: () => {
     web.sw_url();
@@ -180,7 +182,9 @@ var web = {
     web.otim.dvtc();
     web.otim.dot();
     web.otim.hoso();
-    //web.oc.cpxd();
+    web.oc.tieude();
+    web.oc.bth();
+    web.oc.cpxd();
     //web.oc.cpvt();
     //web.oc.cpvl();
     //web.oc.bth();
@@ -805,20 +809,20 @@ var web = {
   oc: {
     bth: () => {
       let zone, kiem, self;
-      zone = d3.select("section[id='ongcai']");
-      kiem = zone.select(".ongcai")
+      zone = d3.select("#ongcai");
+      kiem = zone.select(".grid.ongcai")
         .attr("data-show", "true")
         .on("click", (ev) => {
           if (kiem.attr("data-show") === "true") {
-            zone.selectAll("table").classed("hide", false);
+            zone.selectAll("ol").classed("hide", false);
             kiem.attr("data-show", "false");
           } else {
-            zone.selectAll("table").classed("hide", true);
+            zone.selectAll("ol").classed("hide", true);
             kiem.attr("data-show", "true");
           }
         });
-      if (!('oc' in ga)) { ga.oc = { zvl: 0, znc: 0, zmtc: 0 }; }
-      self = ga.oc;
+      if (!('oc' in app)) { app.oc = { zvl: 0, znc: 0, zmtc: 0 }; }
+      self = app.oc;
       try {
         self.zvl = self.cpxd.reduce(function (z, rec) { return z + rec.tienvl }, 0);
         self.zvl = self.cpvt.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
@@ -834,127 +838,149 @@ var web = {
         self.zmtc = self.cpvt.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
         self.zmtc = self.cpvl.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
       } catch (err) { }
-      d3.select("div[id='oc_zvl']").data([self.zvl])
+      d3.select("#oc_zvl").data([self.zvl])
         .attr("class", "fb")
         .text((d) => viewso(d, 0));
-      d3.select("div[id='oc_znc']").data([self.znc])
+      d3.select("#oc_znc").data([self.znc])
         .attr("class", "fb")
         .text((d) => viewso(d, 0));
-      d3.select("div[id='oc_zmtc']").data([self.zmtc])
+      d3.select("#oc_zmtc").data([self.zmtc])
         .attr("class", "fb")
         .text((d) => viewso(d, 0));
     },
+    tieude: () => {
+      d3.select("#oc_cpxd_tieude")
+        .style("list-style", "none")
+        .style("background-color", "transparent")
+        .style("margin", 0)
+        .style("padding", 0)
+        .style("display", "grid")
+        .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
+      d3.select("#oc_cpvt_tieude")
+        .style("list-style", "none")
+        .style("background-color", "transparent")
+        .style("margin", 0)
+        .style("padding", 0)
+        .style("display", "grid")
+        .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
+      d3.select("#oc_cpvl_tieude")
+        .style("list-style", "none")
+        .style("background-color", "transparent")
+        .style("margin", 0)
+        .style("padding", 0)
+        .style("display", "grid")
+        .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
+    },
     cpxd: () => {
-      let bang = d3.select("table[id='oc_cpxd']")
-        .attr("class", "w100")
-        .style("table-layout", "auto")
-        .style("border-collapse", "separate")
-        .style("border-spacing", "1px 1px")
-        .style("overflow", "auto")
-        .style("margin", "0");
+      let zone, inp, box, i, r, row, rec, stim,
+        dulieu = [],
+        zdl = app.oc.cpxd;
+      if (zdl.constructor !== Array) { return; }
+      for (i in zdl) {
+        r = zdl[i];
+        r.tt = i;
+        dulieu.push(r);
+      }
+      zone = d3.select("#oc_cpxd")
+        .attr("class", "l")
+        .style("background-color", "transparent")
+        .style("z-index", 0)
+        .style("margin", 0)
+        .style("padding", 0)
+        .style("max-height", "81.6rem")
+        .style("overflow-x", "auto")
+        .style("border", "1px solid #d4d4d4")
+        .style("list-style", "none");
+      zone.selectAll('li').remove();
+      row = zone.selectAll("li").data(dulieu).enter().append("li")
+        .style("display", "grid")
+        .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
 
-      //tieude
-      bang.selectAll("th").data(ga.tieude.cpxd)
-        .enter()
-        .append("th")
-        .attr("class", "c")
-        .text((col) => col);
-
-      //rows
-      bang.selectAll("tr").remove();
-      let row = bang.selectAll("tr").data(ga.oc.cpxd).enter().append("tr");
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d, i) => {
-          let v = i + 1;
-          switch (v) {
-            case v >= 0 && v < 10:
-              return '00'.concat(i);
-            case v >= 10 && v < 100:
-              return '0'.concat(i);
-            default:
-              return v;
-          }
+      row.append('div')
+        .attr("class", (d, i) => ['c bb oc_cpxd r', i, ' c0'].join(''))
+        .text((d) => {
+          let tt = parseInt(d.tt);
+          return tt > 99 ? tt : tt > 9 ? ['0', tt].join('') : ['00', tt + 1].join('');
         });
-      row.append('td')
+      row.append('div')
         .attr("class", "bb")
         .append('input')
-        .attr("class", (d, i) => "l oc_cpxd col1 row" + i)
-        .attr("data-stt", (d, i) => i)
+        .attr("id", (d, i) => ['oc_cpxd', i, '1'].join('__'))
+        .attr("class", (d, i) => ['l oc_cpxd r', i, ' c1'].join(''))
         .attr("value", (d) => d.mota)
-        .on("change", (ev) => {
+        .on("change", (ev, d) => {
           //try {
-          let stt = ev.target.dataset.stt;
-          let v = ev.target.value || '';
-          console.log('mota change=', v, ' stt=', stt, ' ev=', ev.target);
-          if (v.length > 0) {
-            let r = ga.oc.cpxd[stt];
-            r.mota = v;
-            //tinh lai gia chi phi
-            idb.tinh.oc.cpxd(stt);
+          web.tagid = ev.target.id;
+          //tinh lai gia chi phi
+          //idb.tinh.oc.cpxd(stt);
+          web.oc.cpxd();
+          web.oc.bth();
+          //chuyen toi dong ke tiep
+          //web.move2id('oc_cpxd', stt, 1, 13);
+          //} catch (err) {
+          //console.log("err=", JSON.stringify(err));
+          //}
+        })
+        .on("click", function (ev, d) {
+          web.tagid = ev.target.id;
+        })
+        .on("keydown", function (ev, d) {
+          if ([13, 40, 38].includes(ev.keyCode)) {
+            //chuyen dong ke tiep
+            //web.move2id('oc_cpxd', ev.target.dataset.stt, 1, ev.keyCode);
+          }
+        });
+      row.append('div')
+        .attr("class", (d, i) => ['c bb oc_cpxd r', i, ' c2'].join(''))
+        .text((d) => d.dvt);
+      row.append('div')
+        .attr("class", "bb")
+        .append('input')
+        .attr("id", (d, i) => ['oc_cpxd', i, '3'].join('__'))
+        .attr("class", (d, i) => ['r oc_cpxd r', i, ' c3'].join(''))
+        .attr("data-stt", (d, i) => i)
+        .attr("value", (d) => viewso(d.soluong, 0))
+        .on("change", (ev, d) => {
+          web.tagid = ev.target.id;
+          let v = Math.abs(parseFloat(ev.target.value)) || 0;
+          if (v > 0) {
+            let r = app.oc.cpxd[d.tt];
+            console.log("origine app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
+            console.log("soluong moi=", v);
+            r.soluong = v;
+            r.tienvl = lamtronso(r.soluong * r.giavl, 0);
+            r.tiennc = lamtronso(r.soluong * r.gianc, 0);
+            r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
+            console.log("update app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
           }
           web.oc.cpxd();
           web.oc.bth();
-          web.move2id('oc_cpxd', stt, 1, 13);
-          //} catch (err) {
-          //console.log("err=", JSON.stringify(err));
-          //web.oc.cpxd();
-          //}
+          //chuyen dong ke tiep
+          //web.move2id('oc_cpxd', stt, 3, 13);
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
-            web.move2id('oc_cpxd', ev.target.dataset.stt, 1, ev.keyCode);
+            //chuyen dong ke tiep
+            //web.move2id('oc_cpxd', ev.target.dataset.stt, 3, ev.keyCode);
           }
         });
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d) => d.dvt);
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", (d, i) => "r oc_cpxd col3 row" + i)
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev) => {
-          try {
-            let stt = ev.target.dataset.stt;
-            let v = Math.abs(parseFloat(ev.target.value)) || 0;
-            if (v > 0) {
-              let r = ga.oc.cpxd[stt];
-              r.soluong = v;
-              r.tienvl = lamtronso(r.soluong * r.giavl, 0);
-              r.tiennc = lamtronso(r.soluong * r.gianc, 0);
-              r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
-            }
-            web.oc.cpxd();
-            web.oc.bth();
-            web.move2id('oc_cpxd', stt, 3, 13);
-          } catch (err) {
-            web.oc.cpxd();
-          }
-        })
-        .on("keydown", function (ev) {
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            web.move2id('oc_cpxd', ev.target.dataset.stt, 3, ev.keyCode);
-          }
-        });
-      row.append('td')
-        .attr("class", "r bb")
+      row.append('div')
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c4'].join(''))
         .text((d) => viewso(d.giavl, 0));
-      row.append('td')
-        .attr("class", "r bb")
+      row.append('div')
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c5'].join(''))
         .text((d) => viewso(d.gianc, 0));
-      row.append('td')
-        .attr("class", "r bb")
+      row.append('div')
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c6'].join(''))
         .text((d) => viewso(d.giamtc, 0));
-      row.append('td')
-        .attr("class", "r bb")
+      row.append('div')
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c7'].join(''))
         .text((d) => viewso(d.tienvl, 0));
-      row.append('td')
-        .attr("class", "r bb")
+      row.append('div')
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c8'].join(''))
         .text((d) => viewso(d.tiennc, 0));
-      row.append('td')
-        .attr("class", "r bb")
+      row.append('div')
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c9'].join(''))
         .text((d) => viewso(d.tienmtc, 0));
     },
     cpvt: () => {
