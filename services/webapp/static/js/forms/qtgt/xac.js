@@ -244,17 +244,9 @@ var web = {
     col = tag[2];
     if (zone.charAt(0) == '#') { zone = zone.substr(1); }
     tag = ['.', zone, '.r', row].join('');
-    d3.selectAll(tag)
-      .each(function () {
-        let o = d3.select(this);
-        o.style("background-color", o.attr("data-maunen"));
-      });
+    d3.selectAll(tag).style("background-color", "transparent");
     tag = ['.', zone, '.c', col].join('');
-    d3.selectAll(tag)
-      .each(function () {
-        let o = d3.select(this);
-        o.style("background-color", o.attr("data-maunen"));
-      });
+    d3.selectAll(tag).style("background-color", "transparent");
   },
   move2id: (row = 0, col = 0) => {
     console.log("start move2id=", web.tagid, " row=", row, " col=", col);
@@ -870,8 +862,6 @@ var web = {
       };
     },
   },
-
-
   oc: {
     bth: () => {
       let zone, kiem, self;
@@ -961,30 +951,19 @@ var web = {
         d3.selectAll("#xem").remove();
         box = d3.select(el).append("ol")
           .attr("id", "xem")
-          .attr("class", "l")
-          .style("position", "relative")
-          .style("background-color", "white")
-          .style("z-index", 99)
+          .style("list-style", "none")
+          .style("margin", 0)
+          .style("padding", 0)
           .style("max-height", "10.25rem")
-          .style("overflow-x", "auto")
-          .style("border", "1px solid #d4d4d4")
-          .style("list-style", "none");
+          .style("overflow-y", "auto")
+          .style("border", "1px solid #d4d4d4");
         //noidung
         rec = box.selectAll("li").data(dulieu)
           .enter()
           .append("li")
           .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
-          .attr("class", 'l')
           .style("display", "grid")
           .style("grid", "auto-flow minmax(1rem, max-content) / minmax(max-content,1fr) minmax(max-content,4fr)")
-          .on("mouseenter", (ev) => {
-            web.tagid = ev.target.id;
-            web.hov_intag(web.tagid);
-          })
-          .on("mouseleave", (ev) => {
-            web.tagid = ev.target.id;
-            web.hov_outtag(web.tagid);
-          })
           .on("click", (ev, d) => {
             if (d.id !== 'tieude') {
               console.log("click #xem>li d=", JSON.stringify(d));
@@ -999,7 +978,15 @@ var web = {
               return ['l fb fito chiphi r', i, ' c1'].join('');
             }
           })
-          .text(d => d.show);
+          .text(d => d.show)
+          .on("mouseenter", (ev) => {
+            web.tagid = ev.target.id;
+            web.hov_intag(web.tagid);
+          })
+          .on("mouseleave", (ev) => {
+            web.tagid = ev.target.id;
+            web.hov_outtag(web.tagid);
+          });
         rec.append("div")
           .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
           .attr("class", (d, i) => {
@@ -1009,19 +996,24 @@ var web = {
               return ['l fb fito chiphi r', i, ' c2'].join('');
             }
           })
-          .text(d => d.mota);
+          .text(d => d.mota)
+          .on("mouseenter", (ev) => {
+            web.tagid = ev.target.id;
+            web.hov_intag(web.tagid);
+          })
+          .on("mouseleave", (ev) => {
+            web.tagid = ev.target.id;
+            web.hov_outtag(web.tagid);
+          });
       };
       //main
       zone = d3.select("#oc_cpxd")
-        .attr("class", "l")
-        .style("background-color", "transparent")
-        .style("z-index", 0)
+        .style("list-style", "none")
         .style("margin", 0)
         .style("padding", 0)
-        .style("max-height", "81.6rem")
-        .style("overflow-x", "auto")
-        .style("border", "1px solid #d4d4d4")
-        .style("list-style", "none");
+        .style("max-height", "10.25rem")
+        .style("overflow-y", "auto")
+        .style("border", "1px solid #d4d4d4");
       zone.selectAll('li').remove();
       row = zone.selectAll("li").data(dulieu).enter().append("li")
         .style("display", "grid")
@@ -1030,7 +1022,6 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '0'].join('__'))
         .attr("class", (d, i) => ['c bb fito oc_cpxd r', i, ' c0'].join(''))
-        .attr("data-maunen", "transparent")
         .text((d) => {
           let tt = parseInt(d.tt);
           return tt > 99 ? tt : tt > 9 ? ['0', tt].join('') : ['00', tt + 1].join('');
@@ -1048,11 +1039,8 @@ var web = {
         .style("display", 'block')
         .append('input')
         .attr("id", (d, i) => ['oc_cpxd', i, '1'].join('__'))
-        .attr("class", (d, i) => ['l fito oc_cpxd r', i, ' c1'].join(''))
-        .attr("data-maunen", "transparent")
+        .attr("class", (d, i) => ['l f0 oc_cpxd r', i, ' c1'].join(''))
         .attr("value", (d) => d.mota)
-        .style("height", "100%")
-        .style("width", "100%")
         .style("margin", 0)
         .style("padding", "1px")
         .on("mouseenter", (ev) => {
@@ -1097,7 +1085,6 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '2'].join('__'))
         .attr("class", (d, i) => ['c bb fito oc_cpxd r', i, ' c2'].join(''))
-        .attr("data-maunen", "transparent")
         .text((d) => d.dvt)
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1111,8 +1098,7 @@ var web = {
         .attr("class", "bb fito")
         .append('input')
         .attr("id", (d, i) => ['oc_cpxd', i, '3'].join('__'))
-        .attr("class", (d, i) => ['r fito oc_cpxd r', i, ' c3'].join(''))
-        .attr("data-maunen", "transparent")
+        .attr("class", (d, i) => ['r f0 oc_cpxd r', i, ' c3'].join(''))
         .attr("value", (d) => viewso(d.soluong, 0))
         .style("margin", 0)
         .style("padding", "1px")
@@ -1152,7 +1138,6 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '4'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c4'].join(''))
-        .attr("data-maunen", "transparent")
         .text((d) => viewso(d.giavl, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1165,7 +1150,6 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '5'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c5'].join(''))
-        .attr("data-maunen", "transparent")
         .text((d) => viewso(d.gianc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1178,7 +1162,6 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '6'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c6'].join(''))
-        .attr("data-maunen", "transparent")
         .text((d) => viewso(d.giamtc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1191,7 +1174,6 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '7'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c7'].join(''))
-        .attr("data-maunen", "transparent")
         .text((d) => viewso(d.tienvl, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1204,7 +1186,6 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '8'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c8'].join(''))
-        .attr("data-maunen", "transparent")
         .text((d) => viewso(d.tiennc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1217,7 +1198,6 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '9'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c9'].join(''))
-        .attr("data-maunen", "transparent")
         .text((d) => viewso(d.tienmtc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
