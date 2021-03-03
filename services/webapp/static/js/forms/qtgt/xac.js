@@ -204,6 +204,175 @@ var web = {
     ga.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
     ga.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
   },
+  hov_intag: (tagid = null) => {
+    let tag, zone, row, col;
+    try {
+      tagid ? web.tagid = tagid : tagid = web.tagid;
+      tag = tagid.split('__');
+    } catch (err) { return; }
+    zone = tag[0];
+    row = tag[1];
+    col = tag[2];
+    if (zone.charAt(0) == '#') { zone = zone.substr(1); }
+    tag = ['.', zone, '.r', row].join('');
+    d3.selectAll(tag)
+      .each(function () {
+        let o = d3.select(this);
+        o.style("background-color", "yellow");
+      });
+    tag = ['.', zone, '.c', col].join('');
+    d3.selectAll(tag)
+      .each(function () {
+        let o = d3.select(this);
+        o.style("background-color", "yellow");
+      });
+    if (tagid.charAt(0) != '#') { tagid = ['#', tagid].join(''); }
+    d3.selectAll(tagid)
+      .each(function () {
+        let o = d3.select(this);
+        o.style("background-color", "#999fff");
+      });
+  },
+  hov_outtag: (tagid = null) => {
+    let tag, zone, row, col;
+    try {
+      tagid ? web.tagid = tagid : tagid = web.tagid;
+      tag = tagid.split('__');
+    } catch (err) { return; }
+    zone = tag[0];
+    row = tag[1];
+    col = tag[2];
+    if (zone.charAt(0) == '#') { zone = zone.substr(1); }
+    tag = ['.', zone, '.r', row].join('');
+    d3.selectAll(tag)
+      .each(function () {
+        let o = d3.select(this);
+        o.style("background-color", o.attr("data-maunen"));
+      });
+    tag = ['.', zone, '.c', col].join('');
+    d3.selectAll(tag)
+      .each(function () {
+        let o = d3.select(this);
+        o.style("background-color", o.attr("data-maunen"));
+      });
+  },
+  move2id: (row = 0, col = 0) => {
+    console.log("start move2id=", web.tagid, " row=", row, " col=", col);
+    if (!row && !col) { return; }
+    let tagid, tag, zone, el, maxR, maxC;
+    try {
+      tagid = web.tagid;
+      tag = tagid.split('__');
+    } catch (err) { return; }
+    if (tagid.charAt(0) != '#') { tagid = ['#', tagid].join(''); }
+    zone = tag[0].toLowerCase();
+    if (zone.charAt(0) == '#') { zone.substr(1); }
+    row = parseInt(tag[1]) + parseInt(row);
+    col = parseInt(tag[2]) + parseInt(col);
+    switch (zone) {
+      case 'oc_cpxd':
+        maxR = app.oc.cpxd.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'oc_cpvt';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'oc_cpvl';
+          row = app.oc.cpvl.length + 1;
+          col = 0;
+        };
+        break;
+      case 'oc_cpvt':
+        maxR = app.oc.cpvt.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'oc_cpvl';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'oc_cpxd';
+          row = app.oc.cpxd.length + 1;
+          col = 0;
+        };
+        break;
+      case 'oc_cpvl':
+        maxR = app.oc.cpvl.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'oc_cpxd';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'oc_cpvt';
+          row = app.oc.cpvt.length + 1;
+          col = 0;
+        };
+        break;
+      case 'on_cpxd':
+        maxR = app.on.cpxd.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'on_cpvt';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'on_cpvl';
+          row = app.on.cpvl.length + 1;
+          col = 0;
+        };
+        break;
+      case 'on_cpvt':
+        maxR = app.on.cpvt.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'on_cpvl';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'on_cpxd';
+          row = app.on.cpxd.length + 1;
+          col = 0;
+        };
+        break;
+      case 'on_cpvl':
+        maxR = app.on.cpvl.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'on_cpxd';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'on_cpvt';
+          row = app.on.cpvt.length + 1;
+          col = 0;
+        };
+        break;
+      default:
+        maxR = row;
+        maxC = col;
+    }
+    col > maxC ? col = 0 : col < 0 ? col = maxC : col;
+    console.log("move2id hov_outtag tagid=", JSON.stringify(tagid));
+    web.hov_outtag(tagid);
+    tag = [zone, row, col].join('__');
+    web.tagid = tag;
+    tagid = ['#', tag].join('');
+    console.log("move2id hov_intag tagid=", JSON.stringify(tagid));
+    web.hov_intag(tagid);
+    el = d3.select(tagid).node();
+    console.log("end move2id=", tagid);
+    if (el && ['INPUT'].includes(el.tagName)) {
+      el.focus();
+      el.select();
+    }
+  },
   otim: {
     nam: () => {
       let zone, inp, box,
@@ -702,110 +871,7 @@ var web = {
     },
   },
 
-  move2id: (tagid, row = 0, col = 0) => {
-    console.log("start move2id=", tagid, " row=", row, " col=", col);
-    if (!tagid) { return null; }
-    let box, tag, kq = {};
-    try {
-      tagid = tagid.toString().split('__');
-      box = tagid[0];
-      row = parseInt(tagid[1]) + parseInt(row);
-      col = parseInt(tagid[2]) + parseInt(col);
-    } catch (err) { return null; }
-    console.log("start parse move2id=", tagid, " row=", row, " col=", col);
-    if (col > ga.maxcbox[box]) {
-      col = 0;
-    };
-    if (col < 0) {
-      col = ga.maxcbox[box];
-    };
-    switch (box) {
-      case 'oc_cpxd':
-        if (row > ga.maxrbox[box]) {
-          row = row % (ga.maxrbox[box] + 1);
-          box = 'oc_cpvt';
-        };
-        if (row < 0) {
-          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
-          box = 'oc_cpvl';
-        };
-        break;
-      case 'oc_cpvt':
-        if (row > ga.maxrbox[box]) {
-          row = row % (ga.maxrbox[box] + 1);
-          box = 'oc_cpvl';
-        };
-        if (row < 0) {
-          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
-          box = 'oc_cpxd';
-        };
-        break;
-      case 'oc_cpvl':
-        if (row > ga.maxrbox[box]) {
-          row = row % (ga.maxrbox[box] + 1);
-          box = 'oc_cpxd';
-        };
-        if (row < 0) {
-          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
-          box = 'oc_cpvt';
-        };
-        break;
-      case 'on_cpxd':
-        if (row > ga.maxrbox[box]) {
-          row = row % (ga.maxrbox[box] + 1);
-          box = 'on_cpvt';
-        };
-        if (row < 0) {
-          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
-          box = 'on_cpvl';
-        };
-        break;
-      case 'on_cpvt':
-        if (row > ga.maxrbox[box]) {
-          row = row % (ga.maxrbox[box] + 1);
-          box = 'on_cpvl';
-        };
-        if (row < 0) {
-          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
-          box = 'on_cpxd';
-        };
-        break;
-      case 'on_cpvl':
-        if (row > ga.maxrbox[box]) {
-          row = row % (ga.maxrbox[box] + 1);
-          box = 'on_cpxd';
-        };
-        if (row < 0) {
-          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
-          box = 'on_cpvt';
-        };
-        break;
-      default:
-        if (row > ga.maxrbox[box]) {
-          row = row % (ga.maxrbox[box] + 1);
-        };
-        if (row < 0) {
-          row = ga.maxrbox[box] + 1 + (row % (ga.maxrbox[box] + 1));
-        };
-    }
-    tag = ['.', box].join('');
-    d3.selectAll(tag).classed('mau', false);
-    tag = [box, row, col].join('__');
-    tagid = ['#', tag].join('');
-    box = d3.select(tagid);
-    box.classed('mau', true);
-    console.log("end move2id=", tagid);
-    if (box.node() && ['INPUT'].includes(box.node().tagName)) {
-      box.node().focus();
-      box.node().select();
-    } else {
-      kq.tagid = tag;
-      kq.id = box.attr("data-id") || -1;
-      kq.val = box.attr("data-val") || '';
-      kq.show = box.attr("data-show") || '';
-      return kq;
-    }
-  },
+
   oc: {
     bth: () => {
       let zone, kiem, self;
@@ -814,10 +880,10 @@ var web = {
         .attr("data-show", "true")
         .on("click", (ev) => {
           if (kiem.attr("data-show") === "true") {
-            zone.selectAll("ol").classed("hide", false);
+            zone.selectAll("#show_ongcai").classed("hide", false);
             kiem.attr("data-show", "false");
           } else {
-            zone.selectAll("ol").classed("hide", true);
+            zone.selectAll("#show_ongcai").classed("hide", true);
             kiem.attr("data-show", "true");
           }
         });
@@ -872,7 +938,7 @@ var web = {
         .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
     },
     cpxd: () => {
-      let zone, inp, box, i, r, row, rec, stim,
+      let zone, inp, box, i, r, row, o, dl, rec, stim,
         dulieu = [],
         zdl = app.oc.cpxd;
       if (zdl.constructor !== Array) { return; }
@@ -881,6 +947,71 @@ var web = {
         r.tt = i;
         dulieu.push(r);
       }
+      function xem_chon(el) {
+        let k, r, rec,
+          zdl = ga.nam,
+          dulieu = [zdl.tieude];
+        for (k in zdl) {
+          if (k !== 'tieude') {
+            r = zdl[k];
+            r.id = k;
+            dulieu.push(r);
+          }
+        }
+        d3.selectAll("#xem").remove();
+        box = d3.select(el).append("ol")
+          .attr("id", "xem")
+          .attr("class", "l")
+          .style("position", "relative")
+          .style("background-color", "white")
+          .style("z-index", 99)
+          .style("max-height", "10.25rem")
+          .style("overflow-x", "auto")
+          .style("border", "1px solid #d4d4d4")
+          .style("list-style", "none");
+        //noidung
+        rec = box.selectAll("li").data(dulieu)
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
+          .attr("class", 'l')
+          .style("display", "grid")
+          .style("grid", "auto-flow minmax(1rem, max-content) / minmax(max-content,1fr) minmax(max-content,4fr)")
+          .on("mouseenter", (ev) => {
+            web.tagid = ev.target.id;
+            web.hov_intag(web.tagid);
+          })
+          .on("mouseleave", (ev) => {
+            web.tagid = ev.target.id;
+            web.hov_outtag(web.tagid);
+          })
+          .on("click", (ev, d) => {
+            if (d.id !== 'tieude') {
+              console.log("click #xem>li d=", JSON.stringify(d));
+            }
+          });
+        rec.append("div")
+          .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb fito chiphi r', i, ' c1'].join('');
+            } else {
+              return ['l fb fito chiphi r', i, ' c1'].join('');
+            }
+          })
+          .text(d => d.show);
+        rec.append("div")
+          .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
+          .attr("class", (d, i) => {
+            if (i == 0) {
+              return ['c u fb fito chiphi r', i, ' c2'].join('');
+            } else {
+              return ['l fb fito chiphi r', i, ' c2'].join('');
+            }
+          })
+          .text(d => d.mota);
+      };
+      //main
       zone = d3.select("#oc_cpxd")
         .attr("class", "l")
         .style("background-color", "transparent")
@@ -897,17 +1028,41 @@ var web = {
         .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
 
       row.append('div')
-        .attr("class", (d, i) => ['c bb oc_cpxd r', i, ' c0'].join(''))
+        .attr("id", (d, i) => ['oc_cpxd', i, '0'].join('__'))
+        .attr("class", (d, i) => ['c bb fito oc_cpxd r', i, ' c0'].join(''))
+        .attr("data-maunen", "transparent")
         .text((d) => {
           let tt = parseInt(d.tt);
           return tt > 99 ? tt : tt > 9 ? ['0', tt].join('') : ['00', tt + 1].join('');
+        })
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
         });
       row.append('div')
-        .attr("class", "bb")
+        .attr("class", "bb fito")
+        .style("display", 'block')
         .append('input')
         .attr("id", (d, i) => ['oc_cpxd', i, '1'].join('__'))
-        .attr("class", (d, i) => ['l oc_cpxd r', i, ' c1'].join(''))
+        .attr("class", (d, i) => ['l fito oc_cpxd r', i, ' c1'].join(''))
+        .attr("data-maunen", "transparent")
         .attr("value", (d) => d.mota)
+        .style("height", "100%")
+        .style("width", "100%")
+        .style("margin", 0)
+        .style("padding", "1px")
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        })
         .on("change", (ev, d) => {
           //try {
           web.tagid = ev.target.id;
@@ -922,7 +1077,16 @@ var web = {
           //}
         })
         .on("click", function (ev, d) {
-          web.tagid = ev.target.id;
+          if (d3.select("#xem").node()) {
+            d3.selectAll("#xem").remove();
+            d3.select(ev.target).classed("f0", false);
+          } else {
+            console.log("mota click ev.target.parentNode=", JSON.stringify(ev.target.parentNode));
+            xem_chon(ev.target.parentNode);
+            d3.select(ev.target).classed("f0", true);
+            ev.target.focus();
+            ev.target.select();
+          }
         })
         .on("keydown", function (ev, d) {
           if ([13, 40, 38].includes(ev.keyCode)) {
@@ -931,17 +1095,36 @@ var web = {
           }
         });
       row.append('div')
-        .attr("class", (d, i) => ['c bb oc_cpxd r', i, ' c2'].join(''))
-        .text((d) => d.dvt);
+        .attr("id", (d, i) => ['oc_cpxd', i, '2'].join('__'))
+        .attr("class", (d, i) => ['c bb fito oc_cpxd r', i, ' c2'].join(''))
+        .attr("data-maunen", "transparent")
+        .text((d) => d.dvt)
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
       row.append('div')
-        .attr("class", "bb")
+        .attr("class", "bb fito")
         .append('input')
         .attr("id", (d, i) => ['oc_cpxd', i, '3'].join('__'))
-        .attr("class", (d, i) => ['r oc_cpxd r', i, ' c3'].join(''))
-        .attr("data-stt", (d, i) => i)
+        .attr("class", (d, i) => ['r fito oc_cpxd r', i, ' c3'].join(''))
+        .attr("data-maunen", "transparent")
         .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev, d) => {
+        .style("margin", 0)
+        .style("padding", "1px")
+        .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        })
+        .on("change", (ev, d) => {
           let v = Math.abs(parseFloat(ev.target.value)) || 0;
           if (v > 0) {
             let r = app.oc.cpxd[d.tt];
@@ -956,32 +1139,94 @@ var web = {
           web.oc.cpxd();
           web.oc.bth();
           //chuyen dong ke tiep
-          //web.move2id('oc_cpxd', stt, 3, 13);
+          web.tagid = ev.target.id;
+          web.move2id(1, 0);
         })
         .on("keydown", function (ev) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             //chuyen dong ke tiep
-            //web.move2id('oc_cpxd', ev.target.dataset.stt, 3, ev.keyCode);
+            web.tagid = ev.target.id;
+            web.move2id(1, 0);
           }
         });
       row.append('div')
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c4'].join(''))
-        .text((d) => viewso(d.giavl, 0));
+        .attr("id", (d, i) => ['oc_cpxd', i, '4'].join('__'))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c4'].join(''))
+        .attr("data-maunen", "transparent")
+        .text((d) => viewso(d.giavl, 0))
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
       row.append('div')
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c5'].join(''))
-        .text((d) => viewso(d.gianc, 0));
+        .attr("id", (d, i) => ['oc_cpxd', i, '5'].join('__'))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c5'].join(''))
+        .attr("data-maunen", "transparent")
+        .text((d) => viewso(d.gianc, 0))
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
       row.append('div')
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c6'].join(''))
-        .text((d) => viewso(d.giamtc, 0));
+        .attr("id", (d, i) => ['oc_cpxd', i, '6'].join('__'))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c6'].join(''))
+        .attr("data-maunen", "transparent")
+        .text((d) => viewso(d.giamtc, 0))
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
       row.append('div')
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c7'].join(''))
-        .text((d) => viewso(d.tienvl, 0));
+        .attr("id", (d, i) => ['oc_cpxd', i, '7'].join('__'))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c7'].join(''))
+        .attr("data-maunen", "transparent")
+        .text((d) => viewso(d.tienvl, 0))
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
       row.append('div')
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c8'].join(''))
-        .text((d) => viewso(d.tiennc, 0));
+        .attr("id", (d, i) => ['oc_cpxd', i, '8'].join('__'))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c8'].join(''))
+        .attr("data-maunen", "transparent")
+        .text((d) => viewso(d.tiennc, 0))
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
       row.append('div')
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c9'].join(''))
-        .text((d) => viewso(d.tienmtc, 0));
+        .attr("id", (d, i) => ['oc_cpxd', i, '9'].join('__'))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c9'].join(''))
+        .attr("data-maunen", "transparent")
+        .text((d) => viewso(d.tienmtc, 0))
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
     },
     cpvt: () => {
       let bang = d3.select("table[id='oc_cpvt']")

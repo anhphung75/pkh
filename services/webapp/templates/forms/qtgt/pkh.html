@@ -40,19 +40,18 @@
 {% end %}
 
 {% block webapp %}
-<div class="grid hoso">
-  <div id="qrcode">qrcode</div>
-  <div id="barcode">barcode</div>
-  <div><input id="in_mahoso" value='1' /></div>
-  <div><input id="in_idhoso" value='1' /></div>
-  <div><input id="in_sodot" value='1' /></div>
-  <div><input id="in_sohoso" value='1' /></div>
-  <div><input id="in_khachhang" value='1' /></div>
-  <div><input id="in_diachi" value='1' /></div>
-</div>
 <section id="qtgt" data-swidb="{{static_url(r'js/forms/qtgt/swidb.js',True)}}"
   data-swapi="{{static_url(r'js/forms/qtgt/swapi.js',True)}}">
-
+  <div class="grid hoso">
+    <div id="qrcode">qrcode</div>
+    <div id="barcode">barcode</div>
+    <div><input id="in_mahoso" value='1' /></div>
+    <div><input id="in_idhoso" value='1' /></div>
+    <div><input id="in_sodot" value='1' /></div>
+    <div><input id="in_sohoso" value='1' /></div>
+    <div><input id="in_khachhang" value='1' /></div>
+    <div><input id="in_diachi" value='1' /></div>
+  </div>
   <ol class="vung_otim">
     <li class="l">
       <div class="c">Năm</div>
@@ -86,45 +85,48 @@
     <div class="l">Mtc</div>
     <div class="r" id="oc_zmtc">1</div>
   </div>
-  <ol id="oc_cpxd_tieude" class="l">
-    <li class="c tde">TT</li>
-    <li class="c tde">Mô tả công tác</li>
-    <li class="c tde">Đvt</li>
-    <li class="c tde">Số lượng</li>
-    <li class="c tde">Giá vật liệu</li>
-    <li class="c tde">Giá nhân công</li>
-    <li class="c tde">Giá mtc</li>
-    <li class="c tde">Tiền vật liệu</li>
-    <li class="c tde">Tiền nhân công</li>
-    <li class="c tde">Tiền mtc</li>
-  </ol>
-  <ol id="oc_cpxd" class="l"></ol>
-  <ol id="oc_cpvt_tieude" class="l">
-    <li class="c tde">TT</li>
-    <li class="c tde">Mô tả vật tư</li>
-    <li class="c tde">Đvt</li>
-    <li class="c tde">Số lượng</li>
-    <li class="c tde">Giá vật liệu</li>
-    <li class="c tde">Giá nhân công</li>
-    <li class="c tde">Giá mtc</li>
-    <li class="c tde">Tiền vật liệu</li>
-    <li class="c tde">Tiền nhân công</li>
-    <li class="c tde">Tiền mtc</li>
-  </ol>
-  <ol id="oc_cpvt" class="l"></ol>
-  <ol id="oc_cpvl_tieude" class="l">
-    <li class="c tde">TT</li>
-    <li class="c tde">Mô tả vật liệu</li>
-    <li class="c tde">Đvt</li>
-    <li class="c tde">Số lượng</li>
-    <li class="c tde">Giá vật liệu</li>
-    <li class="c tde">Giá nhân công</li>
-    <li class="c tde">Giá mtc</li>
-    <li class="c tde">Tiền vật liệu</li>
-    <li class="c tde">Tiền nhân công</li>
-    <li class="c tde">Tiền mtc</li>
-  </ol>
-  <ol id="oc_cpvl" class="l"></ol>
+  <div id="show_ongcai" class="l w100">
+    <ol id="oc_cpxd_tieude" class="l">
+      <li class="c tde">TT</li>
+      <li class="c tde">Mô tả công tác</li>
+      <li class="c tde">Đvt</li>
+      <li class="c tde">Số lượng</li>
+      <li class="c tde">Giá vật liệu</li>
+      <li class="c tde">Giá nhân công</li>
+      <li class="c tde">Giá mtc</li>
+      <li class="c tde">Tiền vật liệu</li>
+      <li class="c tde">Tiền nhân công</li>
+      <li class="c tde">Tiền mtc</li>
+    </ol>
+    <ol id="oc_cpxd" class="l"></ol>
+    <ol id="oc_cpvt_tieude" class="l">
+      <li class="c tde">TT</li>
+      <li class="c tde">Mô tả vật tư</li>
+      <li class="c tde">Đvt</li>
+      <li class="c tde">Số lượng</li>
+      <li class="c tde">Giá vật liệu</li>
+      <li class="c tde">Giá nhân công</li>
+      <li class="c tde">Giá mtc</li>
+      <li class="c tde">Tiền vật liệu</li>
+      <li class="c tde">Tiền nhân công</li>
+      <li class="c tde">Tiền mtc</li>
+    </ol>
+    <ol id="oc_cpvt" class="l"></ol>
+    <ol id="oc_cpvl_tieude" class="l">
+      <li class="c tde">TT</li>
+      <li class="c tde">Mô tả vật liệu</li>
+      <li class="c tde">Đvt</li>
+      <li class="c tde">Số lượng</li>
+      <li class="c tde">Giá vật liệu</li>
+      <li class="c tde">Giá nhân công</li>
+      <li class="c tde">Giá mtc</li>
+      <li class="c tde">Tiền vật liệu</li>
+      <li class="c tde">Tiền nhân công</li>
+      <li class="c tde">Tiền mtc</li>
+    </ol>
+    <ol id="oc_cpvl" class="l"></ol>
+  </div>
+
 </section>
 <section id="ongnganh">
   <div class="grid ongnganh">

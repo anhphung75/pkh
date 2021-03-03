@@ -115,6 +115,9 @@ body {
 .f-1 {
   font-size: calc(1rem - 1pt);
 }
+.f0 {
+  font-size: 1rem;
+}
 
 .f1 {
   font-size: calc(1rem + 1pt);
@@ -293,7 +296,10 @@ body {
 .fat {
   flex: 1 1 0%;
 }
-
+.fito {
+  height: 100%;
+  width: 100%;
+}
 .grid {
   display: grid;
 }
