@@ -11,6 +11,7 @@ var app = {
   plgia: 'dutoan',
   mabaogia: 20210101,
   macpql: 20200827,
+  chiphi: -1,
   oc: {
     zvl: 0,
     znc: 0,
@@ -204,167 +205,7 @@ var web = {
     ga.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
     ga.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
   },
-  hov_intag: (tagid = null) => {
-    let tag, zone, row, col;
-    try {
-      tagid ? web.tagid = tagid : tagid = web.tagid;
-      tag = tagid.split('__');
-    } catch (err) { return; }
-    zone = tag[0];
-    row = tag[1];
-    col = tag[2];
-    if (zone.charAt(0) == '#') { zone = zone.substr(1); }
-    tag = ['.', zone, '.r', row].join('');
-    d3.selectAll(tag)
-      .each(function () {
-        let o = d3.select(this);
-        o.style("background-color", "yellow");
-      });
-    tag = ['.', zone, '.c', col].join('');
-    d3.selectAll(tag)
-      .each(function () {
-        let o = d3.select(this);
-        o.style("background-color", "yellow");
-      });
-    if (tagid.charAt(0) != '#') { tagid = ['#', tagid].join(''); }
-    d3.selectAll(tagid)
-      .each(function () {
-        let o = d3.select(this);
-        o.style("background-color", "#999fff");
-      });
-  },
-  hov_outtag: (tagid = null) => {
-    let tag, zone, row, col;
-    try {
-      tagid ? web.tagid = tagid : tagid = web.tagid;
-      tag = tagid.split('__');
-    } catch (err) { return; }
-    zone = tag[0];
-    row = tag[1];
-    col = tag[2];
-    if (zone.charAt(0) == '#') { zone = zone.substr(1); }
-    tag = ['.', zone, '.r', row].join('');
-    d3.selectAll(tag).style("background-color", "transparent");
-    tag = ['.', zone, '.c', col].join('');
-    d3.selectAll(tag).style("background-color", "transparent");
-  },
-  move2id: (row = 0, col = 0) => {
-    console.log("start move2id=", web.tagid, " row=", row, " col=", col);
-    if (!row && !col) { return; }
-    let tagid, tag, zone, el, maxR, maxC;
-    try {
-      tagid = web.tagid;
-      tag = tagid.split('__');
-    } catch (err) { return; }
-    if (tagid.charAt(0) != '#') { tagid = ['#', tagid].join(''); }
-    zone = tag[0].toLowerCase();
-    if (zone.charAt(0) == '#') { zone.substr(1); }
-    row = parseInt(tag[1]) + parseInt(row);
-    col = parseInt(tag[2]) + parseInt(col);
-    switch (zone) {
-      case 'oc_cpxd':
-        maxR = app.oc.cpxd.length + 1;
-        maxC = 9;
-        if (row > maxR) {
-          zone = 'oc_cpvt';
-          row = 1;
-          col = 0;
-        };
-        if (row < 0) {
-          zone = 'oc_cpvl';
-          row = app.oc.cpvl.length + 1;
-          col = 0;
-        };
-        break;
-      case 'oc_cpvt':
-        maxR = app.oc.cpvt.length + 1;
-        maxC = 9;
-        if (row > maxR) {
-          zone = 'oc_cpvl';
-          row = 1;
-          col = 0;
-        };
-        if (row < 0) {
-          zone = 'oc_cpxd';
-          row = app.oc.cpxd.length + 1;
-          col = 0;
-        };
-        break;
-      case 'oc_cpvl':
-        maxR = app.oc.cpvl.length + 1;
-        maxC = 9;
-        if (row > maxR) {
-          zone = 'oc_cpxd';
-          row = 1;
-          col = 0;
-        };
-        if (row < 0) {
-          zone = 'oc_cpvt';
-          row = app.oc.cpvt.length + 1;
-          col = 0;
-        };
-        break;
-      case 'on_cpxd':
-        maxR = app.on.cpxd.length + 1;
-        maxC = 9;
-        if (row > maxR) {
-          zone = 'on_cpvt';
-          row = 1;
-          col = 0;
-        };
-        if (row < 0) {
-          zone = 'on_cpvl';
-          row = app.on.cpvl.length + 1;
-          col = 0;
-        };
-        break;
-      case 'on_cpvt':
-        maxR = app.on.cpvt.length + 1;
-        maxC = 9;
-        if (row > maxR) {
-          zone = 'on_cpvl';
-          row = 1;
-          col = 0;
-        };
-        if (row < 0) {
-          zone = 'on_cpxd';
-          row = app.on.cpxd.length + 1;
-          col = 0;
-        };
-        break;
-      case 'on_cpvl':
-        maxR = app.on.cpvl.length + 1;
-        maxC = 9;
-        if (row > maxR) {
-          zone = 'on_cpxd';
-          row = 1;
-          col = 0;
-        };
-        if (row < 0) {
-          zone = 'on_cpvt';
-          row = app.on.cpvt.length + 1;
-          col = 0;
-        };
-        break;
-      default:
-        maxR = row;
-        maxC = col;
-    }
-    col > maxC ? col = 0 : col < 0 ? col = maxC : col;
-    console.log("move2id hov_outtag tagid=", JSON.stringify(tagid));
-    web.hov_outtag(tagid);
-    tag = [zone, row, col].join('__');
-    web.tagid = tag;
-    tagid = ['#', tag].join('');
-    console.log("move2id hov_intag tagid=", JSON.stringify(tagid));
-    web.hov_intag(tagid);
-    el = d3.select(tagid).node();
-    console.log("end move2id=", tagid);
-    if (el && ['INPUT'].includes(el.tagName)) {
-      el.focus();
-      el.select();
-    }
-  },
+
   otim: {
     nam: () => {
       let zone, inp, box,
@@ -957,7 +798,7 @@ var web = {
           .style("max-height", "10.25rem")
           .style("overflow-y", "auto")
           .style("border", "1px solid #d4d4d4");
-        //noidung
+        //noidung chon
         rec = box.selectAll("li").data(dulieu)
           .enter()
           .append("li")
@@ -967,15 +808,16 @@ var web = {
           .on("click", (ev, d) => {
             if (d.id !== 'tieude') {
               console.log("click #xem>li d=", JSON.stringify(d));
+              box.remove();
             }
           });
         rec.append("div")
           .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
           .attr("class", (d, i) => {
             if (i == 0) {
-              return ['c u fb fito chiphi r', i, ' c1'].join('');
+              return ['c u fb chiphi r', i, ' c1'].join('');
             } else {
-              return ['l fb fito chiphi r', i, ' c1'].join('');
+              return ['l fb chiphi r', i, ' c1'].join('');
             }
           })
           .text(d => d.show)
@@ -991,9 +833,9 @@ var web = {
           .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
           .attr("class", (d, i) => {
             if (i == 0) {
-              return ['c u fb fito chiphi r', i, ' c2'].join('');
+              return ['c u fb chiphi r', i, ' c2'].join('');
             } else {
-              return ['l fb fito chiphi r', i, ' c2'].join('');
+              return ['l fb chiphi r', i, ' c2'].join('');
             }
           })
           .text(d => d.mota)
@@ -1021,7 +863,7 @@ var web = {
 
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '0'].join('__'))
-        .attr("class", (d, i) => ['c bb fito oc_cpxd r', i, ' c0'].join(''))
+        .attr("class", (d, i) => ['c bb oc_cpxd r', i, ' c0'].join(''))
         .text((d) => {
           let tt = parseInt(d.tt);
           return tt > 99 ? tt : tt > 9 ? ['0', tt].join('') : ['00', tt + 1].join('');
@@ -1035,11 +877,10 @@ var web = {
           web.hov_outtag(web.tagid);
         });
       row.append('div')
-        .attr("class", "bb fito")
-        .style("display", 'block')
+        .attr("class", "bb flec")
         .append('input')
         .attr("id", (d, i) => ['oc_cpxd', i, '1'].join('__'))
-        .attr("class", (d, i) => ['l f0 oc_cpxd r', i, ' c1'].join(''))
+        .attr("class", (d, i) => ['l f0 fito oc_cpxd r', i, ' c1'].join(''))
         .attr("value", (d) => d.mota)
         .style("margin", 0)
         .style("padding", "1px")
@@ -1053,25 +894,40 @@ var web = {
         })
         .on("change", (ev, d) => {
           //try {
-          web.tagid = ev.target.id;
+          console.log("truoc app.oc.cpxd[", d.tt, "]=", JSON.stringify(app.oc.cpxd[d.tt]));
+          let r = app.oc.cpxd[d.tt];
+          r.chiphi = app.chiphi;
+          console.log("sau app.oc.cpxd[", d.tt, "]=", JSON.stringify(app.oc.cpxd[d.tt]));
+          console.log("sau r[", d.tt, "]=", JSON.stringify(app.oc.cpxd[d.tt]));
           //tinh lai gia chi phi
           //idb.tinh.oc.cpxd(stt);
-          web.oc.cpxd();
-          web.oc.bth();
+          //web.oc.cpxd();
+          //web.oc.bth();
           //chuyen toi dong ke tiep
-          //web.move2id('oc_cpxd', stt, 1, 13);
+          //web.tagid = ev.target.id;
+          //web.move2id(1, 0);
           //} catch (err) {
           //console.log("err=", JSON.stringify(err));
           //}
         })
+        .on("input", function (ev, d) {
+          let el = ev.target.parentNode,
+            stim = ev.target.value;
+          d3.select(ev.target).classed("fito", false);
+          web.box.chiphi(el, 'cpxd', stim, true);
+          //ev.target.focus();
+          //ev.target.select();
+        })
         .on("click", function (ev, d) {
           if (d3.select("#xem").node()) {
             d3.selectAll("#xem").remove();
-            d3.select(ev.target).classed("f0", false);
+            d3.select(ev.target).classed("fito", true);
           } else {
             console.log("mota click ev.target.parentNode=", JSON.stringify(ev.target.parentNode));
-            xem_chon(ev.target.parentNode);
-            d3.select(ev.target).classed("f0", true);
+            let el = ev.target.parentNode,
+              stim = ev.target.value;
+            d3.select(ev.target).classed("fito", false);
+            web.box.chiphi(el, 'cpxd', stim, true);
             ev.target.focus();
             ev.target.select();
           }
@@ -1079,12 +935,13 @@ var web = {
         .on("keydown", function (ev, d) {
           if ([13, 40, 38].includes(ev.keyCode)) {
             //chuyen dong ke tiep
-            //web.move2id('oc_cpxd', ev.target.dataset.stt, 1, ev.keyCode);
+            web.tagid = ev.target.id;
+            web.move2id(1, 0);
           }
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '2'].join('__'))
-        .attr("class", (d, i) => ['c bb fito oc_cpxd r', i, ' c2'].join(''))
+        .attr("class", (d, i) => ['c bb oc_cpxd r', i, ' c2'].join(''))
         .text((d) => d.dvt)
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1095,7 +952,7 @@ var web = {
           web.hov_outtag(web.tagid);
         });
       row.append('div')
-        .attr("class", "bb fito")
+        .attr("class", "bb flec")
         .append('input')
         .attr("id", (d, i) => ['oc_cpxd', i, '3'].join('__'))
         .attr("class", (d, i) => ['r f0 oc_cpxd r', i, ' c3'].join(''))
@@ -1137,7 +994,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '4'].join('__'))
-        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c4'].join(''))
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c4'].join(''))
         .text((d) => viewso(d.giavl, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1149,7 +1006,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '5'].join('__'))
-        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c5'].join(''))
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c5'].join(''))
         .text((d) => viewso(d.gianc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1161,7 +1018,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '6'].join('__'))
-        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c6'].join(''))
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c6'].join(''))
         .text((d) => viewso(d.giamtc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1173,7 +1030,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '7'].join('__'))
-        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c7'].join(''))
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c7'].join(''))
         .text((d) => viewso(d.tienvl, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1185,7 +1042,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '8'].join('__'))
-        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c8'].join(''))
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c8'].join(''))
         .text((d) => viewso(d.tiennc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1197,7 +1054,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '9'].join('__'))
-        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c9'].join(''))
+        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c9'].join(''))
         .text((d) => viewso(d.tienmtc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1920,24 +1777,6 @@ var web = {
     let zone, kiem, bang, rec, self;
     zone = d3.select("section[id='cpql']");
   },
-  sregexp: (stim) => {
-    if (!stim) {
-      return stim;
-    }
-    let k,
-      ltim = [...stim];
-    let mau = "";
-    for (k in ltim) {
-      if (
-        ["$", "(", ")", "[", ".", "+", "*", "^", "?", "\\"].includes(ltim[k])
-      ) {
-        mau += "\\" + ltim[k];
-      } else {
-        mau += ltim[k];
-      }
-    }
-    return mau;
-  },
   tientrinh: () => {
     let hg, zone = d3.select("#tientrinh")
     if (app.prog === 100) {
@@ -1953,57 +1792,278 @@ var web = {
       hg = setTimeout(web.tientrinh(), 300);
     }
   },
+  hov_intag: (tagid = null) => {
+    let tag, zone, row, col;
+    try {
+      tagid ? web.tagid = tagid : tagid = web.tagid;
+      tag = tagid.split('__');
+    } catch (err) { return; }
+    zone = tag[0];
+    row = tag[1];
+    col = tag[2];
+    if (zone.charAt(0) == '#') { zone = zone.substr(1); }
+    tag = ['.', zone, '.r', row].join('');
+    d3.selectAll(tag)
+      .each(function () {
+        let o = d3.select(this);
+        o.style("background-color", "yellow");
+      });
+    tag = ['.', zone, '.c', col].join('');
+    d3.selectAll(tag)
+      .each(function () {
+        let o = d3.select(this);
+        o.style("background-color", "yellow");
+      });
+    if (tagid.charAt(0) != '#') { tagid = ['#', tagid].join(''); }
+    d3.selectAll(tagid)
+      .each(function () {
+        let o = d3.select(this);
+        o.style("background-color", "#999fff");
+      });
+  },
+  hov_outtag: (tagid = null) => {
+    let tag, zone, row, col;
+    try {
+      tagid ? web.tagid = tagid : tagid = web.tagid;
+      tag = tagid.split('__');
+    } catch (err) { return; }
+    zone = tag[0];
+    row = tag[1];
+    col = tag[2];
+    if (zone.charAt(0) == '#') { zone = zone.substr(1); }
+    tag = ['.', zone, '.r', row].join('');
+    d3.selectAll(tag).style("background-color", "transparent");
+    tag = ['.', zone, '.c', col].join('');
+    d3.selectAll(tag).style("background-color", "transparent");
+  },
+  move2id: (row = 0, col = 0) => {
+    console.log("start move2id=", web.tagid, " row=", row, " col=", col);
+    if (!row && !col) { return; }
+    let tagid, tag, zone, el, maxR, maxC;
+    try {
+      tagid = web.tagid;
+      tag = tagid.split('__');
+    } catch (err) { return; }
+    if (tagid.charAt(0) != '#') { tagid = ['#', tagid].join(''); }
+    zone = tag[0].toLowerCase();
+    if (zone.charAt(0) == '#') { zone.substr(1); }
+    row = parseInt(tag[1]) + parseInt(row);
+    col = parseInt(tag[2]) + parseInt(col);
+    switch (zone) {
+      case 'oc_cpxd':
+        maxR = app.oc.cpxd.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'oc_cpvt';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'oc_cpvl';
+          row = app.oc.cpvl.length + 1;
+          col = 0;
+        };
+        break;
+      case 'oc_cpvt':
+        maxR = app.oc.cpvt.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'oc_cpvl';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'oc_cpxd';
+          row = app.oc.cpxd.length + 1;
+          col = 0;
+        };
+        break;
+      case 'oc_cpvl':
+        maxR = app.oc.cpvl.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'oc_cpxd';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'oc_cpvt';
+          row = app.oc.cpvt.length + 1;
+          col = 0;
+        };
+        break;
+      case 'on_cpxd':
+        maxR = app.on.cpxd.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'on_cpvt';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'on_cpvl';
+          row = app.on.cpvl.length + 1;
+          col = 0;
+        };
+        break;
+      case 'on_cpvt':
+        maxR = app.on.cpvt.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'on_cpvl';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'on_cpxd';
+          row = app.on.cpxd.length + 1;
+          col = 0;
+        };
+        break;
+      case 'on_cpvl':
+        maxR = app.on.cpvl.length + 1;
+        maxC = 9;
+        if (row > maxR) {
+          zone = 'on_cpxd';
+          row = 1;
+          col = 0;
+        };
+        if (row < 0) {
+          zone = 'on_cpvt';
+          row = app.on.cpvt.length + 1;
+          col = 0;
+        };
+        break;
+      default:
+        maxR = row;
+        maxC = col;
+    }
+    col > maxC ? col = 0 : col < 0 ? col = maxC : col;
+    console.log("move2id hov_outtag tagid=", JSON.stringify(tagid));
+    web.hov_outtag(tagid);
+    tag = [zone, row, col].join('__');
+    web.tagid = tag;
+    tagid = ['#', tag].join('');
+    console.log("move2id hov_intag tagid=", JSON.stringify(tagid));
+    web.hov_intag(tagid);
+    el = d3.select(tagid).node();
+    console.log("end move2id=", tagid);
+    if (el && ['INPUT'].includes(el.tagName)) {
+      el.focus();
+      el.select();
+    }
+  },
   box: {
     hov: { mau1: "#9999ff" },
-    nam: (zone, inp) => {
-
-    },
-    move2id: (bang, row = 0, col = 3, keyCode = 0) => {
-      console.log("box move2id ", bang, " row=", row, " col=", col, " keyCode=", keyCode);
-      console.log("box move2id comb=", JSON.stringify(d3.select("#comb-chiphi")));
+    chiphi(el, plcp, stim = null, qtgt = true) {
       try {
-        bang = bang.toString().toLowerCase();
-        if (bang.length < 1) {
-          return;
-        } else {
-          if (!['chiphi'].includes(bang)) {
-            return;
-          }
-        }
-        row = row === '0' ? 0 : parseInt(row) || -1;
-        if (row < 0) { return; }
-        col = col === '0' ? 0 : parseInt(col) || -1;
-        if (col < 0) { return; }
-        keyCode = keyCode === '0' ? 0 : parseInt(keyCode) || -1;
-        if (keyCode < 0) { return; }
+        plcp = plcp.toString().toLowerCase();
+        if (!(['cpxd', 'cpvt', 'cpvl', 'cptl'].includes(plcp))) { return; }
       } catch (err) { return; }
-      let e,
-        het = ga[bang].length || 0,
-        s = ['.', bang].join('');
-      d3.selectAll(s).classed("mau", false);
-      if ([13, 40].includes(keyCode)) {
-        try {
-          s = ['.', bang, '.row', row + 1, '.col', col].join('');
-          d3.select(s).classed("mau", true);
-        } catch (err) {
-          s = ['.', bang, '.row', 0, '.col', col].join('');
-          console.log("box move2id toi ", s);
-          d3.select(s).classed("mau", true);
+      try {
+        stim = stim.toString().toLowerCase();
+      } catch (err) { stim = ''; }
+
+      console.log("open box chiphi", JSON.stringify(app.chiphi));
+      let zone, k, r, row,
+        zdl = ga.chiphi,
+        dulieu = [
+          { id: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },
+          { id: "...", mota: "(Không chọn)", dvt: "" },
+        ];
+      for (k in zdl) {
+        r = zdl[k];
+        if (r.plcp === plcp && JSON.stringify(r).includes(stim)) {
+          r.id = k;
+          r.show = qtgt ? ham.stomau(r.mota.qtgt, stim) : ham.stomau(r.mota.qtvt, stim);
+          r.dvt = ham.stomau(r.dvt, stim);
+          dulieu.push(r);
         }
       }
-      if ([38].includes(keyCode)) {
-        try {
-          s = ['.', bang, '.row', row - 1, '.col', col].join('');
-          d3.select(s).classed("mau", true);
-          console.log("box move2id toi ", s);
-        } catch (err) {
-          s = ['.', bang, '.row', het - 1, '.col', col].join('');
-          d3.select(s).classed("mau", true);
-          console.log("box move2id toi ", s);
-        }
-      }
+      d3.selectAll("#xem").remove();
+      zone = d3.select(el).append("ol")
+        .attr("id", "xem")
+        .style("list-style", "none")
+        .style("margin", 0)
+        .style("padding", 0)
+        .style("max-height", "10.25rem")
+        .style("overflow-y", "auto")
+        .style("border", "1px solid #d4d4d4");
+      //noidung chon
+      row = zone.selectAll("li").data(dulieu)
+        .enter()
+        .append("li")
+        .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
+        .style("display", "grid")
+        .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
+        .on("click", (ev, d) => {
+          ev.preventDefault();
+          console.log("click box chiphi #xem>li ev=", JSON.stringify(ev.target));
+          console.log("click box chiphi #xem>li d0=", JSON.stringify(ga.chiphi));
+          if (ev.target.id != 'chiphi__0__0') {
+            ga.chiphi = d.id;
+            zone.remove();
+            console.log("click box chiphi #xem>li d1=", JSON.stringify(ga.chiphi));
+          }
+        });
+      //o chi tiet
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
+        .attr("class", (d, i) => {
+          if (i == 0) {
+            return ['c u fb chiphi r', i, ' c1'].join('');
+          } else {
+            return ['l fb chiphi r', i, ' c1'].join('');
+          }
+        })
+        //.style("grid-area", "1/1/3/2")
+        .html(d => d.id)
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
+        .attr("class", (d, i) => {
+          if (i == 0) {
+            return ['c u fb chiphi r', i, ' c2'].join('');
+          } else {
+            return ['l fb chiphi r', i, ' c2'].join('');
+          }
+        })
+        .html(d => d.show)
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 3].join('__'))
+        .attr("class", (d, i) => {
+          if (i == 0) {
+            return ['c u fb chiphi r', i, ' c3'].join('');
+          } else {
+            return ['l fb chiphi r', i, ' c3'].join('');
+          }
+        })
+        .html(d => d.dvt)
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
     },
-    chiphi: (el, plcp, stim) => {
+    chiphi_old: (el, plcp, stim) => {
       console.log("box chiphi el=", el, " plcp=", plcp, " stim=", stim);
 
       function kq2el(uid = null, show = null) {
@@ -2758,7 +2818,40 @@ var idb = {
   },
 };
 
-
+var ham = {
+  sregexp: (stim) => {
+    if (!stim) {
+      return stim;
+    }
+    let k,
+      ltim = [...stim];
+    let mau = "";
+    for (k in ltim) {
+      if (
+        ["$", "(", ")", "[", ".", "+", "*", "^", "?", "\\"].includes(ltim[k])
+      ) {
+        mau += "\\" + ltim[k];
+      } else {
+        mau += ltim[k];
+      }
+    }
+    return mau;
+  },
+  stomau: (chuoi, stim, sac = 'red') => {
+    try { chuoi = chuoi.toString().toLowerCase(); } catch (err) { return null; }
+    try {
+      stim = stim.toString().toLowerCase();
+      if (stim.length < 1) { return chuoi; }
+    } catch (err) { return chuoi; }
+    let mau = ham.sregexp(stim);
+    mau = new RegExp(mau, "gi");
+    chuoi = chuoi.replace(mau, (m) => {
+      if (m === undefined || m === null || m === "") { return; }
+      return ["<b style='color:", sac, "'>", m, "</b>"].join('');
+    });
+    return chuoi;
+  },
+};
 
 function luanhoi() {
   web.tao();

@@ -1,5 +1,4 @@
 @charset "UTF-8";
-
 *,
 *:before,
 *:after {
@@ -9,21 +8,17 @@
   z-index: 0;
 }
 
-/* Works on Firefox */
+/* Scroll bar Works on Firefox */
 * {
   scrollbar-width: 8px;
   scrollbar-color: red transparent;
 }
-
-/* Works on Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 8px;
 }
-
 *::-webkit-scrollbar-track {
   background: transparent;
 }
-
 *::-webkit-scrollbar-thumb {
   background-color: red;
   border-radius: 10px;
@@ -37,7 +32,6 @@ html,
 body {
   font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep",
     "UVN Tin Tuc Hep Them", sans-serif;
-  /* font-size: 16pt; */
   margin: 0;
   border: 0;
   padding: 0;
@@ -53,24 +47,20 @@ body {
   text-align: left;
   padding: 1pt;
 }
-
 .r {
   text-align: right;
   padding: 1pt;
 }
-
 .c {
   text-align: center;
   top: 50%;
   padding: 1pt;
 }
-
 .j {
   text-align: justify;
   text-justify: inter-word;
   padding: 1pt;
 }
-
 .u {
   text-transform: uppercase;
 }
@@ -79,27 +69,21 @@ body {
 .fb {
   font-weight: bold;
 }
-
 .fi {
   font-style: italic;
 }
-
 .fu {
   text-decoration: underline;
 }
-
 .fc {
   font-stretch: semi-condensed;
 }
-
 .fc1 {
   font-stretch: condensed;
 }
-
 .fc2 {
   font-stretch: extra-condensed;
 }
-
 .fc3 {
   font-stretch: ultra-condensed;
 }
@@ -107,50 +91,39 @@ body {
 .f-3 {
   font-size: calc(1rem - 3pt);
 }
-
 .f-2 {
   font-size: calc(1rem - 2pt);
 }
-
 .f-1 {
   font-size: calc(1rem - 1pt);
 }
 .f0 {
   font-size: 1rem;
 }
-
 .f1 {
   font-size: calc(1rem + 1pt);
 }
-
 .f2 {
   font-size: calc(1rem + 2pt);
 }
-
 .f3 {
   font-size: calc(1rem + 3pt);
 }
-
 .f4 {
   font-size: calc(1rem + 4pt);
 }
-
 .f5 {
   font-size: calc(1rem + 5pt);
 }
-
 .f6 {
   font-size: calc(1rem + 6pt);
 }
-
 .f7 {
   font-size: calc(1rem + 7pt);
 }
-
 .f8 {
   font-size: calc(1rem + 8pt);
 }
-
 .f9 {
   font-size: calc(1rem + 9pt);
 }
@@ -161,25 +134,21 @@ body {
   padding-top: 2pt;
   padding-bottom: 2pt;
 }
-
 .c6 {
   height: calc(1rem + 6pt);
   padding-top: 3pt;
   padding-bottom: 3pt;
 }
-
 .c9 {
   height: calc(1rem + 9pt);
   padding-top: 3pt;
   padding-bottom: 3pt;
 }
-
 .c12 {
   height: calc(1rem + 12pt);
   padding-top: 3pt;
   padding-bottom: 3pt;
 }
-
 .c18 {
   height: calc(1rem + 18pt);
   padding-top: 3pt;
@@ -208,61 +177,51 @@ body {
 .btrbl {
   border: 1px solid black;
 }
-
 .btl {
   border-style: solid;
   border-color: black;
   border-width: 1px 0 0 1px;
 }
-
 .btrl {
   border-style: solid;
   border-color: black;
   border-width: 1px 1px 0 1px;
 }
-
 .btbl {
   border-style: solid;
   border-color: black;
   border-width: 1px 0 1px 1px;
 }
-
 .brbl {
   border-style: solid;
   border-color: black;
   border-width: 0 1px 1px 1px;
 }
-
 .brl {
   border-style: solid;
   border-color: black;
   border-width: 0 1px 0 1px;
 }
-
 .bt {
   border-style: solid;
   border-color: black;
   border-width: 1px 0 0 0;
 }
-
 .bb {
   border-style: solid;
   border-color: black;
   border-width: 0 0 1px 0;
 }
-
 .bbr {
   border-style: solid;
   border-color: black;
   border-width: 0 1px 1px 0;
 }
-
 .bbl {
   border-style: solid;
   border-color: black;
   border-width: 0 0 1px 1px;
 }
-
 .bl {
   border-style: solid;
   border-color: black;
@@ -272,11 +231,9 @@ body {
 .hov:hover {
   background-color: yellow;
 }
-
 .hov1:hover {
   background-color: lightgreen;
 }
-
 .mau,
 .hov2:hover {
   background-color: #999fff;
@@ -289,8 +246,22 @@ body {
   display: none;
 }
 
+.grid {
+  display: grid;
+  grid-auto-flow: row;
+}
+.gric {
+  display: grid;
+  grid-auto-flow: column;
+}
+
 .flex {
   display: flex;
+  flex-direction: row;
+}
+.flec {
+  display: flex;
+  flex-direction: column;
 }
 
 .fat {
@@ -299,9 +270,6 @@ body {
 .fito {
   height: 100%;
   width: 100%;
-}
-.grid {
-  display: grid;
 }
 
 input {
@@ -323,29 +291,25 @@ input {
   grid-template-columns: 15vh 1fr;
   overflow: hidden;
 }
-
-#trangxem header {
+#trangxem > header {
   grid-column: 1 / 3;
   grid-row: 1 / 2;
   background: #f0e68c;
   display: flex;
   justify-content: space-between;
 }
-
-#trangxem nav {
+#trangxem > nav {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
   background: #c0c0c0;
 }
-
-#trangxem main {
+#trangxem > main {
   grid-row: 2 / 3;
   grid-column: 2 / 3;
   background: transparent;
   overflow: auto;
 }
-
-#trangxem footer {
+#trangxem > footer {
   grid-column: 1 / 3;
   grid-row: 3 / 4;
   background: lightyellow;
