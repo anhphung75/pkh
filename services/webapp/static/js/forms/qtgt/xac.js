@@ -22,16 +22,16 @@ var app = {
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
       { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
     ],
-    cpvt: {
-      '0': { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      '1': { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      '2': { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    },
-    cpvl: {
-      '0': { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      '1': { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      '2': { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    },
+    cpvt: [
+      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
+    cpvl: [
+      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ],
   },
   on: {
     zvl: 0,
@@ -137,28 +137,38 @@ var ga = {
     '11': { idutc: 11, plcp: 'cptl', mota: { qtgt: 'cp5', qtvt: 'cp01' }, dvt: 'cai' },
     '12': { idutc: 12, plcp: 'cptl', mota: { qtgt: 'cp6', qtvt: 'cp01' }, dvt: 'cai' },
   },
-
-
   cpql: { ma: 20200827 },
   bgvl: {
-    '001.001': { 'dutoan': 1123, 'ketoan': 1245 },
-    '001.002': { 'dutoan': 1123, 'ketoan': 1245 },
-    '001.003': { 'dutoan': 1123, 'ketoan': 1245 }
+    'dutoan.20210101.1': 1123,
+    'ketoan.20210101.1': 1245,
+    'dutoan.20210101.2': 1123,
+    'ketoan.20210101.2': 1245,
+    'dutoan.20210101.3': 1123,
+    'ketoan.20210101.3': 1245,
   },
   bgnc: {
-    '001.001': { 'dutoan': 1123, 'ketoan': 1245 },
-    '001.002': { 'dutoan': 1123, 'ketoan': 1245 },
-    '001.003': { 'dutoan': 1123, 'ketoan': 1245 }
+    'dutoan.20210101.1': 23456,
+    'ketoan.20210101.1': 1245,
+    'dutoan.20210101.2': 1123,
+    'ketoan.20210101.2': 1245,
+    'dutoan.20210101.3': 1123,
+    'ketoan.20210101.3': 1245,
   },
   bgmtc: {
-    '001.001': { 'dutoan': 1123, 'ketoan': 1245 },
-    '001.002': { 'dutoan': 1123, 'ketoan': 1245 },
-    '001.003': { 'dutoan': 1123, 'ketoan': 1245 }
+    'dutoan.20210101.1': 789500,
+    'ketoan.20210101.1': 1245,
+    'dutoan.20210101.2': 1123,
+    'ketoan.20210101.2': 1245,
+    'dutoan.20210101.3': 1123,
+    'ketoan.20210101.3': 1245,
   },
   bgtl: {
-    '001.001': { 'dutoan': 1123, 'ketoan': 1245 },
-    '001.002': { 'dutoan': 1123, 'ketoan': 1245 },
-    '001.003': { 'dutoan': 1123, 'ketoan': 1245 }
+    'dutoan.20210101.1': 189478,
+    'ketoan.20210101.1': 1245,
+    'dutoan.20210101.2': 1123,
+    'ketoan.20210101.2': 1245,
+    'dutoan.20210101.3': 1123,
+    'ketoan.20210101.3': 1245,
   },
 
 
@@ -705,7 +715,9 @@ var web = {
   },
   oc: {
     bth: () => {
-      let zone, kiem, self;
+      let zone, kiem,
+        self = app.oc;
+      console.log("bth app.oc=", JSON.stringify(self));
       zone = d3.select("#ongcai");
       kiem = zone.select(".grid.ongcai")
         .attr("data-show", "true")
@@ -719,7 +731,6 @@ var web = {
           }
         });
       if (!('oc' in app)) { app.oc = { zvl: 0, znc: 0, zmtc: 0 }; }
-      self = app.oc;
       try {
         self.zvl = self.cpxd.reduce(function (z, rec) { return z + rec.tienvl }, 0);
         self.zvl = self.cpvt.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
@@ -775,79 +786,24 @@ var web = {
       if (zdl.constructor !== Array) { return; }
       for (i in zdl) {
         r = zdl[i];
+        //tra lai chiphi
+        dl = ga.chiphi[r.chiphi];
+        r.mota = dl.mota.qtgt;
+        r.dvt = dl.dvt;
+        //tra lai gia
+        o = [app.plgia, app.mabaogia, r.chiphi].join('.');
+        r.giavl = ga.bgvl[o] || 0;
+        r.gianc = ga.bgnc[o] || 0;
+        r.giamtc = ga.bgmtc[o] || 0;
+        //tinh lai tien
+        r.tienvl = lamtronso(r.soluong * r.giavl, 0);
+        r.tiennc = lamtronso(r.soluong * r.gianc, 0);
+        r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
         r.tt = i;
+        r.plcp = 'cpxd';
+        r.plqt = 'oc';
         dulieu.push(r);
       }
-      function xem_chon(el) {
-        let k, r, rec,
-          zdl = ga.nam,
-          dulieu = [zdl.tieude];
-        for (k in zdl) {
-          if (k !== 'tieude') {
-            r = zdl[k];
-            r.id = k;
-            dulieu.push(r);
-          }
-        }
-        d3.selectAll("#xem").remove();
-        box = d3.select(el).append("ol")
-          .attr("id", "xem")
-          .style("list-style", "none")
-          .style("margin", 0)
-          .style("padding", 0)
-          .style("max-height", "10.25rem")
-          .style("overflow-y", "auto")
-          .style("border", "1px solid #d4d4d4");
-        //noidung chon
-        rec = box.selectAll("li").data(dulieu)
-          .enter()
-          .append("li")
-          .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
-          .style("display", "grid")
-          .style("grid", "auto-flow minmax(1rem, max-content) / minmax(max-content,1fr) minmax(max-content,4fr)")
-          .on("click", (ev, d) => {
-            if (d.id !== 'tieude') {
-              console.log("click #xem>li d=", JSON.stringify(d));
-              box.remove();
-            }
-          });
-        rec.append("div")
-          .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
-          .attr("class", (d, i) => {
-            if (i == 0) {
-              return ['c u fb chiphi r', i, ' c1'].join('');
-            } else {
-              return ['l fb chiphi r', i, ' c1'].join('');
-            }
-          })
-          .text(d => d.show)
-          .on("mouseenter", (ev) => {
-            web.tagid = ev.target.id;
-            web.hov_intag(web.tagid);
-          })
-          .on("mouseleave", (ev) => {
-            web.tagid = ev.target.id;
-            web.hov_outtag(web.tagid);
-          });
-        rec.append("div")
-          .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
-          .attr("class", (d, i) => {
-            if (i == 0) {
-              return ['c u fb chiphi r', i, ' c2'].join('');
-            } else {
-              return ['l fb chiphi r', i, ' c2'].join('');
-            }
-          })
-          .text(d => d.mota)
-          .on("mouseenter", (ev) => {
-            web.tagid = ev.target.id;
-            web.hov_intag(web.tagid);
-          })
-          .on("mouseleave", (ev) => {
-            web.tagid = ev.target.id;
-            web.hov_outtag(web.tagid);
-          });
-      };
       //main
       zone = d3.select("#oc_cpxd")
         .style("list-style", "none")
@@ -863,7 +819,7 @@ var web = {
 
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '0'].join('__'))
-        .attr("class", (d, i) => ['c bb oc_cpxd r', i, ' c0'].join(''))
+        .attr("class", (d, i) => ['c bb fito oc_cpxd r', i, ' c0'].join(''))
         .text((d) => {
           let tt = parseInt(d.tt);
           return tt > 99 ? tt : tt > 9 ? ['0', tt].join('') : ['00', tt + 1].join('');
@@ -877,7 +833,7 @@ var web = {
           web.hov_outtag(web.tagid);
         });
       row.append('div')
-        .attr("class", "bb flec")
+        .attr("class", "bb")
         .append('input')
         .attr("id", (d, i) => ['oc_cpxd', i, '1'].join('__'))
         .attr("class", (d, i) => ['l f0 fito oc_cpxd r', i, ' c1'].join(''))
@@ -892,47 +848,27 @@ var web = {
           web.tagid = ev.target.id;
           web.hov_outtag(web.tagid);
         })
-        .on("change", (ev, d) => {
-          //try {
-          console.log("truoc app.oc.cpxd[", d.tt, "]=", JSON.stringify(app.oc.cpxd[d.tt]));
-          let r = app.oc.cpxd[d.tt];
-          r.chiphi = app.chiphi;
-          console.log("sau app.oc.cpxd[", d.tt, "]=", JSON.stringify(app.oc.cpxd[d.tt]));
-          console.log("sau r[", d.tt, "]=", JSON.stringify(app.oc.cpxd[d.tt]));
-          //tinh lai gia chi phi
-          //idb.tinh.oc.cpxd(stt);
-          //web.oc.cpxd();
-          //web.oc.bth();
-          //chuyen toi dong ke tiep
-          //web.tagid = ev.target.id;
-          //web.move2id(1, 0);
-          //} catch (err) {
-          //console.log("err=", JSON.stringify(err));
-          //}
-        })
         .on("input", function (ev, d) {
           let el = ev.target.parentNode,
             stim = ev.target.value;
           d3.select(ev.target).classed("fito", false);
-          web.box.chiphi(el, 'cpxd', stim, true);
-          //ev.target.focus();
-          //ev.target.select();
+          web.box.chiphi(el, d, stim);
         })
         .on("click", function (ev, d) {
           if (d3.select("#xem").node()) {
             d3.selectAll("#xem").remove();
             d3.select(ev.target).classed("fito", true);
           } else {
-            console.log("mota click ev.target.parentNode=", JSON.stringify(ev.target.parentNode));
             let el = ev.target.parentNode,
               stim = ev.target.value;
             d3.select(ev.target).classed("fito", false);
-            web.box.chiphi(el, 'cpxd', stim, true);
+            web.box.chiphi(el, d, stim);
             ev.target.focus();
             ev.target.select();
           }
         })
         .on("keydown", function (ev, d) {
+          d3.selectAll("#xem").remove();
           if ([13, 40, 38].includes(ev.keyCode)) {
             //chuyen dong ke tiep
             web.tagid = ev.target.id;
@@ -955,7 +891,7 @@ var web = {
         .attr("class", "bb flec")
         .append('input')
         .attr("id", (d, i) => ['oc_cpxd', i, '3'].join('__'))
-        .attr("class", (d, i) => ['r f0 oc_cpxd r', i, ' c3'].join(''))
+        .attr("class", (d, i) => ['r f0 fito oc_cpxd r', i, ' c3'].join(''))
         .attr("value", (d) => viewso(d.soluong, 0))
         .style("margin", 0)
         .style("padding", "1px")
@@ -994,7 +930,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '4'].join('__'))
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c4'].join(''))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c4'].join(''))
         .text((d) => viewso(d.giavl, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1006,7 +942,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '5'].join('__'))
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c5'].join(''))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c5'].join(''))
         .text((d) => viewso(d.gianc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1018,7 +954,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '6'].join('__'))
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c6'].join(''))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c6'].join(''))
         .text((d) => viewso(d.giamtc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1030,7 +966,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '7'].join('__'))
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c7'].join(''))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c7'].join(''))
         .text((d) => viewso(d.tienvl, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1042,7 +978,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '8'].join('__'))
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c8'].join(''))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c8'].join(''))
         .text((d) => viewso(d.tiennc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1054,7 +990,7 @@ var web = {
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '9'].join('__'))
-        .attr("class", (d, i) => ['r bb oc_cpxd r', i, ' c9'].join(''))
+        .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c9'].join(''))
         .text((d) => viewso(d.tienmtc, 0))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
@@ -1290,6 +1226,37 @@ var web = {
       row.append('td')
         .attr("class", "r bb")
         .text((d) => viewso(d.tienmtc, 0));
+    },
+    up_cpxd: (dl) => {
+      if (dl.constructor !== Object) { return; }
+      if (dl.chiphi === '...') {
+        app.oc.cpxd.splice(dl.tt, 1);
+      } else {
+        app.oc.cpxd[dl.tt] = dl;
+      }
+      web.oc.cpxd();
+      web.oc.bth();
+      //console.log("up_cpxd dl=", JSON.stringify(dl));
+    },
+    up_cpvt: (dl) => {
+      if (dl.constructor !== Object) { return; }
+      if (dl.chiphi === '...') {
+        app.oc.cpvt.splice(dl.tt, 1);
+      } else {
+        app.oc.cpvt[dl.tt] = dl;
+      }
+      web.oc.cpvt();
+      web.oc.bth();
+    },
+    up_cpvl: (dl) => {
+      if (dl.constructor !== Object) { return; }
+      if (dl.chiphi === '...') {
+        app.oc.cpvl.splice(dl.tt, 1);
+      } else {
+        app.oc.cpvl[dl.tt] = dl;
+      }
+      web.oc.cpvl();
+      web.oc.bth();
     },
   },
 
@@ -1777,19 +1744,19 @@ var web = {
     let zone, kiem, bang, rec, self;
     zone = d3.select("section[id='cpql']");
   },
-  tientrinh: () => {
-    let hg, zone = d3.select("#tientrinh")
+  tiendo: () => {
+    let hg, zone = d3.select("#tiendo")
     if (app.prog === 100) {
       zone.selectAll("*").remove();
       if (hg) { clearTimeout(hg); }
     } else {
       zone.selectAll("*").remove();
-      zone.append("label").text("Tiến trình ");
+      zone.append("label").text("Tiến độ ");
       zone.append("progress")
         .attr("max", 100)
         .attr("value", app.prog)
         .text([app.prog, "%"].join(''));
-      hg = setTimeout(web.tientrinh(), 300);
+      hg = setTimeout(web.tiendo(), 300);
     }
   },
   hov_intag: (tagid = null) => {
@@ -1955,9 +1922,11 @@ var web = {
   },
   box: {
     hov: { mau1: "#9999ff" },
-    chiphi(el, plcp, stim = null, qtgt = true) {
+    chiphi(el, dl, stim = null) {
+      if (dl.constructor !== Object) { return; }
+      let plcp;
       try {
-        plcp = plcp.toString().toLowerCase();
+        plcp = dl.plcp.toString().toLowerCase();
         if (!(['cpxd', 'cpvt', 'cpvl', 'cptl'].includes(plcp))) { return; }
       } catch (err) { return; }
       try {
@@ -1965,17 +1934,18 @@ var web = {
       } catch (err) { stim = ''; }
 
       console.log("open box chiphi", JSON.stringify(app.chiphi));
-      let zone, k, r, row,
+      let zone, k, r, ss, row,
         zdl = ga.chiphi,
         dulieu = [
           { id: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },
           { id: "...", mota: "(Không chọn)", dvt: "" },
         ];
       for (k in zdl) {
-        r = zdl[k];
-        if (r.plcp === plcp && JSON.stringify(r).includes(stim)) {
+        r = { ...zdl[k] };
+        ss = JSON.stringify(r).toLowerCase();
+        if (r.plcp === plcp && ss.includes(stim)) {
           r.id = k;
-          r.show = qtgt ? ham.stomau(r.mota.qtgt, stim) : ham.stomau(r.mota.qtvt, stim);
+          r.show = ham.stomau(r.mota.qtgt, stim);
           r.dvt = ham.stomau(r.dvt, stim);
           dulieu.push(r);
         }
@@ -1997,13 +1967,12 @@ var web = {
         .style("display", "grid")
         .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
         .on("click", (ev, d) => {
-          ev.preventDefault();
-          console.log("click box chiphi #xem>li ev=", JSON.stringify(ev.target));
-          console.log("click box chiphi #xem>li d0=", JSON.stringify(ga.chiphi));
+          //ev.preventDefault();
           if (ev.target.id != 'chiphi__0__0') {
-            ga.chiphi = d.id;
+            dl.chiphi = d.id;
             zone.remove();
-            console.log("click box chiphi #xem>li d1=", JSON.stringify(ga.chiphi));
+            plcp = ['up_', plcp].join('');
+            web[dl.plqt][plcp](dl);
           }
         });
       //o chi tiet
@@ -2062,156 +2031,6 @@ var web = {
           web.tagid = ev.target.id;
           web.hov_outtag(web.tagid);
         });
-    },
-    chiphi_old: (el, plcp, stim) => {
-      console.log("box chiphi el=", el, " plcp=", plcp, " stim=", stim);
-
-      function kq2el(uid = null, show = null) {
-        try {
-          let zone = d3.select(el);
-          zone.attr("data-chiphi", uid);
-          zone.attr("value", show);
-        } catch (err) { }
-      };
-
-      function tomau(chuoi, stim, sac = 'red') {
-        try { chuoi = chuoi.toString().toLowerCase(); } catch (err) { return null; }
-        try {
-          stim = stim.toString().toLowerCase();
-          if (stim.length < 1) { return chuoi; }
-        } catch (err) { return chuoi; }
-        let mau = web.sregexp(stim);
-        mau = new RegExp(mau, "gi");
-        chuoi = chuoi.replace(mau, (m) => {
-          if (m === undefined || m === null || m === "") { return; }
-          return ["<b style='color:", sac, "'>", m, "</b>"].join('');
-        });
-        return chuoi;
-      };
-      try { stim = stim.toString().toLowerCase(); } catch (err) { stim = ''; }
-      let vt, vl, zone, bang, rec, dulieu, tieude, k, r;
-      try {
-        zone = d3.select(el);
-        vl = zone.style("left");
-        vt = zone.style("top") + zone.style("height");
-        d3.select("#comb-chiphi").remove();
-      } catch (err) { return; }
-      dulieu = [];
-      rec = Object.keys(ga.chiphi).sort();
-      switch (plcp) {
-        case 'cpvt':
-          tieude = ga.tieude.chiphi.vt;
-          for (k in rec) {
-            r = ga.chiphi[rec[k]];
-            if (r && r.plcp.includes('vt') && JSON.stringify(r).includes(stim)) {
-              dulieu.push(r);
-            }
-          }
-          break;
-        case 'cpvl':
-          tieude = ga.tieude.chiphi.vl;
-          for (k in rec) {
-            r = ga.chiphi[rec[k]];
-            if (r && r.plcp.includes('vl') && JSON.stringify(r).includes(stim)) {
-              dulieu.push(r);
-            }
-          }
-          break;
-        case 'tl':
-        case 'tlmd':
-          tieude = ga.tieude.chiphi.tl;
-          for (k in rec) {
-            r = ga.chiphi[rec[k]];
-            if (r && r.plcp.includes('tl') && JSON.stringify(r).includes(stim)) {
-              dulieu.push(r);
-            }
-          }
-          break;
-        default:
-          tieude = ga.tieude.chiphi.xd;
-          for (k in rec) {
-            r = ga.chiphi[rec[k]];
-            if (r && r.plcp.includes('xd') && JSON.stringify(r).includes(stim)) {
-              dulieu.push(r);
-            }
-          }
-      }
-      zone = d3.select(el.parentNode).append("div")
-        .attr("id", "comb-chiphi")
-        .style("display", "block")
-        .style("background-color", "white")
-        .style("overflow", "auto")
-        .style("position", "absolute")
-        .style("top", vt)
-        .style("left", vl)
-        .style("margin", "0")
-        .style("width", "20cm")
-        .style("max-height", "1.6cm")
-        .style("border", "1px solid black");
-      /*.on("scroll", (ev, d) => {
-        let y = ev.target.scrollTop;
-        console.log("scroll y=", y)
-        if (y < 20) {
-          d3.select(ev.target).selectAll("th")
-            .style("position", "relative")
-            .style("top", "0");
-        } else {
-          d3.select(ev.target).selectAll("th")
-            .style("position", "sticky")
-            .style("top", "0");
-        }
-      });*/
-
-      //bang
-      bang = zone.append("table")
-        .style("border-collapse", "collapse")
-        .style("border-spacing", "1px 1px")
-        .style("width", "100%");
-      //tieude
-      bang.selectAll("th").data(tieude)
-        .enter()
-        .append("th")
-        .attr("class", "c")
-        .style("width", (d, i) => {
-          switch (i) {
-            case 0:
-              return "70%";
-            case 1:
-              return "10%";
-            case 2:
-              return "20%";
-            default:
-              return "auto";
-          }
-        })
-        .text((col) => col);
-      //noidung
-      bang.selectAll("tr").remove();
-      rec = bang.selectAll("tr").data(dulieu).enter().append("tr");
-      rec.attr("class", "l")
-        .style("width", "100%")
-        .on("mouseover", (ev, d) => {
-          try {
-            kq2el(d.idutc, d.mota.qtgt);
-          } catch (err) { }
-        })
-        .on("click", (ev, d) => {
-          console.log("row click d=", d);
-          try {
-            kq2el(d.idutc, d.mota.qtgt);
-          } catch (err) { }
-        });
-      //cells
-      rec.append('td')
-        .attr("data-stt", (d, i) => i)
-        .attr("class", (d, i) => "l chiphi col1 row" + i)
-        .html((d, i) => tomau(d.mota.qtgt, stim));
-      rec.append('td')
-        .attr("class", "c")
-        .text((d) => d.dvt);
-      rec.append('td')
-        .attr("class", "c")
-        .text((d) => d.idutc || d.id);
     },
     cpql: () => {
       let zond = d3.select("ga_cpql").attr("data-macpql", "20200827");
@@ -2324,7 +2143,7 @@ var idb = {
         if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(bang))) { bang = 'bgvl'; }
       } else { return; }
       let w, gui, tin,
-        uid = [plgia, '.', mabaogia, '.', chiphi].join('');
+        uid = [plgia, mabaogia, chiphi].join('.');
       if (!(bang in ga)) {
         ga[bang] = {};
         ga[bang][uid] = 0;
