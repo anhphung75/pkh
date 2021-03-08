@@ -1,5 +1,12 @@
 import { d2l, lamtronso, viewso } from "./../../utils.js"
 
+d3.formatDefaultLocale({
+  decimal: ",",
+  thousands: ".",
+  grouping: [3],
+  currency: ["", "VNĐ"]
+});
+
 var app = {
   prog: 100,
   nam: new Date().getFullYear().toString(),
@@ -821,10 +828,7 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '0'].join('__'))
         .attr("class", (d, i) => ['c bb fito oc_cpxd r', i, ' c0'].join(''))
-        .text((d) => {
-          let tt = parseInt(d.tt);
-          return tt > 99 ? tt : tt > 9 ? ['0', tt].join('') : ['00', tt + 1].join('');
-        })
+        .text((d) => d3.format("03d")(parseInt(d.tt) + 1))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
           web.hov_intag(web.tagid);
@@ -840,7 +844,7 @@ var web = {
         .attr("class", (d, i) => ['j w100 fito oc_cpxd r', i, ' c1'].join(''))
         .attr("rows", 1)
         .style("margin", 0)
-        .style("padding", "1px")
+        .style("padding", "1pt")
         .style("outline", "none")
         .text(d => d.mota)
         .on("mouseenter", (ev) => {
@@ -873,9 +877,7 @@ var web = {
           }
         })
         .on("keydown", function (ev, d) {
-          //ev.preventDefault();
-          //ev.stopPropagation();
-          if ([13, 40, 38].includes(ev.keyCode)) {
+          if ([13].includes(ev.keyCode)) {
             ev.preventDefault();
             d3.selectAll("#xem").remove();
             //chuyen dong ke tiep
@@ -897,12 +899,14 @@ var web = {
         });
       row.append('div')
         .attr("class", "bb")
-        .append('input')
+        .append('textarea')
         .attr("id", (d, i) => ['oc_cpxd', i, '3'].join('__'))
         .attr("class", (d, i) => ['r f0 fito oc_cpxd r', i, ' c3'].join(''))
-        .attr("value", (d) => viewso(d.soluong, 0))
+        .attr("rows", 1)
         .style("margin", 0)
-        .style("padding", "0 1pt")
+        .style("padding", "1pt")
+        .style("outline", "none")
+        .text((d) => d3.format(",.3r")(d.soluong))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
           web.hov_intag(web.tagid);
@@ -921,25 +925,40 @@ var web = {
             r.tienvl = lamtronso(r.soluong * r.giavl, 0);
             r.tiennc = lamtronso(r.soluong * r.gianc, 0);
             r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
+            ev.target.style.height = 'auto';
+            ev.target.style.height = [ev.target.scrollHeight, 'px'].join('');
             console.log("update app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
           }
           web.oc.cpxd();
           web.oc.bth();
-          //chuyen dong ke tiep
-          web.tagid = ev.target.id;
-          web.move2id(1, 0);
         })
-        .on("keydown", function (ev) {
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            //chuyen dong ke tiep
+        .on("keydown", function (ev, d) {
+          if ([13].includes(ev.keyCode)) {
+            ev.preventDefault();
+            let v = Math.abs(parseFloat(ev.target.value)) || 0;
+            if (v > 0) {
+              let r = app.oc.cpxd[d.tt];
+              console.log("origine app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
+              console.log("soluong moi=", v);
+              r.soluong = v;
+              r.tienvl = lamtronso(r.soluong * r.giavl, 0);
+              r.tiennc = lamtronso(r.soluong * r.gianc, 0);
+              r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
+              ev.target.style.height = 'auto';
+              ev.target.style.height = [ev.target.scrollHeight, 'px'].join('');
+              console.log("update app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
+            }
             web.tagid = ev.target.id;
+            web.oc.cpxd();
+            web.oc.bth();
+            //chuyen dong ke tiep
             web.move2id(1, 0);
           }
         });
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '4'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c4'].join(''))
-        .text((d) => viewso(d.giavl, 0))
+        .text((d) => d3.format(",.0r")(d.giavl))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
           web.hov_intag(web.tagid);
@@ -951,7 +970,7 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '5'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c5'].join(''))
-        .text((d) => viewso(d.gianc, 0))
+        .text((d) => d3.format(",.0r")(d.gianc))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
           web.hov_intag(web.tagid);
@@ -963,7 +982,7 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '6'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c6'].join(''))
-        .text((d) => viewso(d.giamtc, 0))
+        .text((d) => d3.format(",.0r")(d.giamtc))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
           web.hov_intag(web.tagid);
@@ -975,7 +994,7 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '7'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c7'].join(''))
-        .text((d) => viewso(d.tienvl, 0))
+        .text((d) => d3.format(",.0r")(d.tienvl))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
           web.hov_intag(web.tagid);
@@ -987,7 +1006,7 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '8'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c8'].join(''))
-        .text((d) => viewso(d.tiennc, 0))
+        .text((d) => d3.format(",.0r")(d.tiennc))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
           web.hov_intag(web.tagid);
@@ -999,7 +1018,7 @@ var web = {
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '9'].join('__'))
         .attr("class", (d, i) => ['r bb fito oc_cpxd r', i, ' c9'].join(''))
-        .text((d) => viewso(d.tienmtc, 0))
+        .text((d) => d3.format(",.0r")(d.tienmtc))
         .on("mouseenter", (ev) => {
           web.tagid = ev.target.id;
           web.hov_intag(web.tagid);
@@ -1813,17 +1832,17 @@ var web = {
     tag = ['.', zone, '.c', col].join('');
     d3.selectAll(tag).style("background-color", "transparent");
   },
-  move2id: (row = 0, col = 0) => {
+  move2id: (row = 0, col = 0, maxR = 0, maxC = 1) => {
     console.log("start move2id=", web.tagid, " row=", row, " col=", col);
     if (!row && !col) { return; }
-    let tagid, tag, zone, el, maxR, maxC;
+    let tagid, tag, zone, el;
     try {
       tagid = web.tagid;
       tag = tagid.split('__');
     } catch (err) { return; }
     if (tagid.charAt(0) != '#') { tagid = ['#', tagid].join(''); }
     zone = tag[0].toLowerCase();
-    if (zone.charAt(0) == '#') { zone.substr(1); }
+    if (zone.charAt(0) == '#') { zone = zone.substr(1); }
     row = parseInt(tag[1]) + parseInt(row);
     col = parseInt(tag[2]) + parseInt(col);
     switch (zone) {
@@ -1912,23 +1931,29 @@ var web = {
         };
         break;
       default:
-        maxR = row;
-        maxC = col;
+        maxR = maxR;
+        maxC = maxC;
     }
     col > maxC ? col = 0 : col < 0 ? col = maxC : col;
     console.log("move2id hov_outtag tagid=", JSON.stringify(tagid));
     web.hov_outtag(tagid);
     tag = [zone, row, col].join('__');
-    web.tagid = tag;
-    tagid = ['#', tag].join('');
-    console.log("move2id hov_intag tagid=", JSON.stringify(tagid));
-    web.hov_intag(tagid);
-    el = d3.select(tagid).node();
-    console.log("end move2id=", tagid);
-    if (el && ['INPUT'].includes(el.tagName)) {
-      el.focus();
+    web.olua(tag);
+  },
+  olua: (tagid = null) => {
+    console.log("olua start tagid=", tagid, " web.tagig=", web.tagid);
+    //try {
+    if (tagid.charAt(0) != '#') { tagid = ['#', tagid].join(''); }
+    let el = d3.select(tagid).node();
+    el.focus();
+    if (el && ['INPUT', 'TEXTAREA'].includes(el.tagName)) {
       el.select();
     }
+    if (tagid.charAt(0) == '#') { tagid = tagid.substr(1); }
+    web.tagid = tagid;
+    //} catch (err) { return; }
+    web.hov_intag(tagid);
+    console.log("olua end tagid=", tagid, " web.tagig=", web.tagid);
   },
   box: {
     hov: { mau1: "#9999ff" },
@@ -2089,6 +2114,13 @@ var idb = {
         }
       };
     } catch (err) { };
+  },
+  nap:{
+    oc:{
+      cpxd:()=>{
+
+      },
+    },
   },
   luu: (bang, dl) => {
     if (bang) {
@@ -2301,6 +2333,161 @@ var idb = {
   },
   tinh: {
     oc: {
+      vl: (chiphi, gia = 0) => {
+        let i, r, tiendo,
+          zdl = ga.oc.cpxd;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.giavl = lamtronso(gia, 0); }
+              } catch (err) { r.giavl = 0; }
+              r.tienvl = lamtronso(r.giavl * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+        zdl = ga.oc.cpvt;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.giavl = lamtronso(gia, 0); }
+              } catch (err) { r.giavl = 0; }
+              r.tienvl = lamtronso(r.giavl * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+        zdl = ga.oc.cpvl;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.giavl = lamtronso(gia, 0); }
+              } catch (err) { r.giavl = 0; }
+              r.tienvl = lamtronso(r.giavl * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+      },
+      nc: (chiphi, gia = 0) => {
+        let i, r, tiendo,
+          zdl = ga.oc.cpxd;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.gianc = lamtronso(gia, 0); }
+              } catch (err) { r.gianc = 0; }
+              r.tiennc = lamtronso(r.gianc * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+        zdl = ga.oc.cpvt;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.gianc = lamtronso(gia, 0); }
+              } catch (err) { r.gianc = 0; }
+              r.tiennc = lamtronso(r.gianc * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+        zdl = ga.oc.cpvl;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.gianc = lamtronso(gia, 0); }
+              } catch (err) { r.gianc = 0; }
+              r.tiennc = lamtronso(r.gianc * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+      },
+      mtc: (chiphi, gia = 0) => {
+        let i, r, tiendo,
+          zdl = ga.oc.cpxd;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.giamtc = lamtronso(gia, 0); }
+              } catch (err) { r.giamtc = 0; }
+              r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+        zdl = ga.oc.cpvl;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.giamtc = lamtronso(gia, 0); }
+              } catch (err) { r.giamtc = 0; }
+              r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+        zdl = ga.oc.cpmtc;
+        if (zdl.constructor === Array) {
+          for (i in zdl) {
+            r = { ...zdl[i] };
+            tiendo = r.cv || 0;
+            if (tiendo < 100) {
+              try { r.soluong = lamtronso(Math.abs(r.soluong), 3); } catch (err) { r.soluong = 0; }
+              try {
+                if (r.chiphi === chiphi) { r.giamtc = lamtronso(gia, 0); }
+              } catch (err) { r.giamtc = 0; }
+              r.tienmtc = lamtronso(r.giamtc * r.soluong, 0);
+              r.cv = 100;
+              zdl[i] = r;
+            }
+          }
+        }
+      },
+    },
+    oc_old: {
       cpxd: (stt = null) => {
         let r, k, ii = 0,
           m = 0;

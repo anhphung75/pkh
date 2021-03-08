@@ -1,5 +1,7 @@
 @charset "UTF-8";
-*, *:before, *:after {
+*,
+*:before,
+*:after {
   box-sizing: border-box;
   background-color: transparent;
   color: black;
@@ -29,8 +31,10 @@
 
 @import url("./font_Opensans.css");
 @import url("./font_UVNTintuc.css");
-html, body {
-  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep", "UVN Tin Tuc Hep Them", sans-serif;
+html,
+body {
+  font-family: "Open Sans", "Open Sans Condensed", "UVN Tin Tuc Hep",
+    "UVN Tin Tuc Hep Them", sans-serif;
   margin: 0;
   border: 0;
   padding: 0;
@@ -41,10 +45,12 @@ html, body {
   display: block;
 }
 
-input, textarea, select {
+input,
+textarea,
+select {
   width: 100%;
   margin: 0;
-  padding: 1px;
+  padding: 1pt;
   border: 0;
   outline: none;
   -webkit-box-shadow: none;
@@ -57,7 +63,6 @@ input, textarea, select {
 }
 
 textarea {
-  resize: none;
   overflow: hidden;
 }
 
@@ -67,6 +72,7 @@ textarea {
   text-align: left;
   overflow-wrap: break-word;
   padding: 1pt;
+  margin: 0;
 }
 
 .r {
@@ -74,7 +80,9 @@ textarea {
   justify-content: flex-end;
   align-items: center;
   text-align: right;
+  overflow-wrap: break-word;
   padding: 1pt;
+  margin: 0;
 }
 
 .c {
@@ -82,7 +90,9 @@ textarea {
   justify-content: center;
   align-items: center;
   text-align: center;
+  overflow-wrap: break-word;
   padding: 1pt;
+  margin: 0;
 }
 
 .j {
@@ -92,6 +102,7 @@ textarea {
   text-align: justify;
   text-justify: inter-word;
   padding: 1pt;
+  margin: 0;
 }
 
 .u {
@@ -232,7 +243,8 @@ textarea {
   border: 0;
 }
 
-.ba, .btrbl {
+.ba,
+.btrbl {
   border: 1px solid black;
 }
 
@@ -316,11 +328,15 @@ textarea {
   background-color: lightgreen;
 }
 
-.mau, .hov2:hover {
+.mau,
+.hov2:hover {
   background-color: #999fff;
 }
 
-.hide, .an, .dau, .che {
+.hide,
+.an,
+.dau,
+.che {
   display: none;
 }
 
@@ -362,7 +378,7 @@ textarea {
   overflow: hidden;
 }
 
-#trangxem>header {
+#trangxem > header {
   grid-column: 1 / 3;
   grid-row: 1 / 2;
   background: #f0e68c;
@@ -370,20 +386,20 @@ textarea {
   justify-content: space-between;
 }
 
-#trangxem>nav {
+#trangxem > nav {
   grid-column: 1 / 2;
   grid-row: 2 / 3;
   background: #c0c0c0;
 }
 
-#trangxem>main {
+#trangxem > main {
   grid-row: 2 / 3;
   grid-column: 2 / 3;
   background: transparent;
   overflow: auto;
 }
 
-#trangxem>footer {
+#trangxem > footer {
   grid-column: 1 / 3;
   grid-row: 3 / 4;
   background: lightyellow;
@@ -421,7 +437,9 @@ textarea {
 }
 
 @media print {
-  *, *:before, *:after {
+  *,
+  *:before,
+  *:after {
     box-sizing: border-box;
     background-color: transparent;
     color: black;
@@ -439,7 +457,8 @@ textarea {
 }
 
 @media screen {
-  .test, .mau {
+  .test,
+  .mau {
     border: 1px solid green;
     border-radius: 10px;
     background: yellow;
