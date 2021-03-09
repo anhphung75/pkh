@@ -19,9 +19,10 @@ var app = {
   plgia: 'dutoan',
   mabaogia: 20210101,
   macpql: 20200827,
-  chiphi: -1,
+  chiphi: null,
   idcptl: 1615263347491,
   oc: {
+    tiendo: 0,
     zvl: 0,
     znc: 0,
     zmtc: 0,
@@ -2089,7 +2090,10 @@ var idb = {
   csdl: { ten: 'cntd', cap: 1 },
   taodb: () => {
     let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    if (!indexedDB) { return null; };
+    if (!indexedDB) {
+      console.log('khong ho tro idb');
+      return null;
+    };
     try {
       let db, idx,
         ten = idb.csdl.ten,
@@ -2132,20 +2136,23 @@ var idb = {
     } catch (err) { };
   },
   nap: {
+    phuidao: (dk = { phui: 'on', idma: null }) => {
+      if (dk.constructor !== Object) { return; }
+    },
     phui: (dk = { phui: 'on', plcp: 'cpxd', idma: null }) => {
       if (dk.constructor !== Object) { return; }
       let phui, plcp, idma, tin, gui, i, zdl,
         w = new Worker(app.url['swidb']);
-      try {
-        phui = dk.phui.constructor !== String ? 'on' : dk.phui.toLowerCase();
-        plcp = dk.plcp.constructor !== String ? 'cpxd' : dk.plcp.toLowerCase();
-        idma = dk.idma.constructor !== Number ? -1 : parseInt(dk.idma);
-        if (idma < 0) { return; }
-        phui.includes('oc') ? phui = 'oc' : phui = 'on';
-      } catch (err) { return; }
+      //try {
+      phui = dk.phui.constructor !== String ? 'on' : dk.phui.toLowerCase();
+      plcp = dk.plcp.constructor !== String ? 'cpxd' : dk.plcp.toLowerCase();
+      idma = dk.idma.constructor !== Number ? -1 : parseInt(dk.idma);
+      if (idma < 0) { return; }
+      phui.includes('oc') ? phui = 'oc' : phui = 'on';
       app[phui]['id' + plcp] = idma;
       if (!(phui in app)) { app[phui] = {}; }
       if (!([plcp] in app[phui])) { app[phui][plcp] = []; }
+      //} catch (err) { return; }
       gui = {
         csdl: idb.csdl,
         bang: plcp,
@@ -2180,7 +2187,64 @@ var idb = {
               app[phui][plcp] = zdl;
               //idb.tinh.oc.cpxd();
             }
-            console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui], null, 2));
+          }
+        } else if (tin.cv < 0 || tin.cv > 100) {
+          if (w) { w.terminate(); }
+          w = null;
+          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+        } else {
+          console.log("swidb info=", JSON.stringify(tin, null, 2));
+        }
+        console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui], null, 2));
+      }
+    },
+    chiphi: (dk = { idma: null }) => {
+      if (dk.constructor !== Object) { return; }
+      let idma, tin, gui, i, zdl,
+        w = new Worker(app.url['swidb']);
+      //try {
+      idma = dk.idma.constructor !== Number ? -1 : parseInt(dk.idma);
+      if (idma < 0) { return; }
+      if (!('chiphi' in app) || !app.chiphi) { app.chiphi = {}; }
+      if (idma in app.chiphi) {
+        zdl = app.chiphi[idma];
+        if (zdl.mabaogia == app.mabaogia && zdl.plgia == app.plgia) { return; }
+      } else {
+        app.chiphi[idma] = {};
+      }
+      //} catch (err) { return; }
+      gui = {
+        csdl: idb.csdl,
+        bang: 'chiphi',
+        idma: idma,
+        gang: 0,
+      };
+      console.log("idb.nap.chiphi gui=", JSON.stringify(gui, null, 2));
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        if ("err" in tin) {
+          console.log("swidb err=", JSON.stringify(tin.err, null, 2));
+          gui.gang += 1;
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        } else if (tin.cv >= 0 && tin.cv <= 100) {
+          if ('idma' in tin) {
+            //ok action
+            zdl = tin.idma.data;
+            console.log("swidb zdl=", JSON.stringify(zdl, null, 2));
+            if (zdl.constructor === Object) {
+              zdl.mabaogia = app.mabaogia;
+              zdl.plgia == app.plgia;
+              zdl.giavl = 0;
+              zdl.gianc = 0;
+              zdl.giamtc = 0;
+              zdl.cv = { cp: 100, vl: 0, nc: 0, mtc: 0 };
+              zdl.mota = zdl.mota.qtgt;
+              app.chiphi[idma] = zdl;
+              //idb.nap.baogia();
+            }
+            console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
           }
         } else if (tin.cv < 0 || tin.cv > 100) {
           if (w) { w.terminate(); }
@@ -2190,12 +2254,6 @@ var idb = {
           console.log("swidb info=", JSON.stringify(tin, null, 2));
         }
       }
-    },
-    phuidao: (dk = { phui: 'on', idma: null }) => {
-      if (dk.constructor !== Object) { return; }
-    },
-    chiphi: (dk = { phui: 'on', plcp: 'cpxd', idma: null }) => {
-      if (dk.constructor !== Object) { return; }
     },
     baogia: (dk, dl) => {
       if (dk.constructor !== Object || dl.constructor !== Object) { return; }
@@ -2271,7 +2329,7 @@ var idb = {
       w = {},
       d = dl.length;
     while (t < d) {
-      console.log("ga.url=", JSON.stringify(ga.url));
+      console.log("app.url=", JSON.stringify(app.url));
       w[t] = new Worker(app.url['swidb']);
       gui = {
         csdl: idb.csdl,
@@ -3157,13 +3215,47 @@ function test_dulieu() {
   idb.luu("cpxd", dl);
   idb.luu("cpvt", dl);
   idb.luu("cpvl", dl);
+  dl = [
+    {
+      "idma": 1,
+      "data": { "mota": { "qtgt": "cp qtgt1", "qtvt": "cp qtvt1" }, "dvt": "cai1" },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+    {
+      "idma": 2,
+      "data": { "mota": { "qtgt": "cp qtgt2", "qtvt": "cp qtvt2" }, "dvt": "cai2" },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+    {
+      "idma": 3,
+      "data": { "mota": { "qtgt": "cp qtgt3", "qtvt": "cp qtvt3" }, "dvt": "cai3" },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+    {
+      "idma": 4,
+      "data": { "mota": { "qtgt": "cp qtgt4", "qtvt": "cp qtvt4" }, "dvt": "cai4" },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+    {
+      "idma": 5,
+      "data": { "mota": { "qtgt": "cp qtgt5", "qtvt": "cp qtvt5" }, "dvt": "cai5" },
+      "status": "chyenjson",
+      "lastupdate": Date.now()
+    },
+  ]
+  idb.luu("chiphi", dl);
 
 }
 //test_dulieu();
 //let mabaogia = 20200827,
 //  chiphi = '001',
 //  plgia = 'dutoan';
-idb.nap.phui({ phui: 'oc', plcp: 'cpxd', idma: 1615277173487 });
-idb.nap.phui({ phui: 'oc', plcp: 'cpvt', idma: 1615277173488 });
-idb.nap.phui({ phui: 'oc', plcp: 'cpvl', idma: 1615277173489 });
+idb.nap.chiphi({ phui: 'oc', plcp: 'cpxd', idma: 1 });
+idb.nap.chiphi({ phui: 'oc', plcp: 'cpvt', idma: 2 });
+idb.nap.chiphi({ phui: 'oc', plcp: 'cpvl', idma: 3 });
+
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));
