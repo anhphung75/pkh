@@ -23,7 +23,7 @@ class TaoJson():
         pass
 
     def chiphiquanly(self):
-        dl = {"idutc": int(arrow.get("2017-06-27 22:33:43").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2017-06-27 22:33:43").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 1},
               "data": {"macpql": 1, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.015, "chung": 0.045, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
@@ -32,7 +32,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2017-06-27 22:33:44").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2017-06-27 22:33:44").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 2},
               "data": {"macpql": 2, "vl": 1, "nc": 2.8, "mtc": 1.34, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
@@ -41,7 +41,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2017-06-27 22:33:45").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2017-06-27 22:33:45").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 3},
               "data": {"macpql": 3, "vl": 1, "nc": 2.289, "mtc": 1.26, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
@@ -50,7 +50,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2017-06-27 22:33:46").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2017-06-27 22:33:46").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 4},
               "data": {"macpql": 4, "vl": 1, "nc": 3.857, "mtc": 1.504, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
@@ -59,7 +59,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2017-06-27 22:33:47").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2017-06-27 22:33:47").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 5},
               "data": {"macpql": 5, "vl": 1, "nc": 5.714, "mtc": 1.82, "tructiepkhac": 0.02, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
@@ -68,7 +68,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2017-06-27 22:33:48").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2017-06-27 22:33:48").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 6},
               "data": {"macpql": 6, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.3, "giamsat": 0.02053,
@@ -77,7 +77,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2017-06-27 22:33:49").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2017-06-27 22:33:49").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 7},
               "data": {"macpql": 7, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
@@ -86,7 +86,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2019-09-18 12:33:43").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2019-09-18 12:33:43").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 20190725},
               "data": {"macpql": 20190725, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.05, "giantiepkhac": 0, "thutinhtruoc": 0.055,
                        "khaosat": 0.0236, "thietke": 1.2, "giamsat": 0.02566,
@@ -95,7 +95,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2020-07-21 12:33:43").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2020-07-21 12:33:43").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 20200721},
               "data": {"macpql": 20200721, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
@@ -104,7 +104,7 @@ class TaoJson():
               "status": "Fin"}
         Rest("web").moi("chiphiquanly", dl)
 
-        dl = {"idutc": int(arrow.get("2020-08-27 11:33:43").to('utc').float_timestamp * 1000),
+        dl = {"idma": int(arrow.get("2020-08-27 11:33:43").to('utc').float_timestamp * 1000),
               "refs": {"hesoid": 20200827, "ghichu": "quy ước làm tròn sl=3, tiền=0"},
               "data": {"macpql": 20200827, "vl": 1, "nc": 1, "mtc": 1, "tructiepkhac": 0, "chung": 0.055, "giantiepkhac": 0.02, "thutinhtruoc": 0.055,
                        "khaosat": 0.0207, "thietke": 1.2, "giamsat": 0.02566,
@@ -142,7 +142,7 @@ class DoiJson():
                 if r[k] is None:
                     r[k] = ''
             print(f"r={json.dumps(r, ensure_ascii=False)}")
-            idutc = int(arrow.get(r["ngaylendot"]).to(
+            idma = int(arrow.get(r["ngaylendot"]).to(
                 'utc').float_timestamp * 1000)
             # khach chuyen dulieu json
             dc = r["diachi"].replace("- ", ", ")
@@ -160,7 +160,7 @@ class DoiJson():
                     isnew = False
                     break
             if isnew:
-                idkhach = idutc
+                idkhach = idma
                 while True:
                     if idkhach in khach:
                         idkhach += 1
@@ -169,7 +169,7 @@ class DoiJson():
                 stt['khach'] += 1
                 _data['makhachhang'] = f"{self.nam}.khach.{stt['khach']:06}"
                 khach[idkhach] = {
-                    "idutc": idkhach,
+                    "idma": idkhach,
                     "refs": {
                         "refscu": {"hoso": {"id": {}}, },
                         "lienhe": ' '.join(r["lienhe"].split())},
@@ -193,25 +193,25 @@ class DoiJson():
                 "khachsai": rec["khachhang"],
                 "noigandhn": rec["diachi"]}
             isnew = True
-            for idutc in hoso:
-                rec = hoso[idutc]["data"].copy()
+            for idma in hoso:
+                rec = hoso[idma]["data"].copy()
                 if 'mahoso' in rec:
                     del rec['mahoso']
                 if f"{rec}" == f"{_data}":
                     isnew = False
                     break
             if isnew:
-                idutc = int(arrow.get(r["ngaylendot"]).to(
+                idma = int(arrow.get(r["ngaylendot"]).to(
                     'utc').float_timestamp * 1000)
                 while True:
-                    if idutc in hoso:
-                        idutc += 1
+                    if idma in hoso:
+                        idma += 1
                     else:
                         break
                 stt['hoso'] += 1
                 _data['mahoso'] = f"{self.nam}.hoso.{stt['hoso']:06}"
-                hoso[idutc] = {
-                    "idutc": idutc,
+                hoso[idma] = {
+                    "idma": idma,
                     "refs": {
                         "refscu": {"hoso": {"id": {}}},
                         "mahoso": f"{self.nam}.hoso.{stt['hoso']:06}",
@@ -220,14 +220,14 @@ class DoiJson():
                     "status": "chuyen json"}
             # update hoso
             rec = khach[idkhach]["data"]
-            ref = hoso[idutc]["data"]["refscu"]
+            ref = hoso[idma]["data"]["refscu"]
             try:
                 ref['hoso']['id'][r['hosoid']] = 1
             except:
                 pass
             # xoa rong
             khach[idkhach] = xoarong(khach[idkhach])
-            hoso[idutc] = xoarong(hoso[idutc])
+            hoso[idma] = xoarong(hoso[idma])
         print(f"khach={json.dumps(khach, ensure_ascii=False)}")
         print(f"hoso={json.dumps(hoso, ensure_ascii=False)}")
 
@@ -251,7 +251,7 @@ class DoiJson():
                 r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = int(arrow.get(r["ngaylendot"]).to(
+        dl["idma"] = int(arrow.get(r["ngaylendot"]).to(
             'utc').float_timestamp * 1000)
         dl["refs"] = {
             "dot": {"id": r['dotid'], "ma": r['madot']},
@@ -299,7 +299,7 @@ class DoiJson():
                 r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = int(arrow.get(r["ngaylendot"]).to(
+        dl["idma"] = int(arrow.get(r["ngaylendot"]).to(
             'utc').float_timestamp * 1000)
         dl["refs"] = {
             "dot": {"id": r['dotid'], "ma": r['madot']},
@@ -342,7 +342,7 @@ class DoiJson():
                 r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = int(arrow.get(r["ngaylendot"]).to(
+        dl["idma"] = int(arrow.get(r["ngaylendot"]).to(
             'utc').float_timestamp * 1000)
         dl["refs"] = {
             "dotid": r['dotid'],
@@ -392,7 +392,7 @@ class DoiJson():
                 r[k] = ''
         # chuyen dulieu
         dl = {}
-        dl["idutc"] = int(arrow.get(r["lastupdate"]).to(
+        dl["idma"] = int(arrow.get(r["lastupdate"]).to(
             'utc').float_timestamp * 1000)
         if 'CTLD' in r['mapl1']:
             plcp = 'cpxd'

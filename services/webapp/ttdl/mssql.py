@@ -75,7 +75,7 @@ def svals(dl):
     if f"{dl}" in ['None', '', '{}', '[]', '()']:
         return None
     stim = set()
-    dsbo = ['lastupdate', 'inok', 'scan', 'url', 'idutc']
+    dsbo = ['lastupdate', 'inok', 'scan', 'url', 'idma']
     if isinstance(dl, (str, int, float)):
         stim.add(f"{dl}".lower())
     elif isinstance(dl, dict):
@@ -148,7 +148,7 @@ def tim1(dl, stim=None):
 class Mau(object):
     __table_args__ = {"schema": "web"}
 
-    idutc = Column(BigInteger, primary_key=True, autoincrement=False)
+    idma = Column(BigInteger, primary_key=True, autoincrement=False)
     tttt = Column(Unicode())
     ttdl = Column(Unicode())
     status = Column(Unicode(50))
@@ -263,7 +263,7 @@ class Mau(object):
     def timkiem(self, ltim=None):
         if isinstance(ltim, (str, int, float)):
             _tim = f"{ltim}"
-            if tim1(self.idutc, _tim):
+            if tim1(self.idma, _tim):
                 return True
             if tim1(self.refs, _tim):
                 return True
@@ -271,7 +271,7 @@ class Mau(object):
                 return True
         elif isinstance(ltim, (list, set, tuple)):
             for _tim in ltim:
-                if tim1(self.idutc, _tim):
+                if tim1(self.idma, _tim):
                     return True
                 if tim1(self.refs, _tim):
                     return True
@@ -281,7 +281,7 @@ class Mau(object):
             for k in ltim:
                 _tim = {k: ltim[k]}
                 _tim = json.dumps(_tim, ensure_ascii=False)
-                if tim1(self.idutc, _tim):
+                if tim1(self.idma, _tim):
                     return True
                 if tim1(self.refs, _tim):
                     return True
@@ -311,7 +311,7 @@ class Donvithicong(Mau, Base):
 class Dot(Mau, Base):
     __tablename__ = 'dot'
     # madot = Column(Unicode(50))  # yyyy.gmmp.xxx xxx:stt
-    # refs:= dvtc.idutc, madvtc, qtvt.idutc, maqtvt
+    # refs:= dvtc.idma, madvtc, qtvt.idma, maqtvt
     # data:= qtgt:tonghoso:, tongqt, tongtrongai,...,nguoilap, ngaylap,ghichu; qtvt:sophieunhap,
 
 
@@ -335,20 +335,20 @@ class Qtgt(Mau, Base):
     __tablename__ = 'qtgt'
 
 
-class Qtgt_cpxd(Mau, Base):
-    __tablename__ = 'qtgt_cpxd'
+class Cpxd(Mau, Base):
+    __tablename__ = 'cpxd'
 
 
-class Qtgt_cpvl(Mau, Base):
-    __tablename__ = 'qtgt_cpvl'
+class Cpvl(Mau, Base):
+    __tablename__ = 'cpvl'
 
 
-class Qtgt_cpvt(Mau, Base):
-    __tablename__ = 'qtgt_cpvt'
+class Cpvt(Mau, Base):
+    __tablename__ = 'cpvt'
 
 
-class Qtgt_cptl(Mau, Base):
-    __tablename__ = 'qtgt_cptl'
+class Cptl(Mau, Base):
+    __tablename__ = 'cptl'
 
 
 class Bgvl(Mau, Base):
@@ -533,14 +533,14 @@ class Rest():
             stim = f"%{stim}%".lower()
             if stim in ['%None%', '%%']:
                 try:
-                    r = self.orm.query(self.bdl).order_by(self.bdl.idutc).all()
+                    r = self.orm.query(self.bdl).order_by(self.bdl.idma).all()
                 except:
                     return None
             else:
                 try:
                     r = self.orm.query(self.bdl).filter(
-                        self.bdl.ttdl.like(stim) | self.bdl.tttt.like(stim) | self.bdl.idutc.like(stim)).order_by(
-                            self.bdl.idutc).all()
+                        self.bdl.ttdl.like(stim) | self.bdl.tttt.like(stim) | self.bdl.idma.like(stim)).order_by(
+                            self.bdl.idma).all()
                 except:
                     return None
         elif isinstance(stim, (list, set, tuple)):
@@ -558,38 +558,38 @@ class Rest():
             if istext:
                 try:
                     r = self.orm.query(self.bdl).filter(
-                        self.bdl.ttdl.in_(stim) | self.bdl.tttt.in_(stim)).order_by(self.bdl.idutc).all()
+                        self.bdl.ttdl.in_(stim) | self.bdl.tttt.in_(stim)).order_by(self.bdl.idma).all()
                 except:
                     return None
             else:
                 try:
                     r = self.orm.query(self.bdl).filter(
-                        self.bdl.idutc.in_(stim)).order_by(self.bdl.idutc).all()
+                        self.bdl.idma.in_(stim)).order_by(self.bdl.idma).all()
                 except:
                     return None
         else:
             try:
-                r = self.orm.query(self.bdl).order_by(self.bdl.idutc).all()
+                r = self.orm.query(self.bdl).order_by(self.bdl.idma).all()
             except:
                 return None
         return r
 
-    def nap(self, bang, idutc=None):
+    def nap(self, bang, idma=None):
         self.thongtin(bang)
         if self.bdl == None:
             return None
         try:
-            idutc = int(idutc)
-            r = self.orm.query(self.bdl).get(idutc)
+            idma = int(idma)
+            r = self.orm.query(self.bdl).get(idma)
             return r
         except:
             return None
 
-    def nap_get(self, bang, idutc=0):
+    def nap_get(self, bang, idma=0):
         self.thongtin(bang)
         # try:
-        # idutc = int(idutc)
-        r = self.orm.query(self.bdl).get(idutc)
+        # idma = int(idma)
+        r = self.orm.query(self.bdl).get(idma)
         print(f"orm nap_get r = {vars(r)}")
         print(f"orm nap_get type r = {type(r)}")
         return r
@@ -598,7 +598,7 @@ class Rest():
 
     def moi(self, bang, dl):
         self.thongtin(bang)
-        if (self.bdl == None) or ('idutc' not in dl):
+        if (self.bdl == None) or ('idma' not in dl):
             return None
         if dl and ('refs' not in dl) and ('data' not in dl):
             return None
@@ -612,7 +612,7 @@ class Rest():
         if 'inok' in dl:
             s.inok = dl['inok']
         while True:
-            s.idutc = int(dl['idutc'])
+            s.idma = int(dl['idma'])
             s.lastupdate = int(arrow.utcnow().float_timestamp * 1000)
             try:
                 print(f'orm moi refs={s.refs} tttt={s.tttt}')
@@ -626,12 +626,12 @@ class Rest():
                     if ('UNIQUE' in info) or ('PRIMARY' in info):
                         # duplicate Primary key
                         self.orm.rollback()
-                        dl['idutc'] += 1
+                        dl['idma'] += 1
                 except:
                     break
 
-    def read(self, bang, idutc):
-        self.nap(bang, idutc)
+    def read(self, bang, idma):
+        self.nap(bang, idma)
 
     def save1(self, bang='', dl={}):
         self.thongtin(bang)
@@ -639,7 +639,7 @@ class Rest():
             return None
         if dl and (('refs' in dl) or ('data' in dl)):
             for k in dl.copy():
-                if k not in ['idutc', 'inok', 'lastupdate', 'status', 'refs', 'data']:
+                if k not in ['idma', 'inok', 'lastupdate', 'status', 'refs', 'data']:
                     del dl[k]
         else:
             return None
@@ -671,11 +671,11 @@ class Rest():
                                 del dl['refs'][k][k1]
             except:
                 pass
-        if ("idutc" not in dl) or ('lastupdate' not in dl):
-            dl['idutc'] = int(arrow.utcnow().float_timestamp * 1000)
+        if ("idma" not in dl) or ('lastupdate' not in dl):
+            dl['idma'] = int(arrow.utcnow().float_timestamp * 1000)
             self.moi(bang, dl)
             return None
-        s = self.nap(bang, dl['idutc'])
+        s = self.nap(bang, dl['idma'])
         if s == None:
             self.moi(bang, dl)
             return None

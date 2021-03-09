@@ -347,6 +347,33 @@ var sw = {
     } catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
   nap1: {
+    idma: (bang, idma = 0, gang = 0) => {
+      gang = gang === '0' ? 0 : parseInt(gang) || -1;
+      if (gang > 3) { self.postMessage({ cv: -1, info: "bất quá tam" }); }
+      if (bang) {
+        bang = bang.toString().toLowerCase();
+      } else {
+        self.postMessage({ cv: -1, info: "Bảng không tồn tại" });
+        return;
+      };
+      try {
+        indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e0) => {
+          let db = e0.target.result;
+          db.transaction(bang, 'readonly')
+            .objectStore(bang)
+            .openCursor(IDBKeyRange.only(idma))
+            .onsuccess = (e1) => {
+              cs = e1.target.result;
+              if (cs) {
+                self.postMessage({ cv: 100, idma: cs.value });
+                cs.continue();
+              } else {
+                self.postMessage({ cv: -1, info: "fin" });
+              }
+            }
+        }
+      } catch (err) { self.postMessage({ cv: -1, err: err }); }
+    },
     baogia: (bang, chiphi, baogia, plgia = 'dutoan', gang = 0) => {
       gang = gang === '0' ? 0 : parseInt(gang) || -1;
       if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
@@ -630,5 +657,6 @@ self.onmessage = (ev) => {
   if ('gomval' in tin) { sw.gom.val(bang, tin['gomval'], tin.gang); }
   if ('nap1' in tin) { }
   if ('luu1' in tin || 'data1' in tin) { sw.data1(bang, tin.luu1, tin.gang); }
+  if ('idma' in tin) { sw.nap1.idma(bang, tin.idma) }
   //} catch (err) {    self.postMessage({ cv: -1, kq: "nothing to do" });  };
 }
