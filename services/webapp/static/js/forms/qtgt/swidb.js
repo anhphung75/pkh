@@ -374,68 +374,67 @@ var sw = {
         }
       } catch (err) { self.postMessage({ cv: -1, err: err }); }
     },
-    baogia: (bang, chiphi, baogia, plgia = 'dutoan', gang = 0) => {
-      gang = gang === '0' ? 0 : parseInt(gang) || -1;
+    baogia: (bang, dk, gang = 0) => {
+      console.log("swidb.nap1.baogia dk=", JSON.stringify(dk, null, 2));
+      gang = gang.constructor !== Number ? 0 : parseInt(gang);
       if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
-      if (bang) {
-        bang = bang.toString().toLowerCase();
-      } else {
-        self.postMessage({ cv: 1, baogia: 0 });
-        self.postMessage({ cv: -1, kq: "Bảng không tồn tại, trả giá mặc định" });
-        return;
-      };
-      chiphi = chiphi === '0' ? 0 : parseInt(chiphi) || -1;
-      if (chiphi < 0) {
-        self.postMessage({ cv: 1, baogia: 0 });
-        self.postMessage({ cv: -1, kq: "Chi phí không tồn tại, trả giá mặc định" });
-        return;
-      }
-      baogia = baogia === '0' ? 0 : parseInt(baogia) || -1;
-      if (baogia < 0) {
-        self.postMessage({ cv: 1, baogia: 0 });
-        self.postMessage({ cv: -1, kq: "Báo giá không tồn tại, trả giá mặc định" });
-        return;
-      }
-      if (plgia) {
-        plgia = plgia.toString().toLowerCase();
-      } else { plgia = 'dutoan'; };
-      let db, r, v, dk, cs, k1,
-        k = 0,
+      bang = bang ? JSON.stringify(bang).toLowerCase() : 'bgvl';
+      if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(bang))) { bang = 'bgvl'; }
+      let db, r, v, cs, k1, k, chiphi, baogia, plgia, _chiphi, _baogia, _plgia,
         kq = {};
-      try {
-        indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
-          db = e.target.result;
-          db.transaction(bang, 'readwrite')
-            .objectStore(bang)
-            .openCursor(null, 'prev')
-            .onsuccess = (e) => {
-              cs = e.target.result;
-              dk = 0;
-              if (cs) {
-                r = cs.value;
-                dk = parseInt(r.data.mabaogia);
-                if (r.data.chiphi === chiphi && plgia in r.data && dk <= baogia && dk > k) {
-                  k = dk;
-                  v = Math.abs(r.data[plgia]);
-                  if (!(k in kq)) {
-                    kq[k] = v;
-                    for (k1 in kq) {
-                      if (k1 < k) { delete kq[k1]; }
-                    }
+      //try {
+      chiphi = dk.chiphi.constructor !== Number ? -1 : parseInt(dk.chiphi);
+      if (chiphi < 0) {
+        self.postMessage({ cv: 100, baogia: 0 });
+        self.postMessage({ cv: -1, info: "Chi phí không tồn tại, trả giá mặc định" });
+        return;
+      }
+      baogia = dk.baogia.constructor !== Number ? -1 : parseInt(dk.baogia);
+      if (baogia < 0) {
+        self.postMessage({ cv: 100, baogia: 0 });
+        self.postMessage({ cv: -1, info: "Báo giá không tồn tại, trả giá mặc định" });
+        return;
+      }
+      plgia = dk.plgia ? dk.plgia.toString().toLowerCase() : 'dutoan';
+      //} catch (err) { self.postMessage({ cv: -1, err: err }); }
+      //try {
+      indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
+        db = e.target.result;
+        db.transaction(bang, 'readwrite')
+          .objectStore(bang)
+          .openCursor(null, 'prev')
+          .onsuccess = (e) => {
+            cs = e.target.result;
+            if (cs) {
+              r = cs.value.data;
+              k = parseInt(r.baogia || r.mabaogia) || 0;
+              console.log("swidb.nap1.baogia r=", JSON.stringify(r, null, 2));
+              console.log("swidb.nap1.baogia k=", JSON.stringify(k, null, 2));
+              if (r.chiphi == chiphi && k <= baogia) {
+                console.log("swidb.nap1.baogia ok=", JSON.stringify(kq, null, 2));
+                console.log("swidb.nap1.baogia plgia=", JSON.stringify(plgia, null, 2));
+                console.log("swidb.nap1.baogia r=", JSON.stringify(r, null, 2));
+                console.log("swidb.nap1.baogia plgia in r=", (plgia in r));
+                if (!(k in kq) && plgia in r) {
+                  kq[k] = Math.abs(r[plgia]) || 0;
+                  for (k1 in kq) {
+                    if (k1 < k) { delete kq[k1]; }
                   }
                 }
-                cs.continue();
-              } else {
-                for (k in kq) {
-                  break;
-                }
-                kq = kq[k] ? kq[k] : 0;
-                self.postMessage({ cv: cv, baogia: kq });
-                self.postMessage({ cv: -1, kq: "fin" });
               }
+              cs.continue();
+            } else {
+              console.log("swidb.nap1.baogia last kq=", JSON.stringify(kq, null, 2));
+              for (k in kq) {
+                kq = kq[k] ? kq[k] : 0;
+                break;
+              }
+              self.postMessage({ cv: 100, baogia: kq });
+              self.postMessage({ cv: -1, kq: "fin" });
             }
-        }
-      } catch (err) { self.postMessage({ cv: cv, err: err }); }
+          }
+      }
+      //} catch (err) { self.postMessage({ err: err }); }
     },
   },
 
@@ -643,13 +642,13 @@ self.onmessage = (ev) => {
   //try {
   let tin = ev.data,
     csdl_ten = tin.csdl.ten.toString().toLowerCase(),
-    csdl_cap = tin.csdl.cap === '0' ? 0 : parseInt(tin.csdl.cap) || 0,
+    csdl_cap = tin.csdl.cap.constructor !== Number ? 1 : parseInt(tin.csdl.cap),
     bang = tin.bang.toString().toLowerCase();
 
   sw.csdl = { ten: csdl_ten, cap: csdl_cap };
   self.postMessage({ cv: 0, info: "nhan tu boss idb", tin: tin });
   if ('baogia' in tin) {
-    sw.nap1.baogia(bang, tin.baogia.chiphi, tin.baogia.baogia, tin.baogia.plgia);
+    sw.nap1.baogia(bang, tin.baogia, tin.gang);
   }
   if ('gom.key' in tin) { sw.gom.key(bang, tin['gom.key'], tin.gang); }
   if ('gom.val' in tin) { sw.gom.val(bang, tin['gom.val'], tin.gang); }
@@ -657,6 +656,6 @@ self.onmessage = (ev) => {
   if ('gomval' in tin) { sw.gom.val(bang, tin['gomval'], tin.gang); }
   if ('nap1' in tin) { }
   if ('luu1' in tin || 'data1' in tin) { sw.data1(bang, tin.luu1, tin.gang); }
-  if ('idma' in tin) { sw.nap1.idma(bang, tin.idma) }
+  if ('idma' in tin) { sw.nap1.idma(bang, tin.idma, tin.gang) }
   //} catch (err) {    self.postMessage({ cv: -1, kq: "nothing to do" });  };
 }
