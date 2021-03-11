@@ -22,7 +22,7 @@ var app = {
   chiphi: null,
   idcptl: 1615263347491,
   oc: {
-    tiendo: 0,
+    cv: 0,
     zvl: 0,
     znc: 0,
     zmtc: 0,
@@ -1605,9 +1605,10 @@ var idb = {
       zdl = app.chiphi[idma];
       plbg = a2sl(dk.plbg);
       if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(plbg))) { plbg = 'bgvl'; }
-      if (zdl.cv[plbg.substr(2)] === 100) { 
+      if (zdl.cv[plbg.substr(2)] === 100) {
         console.log("idb.nap.baogia exit do cv=100 ", JSON.stringify(plbg, null, 2));
-        return; }
+        return;
+      }
       baogia = a2sl(dk.baogia || dk.mabaogia) || zdl.baogia;
       plgia = a2sl(dk.plgia) || zdl.plgia;
       zdl.plgia = plgia;
@@ -2382,6 +2383,39 @@ var idb = {
       self.congtrinh = self.xaydung + self.tailap
       self.congtrinhtruocthue = lamtronso(self.congtrinh * 100 / 110, 0)
       self.thuecongtrinh = self.congtrinh - self.congtrinhtruocthue
+    },
+  },
+  tiendo: {
+    chiphi: () => {
+      if (!app.chiphi || app.chiphi.constructor !== Object) { return 0; }
+      let k, k1, v, r, _zdl, _zk, _zv,
+        cv = { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 },
+        zk = 0,
+        zv = 0,
+        zdl = app.chiphi;
+      for (k1 in zdl) {
+        _zdl = zdl[k1].cv;
+        if (_zdl.constructor === Number) {
+          zk++;
+          zv += a2i(_zdl);
+        }
+        if (_zdl.constructor === Object) {
+          _zk = 0;
+          _zv = 0;
+          for (k in _zdl) {
+            r = _zdl[k];
+            zk++;
+            _zk++;
+            zv += a2i(r);
+            _zv += a2i(r);
+          }
+          cv = _zk === 0 ? 0 : parseInt(_zv / _zk);
+          if (cv === 100) { _zdl = 100; }
+        }
+      }
+      cv = zk == 0 ? 0 : parseInt(zv / zk);
+      //web.tiendo.chiphi(cv);
+      return cv;
     },
   },
 };
