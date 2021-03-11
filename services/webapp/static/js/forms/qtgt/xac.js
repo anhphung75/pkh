@@ -749,11 +749,19 @@ var web = {
         .style("display", "grid")
         .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
     },
-    cpxd: () => {
+    cpxd: (zdl = [
+      { chiphi: 100, soluong: 0, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+      { chiphi: 200, soluong: 0, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+      { chiphi: 300, soluong: 0, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    ]) => {
       let zone, i, r, row, o, dl,
-        dulieu = [],
+        dulieu = [];
+      if (zdl === undefined || zdl === null || zdl.constructor !== Array) {
         zdl = app.oc.cpxd;
-      if (zdl.constructor !== Array) { return; }
+        if (zdl === undefined || zdl === null || zdl.constructor !== Array) {
+          return;
+        }
+      }
       console.log("web.oc.cpxd app.oc.cpxd=", JSON.stringify(app.oc));
       for (i in zdl) {
         r = zdl[i];
@@ -1579,10 +1587,7 @@ var idb = {
       idma = a2i(dk.chiphi);
       if (idma < 0) { return; }
       if (!('chiphi' in app) || !app.chiphi || app.chiphi.constructor !== Object) { app.chiphi = {}; }
-      if (idma in app.chiphi) {
-        zdl = app.chiphi[idma];
-        if (zdl.baogia == app.baogia && zdl.plgia == app.plgia) { return; }
-      } else {
+      if (!(idma in app.chiphi)) {
         app.chiphi[idma] = {
           barcode: '',
           qrcode: '',
@@ -1596,10 +1601,13 @@ var idb = {
           giatl: 0,
           cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 },
         };
-        zdl = app.chiphi[idma];
       }
+      zdl = app.chiphi[idma];
       plbg = a2sl(dk.plbg);
       if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(plbg))) { plbg = 'bgvl'; }
+      if (zdl.cv[plbg.substr(2)] === 100) { 
+        console.log("idb.nap.baogia exit do cv=100 ", JSON.stringify(plbg, null, 2));
+        return; }
       baogia = a2sl(dk.baogia || dk.mabaogia) || zdl.baogia;
       plgia = a2sl(dk.plgia) || zdl.plgia;
       zdl.plgia = plgia;
@@ -2417,17 +2425,11 @@ function luanhoi() {
   web.tao();
   idb.taodb();
   //last idma qtgt
-  app.idqtgt = 1615277173487;
-  idb.nap.phui({ phui: 'oc', plcp: 'cpxd', idma: 1615277173487 });
-  web.oc.cpxd();
-  web.oc.bth();
-
-
-
-
-
-
-  //web.ongcai();
+  app.idqtgt = 1615478996890;
+  app.oc.idma = 1615478996890;
+  //idb.nap.phui({ phui: 'oc', plcp: 'cpxd', idma: app.oc.idma });
+  //web.oc.cpxd();
+  //web.oc.bth();
 }
 luanhoi();
 
@@ -2538,9 +2540,9 @@ function test_dulieu() {
     {
       "idma": Date.now(),
       "data": [
-        { "chiphi": 1, "soluong": 11 },
-        { "chiphi": 2, "soluong": 22 },
-        { "chiphi": 3, "soluong": 33 },
+        { "chiphi": 100, "soluong": 11 },
+        { "chiphi": 200, "soluong": 22 },
+        { "chiphi": 300, "soluong": 33 },
       ],
       "status": "chyenjson",
       "lastupdate": Date.now()
@@ -2548,9 +2550,9 @@ function test_dulieu() {
     {
       "idma": Date.now() + 1,
       "data": [
-        { "chiphi": 1, "soluong": 10 },
-        { "chiphi": 2, "soluong": 20 },
-        { "chiphi": 3, "soluong": 30 },
+        { "chiphi": 100, "soluong": 10 },
+        { "chiphi": 200, "soluong": 20 },
+        { "chiphi": 300, "soluong": 30 },
       ],
       "status": "chyenjson",
       "lastupdate": Date.now()
@@ -2558,8 +2560,8 @@ function test_dulieu() {
     {
       "idma": Date.now() + 2,
       "data": [
-        { "chiphi": 1, "soluong": 1 },
-        { "chiphi": 2, "soluong": 2 },
+        { "chiphi": 100, "soluong": 1 },
+        { "chiphi": 200, "soluong": 2 },
       ],
       "status": "chyenjson",
       "lastupdate": Date.now()
@@ -2567,8 +2569,8 @@ function test_dulieu() {
     {
       "idma": Date.now() + 3,
       "data": [
-        { "chiphi": 1, "soluong": 101 },
-        { "chiphi": 3, "soluong": 303 },
+        { "chiphi": 100, "soluong": 101 },
+        { "chiphi": 300, "soluong": 303 },
       ],
       "status": "chyenjson",
       "lastupdate": Date.now()
@@ -2576,7 +2578,7 @@ function test_dulieu() {
     {
       "idma": Date.now() + 4,
       "data": [
-        { "chiphi": 1, "soluong": 111 },
+        { "chiphi": 100, "soluong": 111 },
       ],
       "status": "chyenjson",
       "lastupdate": Date.now()
@@ -2587,32 +2589,32 @@ function test_dulieu() {
   idb.luu("cpvl", dl);
   dl = [
     {
-      "idma": 1,
-      "data": { "mota": { "qtgt": "cp qtgt1", "qtvt": "cp qtvt1" }, "dvt": "cai1" },
+      "idma": 100,
+      "data": { "mota": { "qtgt": "cp qtgt100", "qtvt": "cp qtvt1" }, "dvt": "cai100" },
       "status": "chyenjson",
       "lastupdate": Date.now()
     },
     {
-      "idma": 2,
-      "data": { "mota": { "qtgt": "cp qtgt2", "qtvt": "cp qtvt2" }, "dvt": "cai2" },
+      "idma": 200,
+      "data": { "mota": { "qtgt": "cp qtgt200", "qtvt": "cp qtvt2" }, "dvt": "cai200" },
       "status": "chyenjson",
       "lastupdate": Date.now()
     },
     {
-      "idma": 3,
-      "data": { "mota": { "qtgt": "cp qtgt3", "qtvt": "cp qtvt3" }, "dvt": "cai3" },
+      "idma": 300,
+      "data": { "mota": { "qtgt": "cp qtgt300", "qtvt": "cp qtvt3" }, "dvt": "cai300" },
       "status": "chyenjson",
       "lastupdate": Date.now()
     },
     {
-      "idma": 4,
-      "data": { "mota": { "qtgt": "cp qtgt4", "qtvt": "cp qtvt4" }, "dvt": "cai4" },
+      "idma": 400,
+      "data": { "mota": { "qtgt": "cp qtgt400", "qtvt": "cp qtvt4" }, "dvt": "cai400" },
       "status": "chyenjson",
       "lastupdate": Date.now()
     },
     {
-      "idma": 5,
-      "data": { "mota": { "qtgt": "cp qtgt5", "qtvt": "cp qtvt5" }, "dvt": "cai5" },
+      "idma": 500,
+      "data": { "mota": { "qtgt": "cp qtgt500", "qtvt": "cp qtvt5" }, "dvt": "cai500" },
       "status": "chyenjson",
       "lastupdate": Date.now()
     },
@@ -2627,7 +2629,15 @@ function test_dulieu() {
 //idb.nap.phui({ phui: 'on', plcp: 'cpxd', idma: 1615277173487 });
 //idb.nap.chiphi({ phui: 'oc', plcp: 'cpxd', idma: 1 });
 //console.log("test sau nap.chiphi app.chiphi=", JSON.stringify(app.chiphi));
-//idb.nap.baogia({ plbg: 'bgvl', chiphi: 100, });
-//console.log("test sau nap.baogia app.chiphi=", JSON.stringify(app.chiphi));
+idb.nap.baogia({ plbg: 'bgvl', chiphi: 100, });
+idb.nap.baogia({ plbg: 'bgnc', chiphi: 100, });
+idb.nap.baogia({ plbg: 'bgmtc', chiphi: 100, });
+idb.nap.baogia({ plbg: 'bgtl', chiphi: 100, });
+console.log("test1 sau nap.baogia app.chiphi=", JSON.stringify(app.chiphi));
+idb.nap.baogia({ plbg: 'bgvl', chiphi: 100, });
+idb.nap.baogia({ plbg: 'bgnc', chiphi: 100, });
+idb.nap.baogia({ plbg: 'bgmtc', chiphi: 100, });
+idb.nap.baogia({ plbg: 'bgtl', chiphi: 100, });
+console.log("test2 sau nap.baogia app.chiphi=", JSON.stringify(app.chiphi));
 
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));
