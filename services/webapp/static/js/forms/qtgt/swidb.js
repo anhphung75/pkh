@@ -1,3 +1,28 @@
+function a2s(dl) {
+  if (dl === undefined || dl === null) {
+    return '';
+  } else if (dl.constructor === String) {
+    return dl.toString();
+  }
+  else {
+    return JSON.stringify(dl);
+  }
+}
+function a2sl(dl) {
+  return a2s(dl).toLowerCase();
+}
+function a2su(dl) {
+  return a2s(dl).toUpperCase();
+}
+
+function a2i(dl) {
+  let kq;
+  try {
+    kq = parseInt(dl);
+  } catch (err) { kq = -1; }
+  return kq
+}
+
 var sw = {
   csdl: { ten: 'cntd', cap: 1 },
   ham: {
@@ -347,15 +372,26 @@ var sw = {
     } catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
   nap1: {
-    idma: (bang, idma = 0, gang = 0) => {
-      gang = gang === '0' ? 0 : parseInt(gang) || -1;
-      if (gang > 3) { self.postMessage({ cv: -1, info: "bất quá tam" }); }
-      if (bang) {
-        bang = bang.toString().toLowerCase();
-      } else {
-        self.postMessage({ cv: -1, info: "Bảng không tồn tại" });
+    idma: (bang, dk = { idma: 0 }, gang = 0) => {
+      gang = a2i(gang);
+      if (gang > 3) {
+        self.postMessage({ cv: -1, kq: "bất quá tam" });
+        return;
+      }
+      bang = a2sl(bang);
+      if (bang.length < 1) {
+        self.postMessage({ cv: -1, info: "Bảng chưa tồn tại" });
         return;
       };
+      let idma;
+      try {
+        idma = a2i(dk.idma);
+        if (idma < 0) {
+          self.postMessage({ cv: 100, idma: 0 });
+          self.postMessage({ cv: -1, info: "Mã định danh chưa tồn tại" });
+          return;
+        }
+      } catch (err) { self.postMessage({ cv: -1, err: err }); }
       try {
         indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e0) => {
           let db = e0.target.result;
@@ -374,67 +410,74 @@ var sw = {
         }
       } catch (err) { self.postMessage({ cv: -1, err: err }); }
     },
-    baogia: (bang, dk, gang = 0) => {
-      console.log("swidb.nap1.baogia dk=", JSON.stringify(dk, null, 2));
-      gang = gang.constructor !== Number ? 0 : parseInt(gang);
-      if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
-      bang = bang ? JSON.stringify(bang).toLowerCase() : 'bgvl';
+    baogia: (bang, dk = { chiphi: 0, baogia: 0, plgia: 'dutoan' }, gang = 0) => {
+      gang = a2i(gang);
+      if (gang > 3) {
+        self.postMessage({ cv: -1, kq: "bất quá tam" });
+        return;
+      }
+      bang = a2sl(bang);
       if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(bang))) { bang = 'bgvl'; }
-      let db, r, v, cs, k1, k, chiphi, baogia, plgia, _chiphi, _baogia, _plgia,
-        kq = {};
-      //try {
-      chiphi = dk.chiphi.constructor !== Number ? -1 : parseInt(dk.chiphi);
-      if (chiphi < 0) {
-        self.postMessage({ cv: 100, baogia: 0 });
-        self.postMessage({ cv: -1, info: "Chi phí không tồn tại, trả giá mặc định" });
-        return;
-      }
-      baogia = dk.baogia.constructor !== Number ? -1 : parseInt(dk.baogia);
-      if (baogia < 0) {
-        self.postMessage({ cv: 100, baogia: 0 });
-        self.postMessage({ cv: -1, info: "Báo giá không tồn tại, trả giá mặc định" });
-        return;
-      }
-      plgia = dk.plgia ? dk.plgia.toString().toLowerCase() : 'dutoan';
-      //} catch (err) { self.postMessage({ cv: -1, err: err }); }
-      //try {
-      indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
-        db = e.target.result;
-        db.transaction(bang, 'readwrite')
-          .objectStore(bang)
-          .openCursor(null, 'prev')
-          .onsuccess = (e) => {
-            cs = e.target.result;
-            if (cs) {
-              r = cs.value.data;
-              k = parseInt(r.baogia || r.mabaogia) || 0;
-              console.log("swidb.nap1.baogia r=", JSON.stringify(r, null, 2));
-              console.log("swidb.nap1.baogia k=", JSON.stringify(k, null, 2));
-              if (r.chiphi == chiphi && k <= baogia) {
-                console.log("swidb.nap1.baogia ok=", JSON.stringify(kq, null, 2));
-                console.log("swidb.nap1.baogia plgia=", JSON.stringify(plgia, null, 2));
-                console.log("swidb.nap1.baogia r=", JSON.stringify(r, null, 2));
-                console.log("swidb.nap1.baogia plgia in r=", (plgia in r));
-                if (!(k in kq) && plgia in r) {
-                  kq[k] = Math.abs(r[plgia]) || 0;
-                  for (k1 in kq) {
-                    if (k1 < k) { delete kq[k1]; }
+      let db, r, cs, k1, chiphi, baogia, plgia, gia, _chiphi, _baogia,
+        k = 0,
+        kq = { "0": 0 };
+      try {
+        chiphi = a2i(dk.chiphi);
+        if (chiphi < 0) {
+          self.postMessage({ cv: 100, baogia: 0 });
+          self.postMessage({ cv: -1, info: "Chi phí không tồn tại, trả giá mặc định" });
+          return;
+        }
+        baogia = a2i(dk.baogia);
+        if (baogia < 0) {
+          self.postMessage({ cv: 100, baogia: 0 });
+          self.postMessage({ cv: -1, info: "Báo giá không tồn tại, trả giá mặc định" });
+          return;
+        }
+        plgia = dk.plgia ? a2sl(dk.plgia) : 'dutoan';
+      } catch (err) { self.postMessage({ cv: -1, err: err }); }
+      try {
+        indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
+          db = e.target.result;
+          db.transaction(bang, 'readwrite')
+            .objectStore(bang)
+            .openCursor(null, 'prev')
+            .onsuccess = (e) => {
+              cs = e.target.result;
+              if (cs) {
+                r = cs.value.data;
+                _chiphi = a2i(r.chiphi);
+                _baogia = a2i(r.baogia || r.mabaogia);
+                gia = r[plgia] ? Math.abs(r[plgia]) : 0;
+                if (_chiphi == chiphi) {
+                  if (_baogia == baogia) {
+                    self.postMessage({ cv: 100, baogia: gia });
+                    self.postMessage({ cv: -1, info: "fin" });
+                    return;
+                  }
+                  if (_baogia >= 0 && _baogia <= baogia && _baogia > k) {
+                    k = _baogia;
+                    if (!(k in kq)) {
+                      kq[k] = gia;
+                      for (k1 in kq) {
+                        if (k1 < k) { delete kq[k1]; }
+                      }
+                    }
                   }
                 }
+                cs.continue();
+              } else {
+                console.log("swidb.nap1.baogia last kq=", JSON.stringify(kq, null, 2));
+                baogia = 0;
+                for (k in kq) {
+                  if (baogia < k) { baogia = k; }
+                }
+                self.postMessage({ cv: 100, baogia: kq[baogia] });
+                self.postMessage({ cv: -1, info: "fin" });
               }
-              cs.continue();
-            } else {
-              console.log("swidb.nap1.baogia last kq=", JSON.stringify(kq, null, 2));
-              for (k in kq) {
-                kq = kq[k] ? kq[k] : 0;
-                break;
-              }
-              self.postMessage({ cv: 100, baogia: kq });
-              self.postMessage({ cv: -1, kq: "fin" });
             }
-          }
-      }
-      //} catch (err) { self.postMessage({ err: err }); }
+        }
+      } catch (err) { self.postMessage({ err: err }); }
     },
   },
 
@@ -656,6 +699,6 @@ self.onmessage = (ev) => {
   if ('gomval' in tin) { sw.gom.val(bang, tin['gomval'], tin.gang); }
   if ('nap1' in tin) { }
   if ('luu1' in tin || 'data1' in tin) { sw.data1(bang, tin.luu1, tin.gang); }
-  if ('idma' in tin) { sw.nap1.idma(bang, tin.idma, tin.gang) }
+  if ('idma' in tin) { sw.nap1.idma(bang, { idma: tin.idma }, tin.gang) }
   //} catch (err) {    self.postMessage({ cv: -1, kq: "nothing to do" });  };
 }

@@ -1,4 +1,4 @@
-import { d2l, lamtronso, viewso } from "./../../utils.js"
+import { lamtronso, a2s, a2sl, a2i } from "./../../utils.js"
 
 d3.formatDefaultLocale({
   decimal: ",",
@@ -17,7 +17,7 @@ var app = {
   hoso: '1',
   qtgt: '1',
   plgia: 'dutoan',
-  mabaogia: 20210101,
+  baogia: 20190726,
   macpql: 20200827,
   chiphi: null,
   idcptl: 1615263347491,
@@ -207,8 +207,6 @@ var web = {
     web.otim.dot();
     web.otim.hoso();
     web.oc.tieude();
-    web.oc.cpxd();
-    web.oc.bth();
     //web.oc.cpvt();
     //web.oc.cpvl();
     //web.oc.bth();
@@ -751,32 +749,28 @@ var web = {
         .style("display", "grid")
         .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
     },
-    cpxd: (idma = null) => {
-      if (!idma) {
-        return;
-      } else {
-        if (!app.oc.idcpxd || idma !== app.oc.idcpxd) {
-          app.oc.idcpxd = idma;
-          //cpxd=[{"chiphi":123,"soluong":12.5},]
-          idb.nap.oc.cpxd(idma);
-
-        }
-      }
+    cpxd: () => {
       let zone, i, r, row, o, dl,
         dulieu = [],
         zdl = app.oc.cpxd;
       if (zdl.constructor !== Array) { return; }
+      console.log("web.oc.cpxd app.oc.cpxd=", JSON.stringify(app.oc));
       for (i in zdl) {
         r = zdl[i];
         //tra lai chiphi
-        dl = ga.chiphi[r.chiphi];
-        r.mota = dl.mota.qtgt;
-        r.dvt = dl.dvt;
-        //tra lai gia
-        o = [app.plgia, app.mabaogia, r.chiphi].join('.');
-        r.giavl = ga.bgvl[o] || 0;
-        r.gianc = ga.bgnc[o] || 0;
-        r.giamtc = ga.bgmtc[o] || 0;
+        if (app.chiphi) {
+          dl = app.chiphi[r.chiphi];
+          r.barcode = dl.barcode;
+          r.qrcode = dl.qrcode;
+          r.mota = dl.mota;
+          r.dvt = dl.dvt;
+          r.giavl = dl.giavl;
+          r.gianc = dl.gianc;
+          r.giamtc = dl.giamtc;
+          r.giatl = dl.giatl;
+        }
+        //soluong
+        r.soluong = lamtronso(Math.abs(r.soluong), 3);
         //tinh lai tien
         r.tienvl = lamtronso(r.soluong * r.giavl, 0);
         r.tiennc = lamtronso(r.soluong * r.gianc, 0);
@@ -1003,232 +997,7 @@ var web = {
           web.hov_outtag(web.tagid);
         });
     },
-    cpvt: () => {
-      let bang = d3.select("table[id='oc_cpvt']")
-        .attr("class", "w100")
-        .style("table-layout", "auto")
-        .style("border-collapse", "separate")
-        .style("border-spacing", "1px 1px")
-        .style("overflow", "auto")
-        .style("margin", "0");
 
-      //tieude
-      bang.selectAll("th").data(ga.tieude.cpvt)
-        .enter()
-        .append("th")
-        .attr("class", "c")
-        .text((col) => col);
-
-      //rows
-      bang.selectAll("tr").remove();
-      let row = bang.selectAll("tr").data(ga.oc.cpvt).enter().append("tr");
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d, i) => {
-          let v = i + 1;
-          switch (v) {
-            case v >= 0 && v < 10:
-              return '00'.concat(i);
-            case v >= 10 && v < 100:
-              return '0'.concat(i);
-            default:
-              return v;
-          }
-        });
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", (d, i) => "l oc_cpvt col1 row" + i)
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => d.mota)
-        .on("change", (ev) => {
-          //try {
-          let stt = ev.target.dataset.stt;
-          let v = ev.target.value || '';
-          console.log('mota change=', v, ' stt=', stt, ' ev=', ev.target);
-          if (v.length > 0) {
-            let r = ga.oc.cpvt[stt];
-            r.mota = v;
-            //tinh lai gia chi phi
-            idb.tinh.oc.cpvt(stt);
-          }
-          web.oc.cpvt();
-          web.oc.bth();
-          web.move2id('oc_cpvt', stt, 1, 13);
-          //} catch (err) {
-          //console.log("err=", JSON.stringify(err));
-          //web.oc.cpvt();
-          //}
-        })
-        .on("keydown", function (ev) {
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            web.move2id('oc_cpvt', ev.target.dataset.stt, 1, ev.keyCode);
-          }
-        });
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d) => d.dvt);
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", (d, i) => "r oc_cpvt col3 row" + i)
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev) => {
-          try {
-            let stt = ev.target.dataset.stt;
-            let v = Math.abs(parseFloat(ev.target.value)) || 0;
-            if (v > 0) {
-              let r = ga.oc.cpvt[stt];
-              r.soluong = v;
-              r.tienvl = lamtronso(r.soluong * r.giavl, 0);
-              r.tiennc = lamtronso(r.soluong * r.gianc, 0);
-              r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
-            }
-            web.oc.cpvt();
-            web.oc.bth();
-            web.move2id('oc_cpvt', stt, 3, 13);
-          } catch (err) {
-            web.oc.cpvt();
-          }
-        })
-        .on("keydown", function (ev) {
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            web.move2id('oc_cpvt', ev.target.dataset.stt, 3, ev.keyCode);
-          }
-        });
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giavl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.gianc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giamtc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienvl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tiennc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienmtc, 0));
-    },
-    cpvl: () => {
-      let bang = d3.select("table[id='oc_cpvl']")
-        .attr("class", "w100")
-        .style("table-layout", "auto")
-        .style("border-collapse", "separate")
-        .style("border-spacing", "1px 1px")
-        .style("overflow", "auto")
-        .style("margin", "0");
-
-      //tieude
-      bang.selectAll("th").data(ga.tieude.cpvl)
-        .enter()
-        .append("th")
-        .attr("class", "c")
-        .text((col) => col);
-
-      //rows
-      bang.selectAll("tr").remove();
-      let row = bang.selectAll("tr").data(ga.oc.cpvl).enter().append("tr");
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d, i) => {
-          let v = i + 1;
-          switch (v) {
-            case v >= 0 && v < 10:
-              return '00'.concat(i);
-            case v >= 10 && v < 100:
-              return '0'.concat(i);
-            default:
-              return v;
-          }
-        });
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", (d, i) => "l oc_cpvl col1 row" + i)
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => d.mota)
-        .on("change", (ev) => {
-          //try {
-          let stt = ev.target.dataset.stt;
-          let v = ev.target.value || '';
-          console.log('mota change=', v, ' stt=', stt, ' ev=', ev.target);
-          if (v.length > 0) {
-            let r = ga.oc.cpvl[stt];
-            r.mota = v;
-            //tinh lai gia chi phi
-            idb.tinh.oc.cpvl(stt);
-          }
-          web.oc.cpvl();
-          web.oc.bth();
-          web.move2id('oc_cpvl', stt, 1, 13);
-          //} catch (err) {
-          //console.log("err=", JSON.stringify(err));
-          //web.oc.cpvl();
-          //}
-        })
-        .on("keydown", function (ev) {
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            web.move2id('oc_cpvl', ev.target.dataset.stt, 1, ev.keyCode);
-          }
-        });
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d) => d.dvt);
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", (d, i) => "r oc_cpvl col3 row" + i)
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev) => {
-          try {
-            let stt = ev.target.dataset.stt;
-            let v = Math.abs(parseFloat(ev.target.value)) || 0;
-            if (v > 0) {
-              let r = ga.oc.cpvl[stt];
-              r.soluong = v;
-              r.tienvl = lamtronso(r.soluong * r.giavl, 0);
-              r.tiennc = lamtronso(r.soluong * r.gianc, 0);
-              r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
-            }
-            web.oc.cpvl();
-            web.oc.bth();
-            web.move2id('oc_cpvl', stt, 3, 13);
-          } catch (err) {
-            web.oc.cpvl();
-          }
-        })
-        .on("keydown", function (ev) {
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            web.move2id('oc_cpvl', ev.target.dataset.stt, 3, ev.keyCode);
-          }
-        });
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giavl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.gianc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giamtc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienvl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tiennc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienmtc, 0));
-    },
     bth: () => {
       let zone, kiem,
         self = app.oc;
@@ -1263,13 +1032,13 @@ var web = {
       } catch (err) { }
       d3.select("#oc_zvl").data([self.zvl])
         .attr("class", "fb")
-        .text((d) => viewso(d, 0));
+        .text((d) => d3.format(",.0r")(d));
       d3.select("#oc_znc").data([self.znc])
         .attr("class", "fb")
-        .text((d) => viewso(d, 0));
+        .text((d) => d3.format(",.0r")(d));
       d3.select("#oc_zmtc").data([self.zmtc])
         .attr("class", "fb")
-        .text((d) => viewso(d, 0));
+        .text((d) => d3.format(",.0r")(d));
     },
     up_cpxd: (dl) => {
       if (dl.constructor !== Object) { return; }
@@ -1304,487 +1073,12 @@ var web = {
     },
   },
 
-  on: {
-    bth: () => {
-      let zone, kiem, self;
-      zone = d3.select("section[id='ongnganh']");
-      kiem = zone.select(".ongnganh")
-        .attr("data-show", "true")
-        .on("click", (ev) => {
-          if (kiem.attr("data-show") === "true") {
-            zone.selectAll("table").classed("hide", false);
-            kiem.attr("data-show", "false");
-          } else {
-            zone.selectAll("table").classed("hide", true);
-            kiem.attr("data-show", "true");
-          }
-        });
-      if (!('on' in ga)) { ga.on = { zvl: 0, znc: 0, zmtc: 0 }; }
-      self = ga.on;
-      try {
-        self.zvl = self.cpxd.reduce(function (z, rec) { return z + rec.tienvl }, 0);
-        self.zvl = self.cpvt.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
-        self.zvl = self.cpvl.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
-      } catch (err) { }
-      try {
-        self.znc = self.cpxd.reduce(function (z, rec) { return z + rec.tiennc }, 0);
-        self.znc = self.cpvt.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
-        self.znc = self.cpvl.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
-      } catch (err) { }
-      try {
-        self.zmtc = self.cpxd.reduce(function (z, rec) { return z + rec.tienmtc }, 0);
-        self.zmtc = self.cpvt.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
-        self.zmtc = self.cpvl.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
-      } catch (err) { }
-      d3.select("div[id='on_zvl']").data([self.zvl])
-        .attr("class", "fb")
-        .text((d) => viewso(d, 0));
-      d3.select("div[id='on_znc']").data([self.znc])
-        .attr("class", "fb")
-        .text((d) => viewso(d, 0));
-      d3.select("div[id='on_zmtc']").data([self.zmtc])
-        .attr("class", "fb")
-        .text((d) => viewso(d, 0));
-    },
-    cpxd: () => {
-      let bang = d3.select("table[id='on_cpxd']")
-        .attr("class", "w100")
-        .style("table-layout", "auto")
-        .style("border-collapse", "separate")
-        .style("border-spacing", "1px 1px")
-        .style("overflow", "auto")
-        .style("margin", "0");
 
-      //tieude
-      bang.selectAll("th").data(ga.tieude.cpxd)
-        .enter()
-        .append("th")
-        .attr("class", "c")
-        .text((col) => col);
-
-      //rows
-      bang.selectAll("tr").remove();
-      let row = bang.selectAll("tr").data(ga.on.cpxd).enter().append("tr");
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d, i) => {
-          let v = i + 1;
-          switch (v) {
-            case v >= 0 && v < 10:
-              return '00'.concat(i);
-            case v >= 10 && v < 100:
-              return '0'.concat(i);
-            default:
-              return v;
-          }
-        });
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", "l b0")
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => d.mota)
-        .on("change", (ev, d) => {
-          console.log('ev=', ev.target);
-          let stt = ev.target.dataset.stt;
-          let v = ev.target.value || '';
-          if (v.length > 0) {
-            let r = ga.on.cpxd[stt];
-            r.mota = v;
-            r.soluong = v;
-            r.tienvl = lamtronso(r.soluong * r.giavl);
-            r.tiennc = lamtronso(r.soluong * r.gianc);
-            r.tienmtc = lamtronso(r.soluong * r.giamtc);
-          }
-          web.on_cpxd();
-          web.ongnganh();
-        });
-
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d) => d.dvt);
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", "r")
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt;
-          let v = parseFloat(ev.target.value) || 0;
-          if (v > 0) {
-            let r = ga.on_cpxd[stt];
-            r.soluong = v;
-            r.tienvl = lamtronso(v * r.giavl);
-            r.tiennc = lamtronso(v * r.gianc);
-            r.tienmtc = lamtronso(v * r.giamtc);
-          }
-          web.on_cpxd();
-        });
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giavl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.gianc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giamtc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienvl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tiennc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienmtc, 0));
-    },
-    cpvt: () => {
-      let bang = d3.select("table[id='on_cpvt']")
-        .attr("class", "w100")
-        .style("table-layout", "auto")
-        .style("border-collapse", "separate")
-        .style("border-spacing", "1px 1px")
-        .style("overflow", "auto")
-        .style("margin", "0");
-
-      //tieude
-      bang.selectAll("th").data(ga.tieude.cpvt)
-        .enter()
-        .append("th")
-        .attr("class", "c")
-        .text((col) => col);
-
-      //rows
-      bang.selectAll("tr").remove();
-      let row = bang.selectAll("tr").data(ga.on_cpvt).enter().append("tr");
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d, i) => {
-          let v = i + 1;
-          switch (v) {
-            case v >= 0 && v < 10:
-              return '00'.concat(i);
-            case v >= 10 && v < 100:
-              return '0'.concat(i);
-            default:
-              return v;
-          }
-        });
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", "l b0")
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => d.mota)
-        .on("change", (ev) => {
-          let stt = ev.target.dataset.stt;
-          let v = ev.target.value || '';
-          if (v.length > 0) {
-            ga.on_cpvt[stt].mota = v;
-          }
-          web.on_cpvt();
-        });
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d) => d.dvt);
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", "r")
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt;
-          let v = parseFloat(ev.target.value) || 0;
-          if (v > 0) {
-            ga.on_cpvt[stt].soluong = v;
-          }
-          web.on_cpvt();
-        });
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giavl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.gianc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giamtc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienvl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tiennc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienmtc, 0));
-    },
-    cpvl: () => {
-      let bang = d3.select("table[id='on_cpvl']")
-        .attr("class", "w100")
-        .style("table-layout", "auto")
-        .style("border-collapse", "separate")
-        .style("border-spacing", "1px 1px")
-        .style("overflow", "auto")
-        .style("margin", "0");
-
-      //tieude
-      bang.selectAll("th").data(ga.tieude.cpvl)
-        .enter()
-        .append("th")
-        .attr("class", "c")
-        .text((col) => col);
-
-      //rows
-      bang.selectAll("tr").remove();
-      let row = bang.selectAll("tr").data(ga.on_cpvl).enter().append("tr");
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d, i) => {
-          let v = i + 1;
-          switch (v) {
-            case v >= 0 && v < 10:
-              return '00'.concat(i);
-            case v >= 10 && v < 100:
-              return '0'.concat(i);
-            default:
-              return v;
-          }
-        });
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", "l b0")
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => d.mota)
-        .on("change", (ev) => {
-          let stt = ev.target.dataset.stt;
-          let v = ev.target.value || '';
-          if (v.length > 0) {
-            ga.on_cpvl[stt].mota = v;
-          }
-          web.on_cpvl();
-        });
-      row.append('td')
-        .attr("class", "c bb")
-        .text((d) => d.dvt);
-      row.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", "r")
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => viewso(d.soluong, 0))
-        .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt;
-          let v = parseFloat(ev.target.value) || 0;
-          if (v > 0) {
-            ga.on_cpvl[stt].soluong = v;
-          }
-          web.on_cpvl();
-        });
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giavl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.gianc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.giamtc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienvl, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tiennc, 0));
-      row.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.tienmtc, 0));
-    },
-  },
 
   tlmd: {
-    bth: () => {
-      let zone, kiem, bang, rec, self;
-      zone = d3.select("section[id='tlmd']");
-      kiem = zone.select(".tlmd")
-        .attr("data-show", "true")
-        .on("click", (ev) => {
-          if (kiem.attr("data-show") === "true") {
-            zone.selectAll("table").classed("hide", false);
-            kiem.attr("data-show", "false");
-          } else {
-            zone.selectAll("table").classed("hide", true);
-            kiem.attr("data-show", "true");
-          }
-        });
-      web.tlmd.cptl();
-      ga.oc.ztl = ga.cptl.reduce(function (z, rec) { return z + rec.oc_tien }, 0);
-      ga.on.ztl = ga.cptl.reduce(function (z, rec) { return z + rec.on_tien }, 0);
-      d3.select("div[id='oc_ztl']").data([ga.oc.ztl])
-        .attr("class", "fb")
-        .text((d) => viewso(d, 0));
-      d3.select("div[id='on_ztl']").data([ga.on.ztl])
-        .attr("class", "fb")
-        .text((d) => viewso(d, 0));
-    },
-    cptl: () => {
-      let bang = d3.select("table[id='cptl']")
-        .attr("class", "w100")
-        .style("table-layout", "auto")
-        .style("border-collapse", "separate")
-        .style("border-spacing", "1px 1px")
-        .style("overflow", "auto")
-        .style("margin", "0");
-      //tieude
-      bang.selectAll("th").data(ga.tieude.cptl)
-        .enter()
-        .append("th")
-        .attr("class", "c")
-        .text((col) => col);
-      //rows
-      bang.selectAll("tr").remove();
-      let rec = bang.selectAll("tr").data(ga.cptl).enter().append("tr");
-      //cells
-      rec.append('td')
-        .attr("class", "c bb")
-        .text((d, i) => {
-          let v = i + 1;
-          switch (v) {
-            case v >= 0 && v < 10:
-              return '0'.concat(i);
-            default:
-              return v;
-          }
-        });
-      rec.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", (d, i) => "l cptl col1 row" + i)
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => d.mota)
-        .on("input", function (ev) {
-          //hien show_chon de lua chi phi
-          d3.select(ev.target).attr("data-isopen", "ok");
-          web.box.chiphi(ev.target, "tlmd", ev.target.value);
-        })
-        .on("change", (ev) => {
-          let stt = ev.target.dataset.stt,
-            idma = ev.target.dataset.chiphi || 0;
-          if (idma > 0) {
-            ga.cptl[stt].idma = idma;
-            ga.cptl[stt].chiphi = idma;
-            d3.select(ev.target).attr("data-isopen", "no");
-            try {
-              d3.select("#comb-chiphi").remove();
-            } catch (err) { }
-            idb.tinh.cptl(stt);
-            web.tlmd.cptl();
-            web.tlmd.bth();
-          }
-          web.move2id('cptl', 1, stt, 13);
-        })
-        .on("keydown", function (ev) {
-          if ([13].includes(ev.keyCode)) {
-            web.move2id('cptl', ev.target.dataset.stt, 1, ev.keyCode);
-          }
-          if ([40, 38].includes(ev.keyCode)) {
-            if (ev.target.dataset.isopen === 'ok') {
-              let row;
-              if ('rowchiphi' in ev.target.dataset) {
-                row = ev.target.dataset.rowchiphi;
-                row = row === '0' ? 0 : parseInt(row);
-                d3.select(ev.target).attr("data-rowchiphi", row + 1);
-              } else {
-                row = 0;
-                d3.select(ev.target).attr("data-rowchiphi", row + 1);
-              }
-              console.log("move2id chiphi")
-              web.box.move2id('chiphi', row, 1, ev.keyCode);
-            } else {
-              console.log("move2id cptl")
-              web.move2id('cptl', ev.target.dataset.stt, 1, ev.keyCode);
-            }
-          }
-        });
-      rec.append('td')
-        .attr("class", "c bb")
-        .text((d) => d.dvt);
-      rec.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", (d, i) => "r cptl col3 row" + i)
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => viewso(d.oc_sl, 0))
-        .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt,
-            r = ga.cptl[stt];
-          try {
-            r.oc_sl = lamtronso(Math.abs(parseFloat(ev.target.value)), 3);
-          } catch (err) { r.oc_sl = 0; };
-          try {
-            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-            r.gia = lamtronso(ga.bgtl[k], 0);
-          } catch (err) { r.gia = 0; }
-          if ((ga.macpql || ga.cpql.hesoid) >= 20200827) {
-            r.oc_tien = lamtronso(r.gia * r.oc_sl, 0);
-          } else {
-            r.oc_tien = lamtronso(r.gia * r.oc_sl / 1000, 0) * 1000;
-          }
-          web.tlmd.cptl();
-          web.tlmd.bth();
-          web.move2id('cptl', stt, 3, 13);
-        })
-        .on("keydown", function (ev) {
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            web.move2id('cptl', ev.target.dataset.stt, 3, ev.keyCode);
-          }
-        });
-      rec.append('td')
-        .attr("class", "bb")
-        .append('input')
-        .attr("class", (d, i) => "r cptl col4 row" + i)
-        .attr("data-stt", (d, i) => i)
-        .attr("value", (d) => viewso(d.on_sl, 0))
-        .on("change", (ev, d) => {
-          let stt = ev.target.dataset.stt,
-            r = ga.cptl[stt];
-          try {
-            r.on_sl = lamtronso(Math.abs(parseFloat(ev.target.value)), 3);
-          } catch (err) { r.on_sl = 0; };
-          try {
-            k = [ga.plgia, '.', ga.mabaogia, '.', r.chiphi].join('');
-            r.gia = lamtronso(ga.bgtl[k], 0);
-          } catch (err) { r.gia = 0; }
-          if ((ga.macpql || ga.cpql.hesoid) >= 20200827) {
-            r.on_tien = lamtronso(r.gia * r.on_sl, 0);
-          } else {
-            r.on_tien = lamtronso(r.gia * r.on_sl / 1000, 0) * 1000;
-          }
-          web.tlmd.cptl();
-          web.tlmd.bth();
-          web.move2id('cptl', stt, 3, 13);
-        })
-        .on("keydown", function (ev) {
-          if ([13, 40, 38].includes(ev.keyCode)) {
-            web.move2id('cptl', ev.target.dataset.stt, 4, ev.keyCode);
-          }
-        });
-      rec.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.gia, 0));
-      rec.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.oc_tien, 0));
-      rec.append('td')
-        .attr("class", "r bb")
-        .text((d) => viewso(d.on_tien, 0));
-    },
+
   },
-  cpql: () => {
+  cpql: (idma = null) => {
     let zone, kiem, bang, rec, self;
     zone = d3.select("section[id='cpql']");
   },
@@ -2144,12 +1438,13 @@ var idb = {
       let phui, plcp, idma, tin, gui, i, zdl,
         w = new Worker(app.url['swidb']);
       //try {
-      phui = dk.phui.constructor !== String ? 'on' : dk.phui.toLowerCase();
-      plcp = dk.plcp.constructor !== String ? 'cpxd' : dk.plcp.toLowerCase();
-      idma = dk.idma.constructor !== Number ? -1 : parseInt(dk.idma);
+      phui = a2sl(dk.phui);
+      if (!(['on', 'oc'].includes(phui))) { phui = 'on'; }
+      plcp = a2sl(dk.plcp);
+      if (!(['cpxd', 'cpvt', 'cpvl', 'cptl'].includes(plcp))) { plcp = 'cpxd'; }
+      idma = a2i(dk.idma);
       if (idma < 0) { return; }
-      phui.includes('oc') ? phui = 'oc' : phui = 'on';
-      if (!(phui in app) || app[phui].constructor !== Object) { app[phui] = {}; }
+      if (!(phui in app) || !app[phui] || app[phui].constructor !== Object) { app[phui] = {}; }
       app[phui]['id' + plcp] = idma;
       //} catch (err) { return; }
       gui = {
@@ -2173,6 +1468,8 @@ var idb = {
             zdl = tin.idma.data;
             if (zdl.constructor === Array) {
               for (i in zdl) {
+                zdl[i].barcode = '';
+                zdl[i].qrcode = '';
                 zdl[i].mota = '';
                 zdl[i].dvt = '';
                 zdl[i].giavl = 0;
@@ -2186,10 +1483,6 @@ var idb = {
                 zdl[i].cv = 0;
                 idma = zdl[i].chiphi;
                 idb.nap.chiphi({ idma: idma });
-                idb.nap.baogia({ plbg: 'bgvl', idma: idma });
-                idb.nap.baogia({ plbg: 'bgnc', idma: idma });
-                idb.nap.baogia({ plbg: 'bgmtc', idma: idma });
-                idb.nap.baogia({ plbg: 'bgtl', idma: idma });
               }
               app[phui][plcp] = zdl;
             }
@@ -2206,16 +1499,31 @@ var idb = {
     },
     chiphi: (dk = { idma: null }) => {
       if (dk.constructor !== Object) { return; }
-      let idma, tin, gui, i, zdl,
+      let idma, tin, gui, i, r, zdl,
         w = new Worker(app.url['swidb']);
       //try {
-      idma = dk.idma.constructor !== Number ? -1 : parseInt(dk.idma);
+      idma = a2i(dk.idma);
       if (idma < 0) { return; }
       if (!('chiphi' in app) || !app.chiphi || app.chiphi.constructor !== Object) { app.chiphi = {}; }
       if (idma in app.chiphi) {
         zdl = app.chiphi[idma];
-        if (zdl.mabaogia == app.mabaogia && zdl.plgia == app.plgia) { return; }
-      } else { app.chiphi[idma] = {}; }
+        if (zdl.baogia == app.baogia && zdl.plgia == app.plgia) { return; }
+      } else {
+        app.chiphi[idma] = {
+          barcode: '',
+          qrcode: '',
+          mota: '',
+          dvt: '',
+          baogia: app.baogia || app.mabaogia,
+          plgia: app.plgia || 'dutoan',
+          giavl: 0,
+          gianc: 0,
+          giamtc: 0,
+          giatl: 0,
+          cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 },
+        };
+        zdl = app.chiphi[idma];
+      }
       //} catch (err) { return; }
       gui = {
         csdl: idb.csdl,
@@ -2228,61 +1536,74 @@ var idb = {
       w.onmessage = (e) => {
         tin = e.data;
         if ("err" in tin) {
-          console.log("swidb err=", JSON.stringify(tin.err, null, 2));
+          console.log("swidb chiphi err=", JSON.stringify(tin.err, null, 2));
           gui.gang += 1;
           //lam lai sau 2 giay
           setTimeout(() => { w.postMessage(gui); }, 2000);
         } else if (tin.cv >= 0 && tin.cv <= 100) {
           if ('idma' in tin) {
             //ok action
-            zdl = tin.idma.data;
-            console.log("swidb zdl=", JSON.stringify(zdl, null, 2));
-            if (zdl.constructor === Object) {
-              zdl.mabaogia = app.mabaogia;
-              zdl.plgia == app.plgia;
-              zdl.giavl = 0;
-              zdl.gianc = 0;
-              zdl.giamtc = 0;
-              zdl.giatl = 0;
-              zdl.cv = { cp: 100, vl: 0, nc: 0, mtc: 0, tl: 0 };
-              zdl.mota = zdl.mota.qtgt;
-              app.chiphi[idma] = zdl;
-              //idb.nap.baogia();
+            r = tin.idma.data;
+            console.log("swidb chiphi r=", JSON.stringify(r, null, 2));
+            if (r.constructor === Object) {
+              zdl.barcode = r.barcode || r.idma;
+              zdl.qrcode = r.qrcode || r.idma;
+              zdl.mota = r.mota.qtgt;
+              zdl.dvt = r.dvt;
+              zdl.cv.cp = 100;
+              idb.nap.baogia({ plbg: 'bgvl', idma: idma });
+              idb.nap.baogia({ plbg: 'bgnc', idma: idma });
+              idb.nap.baogia({ plbg: 'bgmtc', idma: idma });
+              idb.nap.baogia({ plbg: 'bgtl', idma: idma });
+              //app.chiphi[idma] = { ...zdl };
             }
             console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
           }
         } else if (tin.cv < 0 || tin.cv > 100) {
           if (w) { w.terminate(); }
           w = null;
-          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+          console.log("swidb chiphi fin=", JSON.stringify(tin, null, 2));
         } else {
-          console.log("swidb info=", JSON.stringify(tin, null, 2));
+          console.log("swidb chiphi info=", JSON.stringify(tin, null, 2));
         }
       }
+      //test
+      console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
     },
     baogia: (dk = { plbg: 'bgvl', chiphi: 0, baogia: 20210101, plgia: 'dutoan' }) => {
       if (dk.constructor !== Object) { return; }
-      let idma, tin, gui, i, zdl, cp, plbg, chiphi, baogia, plgia,
+      let idma, tin, gui, i, zdl, r, plbg, chiphi, baogia, plgia,
         w = new Worker(app.url['swidb']);
       console.log("idb.nap.baogia dk=", JSON.stringify(dk, null, 2));
       //try {
-      if (!dk.chiphi || dk.chiphi.constructor !== Number) {
-        console.log("idb.nap.baogia exit do chi phi=", JSON.stringify(dk, null, 2));
-        return;
-      }
-      idma = parseInt(dk.chiphi);
+      idma = a2i(dk.chiphi);
+      if (idma < 0) { return; }
       if (!('chiphi' in app) || !app.chiphi || app.chiphi.constructor !== Object) { app.chiphi = {}; }
-      if (!(idma in app.chiphi) || app.chiphi[idma].constructor !== Object) {
+      if (idma in app.chiphi) {
+        zdl = app.chiphi[idma];
+        if (zdl.baogia == app.baogia && zdl.plgia == app.plgia) { return; }
+      } else {
         app.chiphi[idma] = {
-          mota: "", dvt: "", giavl: 0, gianc: 0, giamtc: 0, giatl: 0, cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 }
+          barcode: '',
+          qrcode: '',
+          mota: '',
+          dvt: '',
+          baogia: a2sl(app.baogia || app.mabaogia),
+          plgia: a2sl(app.plgia) || 'dutoan',
+          giavl: 0,
+          gianc: 0,
+          giamtc: 0,
+          giatl: 0,
+          cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 },
         };
+        zdl = app.chiphi[idma];
       }
-      plbg = dk.plbg ? JSON.stringify(dk.plbg).toLowerCase() : 'bgvl';
+      plbg = a2sl(dk.plbg);
       if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(plbg))) { plbg = 'bgvl'; }
-      baogia = dk.baogia || dk.mabaogia || app.chiphi[idma].baogia || app.chiphi[idma].mabaogia || app.baogia || app.mabaogia;
-      plgia = dk.plgia || app.chiphi[idma].plgia || app.plgia || 'dutoan';
-      app.chiphi[idma].plgia = plgia;
-      app.chiphi[idma].baogia = baogia;
+      baogia = a2sl(dk.baogia || dk.mabaogia) || zdl.baogia;
+      plgia = a2sl(dk.plgia) || zdl.plgia;
+      zdl.plgia = plgia;
+      zdl.baogia = baogia;
       //} catch (err) { return; }
       gui = {
         csdl: idb.csdl,
@@ -2295,44 +1616,60 @@ var idb = {
       w.onmessage = (e) => {
         tin = e.data;
         if ("err" in tin) {
-          console.log("swidb err=", JSON.stringify(tin.err, null, 2));
+          console.log("swidb baogia err=", JSON.stringify(tin.err, null, 2));
           gui.gang += 1;
           //lam lai sau 2 giay
           setTimeout(() => { w.postMessage(gui); }, 2000);
         } else if (tin.cv >= 0 && tin.cv <= 100) {
           if ('baogia' in tin) {
             //ok action
-            zdl = tin.baogia;
-            console.log("swidb zdl=", JSON.stringify(zdl, null, 2));
-            if (zdl.constructor === Number) {
-              chiphi = app.chiphi[idma];
+            r = tin.baogia;
+            console.log("swidb baogia r.constructor=", r.constructor);
+            if (r.constructor === Number) {
               if (plbg === 'bgvl') {
-                chiphi.giavl = zdl;
-                chiphi.cv.vl = 100;
+                zdl.giavl = r;
+                zdl.cv.vl = 100;
               }
               if (plbg === 'bgnc') {
-                chiphi.gianc = zdl;
-                chiphi.cv.nc = 100;
+                zdl.gianc = r;
+                zdl.cv.nc = 100;
               }
               if (plbg === 'bgmtc') {
-                chiphi.giamtc = zdl;
-                chiphi.cv.mtc = 100;
+                zdl.giamtc = r;
+                zdl.cv.mtc = 100;
               }
               if (plbg === 'bgtl') {
-                chiphi.giatl = zdl;
-                chiphi.cv.tl = 100;
+                zdl.giatl = r;
+                zdl.cv.tl = 100;
               }
+              //app.chiphi[idma] = { ...zdl };
+              console.log("swidb baogia plbg=", JSON.stringify(plbg, null, 2));
+              console.log("swidb baogia r=", JSON.stringify(r, null, 2));
+              console.log("swidb baogia zdl.cv=", JSON.stringify(zdl.cv, null, 2));
+              console.log("swidb baogia app.chiphi[", idma, "]=", JSON.stringify(app.chiphi[idma], null, 2));
             }
           }
         } else if (tin.cv < 0 || tin.cv > 100) {
           if (w) { w.terminate(); }
           w = null;
-          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+          console.log("swidb baogia fin=", JSON.stringify(tin, null, 2));
         } else {
-          console.log("swidb info=", JSON.stringify(tin, null, 2));
+          console.log("swidb baogia info=", JSON.stringify(tin, null, 2));
         }
       }
+      //test
       console.log("idb.nap.baogia app.chiphi=", JSON.stringify(app.chiphi, null, 2));
+    },
+    oc: (dk = { idma: null }) => {
+      if (dk.constructor !== Object) { return; }
+      let i, zdl, r, plcp, uid, tin, gui,
+        w = new Worker(app.url['swidb']),
+        idma = a2i(dk.idma);
+      if (idma < 0) { return; }
+      plcp = 'cpxd';
+      idb.nap.phui({ phui: 'oc', plcp: 'cpxd', idma: idma });
+
+
     },
 
 
@@ -3079,6 +2416,17 @@ var ham = {
 function luanhoi() {
   web.tao();
   idb.taodb();
+  //last idma qtgt
+  app.idqtgt = 1615277173487;
+  idb.nap.phui({ phui: 'oc', plcp: 'cpxd', idma: 1615277173487 });
+  web.oc.cpxd();
+  web.oc.bth();
+
+
+
+
+
+
   //web.ongcai();
 }
 luanhoi();
@@ -3278,6 +2626,8 @@ function test_dulieu() {
 //  plgia = 'dutoan';
 //idb.nap.phui({ phui: 'on', plcp: 'cpxd', idma: 1615277173487 });
 //idb.nap.chiphi({ phui: 'oc', plcp: 'cpxd', idma: 1 });
-idb.nap.baogia({ plbg: 'bgvl', chiphi: 100, baogia: 20190825 });
+//console.log("test sau nap.chiphi app.chiphi=", JSON.stringify(app.chiphi));
+//idb.nap.baogia({ plbg: 'bgvl', chiphi: 100, });
+//console.log("test sau nap.baogia app.chiphi=", JSON.stringify(app.chiphi));
 
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));

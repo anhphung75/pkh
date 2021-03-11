@@ -7,16 +7,33 @@ function tao_uuid() {
   // vd tao_uuid()= f6ca05c0-fad5-46fc-a237-a8e930e7cb49
 }
 
-function d2l(dict) {
-  if (dict.constructor !== Object) { return null; }
-  let k, r, kq = [];
-  for (k in dict) {
-    r = dict[k];
-    r.id = k;
-    kq.push(r);
+function a2s(dl) {
+  if (dl === undefined || dl === null) {
+    return '';
+  } else if (dl.constructor === String) {
+    return dl.toString();
   }
-  return kq;
-};
+  else {
+    return JSON.stringify(dl);
+  }
+}
+function a2sl(dl) {
+  return a2s(dl).toLowerCase();
+}
+function a2su(dl) {
+  return a2s(dl).toUpperCase();
+}
+
+function a2i(dl) {
+  if (dl === undefined || dl === null) {
+    return 0;
+  } else if (dl.constructor === Number) {
+    return parseInt(dl);
+  }
+  else {
+    return 0;
+  }
+}
 
 function lamtronso(solamtron, sole = 0) {
   try {
@@ -32,20 +49,6 @@ function lamtronso(solamtron, sole = 0) {
     return parseFloat(kq + them);
   } catch (error) {
     return 0;
-  }
-}
-
-function viewso(sothapphan = 0, phanle = 3) {
-  try {
-    sothapphan = parseFloat(sothapphan);
-    phanle = parseInt(phanle);
-    if (sothapphan) {
-      return new Intl.NumberFormat('vi-VI', { maximumSignificantDigits: phanle }).format(sothapphan);
-    } else {
-      return "- ";
-    }
-  } catch (error) {
-    return sothapphan;
   }
 }
 
@@ -69,5 +72,5 @@ class Tien {
   }
 }
 
-export { tao_uuid, lamtronso, viewso, d2l };
+export { tao_uuid, lamtronso, a2s, a2su, a2sl, a2i };
 export { Tien };
