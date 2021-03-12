@@ -23,6 +23,22 @@ function a2i(dl) {
   return kq
 }
 
+var ga;
+var tiendo = {
+  chiphi: (dl = { idma: 0, cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 } }) => {
+    if (dl.constructor !== Object) { return; }
+    let k,
+      r = dl.cv || null;
+    if (!r || r.constructor !== Object) { return; }
+    for (k in r) {
+      if (r[k] !== 100) { return; }
+    }
+    dl.cv = 100;
+    self.postMessage({ cv: 100, chiphi: dl });
+    self.postMessage({ cv: -1, info: "Fin" });
+  },
+};
+
 var sw = {
   csdl: { ten: 'cntd', cap: 1 },
   ham: {
@@ -410,31 +426,41 @@ var sw = {
         }
       } catch (err) { self.postMessage({ cv: -1, err: err }); }
     },
-    baogia: (bang, dk = { chiphi: 0, baogia: 0, plgia: 'dutoan' }, gang = 0) => {
+    baogia: (bang, dl = { chiphi: 0, baogia: 0, plgia: 'dutoan' }, gang = 0) => {
       gang = a2i(gang);
       if (gang > 3) {
+        self.postMessage({ cv: 100, chiphi: dl });
         self.postMessage({ cv: -1, kq: "bất quá tam" });
         return;
       }
       bang = a2sl(bang);
       if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(bang))) { bang = 'bgvl'; }
+      if (!dl.cv || dl.cv.constructor !== Object) {
+        dl.cv = { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 };
+      } else {
+        if (bang.includes('bgvl') && dl.cv.vl === 100) { return; }
+        if (bang.includes('bgnc') && dl.cv.nc === 100) { return; }
+        if (bang.includes('bgmtc') && dl.cv.mtc === 100) { return; }
+        if (bang.includes('bgtl') && dl.cv.tl === 100) { return; }
+      }
       let db, r, cs, k1, chiphi, baogia, plgia, gia, _chiphi, _baogia,
         k = 0,
         kq = { "0": 0 };
       //try {
-      chiphi = a2i(dk.chiphi);
+      chiphi = a2i(dl.chiphi);
       if (chiphi < 0) {
-        self.postMessage({ cv: 100, baogia: 0 });
+        self.postMessage({ cv: 100, chiphi: dl });
         self.postMessage({ cv: -1, info: "Chi phí không tồn tại, trả giá mặc định" });
         return;
       }
-      baogia = a2i(dk.baogia);
+      baogia = a2i(dl.baogia);
       if (baogia < 0) {
-        self.postMessage({ cv: 100, baogia: 0 });
+        self.postMessage({ cv: 100, chiphi: dl });
         self.postMessage({ cv: -1, info: "Báo giá không tồn tại, trả giá mặc định" });
         return;
       }
-      plgia = dk.plgia ? a2sl(dk.plgia) : 'dutoan';
+      plgia = dl.plgia ? a2sl(dl.plgia) : 'dutoan';
+
       //} catch (err) { self.postMessage({ cv: -1, err: err }); }
       //try {
       indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e) => {
@@ -451,8 +477,24 @@ var sw = {
               gia = r[plgia] ? Math.abs(r[plgia]) : 0;
               if (_chiphi == chiphi) {
                 if (_baogia == baogia) {
-                  self.postMessage({ cv: 100, baogia: gia });
-                  self.postMessage({ cv: -1, info: "fin" });
+                  if (bang.includes('bgvl')) {
+                    dl.giavl = gia;
+                    dl.cv.vl = 100;
+                  }
+                  if (bang.includes('bgnc')) {
+                    dl.gianc = gia;
+                    dl.cv.nc = 100;
+                  }
+                  if (bang.includes('bgmtc')) {
+                    dl.giamtc = gia;
+                    dl.cv.mtc = 100;
+                  }
+                  if (bang.includes('bgtl')) {
+                    dl.giatl = gia;
+                    dl.cv.tl = 100;
+                  }
+                  tiendo.chiphi(dl);
+                  sw.nap1.chiphi('chiphi', dl, gang);
                   return;
                 }
                 if (_baogia >= 0 && _baogia <= baogia && _baogia > k) {
@@ -472,12 +514,77 @@ var sw = {
               for (k in kq) {
                 if (baogia < k) { baogia = k; }
               }
-              self.postMessage({ cv: 100, baogia: kq[baogia] });
-              self.postMessage({ cv: -1, info: "fin" });
+              gia = kq[baogia];
+              if (bang.includes('bgvl')) {
+                dl.giavl = gia;
+                dl.cv.vl = 100;
+              }
+              if (bang.includes('bgnc')) {
+                dl.gianc = gia;
+                dl.cv.nc = 100;
+              }
+              if (bang.includes('bgmtc')) {
+                dl.giamtc = gia;
+                dl.cv.mtc = 100;
+              }
+              if (bang.includes('bgtl')) {
+                dl.giatl = gia;
+                dl.cv.tl = 100;
+              }
+              tiendo.chiphi(dl);
+              sw.nap1.chiphi('chiphi', dl, gang);
             }
           }
       }
       //} catch (err) { self.postMessage({ err: err }); }
+    },
+    chiphi: (bang = 'chiphi', dl = { idma: 0 }, gang = 0) => {
+      gang = a2i(gang);
+      if (gang > 3) {
+        self.postMessage({ cv: 100, chiphi: dl });
+        self.postMessage({ cv: -1, kq: "bất quá tam" });
+        return;
+      }
+      if (dl.constructor !== Object) { return; }
+
+      let db, r,
+        idma = a2i(dl.chiphi);
+      if (idma < 0) {
+        self.postMessage({ cv: 100, chiphi: dl });
+        self.postMessage({ cv: -1, info: "Mã định danh chưa tồn tại" });
+        return;
+      }
+      if (!dl.cv || dl.cv.constructor !== Object) {
+        dl.cv = { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 };
+      } else {
+        if (dl.cv.cp === 100) { return; }
+      }
+
+      try {
+        indexedDB.open(sw.csdl.ten, sw.csdl.cap).onsuccess = (e0) => {
+          db = e0.target.result;
+          db.transaction(bang, 'readonly')
+            .objectStore(bang)
+            .openCursor(IDBKeyRange.only(idma))
+            .onsuccess = (e1) => {
+              cs = e1.target.result;
+              if (cs) {
+                r = cs.value.data;
+                dl.barcode = r.barcode || r.idma;
+                dl.qrcode = r.qrcode || r.idma;
+                dl.mota = r.mota;
+                dl.dvt = r.dvt;
+                dl.cv.cp = 100;
+                tiendo.chiphi(dl);
+                sw.nap1.baogia('bgvl', dl, gang);
+                sw.nap1.baogia('bgnc', dl, gang);
+                sw.nap1.baogia('bgmtc', dl, gang);
+                sw.nap1.baogia('bgtl', dl, gang);
+                cs.continue();
+              }
+            }
+        }
+      } catch (err) { self.postMessage({ cv: -1, err: err }); }
     },
   },
 

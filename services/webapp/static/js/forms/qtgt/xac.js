@@ -152,20 +152,20 @@ var ga = {
   },
   cpql: { ma: 20200827 },
   bgvl: {
-    'dutoan.20210101.1': 1123,
-    'ketoan.20210101.1': 1245,
-    'dutoan.20210101.2': 1123,
-    'ketoan.20210101.2': 1245,
-    'dutoan.20210101.3': 1123,
-    'ketoan.20210101.3': 1245,
+    'dutoan.20210101.100': 1123,
+    'ketoan.20210101.100': 1245,
+    'dutoan.20210101.200': 1123,
+    'ketoan.20210101.200': 1245,
+    'dutoan.20210101.300': 1123,
+    'ketoan.20210101.300': 1245,
   },
   bgnc: {
-    'dutoan.20210101.1': 23456,
-    'ketoan.20210101.1': 1245,
-    'dutoan.20210101.2': 1123,
-    'ketoan.20210101.2': 1245,
-    'dutoan.20210101.3': 1123,
-    'ketoan.20210101.3': 1245,
+    'dutoan.20210101.100': 23456,
+    'ketoan.20210101.100': 1245,
+    'dutoan.20210101.200': 1123,
+    'ketoan.20210101.200': 1245,
+    'dutoan.20210101.300': 1123,
+    'ketoan.20210101.300': 1245,
   },
   bgmtc: {
     'dutoan.20210101.1': 789500,
@@ -1505,12 +1505,13 @@ var idb = {
         console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
       }
     },
-    chiphi: (dk = { idma: null }) => {
-      if (dk.constructor !== Object) { return; }
+    chiphi: (dl = { idma: null }) => {
+      if (dl.constructor !== Object) { return; }
+      if (dl.cv && dl.cv === 100) { return; }
       let idma, tin, gui, i, r, zdl,
         w = new Worker(app.url['swidb']);
       //try {
-      idma = a2i(dk.idma);
+      idma = a2i(dl.idma || dl.chiphi);
       if (idma < 0) { return; }
       if (!('chiphi' in app) || !app.chiphi || app.chiphi.constructor !== Object) { app.chiphi = {}; }
       if (idma in app.chiphi) {
@@ -1518,12 +1519,13 @@ var idb = {
         if (zdl.baogia == app.baogia && zdl.plgia == app.plgia) { return; }
       } else {
         app.chiphi[idma] = {
+          chiphi: idma,
           barcode: '',
           qrcode: '',
           mota: '',
           dvt: '',
-          baogia: app.baogia || app.mabaogia,
-          plgia: app.plgia || 'dutoan',
+          baogia: a2sl(app.baogia || app.mabaogia),
+          plgia: a2sl(app.plgia) || 'dutoan',
           giavl: 0,
           gianc: 0,
           giamtc: 0,
@@ -1536,7 +1538,7 @@ var idb = {
       gui = {
         csdl: idb.csdl,
         bang: 'chiphi',
-        idma: idma,
+        chiphi: zdl,
         gang: 0,
       };
       console.log("idb.nap.chiphi gui=", JSON.stringify(gui, null, 2));
@@ -1549,21 +1551,13 @@ var idb = {
           //lam lai sau 2 giay
           setTimeout(() => { w.postMessage(gui); }, 2000);
         } else if (tin.cv >= 0 && tin.cv <= 100) {
-          if ('idma' in tin) {
+          if ('chiphi' in tin) {
             //ok action
-            r = tin.idma.data;
+            r = tin.chiphi;
             console.log("swidb chiphi r=", JSON.stringify(r, null, 2));
             if (r.constructor === Object) {
-              zdl.barcode = r.barcode || r.idma;
-              zdl.qrcode = r.qrcode || r.idma;
-              zdl.mota = r.mota.qtgt;
-              zdl.dvt = r.dvt;
-              zdl.cv.cp = 100;
-              idb.nap.baogia({ plbg: 'bgvl', idma: idma });
-              idb.nap.baogia({ plbg: 'bgnc', idma: idma });
-              idb.nap.baogia({ plbg: 'bgmtc', idma: idma });
-              idb.nap.baogia({ plbg: 'bgtl', idma: idma });
-              //app.chiphi[idma] = { ...zdl };
+              zdl = r;
+              idb.nap.baogia(zdl);
             }
             console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
           }
@@ -1578,23 +1572,25 @@ var idb = {
       //test
       console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
     },
-    baogia: (dk = { plbg: 'bgvl', chiphi: 0, baogia: 20210101, plgia: 'dutoan' }) => {
-      if (dk.constructor !== Object) { return; }
+    baogia: (dl = { chiphi: 0, baogia: 20210101, plgia: 'dutoan' }) => {
+      if (dl.constructor !== Object) { return; }
+      if (dl.cv && dl.cv === 100) { return; }
       let idma, tin, gui, i, zdl, r, plbg, chiphi, baogia, plgia,
         w = new Worker(app.url['swidb']);
       console.log("idb.nap.baogia dk=", JSON.stringify(dk, null, 2));
       //try {
-      idma = a2i(dk.chiphi);
+      idma = a2i(dl.chiphi || dl.idma);
       if (idma < 0) { return; }
       if (!('chiphi' in app) || !app.chiphi || app.chiphi.constructor !== Object) { app.chiphi = {}; }
       if (!(idma in app.chiphi)) {
         app.chiphi[idma] = {
+          chiphi: idma,
           barcode: '',
           qrcode: '',
           mota: '',
           dvt: '',
-          baogia: a2sl(app.baogia || app.mabaogia),
-          plgia: a2sl(app.plgia) || 'dutoan',
+          baogia: a2sl(dk.baogia || dk.mabaogia || app.baogia || app.mabaogia),
+          plgia: a2sl(dk.plgia || app.plgia) || 'dutoan',
           giavl: 0,
           gianc: 0,
           giamtc: 0,
@@ -1603,6 +1599,7 @@ var idb = {
         };
       }
       zdl = app.chiphi[idma];
+      zdl.cv = { cp: 100, vl: 0, nc: 0, mtc: 0, tl: 0 };
       plbg = a2sl(dk.plbg);
       if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(plbg))) { plbg = 'bgvl'; }
       if (zdl.cv[plbg.substr(2)] === 100) {
