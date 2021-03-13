@@ -34,19 +34,19 @@
   color: #ffffff;
 }
 
-.vung_otim {
+#tiendo, .vung_otim {
   padding: 0;
   margin: 0;
   list-style: none;
   white-space: nowrap;
   overflow-y: auto;
 }
-.vung_otim li {
+
+#tiendo>li, .vung_otim>li {
   display: inline-block;
 }
 
-.grid.ongcai,
-.grid.ongnganh {
+.grid.ongcai, .grid.ongnganh {
   grid: auto-flow minmax(1rem, max-content) / 20fr 1fr 5fr 1fr 5fr 1fr 5fr;
   background-color: magenta;
 }

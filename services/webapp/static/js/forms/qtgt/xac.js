@@ -22,14 +22,16 @@ var app = {
   chiphi: null,
   idcptl: 1615263347491,
   oc: {
-    cv: 0,
+    idma: {
+      cpxd: 1615263347491,
+      cpvt: 1615263347491,
+      cpvl: 1615263347491,
+      cptl: 1615263347491,
+    },
     zvl: 0,
     znc: 0,
     zmtc: 0,
     ztl: 0,
-    idcpxd: 1615263347491,
-    idcpvt: 1615263347491,
-    idcpvl: 1615263347491,
     cpxd: [
       { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
@@ -1390,6 +1392,7 @@ var web = {
 
 var idb = {
   csdl: { ten: 'cntd', cap: 1 },
+
   taodb: () => {
     let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
     if (!indexedDB) {
@@ -1438,6 +1441,11 @@ var idb = {
     } catch (err) { };
   },
   nap: {
+    cv: {
+      chiphi: 100,
+      oc: 100,
+      oc_cpxd: 100,
+    },
     phuidao: (dk = { phui: 'on', idma: null }) => {
       if (dk.constructor !== Object) { return; }
     },
@@ -1505,72 +1513,35 @@ var idb = {
         console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
       }
     },
-    chiphi: (dl = { idma: null }) => {
-      if (dl.constructor !== Object) { return; }
-      if (dl.cv && dl.cv === 100) { return; }
-      let idma, tin, gui, i, r, zdl,
-        w = new Worker(app.url['swidb']);
-      //try {
-      idma = a2i(dl.idma || dl.chiphi);
-      if (idma < 0) { return; }
-      if (!('chiphi' in app) || !app.chiphi || app.chiphi.constructor !== Object) { app.chiphi = {}; }
-      if (idma in app.chiphi) {
-        zdl = app.chiphi[idma];
-        if (zdl.baogia == app.baogia && zdl.plgia == app.plgia) { return; }
-      } else {
-        app.chiphi[idma] = {
-          chiphi: idma,
-          barcode: '',
-          qrcode: '',
-          mota: '',
-          dvt: '',
-          baogia: a2sl(app.baogia || app.mabaogia),
-          plgia: a2sl(app.plgia) || 'dutoan',
-          giavl: 0,
-          gianc: 0,
-          giamtc: 0,
-          giatl: 0,
-          cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 },
-        };
-        zdl = app.chiphi[idma];
-      }
-      //} catch (err) { return; }
-      gui = {
-        csdl: idb.csdl,
-        bang: 'chiphi',
-        chiphi: zdl,
-        gang: 0,
-      };
-      console.log("idb.nap.chiphi gui=", JSON.stringify(gui, null, 2));
-      w.postMessage(gui);
-      w.onmessage = (e) => {
-        tin = e.data;
-        if ("err" in tin) {
-          console.log("swidb chiphi err=", JSON.stringify(tin.err, null, 2));
-          gui.gang += 1;
-          //lam lai sau 2 giay
-          setTimeout(() => { w.postMessage(gui); }, 2000);
-        } else if (tin.cv >= 0 && tin.cv <= 100) {
-          if ('chiphi' in tin) {
-            //ok action
-            r = tin.chiphi;
-            console.log("swidb chiphi r=", JSON.stringify(r, null, 2));
-            if (r.constructor === Object) {
-              zdl = r;
-              idb.nap.baogia(zdl);
-            }
-            console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
+    chiphi: () => {
+      let k, v, z, d1, d8;
+      try {
+        if (idb.nap.cv.chiphi === 100) { return; }
+        d8 = app.chiphi;
+        v = 0;
+        z = d8.length;
+        if (z === 0) { return; }
+        idb.nap.cv.chiphi = 0;
+        //show proc chiphi
+        for (k in d8) {
+          d1 = d8[k];
+          if (d1.cv !== 100) {
+            idb.nap1.chiphi(d1);
           }
-        } else if (tin.cv < 0 || tin.cv > 100) {
-          if (w) { w.terminate(); }
-          w = null;
-          console.log("swidb chiphi fin=", JSON.stringify(tin, null, 2));
-        } else {
-          console.log("swidb chiphi info=", JSON.stringify(tin, null, 2));
+          if (d1.cv === 100) {
+            v++;
+            idb.nap.cv.chiphi = a2i(v / z);
+            //show proc chiphi
+          }
         }
+        idb.nap.chiphi();
+      } catch (err) {
+        idb.nap.cv.chiphi = 100;
+        //show proc chiphi
+        //hide proc chiphi
       }
       //test
-      console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
+      console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(d8, null, 2));
     },
     baogia: (dl = { chiphi: 0, baogia: 20210101, plgia: 'dutoan' }) => {
       if (dl.constructor !== Object) { return; }
@@ -1729,6 +1700,73 @@ var idb = {
     }
   },
   nap1: {
+    chiphi: (dl = { idma: null }) => {
+      if (dl.constructor !== Object) { return; }
+      if (dl.cv && dl.cv === 100) { return; }
+      let idma, tin, gui, i, r, zdl,
+        w = new Worker(app.url['swidb']);
+      //try {
+      idma = a2i(dl.idma || dl.chiphi);
+      if (idma < 0) { return; }
+      if (!('chiphi' in app) || !app.chiphi || app.chiphi.constructor !== Object) { app.chiphi = {}; }
+      if (idma in app.chiphi) {
+        zdl = app.chiphi[idma];
+        if (zdl.baogia == app.baogia && zdl.plgia == app.plgia) { return; }
+      } else {
+        app.chiphi[idma] = {
+          chiphi: idma,
+          barcode: '',
+          qrcode: '',
+          mota: '',
+          dvt: '',
+          baogia: a2sl(app.baogia || app.mabaogia),
+          plgia: a2sl(app.plgia) || 'dutoan',
+          giavl: 0,
+          gianc: 0,
+          giamtc: 0,
+          giatl: 0,
+          cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 },
+        };
+        zdl = app.chiphi[idma];
+      }
+      //} catch (err) { return; }
+      gui = {
+        csdl: idb.csdl,
+        bang: 'chiphi',
+        chiphi: zdl,
+        gang: 0,
+      };
+      console.log("idb.nap.chiphi gui=", JSON.stringify(gui, null, 2));
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        if ("err" in tin) {
+          console.log("swidb chiphi err=", JSON.stringify(tin.err, null, 2));
+          gui.gang += 1;
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        } else if (tin.cv >= 0 && tin.cv <= 100) {
+          if ('chiphi' in tin) {
+            //ok action
+            r = tin.chiphi;
+            console.log("swidb chiphi r=", JSON.stringify(r, null, 2));
+            if (r.constructor === Object) {
+              zdl = r;
+              idb.nap.baogia(zdl);
+            }
+            console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
+          }
+        } else if (tin.cv < 0 || tin.cv > 100) {
+          if (w) { w.terminate(); }
+          w = null;
+          console.log("swidb chiphi fin=", JSON.stringify(tin, null, 2));
+        } else {
+          console.log("swidb chiphi info=", JSON.stringify(tin, null, 2));
+        }
+      }
+      //test
+      console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(app.chiphi, null, 2));
+    },
     baogia: (bang, chiphi, baogia, plgia = 'dutoan') => {
       if (bang) {
         bang = bang.toString().toLowerCase();
@@ -1891,6 +1929,44 @@ var idb = {
     },
   },
   tinh: {
+    cv: {
+      chiphi: 100,
+      oc_cpxd: 100,
+    },
+    ql: () => {
+      let p, p0,
+        d1 = idb.tinh.cv;
+      if (!d1 || d1.constructor !== Object) {
+        d1 = {
+          chiphi: 0,
+          oc_cpxd: 0,
+        };
+      }
+      p = d1.chiphi;
+      if (p >= 0 && p < 100) {
+        idb.tinh.chiphi();
+        //show proc
+        return;
+      } else if (p === 100) {
+        //show proc
+        //che prog
+      } else {
+        //che process
+        return;
+      }
+      p = d1.oc_cpxd;
+      if (p >= 0 && p < 100) {
+        idb.nap.chiphi();
+        //show proc
+      } else if (p0 === 100) {
+        //show proc
+        //che prog
+      } else {
+        //che process
+      }
+
+
+    },
     oc: {
       vl: (chiphi, gia = 0) => {
         let i, r, tiendo,
