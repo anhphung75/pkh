@@ -60,6 +60,7 @@ var app = {
   dvtc: { id: 123, ma: '', },
   plgia: 'dutoan',
   baogia: 20190726,
+
   macpql: 20200827,
 
   idma: {
@@ -97,6 +98,47 @@ var app = {
 
   },
   chiphi: {},
+  oc: {
+    zvl: 0,
+    znc: 0,
+    zmtc: 0,
+    ztl: 0,
+    cpxd: {
+      cv: 0,
+      idma: 1615263347491,
+      idmau: 1615263347491,
+      dscp: [
+        { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+        { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+        { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+      ],
+    },
+    cpvt: {
+      cv: 0,
+      idma: 1615263347491,
+      idmau: 1615263347491,
+      dscp: [
+        { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+        { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+        { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+      ],
+    },
+    cpvl: {
+      cv: 0,
+      idma: 1615263347491,
+      idmau: 1615263347491,
+      dscp: [
+        { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+        { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+        { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+      ],
+    },
+    phui: [
+      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', dai: 0.5, rong: 0.5, sau: 1 },
+      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', dai: 0, rong: 0.3, sau: 0.6 },
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', dai: 0, rong: 0.3, sau: 0.6 },
+    ],
+  },
 };
 
 var web = {
@@ -660,7 +702,7 @@ var web = {
       let zone, i, r, row, o, dl,
         dulieu = [];
       if (zdl === undefined || zdl === null || zdl.constructor !== Array) {
-        zdl = app.oc.cpxd;
+        zdl = app.oc.cpxd.dscp;
         if (zdl === undefined || zdl === null || zdl.constructor !== Array) {
           return;
         }
@@ -993,18 +1035,20 @@ var web = {
     let zone, kiem, bang, rec, self;
     zone = d3.select("section[id='cpql']");
   },
-  tiendo: () => {
+  tiendo: (ten = '', cv = 0) => {
+    ten = fn.a2s(ten);
+    cv = fn.a2i(cv);
     let hg, zone = d3.select("#tiendo")
-    if (app.prog === 100) {
+    if (cv === 100) {
       zone.selectAll("*").remove();
       if (hg) { clearTimeout(hg); }
     } else {
       zone.selectAll("*").remove();
-      zone.append("label").text("Tiến độ ");
+      zone.append("label").text(ten);
       zone.append("progress")
         .attr("max", 100)
-        .attr("value", app.prog)
-        .text([app.prog, "%"].join(''));
+        .attr("value", cv)
+        .text([cv, "%"].join(''));
       hg = setTimeout(web.tiendo(), 300);
     }
   },
@@ -1358,7 +1402,7 @@ var idb = {
     },
     phui: (proc = 'on_cpxd', dk = { idma: null }) => {
       if (dk.constructor !== Object) { return; }
-      let phui, plcp, idma, tin, gui, i, zdl,
+      let phui, plcp, idma, tin, gui, i, k, zdl,
         w = new Worker(app.url['swidb']);
 
       gui = {
@@ -1400,6 +1444,14 @@ var idb = {
               }
               app[phui][plcp] = zdl;
             }
+          }
+        } else if (tin.cv === 100) {
+          if ('oc_cpxd' in tin) {
+            k = 'oc_cpxd'
+            zdl = tin[k];
+            web.tiendo(k, tin.cv);
+            app.oc.cpxd = zdl;
+            web.oc.cpxd(zdl);
           }
         } else if (tin.cv < 0 || tin.cv > 100) {
           if (w) { w.terminate(); }
