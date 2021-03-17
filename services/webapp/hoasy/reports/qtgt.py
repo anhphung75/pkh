@@ -5,11 +5,15 @@ from utils import lamtronso, tachhangso, Tien
 class Quochuy(web.UIModule):
     def render(self, dvtc="ĐỘI QLML CẤP NƯỚC QUẬN THỦ ĐỨC", ngaylap=20200904):
         # format so:
+        if ngaylap >= 20210207:
+            diachi = "08- Khổng Tử- P.Bình Thọ- Tp.Thủ Đức"
+        else:
+            diachi = "08- Khổng Tử- P.Bình Thọ- Q.Thủ Đức"
         ngaylap = f"{ngaylap}"
         ngaylap = f"Thủ Đức, ngày {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
         return self.render_string(
             "reports/qtgt/quochuy.html",
-            dvtc=dvtc, ngaylap=ngaylap)
+            dvtc=dvtc, ngaylap=ngaylap, diachi=diachi)
 
 
 class Tieude(web.UIModule):

@@ -1,45 +1,54 @@
 import { lamtronso, a2s, a2sl, a2i } from "./../../utils.js"
 
-function sregexp(stim) {
-  if (!stim) {
-    return stim;
-  }
-  let k,
-    ltim = [...stim];
-  let mau = "";
-  for (k in ltim) {
-    if (
-      ["$", "(", ")", "[", ".", "+", "*", "^", "?", "\\"].includes(ltim[k])
-    ) {
-      mau += "\\" + ltim[k];
-    } else {
-      mau += ltim[k];
-    }
-  }
-  return mau;
-}
-
-function stomau(chuoi, stim, sac = 'red') {
-  try { chuoi = chuoi.toString().toLowerCase(); } catch (err) { return null; }
-  try {
-    stim = stim.toString().toLowerCase();
-    if (stim.length < 1) { return chuoi; }
-  } catch (err) { return chuoi; }
-  let mau = ham.sregexp(stim);
-  mau = new RegExp(mau, "gi");
-  chuoi = chuoi.replace(mau, (m) => {
-    if (m === undefined || m === null || m === "") { return; }
-    return ["<b style='color:", sac, "'>", m, "</b>"].join('');
-  });
-  return chuoi;
-}
-
 d3.formatDefaultLocale({
   decimal: ",",
   thousands: ".",
   grouping: [3],
   currency: ["", "VNĐ"]
 });
+
+var fn = {
+  a2s: (dulieu) => {
+    return a2s(dulieu);
+  },
+  a2sl: (dulieu) => {
+    return a2sl(dulieu);
+  },
+  a2i: (dulieu) => {
+    return a2i(dulieu);
+  },
+  sregexp: (stim) => {
+    stim = fn.a2s(stim);
+    if (stim.length < 1) { return stim; }
+    let k,
+      ltim = [...stim],
+      mau = "";
+    for (k in ltim) {
+      if (
+        ["$", "(", ")", "[", ".", "+", "*", "^", "?", "\\"].includes(ltim[k])
+      ) {
+        mau += "\\" + ltim[k];
+      } else {
+        mau += ltim[k];
+      }
+    }
+    return mau;
+  },
+  stomau: (sgoc, stim, mausac = 'red') => {
+    try {
+      sgoc = a2s(sgoc);
+      stim = a2s(stim);
+      if (stim.length < 1) { return sgoc; }
+    } catch (err) { return sgoc; }
+    let mau = fn.sregexp(stim);
+    mau = new RegExp(mau, "gi");
+    sgoc = sgoc.replace(mau, (m) => {
+      if (m === undefined || m === null || m === "") { return; }
+      return ["<b style='color:", mausac, "'>", m, "</b>"].join('');
+    });
+    return sgoc;
+  },
+};
 
 var app = {
   url: null,
