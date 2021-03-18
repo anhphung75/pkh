@@ -7,7 +7,7 @@ d3.formatDefaultLocale({
   currency: ["", "VNĐ"]
 });
 
-var fn = {
+const fn = {
   a2s: (dulieu) => {
     return a2s(dulieu);
   },
@@ -50,7 +50,7 @@ var fn = {
   },
 };
 
-var app = {
+const app = {
   url: null,
   cv: 100,
   nam: new Date().getFullYear().toString(),
@@ -97,7 +97,16 @@ var app = {
     idma: 123,
 
   },
-  chiphi: {},
+  chiphi: {
+    cv: 0,
+    baogia: 20190726,
+    plgia: 'dutoan',
+    d8: {
+      '1': { chiphi: 1, baogia: 20190726, plgia: 'dutoan', mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000 },
+      '2': { chiphi: 2, baogia: 20190726, plgia: 'dutoan', mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000 },
+      '3': { chiphi: 3, baogia: 20190726, plgia: 'dutoan', mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000 },
+    },
+  },
   oc: {
     zvl: 0,
     znc: 0,
@@ -107,7 +116,7 @@ var app = {
       cv: 0,
       idma: 1615263347491,
       idmau: 1615263347491,
-      dscp: [
+      l8: [
         { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
         { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
         { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
@@ -141,7 +150,211 @@ var app = {
   },
 };
 
-var web = {
+const ram = {
+  zcpx: {},
+};
+
+const idb = {
+  csdl: { ten: 'cntd', cap: 1 },
+  taodb: () => {
+    let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
+    if (!indexedDB) {
+      console.log('khong ho tro idb');
+      return null;
+    };
+    try {
+      let db, idx,
+        ten = idb.csdl.ten,
+        cap = idb.csdl.cap,
+        yc = indexedDB.open(ten, cap);
+      yc.onupgradeneeded = e => {
+        db = e.target.result;
+        if (e.oldVersion < cap) {
+          idx = db.createObjectStore('tttt', { keyPath: 'tttt' });
+          idx = db.createObjectStore('hoso', { keyPath: 'idma' });
+          idx = db.createObjectStore('khachhang', { keyPath: 'idma' });
+          idx = db.createObjectStore('khuvuc', { keyPath: 'idma' });
+          idx = db.createObjectStore('dot', { keyPath: 'idma' });
+          idx = db.createObjectStore('donvithicong', { keyPath: 'idma' });
+          idx = db.createObjectStore('hoancong', { keyPath: 'idma' });
+          idx = db.createObjectStore('trongai', { keyPath: 'idma' });
+          //chiphi
+          idx = db.createObjectStore('chiphi', { keyPath: 'idma' });
+          idx = db.createObjectStore('chiphiquanly', { keyPath: 'idma' });
+          //baogia
+          idx = db.createObjectStore('bgvl', { keyPath: 'idma' });
+          idx = db.createObjectStore('bgnc', { keyPath: 'idma' });
+          idx = db.createObjectStore('bgmtc', { keyPath: 'idma' });
+          idx = db.createObjectStore('bgtl', { keyPath: 'idma' });
+          //qtvt
+          idx = db.createObjectStore('qtvt', { keyPath: 'idma' });
+          idx = db.createObjectStore('qtvt_cpvt', { keyPath: 'idma' });
+          //qtgt
+          idx = db.createObjectStore('qtgt', { keyPath: 'idma' });
+          idx = db.createObjectStore('cpxd', { keyPath: 'idma' });
+          idx = db.createObjectStore('cpvl', { keyPath: 'idma' });
+          idx = db.createObjectStore('cpvt', { keyPath: 'idma' });
+          idx = db.createObjectStore('cptl', { keyPath: 'idma' });
+          //scan
+          idx = db.createObjectStore('scan', { keyPath: 'idma' });
+          //web
+          idx = db.createObjectStore('nhanvien', { keyPath: 'idma' });
+        }
+      };
+    } catch (err) { };
+  },
+  gom: {
+    zcpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.chiphi, gang = 0) => {
+      try {
+        if (Object.keys(dk).length === 0) { return; }
+        if (Object.keys(zd8.d8).length === 0 || zd8.cv === 100) { return; }
+        gang = fn.a2i(gang);
+        if (gang > 3) { return; };
+      } catch (err) { return; }
+      const maxrec = 2000;
+      let tin, gui, i, k, k3, v, r, phui, plcp, idma, plgia, baogia, chiphi, d1, d8, l8, nook,
+        cv = 0, zcv,
+        w = {},
+        zdl = zd8.d8;
+      l8 = [];
+      for (k in zdl) {
+        r = zdl[k];
+        r.chiphi = k;
+        l8.push(r);
+      }
+      l8 = l8.sort((a, b) => b.idma - a.idma);
+      for (i in l8) {
+        d1 = l8[i];
+        if (i + 1 > maxrec && 'giavl' in d1 && 'gianc' in d1 && 'giamtc' in d1 && 'giatl' in d1) {
+          k = d1.chiphi;
+          if (k in zdl) { delete zdl[k]; }
+        }
+      }
+      zcv = l8.length;
+      if (zcv < 1) { return; };
+      //check new cp
+      baogia = fn.a2i(dk.baogia);
+      plgia = fn.a2sl(dk.plgia);
+      if (baogia !== zd8.baogia || plgia !== zd8.plgia) {
+        zd8.plgia = plgia;
+        zd8.baogia = baogia;
+        for (k in zdl) {
+          d1 = zdl[k];
+          d1.baogia = baogia;
+          d1.chiphi = k;
+          d1.plgia = plgia;
+          d1.idma = [baogia, k, plgia].join('.');
+          if ('giavl' in d1) { delete d1.giavl }
+          if ('gianc' in d1) { delete d1.gianc }
+          if ('giamtc' in d1) { delete d1.giamtc }
+          if ('giatl' in d1) { delete d1.giatl }
+        }
+      }
+      zd8.cv = 0;
+      for (k in zdl) {
+        d1 = zdl[k];
+        if (!('mota' in d1) || !('dvt' in d1)) {
+          nook = true;
+          idb.nap.chiphi({ idma: d1.chiphi }, d1, 0);
+        };
+        if (!('giavl' in d1)) {
+          nook = true;
+          idb.nap.baogia({ baogia: baogia, plgia: plgia, plbg: 'bgvl', chiphi: d1.chiphi }, d1, 0);
+        };
+        if (!('gianc' in d1)) {
+          nook = true;
+          idb.nap.bgvl();
+        };
+        if (!('giamtc' in d1)) {
+          nook = true;
+          idb.nap.bgvl();
+        };
+        if (!('giall' in d1)) {
+          nook = true;
+          idb.nap.bgvl();
+        };
+      }
+      setTimeout(() => { idb.gom.zcpx(); }, 100);
+    },
+  },
+  nap: {
+    hoso: (dk = { idma: null }, dl = {}) => {
+      if (dk.constructor !== Object) { return; }
+    },
+    phuidao: (dk = { phui: 'on', idma: null }, dl = {}) => {
+      if (dk.constructor !== Object) { return; }
+    },
+    dscp: (proc = 'on_cpxd', dk = { idma: null }) => {
+      if (dk.constructor !== Object) { return; }
+      let phui, plcp, idma, tin, gui, i, k, zdl,
+        w = new Worker(app.url['swidb']);
+
+      gui = {
+        csdl: idb.csdl,
+        prog: prog,
+        dk: dk,
+        gang: 0,
+      };
+      console.log("idb.nap.", phui, ".", plcp, " gui=", JSON.stringify(gui, null, 2));
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        if ("err" in tin) {
+          console.log("swidb err=", JSON.stringify(tin.err, null, 2));
+          gui.gang += 1;
+          //lam lai sau 2 giay
+          setTimeout(() => { w.postMessage(gui); }, 2000);
+        } else if (tin.cv >= 0 && tin.cv <= 100) {
+          if ('idma' in tin) {
+            //ok action
+            zdl = tin.idma.data;
+            if (zdl.constructor === Array) {
+              for (i in zdl) {
+                zdl[i].barcode = '';
+                zdl[i].qrcode = '';
+                zdl[i].mota = '';
+                zdl[i].dvt = '';
+                zdl[i].giavl = 0;
+                zdl[i].gianc = 0;
+                zdl[i].giamtc = 0;
+                zdl[i].giatl = 0;
+                zdl[i].tienvl = 0;
+                zdl[i].tiennc = 0;
+                zdl[i].tienmtc = 0;
+                zdl[i].tientl = 0;
+                zdl[i].cv = 0;
+                idma = zdl[i].chiphi;
+                idb.nap.chiphi({ idma: idma });
+              }
+              app[phui][plcp] = zdl;
+            }
+          }
+        } else if (tin.cv === 100) {
+          if ('oc_cpxd' in tin) {
+            k = 'oc_cpxd'
+            zdl = tin[k];
+            web.tiendo(k, tin.cv);
+            app.oc.cpxd = zdl;
+            web.oc.cpxd(zdl);
+          }
+        } else if (tin.cv < 0 || tin.cv > 100) {
+          if (w) { w.terminate(); }
+          w = null;
+          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+        } else {
+          console.log("swidb info=", JSON.stringify(tin, null, 2));
+        }
+        console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
+      }
+    },
+
+  },
+  luu: {
+
+  },
+};
+
+const web = {
   tagid: '',
   hov: { mau1: "yellow", mau2: "#9999ff" },
   tao: () => {
@@ -1335,136 +1548,7 @@ var web = {
   },
 };
 
+const ga = {
 
-
-var ga = {
-  chiphi: {},
 };
 
-var idb = {
-  csdl: { ten: 'cntd', cap: 1 },
-  taodb: () => {
-    let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
-    if (!indexedDB) {
-      console.log('khong ho tro idb');
-      return null;
-    };
-    try {
-      let db, idx,
-        ten = idb.csdl.ten,
-        cap = idb.csdl.cap,
-        yc = indexedDB.open(ten, cap);
-      yc.onupgradeneeded = e => {
-        db = e.target.result;
-        if (e.oldVersion < cap) {
-          idx = db.createObjectStore('tttt', { keyPath: 'tttt' });
-          idx = db.createObjectStore('hoso', { keyPath: 'idma' });
-          idx = db.createObjectStore('khachhang', { keyPath: 'idma' });
-          idx = db.createObjectStore('khuvuc', { keyPath: 'idma' });
-          idx = db.createObjectStore('dot', { keyPath: 'idma' });
-          idx = db.createObjectStore('donvithicong', { keyPath: 'idma' });
-          idx = db.createObjectStore('hoancong', { keyPath: 'idma' });
-          idx = db.createObjectStore('trongai', { keyPath: 'idma' });
-          //chiphi
-          idx = db.createObjectStore('chiphi', { keyPath: 'idma' });
-          idx = db.createObjectStore('chiphiquanly', { keyPath: 'idma' });
-          //baogia
-          idx = db.createObjectStore('bgvl', { keyPath: 'idma' });
-          idx = db.createObjectStore('bgnc', { keyPath: 'idma' });
-          idx = db.createObjectStore('bgmtc', { keyPath: 'idma' });
-          idx = db.createObjectStore('bgtl', { keyPath: 'idma' });
-          //qtvt
-          idx = db.createObjectStore('qtvt', { keyPath: 'idma' });
-          idx = db.createObjectStore('qtvt_cpvt', { keyPath: 'idma' });
-          //qtgt
-          idx = db.createObjectStore('qtgt', { keyPath: 'idma' });
-          idx = db.createObjectStore('cpxd', { keyPath: 'idma' });
-          idx = db.createObjectStore('cpvl', { keyPath: 'idma' });
-          idx = db.createObjectStore('cpvt', { keyPath: 'idma' });
-          idx = db.createObjectStore('cptl', { keyPath: 'idma' });
-          //scan
-          idx = db.createObjectStore('scan', { keyPath: 'idma' });
-          //web
-          idx = db.createObjectStore('nhanvien', { keyPath: 'idma' });
-        }
-      };
-    } catch (err) { };
-  },
-  gom: {
-
-  },
-  nap: {
-    hoso: (dk = { idma: null }, dl = {}) => {
-      if (dk.constructor !== Object) { return; }
-    },
-    phuidao: (dk = { phui: 'on', idma: null }, dl = {}) => {
-      if (dk.constructor !== Object) { return; }
-    },
-    phui: (proc = 'on_cpxd', dk = { idma: null }) => {
-      if (dk.constructor !== Object) { return; }
-      let phui, plcp, idma, tin, gui, i, k, zdl,
-        w = new Worker(app.url['swidb']);
-
-      gui = {
-        csdl: idb.csdl,
-        prog: prog,
-        dk: dk,
-        gang: 0,
-      };
-      console.log("idb.nap.", phui, ".", plcp, " gui=", JSON.stringify(gui, null, 2));
-      w.postMessage(gui);
-      w.onmessage = (e) => {
-        tin = e.data;
-        if ("err" in tin) {
-          console.log("swidb err=", JSON.stringify(tin.err, null, 2));
-          gui.gang += 1;
-          //lam lai sau 2 giay
-          setTimeout(() => { w.postMessage(gui); }, 2000);
-        } else if (tin.cv >= 0 && tin.cv <= 100) {
-          if ('idma' in tin) {
-            //ok action
-            zdl = tin.idma.data;
-            if (zdl.constructor === Array) {
-              for (i in zdl) {
-                zdl[i].barcode = '';
-                zdl[i].qrcode = '';
-                zdl[i].mota = '';
-                zdl[i].dvt = '';
-                zdl[i].giavl = 0;
-                zdl[i].gianc = 0;
-                zdl[i].giamtc = 0;
-                zdl[i].giatl = 0;
-                zdl[i].tienvl = 0;
-                zdl[i].tiennc = 0;
-                zdl[i].tienmtc = 0;
-                zdl[i].tientl = 0;
-                zdl[i].cv = 0;
-                idma = zdl[i].chiphi;
-                idb.nap.chiphi({ idma: idma });
-              }
-              app[phui][plcp] = zdl;
-            }
-          }
-        } else if (tin.cv === 100) {
-          if ('oc_cpxd' in tin) {
-            k = 'oc_cpxd'
-            zdl = tin[k];
-            web.tiendo(k, tin.cv);
-            app.oc.cpxd = zdl;
-            web.oc.cpxd(zdl);
-          }
-        } else if (tin.cv < 0 || tin.cv > 100) {
-          if (w) { w.terminate(); }
-          w = null;
-          console.log("swidb fin=", JSON.stringify(tin, null, 2));
-        } else {
-          console.log("swidb info=", JSON.stringify(tin, null, 2));
-        }
-        console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
-      }
-    },
-  },
-  luu: {
-
-  },
-};

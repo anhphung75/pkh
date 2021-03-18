@@ -546,26 +546,25 @@ var db = {
       }
       //} catch (err) { self.postMessage({ err: err }); }
     },
-    chiphi: (bang = 'chiphi', dl = { idma: 0 }, gang = 0) => {
-      gang = a2i(gang);
-      if (gang > 3) {
-        self.postMessage({ cv: 100, chiphi: dl });
-        self.postMessage({ cv: -1, kq: "bất quá tam" });
-        return;
-      }
-      if (dl.constructor !== Object) { return; }
+    chiphi: (bang = 'chiphi', zd1 = { idma: 0 }, gang = 0) => {
+      try {
+        gang = fn.a2i(gang);
+        if (gang > 3) {
+          self.postMessage({ cv: 100, chiphi: zd1 });
+          self.postMessage({ cv: -1, info: "bất quá tam" });
+          return;
+        }
+      } catch (err) { return; }
 
       let db, r,
-        idma = a2i(dl.chiphi);
+        idma = a2i(zd1.chiphi);
       if (idma < 0) {
-        self.postMessage({ cv: 100, chiphi: dl });
+        self.postMessage({ cv: 100, chiphi: zd1 });
         self.postMessage({ cv: -1, info: "Mã định danh chưa tồn tại" });
         return;
       }
-      if (!dl.cv || dl.cv.constructor !== Object) {
-        dl.cv = { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 };
-      } else {
-        if (dl.cv.cp === 100) { return; }
+      if ('giavl' in zd1 && 'gianc' in zd1 && 'giamtc' in zd1 && 'giatl' in zd1) {
+        return;
       }
 
       try {
@@ -578,21 +577,31 @@ var db = {
               cs = e1.target.result;
               if (cs) {
                 r = cs.value.data;
-                dl.barcode = r.barcode || r.idma;
-                dl.qrcode = r.qrcode || r.idma;
-                dl.mota = r.mota;
-                dl.dvt = r.dvt;
-                dl.cv.cp = 100;
-                tiendo.chiphi(dl);
-                db.nap1.baogia('bgvl', dl, gang);
-                db.nap1.baogia('bgnc', dl, gang);
-                db.nap1.baogia('bgmtc', dl, gang);
-                db.nap1.baogia('bgtl', dl, gang);
+                zd1.barcode = r.barcode || r.idma;
+                zd1.qrcode = r.qrcode || r.idma;
+                zd1.mota = r.mota;
+                zd1.dvt = r.dvt;
+                if (!('giavl' in zd1)) {
+                  db.nap1.baogia('bgvl', zd1, 0);
+                } else if (!('gianc' in zd1)) {
+                  db.nap1.baogia('bgnc', zd1, 0);
+                } else if (!('giamtc' in zd1)) {
+                  db.nap1.baogia('bgmtc', zd1, 0);
+                } else {
+                  db.nap1.baogia('bgtl', zd1, 0);
+                }
                 cs.continue();
+              } else {
+                self.postMessage({ cv: 100, chiphi: zd1 });
+                self.postMessage({ cv: -1, info: "Fin" });
               }
             }
         }
-      } catch (err) { self.postMessage({ cv: -1, err: err }); }
+      } catch (err) {
+        self.postMessage({ err: err });
+        gang += 1;
+        setTimeout(() => { db.nap1.chiphi(bang, zd1, gang); }, 1000);
+      }
     },
   },
 
