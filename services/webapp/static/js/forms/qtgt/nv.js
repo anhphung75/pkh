@@ -1,6 +1,9 @@
-const chiphi = {};
+const ga = {
+  cp1: { cv: 0, zcv: 5, },
+  cp8: { cv: 0, zcv: 100, },
+};
 
-var fn = {
+const fn = {
   a2s: (dl) => {
     if (dl === undefined || dl === null) {
       return '';
@@ -241,10 +244,6 @@ var fn = {
   },
 };
 
-
-
-
-var ga;
 var tiendo = {
   chiphi: (dl = { idma: 0, cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 } }) => {
     if (dl.constructor !== Object) { return; }
@@ -264,7 +263,7 @@ var sv = {
 
 };
 
-var db = {
+const db = {
   csdl: { ten: 'cntd', cap: 1 },
   data1: (bang, luu, gang = 0) => {
     gang = gang === '0' ? 0 : parseInt(gang) || -1;
@@ -434,7 +433,7 @@ var db = {
         }
       } catch (err) { self.postMessage({ cv: -1, err: err }); }
     },
-    baogia: (bang, dl = { chiphi: 0, baogia: 0, plgia: 'dutoan' }, gang = 0) => {
+    baogia_old: (bang, dl = { chiphi: 0, baogia: 0, plgia: 'dutoan' }, gang = 0) => {
       gang = a2i(gang);
       if (gang > 3) {
         self.postMessage({ cv: 100, chiphi: dl });
@@ -546,7 +545,7 @@ var db = {
       }
       //} catch (err) { self.postMessage({ err: err }); }
     },
-    chiphi: (bang = 'chiphi', zd1 = { idma: 0 }, gang = 0) => {
+    chiphi_old: (bang = 'chiphi', zd1 = { idma: 0 }, gang = 0) => {
       try {
         gang = fn.a2i(gang);
         if (gang > 3) {
@@ -601,6 +600,200 @@ var db = {
         self.postMessage({ err: err });
         gang += 1;
         setTimeout(() => { db.nap1.chiphi(bang, zd1, gang); }, 1000);
+      }
+    },
+    baogia: (dk1 = { bang: 'bgvl', idma: 0, chiphi: 0 }, cg3 = 0) => {
+      gang = a2i(gang);
+      if (gang > 3) {
+        self.postMessage({ cv: 100, chiphi: dl });
+        self.postMessage({ cv: -1, kq: "bất quá tam" });
+        return;
+      }
+      bang = a2sl(bang);
+      if (!(['bgvl', 'bgnc', 'bgmtc', 'bgtl'].includes(bang))) { bang = 'bgvl'; }
+      if (!dl.cv || dl.cv.constructor !== Object) {
+        dl.cv = { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 };
+      } else {
+        if (bang.includes('bgvl') && dl.cv.vl === 100) { return; }
+        if (bang.includes('bgnc') && dl.cv.nc === 100) { return; }
+        if (bang.includes('bgmtc') && dl.cv.mtc === 100) { return; }
+        if (bang.includes('bgtl') && dl.cv.tl === 100) { return; }
+      }
+      let db, r, cs, k1, chiphi, baogia, plgia, gia, _chiphi, _baogia,
+        k = 0,
+        kq = { "0": 0 };
+      //try {
+      chiphi = a2i(dl.chiphi);
+      if (chiphi < 0) {
+        self.postMessage({ cv: 100, chiphi: dl });
+        self.postMessage({ cv: -1, info: "Chi phí không tồn tại, trả giá mặc định" });
+        return;
+      }
+      baogia = a2i(dl.baogia);
+      if (baogia < 0) {
+        self.postMessage({ cv: 100, chiphi: dl });
+        self.postMessage({ cv: -1, info: "Báo giá không tồn tại, trả giá mặc định" });
+        return;
+      }
+      plgia = dl.plgia ? a2sl(dl.plgia) : 'dutoan';
+
+      //} catch (err) { self.postMessage({ cv: -1, err: err }); }
+      //try {
+      indexedDB.open(db.csdl.ten, db.csdl.cap).onsuccess = (e) => {
+        db = e.target.result;
+        db.transaction(bang, 'readwrite')
+          .objectStore(bang)
+          .openCursor(null, 'prev')
+          .onsuccess = (e) => {
+            cs = e.target.result;
+            if (cs) {
+              r = cs.value.data;
+              _chiphi = a2i(r.chiphi);
+              _baogia = a2i(r.baogia || r.mabaogia);
+              gia = r[plgia] ? Math.abs(r[plgia]) : 0;
+              if (_chiphi == chiphi) {
+                if (_baogia == baogia) {
+                  if (bang.includes('bgvl')) {
+                    dl.giavl = gia;
+                    dl.cv.vl = 100;
+                  }
+                  if (bang.includes('bgnc')) {
+                    dl.gianc = gia;
+                    dl.cv.nc = 100;
+                  }
+                  if (bang.includes('bgmtc')) {
+                    dl.giamtc = gia;
+                    dl.cv.mtc = 100;
+                  }
+                  if (bang.includes('bgtl')) {
+                    dl.giatl = gia;
+                    dl.cv.tl = 100;
+                  }
+                  tiendo.chiphi(dl);
+                  db.nap1.chiphi('chiphi', dl, gang);
+                  return;
+                }
+                if (_baogia >= 0 && _baogia <= baogia && _baogia > k) {
+                  k = _baogia;
+                  if (!(k in kq)) {
+                    kq[k] = gia;
+                    for (k1 in kq) {
+                      if (k1 < k) { delete kq[k1]; }
+                    }
+                  }
+                }
+              }
+              cs.continue();
+            } else {
+              console.log("swidb.nap1.baogia last kq=", JSON.stringify(kq, null, 2));
+              baogia = 0;
+              for (k in kq) {
+                if (baogia < k) { baogia = k; }
+              }
+              gia = kq[baogia];
+              if (bang.includes('bgvl')) {
+                dl.giavl = gia;
+                dl.cv.vl = 100;
+              }
+              if (bang.includes('bgnc')) {
+                dl.gianc = gia;
+                dl.cv.nc = 100;
+              }
+              if (bang.includes('bgmtc')) {
+                dl.giamtc = gia;
+                dl.cv.mtc = 100;
+              }
+              if (bang.includes('bgtl')) {
+                dl.giatl = gia;
+                dl.cv.tl = 100;
+              }
+              tiendo.chiphi(dl);
+              db.nap1.chiphi('chiphi', dl, gang);
+            }
+          }
+      }
+      //} catch (err) { self.postMessage({ err: err }); }
+    },
+    chiphi: (dk1 = { idma: 0, chiphi: 0 }, cg3 = 0) => {
+      let db, cv, idma, r, k,
+        bang = 'chiphi',
+        kq1 = ga.cp1;
+
+      try {
+        cv = fn.a2i(kq1.cv);
+        if (cv >= 0 && cv <= 100) {
+          self.postMessage({ sv: 'chiphi', cv: cv });
+        } else if (cv === 100) {
+          self.postMessage({ sv: 'chiphi', cv: cv, chiphi: kq1 });
+          self.postMessage({ sv: 'chiphi', cv: -1, info: "Chi phí nạp xong" });
+          return;
+        } else {
+          kq1.cv = 0;
+          self.postMessage({ sv: 'chiphi', cv: 0 });
+        }
+        idma = fn.a2i(dk1.chiphi || dk1.idma);
+        if (idma < 0) {
+          self.postMessage({ sv: 'chiphi', cv: 100, chiphi: kq1 });
+          self.postMessage({ sv: 'chiphi', cv: -1, info: "Mã định danh chưa tồn tại" });
+          return;
+        }
+        cg3 = fn.a2i(cg3);
+        if (cg3 > 3) {
+          self.postMessage({ sv: 'chiphi', cv: 100, chiphi: kq1 });
+          self.postMessage({ sv: 'chiphi', cv: -1, info: "bất quá tam" });
+          return;
+        }
+        if (cg3 === 0) {
+          //set defa
+          kq1.cv = 0;
+          kq1.zcv = 5;
+          kq1.chiphi = idma;
+          kq1.baogia = fn.a2i(dk1.baogia || dk1.mabaogia);
+          kq1.plgia = fn.a2sl(dk1.plgia || 'dutoan');
+          kq1.giavl = 0;
+          kq1.gianc = 0;
+          kq1.giamtc = 0;
+          kq1.giatl = 0;
+        }
+      } catch (err) { return; }
+
+      try {
+        indexedDB.open(db.csdl.ten, db.csdl.cap).onsuccess = (e0) => {
+          db = e0.target.result;
+          db.transaction(bang, 'readonly')
+            .objectStore(bang)
+            .openCursor(IDBKeyRange.only(idma))
+            .onsuccess = (e1) => {
+              cs = e1.target.result;
+              if (cs) {
+                r = cs.value.data;
+                kq1.barcode = r.barcode || r.idma;
+                kq1.qrcode = r.qrcode || r.idma;
+                kq1.mota = r.mota;
+                kq1.dvt = r.dvt;
+                kq1.cv = fn.a2i(100 / kq1.zcv);
+                if (!('giavl' in kq1)) {
+                  db.nap1.baogia('bgvl', kq1, 0);
+                } else if (!('gianc' in kq1)) {
+                  db.nap1.baogia('bgnc', kq1, 0);
+                } else if (!('giamtc' in kq1)) {
+                  db.nap1.baogia('bgmtc', kq1, 0);
+                } else {
+                  db.nap1.baogia('bgtl', kq1, 0);
+                }
+                cs.continue();
+              } else {
+                for (k in ['giavl', 'gianc', 'giamtc', 'giatl']) {
+                  if (k in kq1) { kq1.cv += fn.a2i(100 / kq1.zcv); }
+                }
+                setTimeout(() => { db.nap1.chiphi(dk1, 1); }, 77);
+              }
+            }
+        }
+      } catch (err) {
+        self.postMessage({ sv: 'chiphi', err: err });
+        cg3 += 1;
+        setTimeout(() => { db.nap1.chiphi(dk1, cg3); }, 777);
       }
     },
   },

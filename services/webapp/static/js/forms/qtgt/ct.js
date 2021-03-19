@@ -150,10 +150,6 @@ const app = {
   },
 };
 
-const ram = {
-  zcpx: {},
-};
-
 const idb = {
   csdl: { ten: 'cntd', cap: 1 },
   taodb: () => {
@@ -1248,22 +1244,27 @@ const web = {
     let zone, kiem, bang, rec, self;
     zone = d3.select("section[id='cpql']");
   },
-  tiendo: (ten = '', cv = 0) => {
-    ten = fn.a2s(ten);
+  tiendo: (sv = '', cv = 0) => {
+    sv = fn.a2s(sv);
+    let zone, el = ['tiendo', ...sv.split(' ')].join('_'),
+      elid = ['#', tag].join('');
     cv = fn.a2i(cv);
-    let hg, zone = d3.select("#tiendo")
-    if (cv === 100) {
-      zone.selectAll("*").remove();
-      if (hg) { clearTimeout(hg); }
-    } else {
-      zone.selectAll("*").remove();
-      zone.append("label").text(ten);
-      zone.append("progress")
-        .attr("max", 100)
-        .attr("value", cv)
-        .text([cv, "%"].join(''));
-      hg = setTimeout(web.tiendo(), 300);
+    if (cv < 0 || cv > 100) { cv = 0; }
+
+    zone = d3.select("#tiendo").select(elid);
+    if (!zone) {
+      zone = d3.select("#tiendo").select(elid)
+        .append("div")
+        .attr("id", el);
     }
+    zone.selectAll("*").remove();
+    zone.append("label")
+      .text(sv);
+    zone.append("progress")
+      .attr("max", 100)
+      .attr("value", cv)
+      .text([cv, "%"].join(''));
+    if (cv === 100) { setTimeout(zone.remove(), 300); }
   },
   hov_intag: (tagid = null) => {
     let tag, zone, row, col,
