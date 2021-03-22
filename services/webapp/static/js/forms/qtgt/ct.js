@@ -121,6 +121,57 @@ const app = {
         { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
         { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
       ],
+      sl0: () => {
+        let i, r,
+          zdl = app.oc.cpxd.l8;
+        if (zdl.length > 0) {
+          for (i in zdl) {
+            r = zdl[i];
+            r.soluong = 0;
+            r.tienvl = 0;
+            r.tiennc = 0;
+            r.tienmtc = 0;
+          }
+        }
+      },
+      tinh: () => {
+        let i, r, _r, k,
+          plgia = fn.a2sl(app.plgia),
+          baogia = fn.a2i(app.baogia),
+          zdl = app.oc.cpxd.l8;
+        if (zdl.length > 0) {
+          for (i in zdl) {
+            r = zdl[i];
+            r.chiphi = fn.a2i(r.chiphi);
+            r.barcode = r.barcode || r.chiphi;
+            r.qrcode = r.qrcode || r.chiphi;
+            r.mota = fn.a2s(r.mota);
+            r.dvt = fn.a2s(r.dvt);
+            r.giavl = 0;
+            r.gianc = 0;
+            r.giamtc = 0;
+            if (r.chiphi in app.cpx) {
+              _r = app.cpx[r.chiphi];
+              if ('barcode' in _r) { r.barcode = _r.barcode; }
+              if ('qrcode' in _r) { r.qrcode = _r.qrcode; }
+              r.mota = _r.mota.qtgt || _r.mota;
+              r.dvt = _r.dvt;
+              k = [plgia, baogia].join('.');
+              if (k in _r) {
+                r.giavl = _r[k].giavl;
+                r.gianc = _r[k].gianc;
+                r.giamtc = _r[k].giamtc;
+              }
+            } else {
+              idb.gom.cpx();
+            }
+            r.soluong = lamtronso(Math.abs(r.soluong), 3);
+            r.tienvl = lamtronso(r.soluong * r.giavl, 0);
+            r.tiennc = lamtronso(r.soluong * r.gianc, 0);
+            r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
+          }
+        }
+      },
     },
     cpvt: {
       cv: 0,
@@ -147,6 +198,31 @@ const app = {
       { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', dai: 0, rong: 0.3, sau: 0.6 },
       { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', dai: 0, rong: 0.3, sau: 0.6 },
     ],
+    tinh: () => {
+      let self = app.oc;
+      self.zvl = 0;
+      try {
+        self.zvl = self.cpxd.reduce(function (z, rec) { return z + rec.tienvl }, 0);
+        self.zvl = self.cpvt.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
+        self.zvl = self.cpvl.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
+      } catch (err) { }
+      self.znc = 0;
+      try {
+        self.znc = self.cpxd.reduce(function (z, rec) { return z + rec.tiennc }, 0);
+        self.znc = self.cpvt.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
+        self.znc = self.cpvl.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
+      } catch (err) { }
+      self.zmtc = 0;
+      try {
+        self.zmtc = self.cpxd.reduce(function (z, rec) { return z + rec.tienmtc }, 0);
+        self.zmtc = self.cpvt.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
+        self.zmtc = self.cpvl.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
+      } catch (err) { }
+    },
+  },
+  cpx: {
+    cv: 0, zcv: 1,
+    '1': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
   },
 };
 
@@ -200,7 +276,7 @@ const idb = {
     } catch (err) { };
   },
   gom: {
-    zcpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.chiphi, gang = 0) => {
+    zcpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.cpx) => {
       try {
         if (Object.keys(dk).length === 0) { return; }
         if (Object.keys(zd8.d8).length === 0 || zd8.cv === 100) { return; }
@@ -280,66 +356,57 @@ const idb = {
     phuidao: (dk = { phui: 'on', idma: null }, dl = {}) => {
       if (dk.constructor !== Object) { return; }
     },
-    dscp: (proc = 'on_cpxd', dk = { idma: null }) => {
-      if (dk.constructor !== Object) { return; }
+    dscp: (dk = { prog = 'on_cpxd', idma: null }) => {
+      try {
+        if (Object.keys(dk).length < 1) { return; }
+        dk.prog = fn.a2sl(dk.prog);
+        //dk.idma = fn.a2i(dk.idma);
+      } catch (err) { return; }
       let phui, plcp, idma, tin, gui, i, k, zdl,
         w = new Worker(app.url['swidb']);
-
       gui = {
         csdl: idb.csdl,
-        prog: prog,
-        dk: dk,
-        gang: 0,
+        idma: dk,
       };
       console.log("idb.nap.", phui, ".", plcp, " gui=", JSON.stringify(gui, null, 2));
       w.postMessage(gui);
       w.onmessage = (e) => {
         tin = e.data;
-        if ("err" in tin) {
-          console.log("swidb err=", JSON.stringify(tin.err, null, 2));
-          gui.gang += 1;
-          //lam lai sau 2 giay
-          setTimeout(() => { w.postMessage(gui); }, 2000);
-        } else if (tin.cv >= 0 && tin.cv <= 100) {
-          if ('idma' in tin) {
-            //ok action
-            zdl = tin.idma.data;
-            if (zdl.constructor === Array) {
-              for (i in zdl) {
-                zdl[i].barcode = '';
-                zdl[i].qrcode = '';
-                zdl[i].mota = '';
-                zdl[i].dvt = '';
-                zdl[i].giavl = 0;
-                zdl[i].gianc = 0;
-                zdl[i].giamtc = 0;
-                zdl[i].giatl = 0;
-                zdl[i].tienvl = 0;
-                zdl[i].tiennc = 0;
-                zdl[i].tienmtc = 0;
-                zdl[i].tientl = 0;
-                zdl[i].cv = 0;
-                idma = zdl[i].chiphi;
-                idb.nap.chiphi({ idma: idma });
+        if (tin.cv === 100) {
+          web.tiendo(tin.prog, tin.cv);
+          zdl = 'idma' in tin ? tin.idma : [];
+          switch (tin.prog) {
+            case 'oc_cpxd':
+              if (zdl.length > 0) {
+                app.oc.cpxd.l8 = zdl;
+              } else {
+                //set soluong=0
+                zdl = app.oc.cpxd.l8;
+                for (i in zdl) {
+                  r = zdl[i];
+                  r.soluong = 0;
+                }
               }
-              app[phui][plcp] = zdl;
-            }
+              app.oc.cpxd.sl0();
+              web.oc.cpxd(zdl);
+              break;
+            default:
           }
-        } else if (tin.cv === 100) {
-          if ('oc_cpxd' in tin) {
-            k = 'oc_cpxd'
-            zdl = tin[k];
-            web.tiendo(k, tin.cv);
-            app.oc.cpxd = zdl;
-            web.oc.cpxd(zdl);
-          }
+
+        } else if (tin.cv >= 0 && tin.cv < 100) {
+          web.tiendo(dk.prog, tin.cv);
         } else if (tin.cv < 0 || tin.cv > 100) {
           if (w) { w.terminate(); }
           w = null;
-          console.log("swidb fin=", JSON.stringify(tin, null, 2));
+          console.log("nv fin=", JSON.stringify(tin, null, 2));
+        } else if ("err" in tin) {
+          console.log("nv err=", JSON.stringify(tin.err, null, 2));
+        } else if ("info" in tin) {
+          console.log("nv info=", JSON.stringify(tin.info, null, 2));
         } else {
-          console.log("swidb info=", JSON.stringify(tin, null, 2));
+          console.log("nv tin=", JSON.stringify(tin, null, 2));
         }
+
         console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
       }
     },
@@ -379,7 +446,7 @@ const web = {
     ];
     app.url["wss"] = ["wss://", window.location.host, "/", idb.csdl.ten, "/wss/hoso"].join('');
     app.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
-    app.url["swapi"] = d3.select("#qtgt").attr("data-swapi");
+    app.url["nv"] = d3.select("#qtgt").attr("data-nv");
   },
 
   otim: {
