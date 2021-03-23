@@ -201,6 +201,12 @@ class MainHandler(WebBase):
         self.render("base_vuejs3.html", error=None)
 
 
+class Test(WebBase):
+    def get(self):
+        self.set_secure_cookie("pbd", "Ph0ngK3H0@ch")
+        self.render("test/test.html", error=None)
+
+
 class Frm_Hoso(WebBase):
     def get(self, schema):
         schema = f"{schema}".lower()
@@ -303,6 +309,7 @@ class WebApp(web.Application):
     def __init__(self):
         handlers = [
             (r"/", MainHandler),
+            (r"/test", Test),
             (r"/([^/]+)/api/hoso/([^/]+)", Api_Hoso_Rest),
             # api socket
             (r"/([^/]+)/wss/hoso", Wss_Hoso),

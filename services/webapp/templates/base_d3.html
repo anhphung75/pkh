@@ -23,7 +23,19 @@
       {% block menu %}{% end %}
     </nav>
     <main id="webapp">{% block webapp %}{% end %}</main>
-    <footer>Footer</footer>
+    <footer>
+      Footer
+      <ol id="tiendo">
+        <li id="oc_cpvt">
+          <progress id="file" value="32" max="100"> 32% </progress>
+          <div>Ong cai cpvt</div>
+        </li>
+        <li id="oc_cpvl">
+          <progress id="file" value="50" max="100"> 50% </progress>
+          <div>Ong cai cpvl</div>
+        </li>
+      </ol>
+    </footer>
   </div>
   <!-- script  -->
   <script type="module" src="{{static_url('js/refs/d3.min.js')}}"></script>
