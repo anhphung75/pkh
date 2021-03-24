@@ -50,6 +50,10 @@ const fn = {
   },
 };
 
+const ga = {
+
+};
+
 const app = {
   url: null,
   cv: 100,
@@ -123,7 +127,7 @@ const app = {
       ],
       sl0: () => {
         let i, r,
-          zdl = app.oc.cpxd.l8;
+          zdl = app.oc.cpxd.l8 || [];
         if (zdl.length > 0) {
           for (i in zdl) {
             r = zdl[i];
@@ -223,6 +227,138 @@ const app = {
   cpx: {
     cv: 0, zcv: 1,
     '1': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '2': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp2', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '3': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    sua: () => {
+      let r, i, k, idma, lkbo,
+        zcv = 0,
+        d8 = app.cpx,
+        k2 = [app.plgia, app.baogia].join('.'),
+        zdl = app.oc.cpxd.l8 || [];
+      if (zdl.length > 0) {
+        for (i in zdl) {
+          r = zdl[i];
+          idma = r.chiphi;
+          if (!(idma in d8)) {
+            d8[idma] = {};
+            d8[idma][k2] = {};
+          }
+          if (!(k2 in d8[idma])) { d8[idma][k2] = {}; }
+        }
+      }
+      zdl = app.oc.cpvt.l8 || [];
+      if (zdl.length > 0) {
+        for (i in zdl) {
+          r = zdl[i];
+          idma = r.chiphi;
+          if (!(idma in d8)) {
+            d8[idma] = {};
+            d8[idma][k2] = {};
+          }
+          if (!(k2 in d8[idma])) { d8[idma][k2] = {}; }
+        }
+      }
+      zdl = app.oc.cpvl.l8 || [];
+      if (zdl.length > 0) {
+        for (i in zdl) {
+          r = zdl[i];
+          idma = r.chiphi;
+          if (!(idma in d8)) {
+            d8[idma] = {};
+            d8[idma][k2] = {};
+          }
+          if (!(k2 in d8[idma])) { d8[idma][k2] = {}; }
+        }
+      }
+      zdl = app.on.cpxd.l8 || [];
+      if (zdl.length > 0) {
+        for (i in zdl) {
+          r = zdl[i];
+          idma = r.chiphi;
+          if (!(idma in d8)) {
+            d8[idma] = {};
+            d8[idma][k2] = {};
+          }
+          if (!(k2 in d8[idma])) { d8[idma][k2] = {}; }
+        }
+      }
+      zdl = app.on.cpvt.l8 || [];
+      if (zdl.length > 0) {
+        for (i in zdl) {
+          r = zdl[i];
+          idma = r.chiphi;
+          if (!(idma in d8)) {
+            d8[idma] = {};
+            d8[idma][k2] = {};
+          }
+          if (!(k2 in d8[idma])) { d8[idma][k2] = {}; }
+        }
+      }
+      zdl = app.on.cpvl.l8 || [];
+      if (zdl.length > 0) {
+        for (i in zdl) {
+          r = zdl[i];
+          idma = r.chiphi;
+          if (!(idma in d8)) {
+            d8[idma] = {};
+            d8[idma][k2] = {};
+          }
+          if (!(k2 in d8[idma])) { d8[idma][k2] = {}; }
+        }
+      }
+      zdl = app.cpx;
+      lkbo = ['cv', 'zcv', 'sua', 'nap'];
+      for (k in zdl) {
+        if (lkbo.includes(k)) { continue; }
+        zcv++;
+      }
+      zdl.zcv = zcv;
+    },
+    nap: () => {
+      let r, i, k, idma, maid, _isok,
+        isok = true,
+        cv = 0,
+        plgia = fn.a2sl(app.plgia),
+        baogia = fn.a2i(app.baogia),
+        k2 = [plgia, baogia].join('.'),
+        zdl = app.cpx,
+        lkbo = ['cv', 'zcv', 'sua', 'nap'];
+      for (k in zdl) {
+        if (lkbo.includes(k)) { continue; }
+        r = zdl[k];
+        _isok = true;
+        if (!('mota' in r) || !('dvt' in r)) {
+          idb.nap.chiphi({ "chiphi": k });
+          _isok = false;
+          isok = false;
+        }
+        if (!("giavl" in r[k2])) {
+          idb.nap.baogia({ "plbg": "bgvl", "chiphi": k, "plgia": plgia, "baogia": baogia });
+          _isok = false;
+          isok = false;
+        }
+        if (!("gianc" in r[k2])) {
+          idb.nap.baogia({ "plbg": "bgnc", "chiphi": k, "plgia": plgia, "baogia": baogia });
+          _isok = false;
+          isok = false;
+        }
+        if (!("giamtc" in r[k2])) {
+          idb.nap.baogia({ "plbg": "bgmtc", "chiphi": k, "plgia": plgia, "baogia": baogia });
+          _isok = false;
+          isok = false;
+        }
+        if (!("giatl" in r[k2])) {
+          idb.nap.baogia({ "plbg": "bgtl", "chiphi": k, "plgia": plgia, "baogia": baogia });
+          _isok = false;
+          isok = false;
+        }
+        if (_isok) {
+          cv++;
+          web.tiendo("cpx", fn.a2i(cv / zdl.zcv));
+        }
+      }
+      if (!isok) { setTimeout(() => { app.cpx.nap(); }, 777); }
+    },
   },
 };
 
@@ -276,7 +412,7 @@ const idb = {
     } catch (err) { };
   },
   gom: {
-    zcpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.cpx) => {
+    cpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.cpx) => {
       try {
         if (Object.keys(dk).length === 0) { return; }
         if (Object.keys(zd8.d8).length === 0 || zd8.cv === 100) { return; }
@@ -350,45 +486,36 @@ const idb = {
     },
   },
   nap: {
-    hoso: (dk = { idma: null }, dl = {}) => {
-      if (dk.constructor !== Object) { return; }
-    },
-    phuidao: (dk = { phui: 'on', idma: null }, dl = {}) => {
-      if (dk.constructor !== Object) { return; }
-    },
-    dscp: (dk = { prog: 'on_cpxd', idma: null }) => {
+    chiphi: (dk = { prog: 'chiphi', idma: null }) => {
       try {
         if (Object.keys(dk).length < 1) { return; }
         dk.prog = fn.a2sl(dk.prog);
-        //dk.idma = fn.a2i(dk.idma);
+        dk.idma = fn.a2i(dk.idma);
       } catch (err) { return; }
+
       let phui, plcp, idma, tin, gui, i, k, zdl,
-        w = new Worker(app.url['swidb']);
+        w = new Worker(app.url['nv']);
       gui = {
         csdl: idb.csdl,
-        idma: dk,
+        maid: dk,
       };
-      console.log("idb.nap.", phui, ".", plcp, " gui=", JSON.stringify(gui, null, 2));
+      console.log("idb.nap.maid gui=", JSON.stringify(gui, null, 2));
       w.postMessage(gui);
       w.onmessage = (e) => {
         tin = e.data;
         if (tin.cv === 100) {
           web.tiendo(tin.prog, tin.cv);
-          zdl = 'idma' in tin ? tin.idma : [];
+          zdl = 'maid' in tin ? tin.maid : [];
           switch (tin.prog) {
             case 'oc_cpxd':
               if (zdl.length > 0) {
                 app.oc.cpxd.l8 = zdl;
               } else {
                 //set soluong=0
-                zdl = app.oc.cpxd.l8;
-                for (i in zdl) {
-                  r = zdl[i];
-                  r.soluong = 0;
-                }
+                app.oc.cpxd.sl0();
               }
-              app.oc.cpxd.sl0();
-              web.oc.cpxd(zdl);
+              app.oc.cpxd.tinh();
+              web.oc.cpxd();
               break;
             default:
           }
@@ -410,6 +537,65 @@ const idb = {
         console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
       }
     },
+    maid: (dk = { prog: 'on_cpxd', maid: null, idma: null }) => {
+      try {
+        if (Object.keys(dk).length < 1) { return; }
+        dk.prog = fn.a2sl(dk.prog);
+        dk.maid = fn.a2sl(dk.maid);
+        dk.idma = fn.a2i(dk.idma);
+      } catch (err) { return; }
+
+      let phui, plcp, idma, tin, gui, i, k, zdl,
+        w = new Worker(app.url['nv']);
+      gui = {
+        csdl: idb.csdl,
+        maid: dk,
+      };
+      console.log("idb.nap.maid gui=", JSON.stringify(gui, null, 2));
+      w.postMessage(gui);
+      w.onmessage = (e) => {
+        tin = e.data;
+        if (tin.cv === 100) {
+          web.tiendo(tin.prog, tin.cv);
+          zdl = 'maid' in tin ? tin.maid : [];
+          switch (tin.prog) {
+            case 'oc_cpxd':
+              if (zdl.length > 0) {
+                app.oc.cpxd.l8 = zdl;
+              } else {
+                //set soluong=0
+                app.oc.cpxd.sl0();
+              }
+              app.oc.cpxd.tinh();
+              web.oc.cpxd();
+              break;
+            default:
+          }
+
+        } else if (tin.cv >= 0 && tin.cv < 100) {
+          web.tiendo(dk.prog, tin.cv);
+        } else if (tin.cv < 0 || tin.cv > 100) {
+          if (w) { w.terminate(); }
+          w = null;
+          console.log("nv fin=", JSON.stringify(tin, null, 2));
+        } else if ("err" in tin) {
+          console.log("nv err=", JSON.stringify(tin.err, null, 2));
+        } else if ("info" in tin) {
+          console.log("nv info=", JSON.stringify(tin.info, null, 2));
+        } else {
+          console.log("nv tin=", JSON.stringify(tin, null, 2));
+        }
+
+        console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
+      }
+    },
+    hoso: (dk = { idma: null }, dl = {}) => {
+      if (dk.constructor !== Object) { return; }
+    },
+    phuidao: (dk = { phui: 'on', idma: null }, dl = {}) => {
+      if (dk.constructor !== Object) { return; }
+    },
+
 
   },
   luu: {
@@ -1313,132 +1499,35 @@ const web = {
   },
   tiendo: (sv = '', cv = 0) => {
     sv = fn.a2s(sv);
-    let zone, svg, el = ['tiendo', ...sv.split(' ')].join('_'),
+    let zone, cv0, el = ['tiendo', ...sv.split(' ')].join('_'),
       elid = ['#', el].join(''),
-      rong = 200,
-      cao = 20,
-      chu = cv + " %";
-    cv = fn.a2i(cv);
-    if (cv < 0 || cv > 100) { cv = 0; }
-
+      rong = "18rem";
+    cv = cv < 0 ? 0 : fn.a2i(cv % 101);
     zone = d3.select("#tiendo").select(elid);
     if (!zone.node()) {
+      cv0 = "0";
       zone = d3.select("#tiendo").append("li")
         .attr("id", el)
-        .style("width", rong)
-        .style("height", cao)
-        .classed("ba", true);
+        .style("width", rong);
+    } else {
+      cv0 = zone.attr("data-cv");
     }
-    console.log("zone=", JSON.stringify(zone, null, 2));
-    console.log("zone.node=", JSON.stringify(zone.node(), null, 2));
+    zone.attr("data-cv", cv);
     zone.selectAll("*").remove();
-    //rong = zone.style("width");
-    //cao = zone.style("height");
-    svg = zone.append("svg")
-      .attr("width", rong)
-      .attr("height", cao);
-    svg.append("rect")
-      .attr("x", 0)
-      .attr("y", 0)
-      .attr("width", fn.a2i(rong / 100 * cv))
-      .attr("height", cao)
-      .attr("fill", "steal");
-    svg.append("text")
-      .attr("x", 0)
-      .attr("dy", "-0.35em")
-      .text(chu)
-      .attr("fill", "white")
-      .attr("text-anchor", "middle")
-      .attr("font-family", "Open Sans")
-      .attr("font-size", 16);
-
-    //if (cv === 100) { setTimeout(zone.remove(), 300); }
+    zone.append("div")
+      .attr("class", "c ba w100")
+      .html(sv);
+    zone.append("div")
+      .attr("class", "c")
+      .style("background-color", "green")
+      .style("color", "white")
+      .style("width", cv0 + "%")
+      .html(cv + " %")
+      .transition()
+      .duration(777)
+      .style("width", cv + "%");
+    if (cv === 100) { zone.transition().delay(777).remove(); }
   },
-  renderProgress: (el) => {
-    var start = 0;
-    var end = el.dataset.progress;
-
-    var colours = {
-      fill: '#' + el.dataset.fillColour,
-      track: '#' + el.dataset.trackColour,
-      text: '#' + el.dataset.textColour,
-      stroke: '#' + el.dataset.strokeColour,
-    }
-
-    var radius = 100;
-    var border = el.dataset.trackWidth;
-    var strokeSpacing = el.dataset.strokeSpacing;
-    var endAngle = Math.PI * 2;
-    var formatText = d3.format('.0%');
-    var boxSize = radius * 2;
-    var count = end;
-    var progress = start;
-    var step = end < start ? -0.01 : 0.01;
-
-    //Define the circle
-    var circle = d3.arc()
-      .startAngle(0)
-      .innerRadius(radius)
-      .outerRadius(radius - border);
-
-    //setup SVG wrapper
-    var svg = d3.select(el)
-      .append('svg')
-      .attr('width', boxSize)
-      .attr('height', boxSize);
-
-    // ADD Group container
-    var g = svg.append('g')
-      .attr('transform', 'translate(' + boxSize / 2 + ',' + boxSize / 2 + ')');
-
-    //Setup track
-    var track = g.append('g').attr('class', 'radial-progress');
-    track.append('path')
-      .attr('class', 'radial-progress__background')
-      .attr('fill', colours.track)
-      .attr('stroke', colours.stroke)
-      .attr('stroke-width', strokeSpacing + 'px')
-      .attr('d', circle.endAngle(endAngle));
-
-    //Add colour fill
-    var value = track.append('path')
-      .attr('class', 'radial-progress__value')
-      .attr('fill', colours.fill)
-      .attr('stroke', colours.stroke)
-      .attr('stroke-width', strokeSpacing + 'px');
-
-    //Add text value
-    var numberText = track.append('text')
-      .attr('class', 'radial-progress__text')
-      .attr('fill', colours.text)
-      .attr('font-size', '30px')
-      .attr('text-anchor', 'middle')
-      .attr('dy', '.5rem');
-
-    function update(progress) {
-      //update position of endAngle
-      value.attr('d', circle.endAngle(endAngle * progress));
-      //update text value
-      numberText.text(formatText(progress));
-    };
-
-    function iterate() {
-      //call update to begin animation
-      update(progress);
-
-      if (count > 0) {
-        //reduce count till it reaches 0
-        count--;
-        //increase progress
-        progress += step;
-        //Control the speed of the fill
-        setTimeout(iterate, 10);
-      }
-    };
-
-    iterate();
-  },
-
   hov_intag: (tagid = null) => {
     let tag, zone, row, col,
       hov = "yellow",
@@ -1722,11 +1811,17 @@ const web = {
   },
 };
 
-const ga = {
 
-};
 
 
 idb.taodb();
 web.tao();
 web.tiendo("oc_cpxd", 70);
+web.tiendo("oc_cpvl", 95);
+web.tiendo("oc_cpvt", 5);
+web.tiendo("on_cpxd", 30);
+web.tiendo("on_cpvl", 50);
+web.tiendo("on_cpvt", 30);
+web.tiendo("oc_cpvt", 80);
+web.tiendo("oc_cpvt", 100);
+web.tiendo("cp_161617181920123", 90);

@@ -244,21 +244,6 @@ const fn = {
   },
 };
 
-var tiendo = {
-  chiphi: (dl = { idma: 0, cv: { cp: 0, vl: 0, nc: 0, mtc: 0, tl: 0 } }) => {
-    if (dl.constructor !== Object) { return; }
-    let k,
-      r = dl.cv || null;
-    if (!r || r.constructor !== Object) { return; }
-    for (k in r) {
-      if (r[k] !== 100) { return; }
-    }
-    dl.cv = 100;
-    self.postMessage({ cv: 100, chiphi: dl });
-    self.postMessage({ cv: -1, info: "Fin" });
-  },
-};
-
 var sv = {
 
 };

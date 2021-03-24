@@ -34,7 +34,7 @@
   color: #ffffff;
 }
 
-#tiendo, .vung_otim {
+.vung_otim {
   padding: 0;
   margin: 0;
   list-style: none;
@@ -42,7 +42,7 @@
   overflow-y: auto;
 }
 
-#tiendo>li, .vung_otim>li {
+.vung_otim>li {
   display: inline-block;
 }
 
