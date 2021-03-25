@@ -249,7 +249,7 @@ var sv = {
 };
 
 const db = {
-  csdl: { ten: 'cntd', cap: 1 },
+  csdl: { ten: 'CnTĐ', cap: 1 },
   data1: (bang, luu, gang = 0) => {
     gang = gang === '0' ? 0 : parseInt(gang) || -1;
     if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
@@ -380,43 +380,49 @@ const db = {
     } catch (err) { self.postMessage({ cv: cv, err: err }); }
   },
   nap1: {
-    idma: (bang, dk = { idma: 0 }, gang = 0) => {
-      gang = a2i(gang);
-      if (gang > 3) {
+    maid: (dk = { bang: '', maid: null, idma: 0 }, cg3 = 0) => {
+      console.log("nv db.nap1.maid dk=", JSON.stringify(dk, null, 2));
+      let bang, maid;
+      //try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) {
         self.postMessage({ cv: -1, kq: "bất quá tam" });
         return;
       }
-      bang = a2sl(bang);
+      bang = fn.a2sl(dk.bang);
       if (bang.length < 1) {
         self.postMessage({ cv: -1, info: "Bảng chưa tồn tại" });
         return;
       };
-      let idma;
-      try {
-        idma = a2i(dk.idma);
-        if (idma < 0) {
-          self.postMessage({ cv: 100, idma: 0 });
-          self.postMessage({ cv: -1, info: "Mã định danh chưa tồn tại" });
-          return;
-        }
-      } catch (err) { self.postMessage({ cv: -1, err: err }); }
-      try {
-        indexedDB.open(db.csdl.ten, db.csdl.cap).onsuccess = (e0) => {
-          let db = e0.target.result;
-          db.transaction(bang, 'readonly')
-            .objectStore(bang)
-            .openCursor(IDBKeyRange.only(idma))
-            .onsuccess = (e1) => {
-              cs = e1.target.result;
-              if (cs) {
-                self.postMessage({ cv: 100, idma: cs.value });
-                cs.continue();
-              } else {
-                self.postMessage({ cv: -1, info: "fin" });
-              }
+      maid = fn.a2sl(dk.maid || dk.idma);
+      if (maid.length < 1) {
+        self.postMessage({ cv: -1, info: "Mã định danh chưa tồn tại" });
+        return;
+      }
+      maid = fn.a2i(maid);
+      //} catch (err) { self.postMessage({ cv: -1, err: err }); }
+
+      //try {
+      indexedDB.open(db.csdl.ten, db.csdl.cap).onsuccess = (e0) => {
+        let db = e0.target.result;
+        db.transaction(bang, 'readonly')
+          .objectStore(bang)
+          .openCursor(IDBKeyRange.only(maid))
+          .onsuccess = (e1) => {
+            cs = e1.target.result;
+            if (cs) {
+              self.postMessage({ cv: 100, maid: cs.value });
+              cs.continue();
+            } else {
+              self.postMessage({ cv: -1, info: "fin" });
             }
-        }
-      } catch (err) { self.postMessage({ cv: -1, err: err }); }
+          }
+      }
+      //} catch (err) {
+      //  cg3 += 1;
+      //  self.postMessage({ cv: -1, err: err });
+      //  setTimeout(() => { db.nap1(dk, cg3); }, 777);
+      //}
     },
     baogia_old: (bang, dl = { chiphi: 0, baogia: 0, plgia: 'dutoan' }, gang = 0) => {
       gang = a2i(gang);
@@ -983,24 +989,30 @@ const db = {
 
 //main worker
 self.onmessage = (ev) => {
-  self.postMessage({ cv: 0, kq: "db active" });
+  let prog, d8, maid, idma, csdl_ten, csdl_cap,
+    tin = ev.data;
   //try {
-  let tin = ev.data,
-    csdl_ten = tin.csdl.ten.toString().toLowerCase(),
-    csdl_cap = tin.csdl.cap.constructor !== Number ? 1 : parseInt(tin.csdl.cap),
-    bang = tin.bang.toString().toLowerCase();
-
+  csdl_ten = fn.a2s(tin.csdl.ten) || fn.a2s(db.csdl.ten);
+  csdl_cap = fn.a2i(tin.csdl.cap) || fn.a2i(db.csdl.cap);
+  if (csdl_cap < 1) { csdl_cap = 1; }
   db.csdl = { ten: csdl_ten, cap: csdl_cap };
-  self.postMessage({ cv: 0, info: "nhan tu boss idb", tin: tin });
-  if ('baogia' in tin) {
-    db.nap1.baogia(bang, tin.baogia, tin.gang);
+  prog = fn.a2sl(tin.prog);
+  self.postMessage({ info: { status: "nhan tu boss idb", db: db.csdl, tin: tin } });
+  //} catch (err) { self.postMessage({ cv: -1, kq: "nothing to do" }); };
+
+  switch (prog) {
+    case 'oc_cpxd':
+      db.nap1.maid({ bang: 'cpxd', maid: maid }, 0);
+      break;
+    case 'oc_cpvt':
+      db.nap1.maid({ bang: 'cpvt', maid: maid }, 0);
+      // code block
+      break;
+    default:
+      // chiphi
+      d8 = tin.maid;
+      maid = d8.maid || d8.chiphi || '';
+      db.nap1.maid({ bang: 'chiphi', maid: maid }, 0);
   }
-  if ('gom.key' in tin) { db.gom.key(bang, tin['gom.key'], tin.gang); }
-  if ('gom.val' in tin) { db.gom.val(bang, tin['gom.val'], tin.gang); }
-  if ('gomkey' in tin) { db.gom.key(bang, tin['gomkey'], tin.gang); }
-  if ('gomval' in tin) { db.gom.val(bang, tin['gomval'], tin.gang); }
-  if ('nap1' in tin) { }
-  if ('luu1' in tin || 'data1' in tin) { db.data1(bang, tin.luu1, tin.gang); }
-  if ('idma' in tin) { db.nap1.idma(bang, { idma: tin.idma }, tin.gang) }
-  //} catch (err) {    self.postMessage({ cv: -1, kq: "nothing to do" });  };
+
 }

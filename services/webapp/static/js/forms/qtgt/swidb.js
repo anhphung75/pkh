@@ -40,7 +40,7 @@ var tiendo = {
 };
 
 var sw = {
-  csdl: { ten: 'cntd', cap: 1 },
+  csdl: { ten: 'CnTĐ', cap: 1 },
   ham: {
     isexist: (ma, dl) => {
       if (ma === undefined || ma === null) {
@@ -791,7 +791,7 @@ self.onmessage = (ev) => {
   self.postMessage({ cv: 0, kq: "sw active" });
   //try {
   let tin = ev.data,
-    csdl_ten = tin.csdl.ten.toString().toLowerCase(),
+    csdl_ten = tin.csdl.ten.toString(),
     csdl_cap = tin.csdl.cap.constructor !== Number ? 1 : parseInt(tin.csdl.cap),
     bang = tin.bang.toString().toLowerCase();
 

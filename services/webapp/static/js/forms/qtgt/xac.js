@@ -1391,7 +1391,7 @@ var web = {
 };
 
 var idb = {
-  csdl: { ten: 'cntd', cap: 1 },
+  csdl: { ten: 'CnTĐ', cap: 1 },
 
   taodb: () => {
     let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
@@ -1543,9 +1543,9 @@ var idb = {
       //test
       console.log("idb.nap.chiphi app.chiphi=", JSON.stringify(d8, null, 2));
     },
-    baogia: (dl = { chiphi: 0, baogia: 20210101, plgia: 'dutoan' }) => {
-      if (dl.constructor !== Object) { return; }
-      if (dl.cv && dl.cv === 100) { return; }
+    baogia: (dk = { chiphi: 0, baogia: 20210101, plgia: 'dutoan' }) => {
+      if (dk.constructor !== Object) { return; }
+      if (dk.cv && dk.cv === 100) { return; }
       let idma, tin, gui, i, zdl, r, plbg, chiphi, baogia, plgia,
         w = new Worker(app.url['swidb']);
       console.log("idb.nap.baogia dk=", JSON.stringify(dk, null, 2));
@@ -2729,22 +2729,11 @@ function test_dulieu() {
   idb.luu("chiphi", dl);
 
 }
-//test_dulieu();
+test_dulieu();
 //let mabaogia = 20200827,
 //  chiphi = '001',
 //  plgia = 'dutoan';
 //idb.nap.phui({ phui: 'on', plcp: 'cpxd', idma: 1615277173487 });
 //idb.nap.chiphi({ phui: 'oc', plcp: 'cpxd', idma: 1 });
 //console.log("test sau nap.chiphi app.chiphi=", JSON.stringify(app.chiphi));
-idb.nap.baogia({ plbg: 'bgvl', chiphi: 100, });
-idb.nap.baogia({ plbg: 'bgnc', chiphi: 100, });
-idb.nap.baogia({ plbg: 'bgmtc', chiphi: 100, });
-idb.nap.baogia({ plbg: 'bgtl', chiphi: 100, });
-console.log("test1 sau nap.baogia app.chiphi=", JSON.stringify(app.chiphi));
-idb.nap.baogia({ plbg: 'bgvl', chiphi: 100, });
-idb.nap.baogia({ plbg: 'bgnc', chiphi: 100, });
-idb.nap.baogia({ plbg: 'bgmtc', chiphi: 100, });
-idb.nap.baogia({ plbg: 'bgtl', chiphi: 100, });
-console.log("test2 sau nap.baogia app.chiphi=", JSON.stringify(app.chiphi));
-
 //console.log("ga.bgvl=", JSON.stringify(ga.bgvl));

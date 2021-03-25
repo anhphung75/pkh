@@ -15,7 +15,11 @@ const fn = {
     return a2sl(dulieu);
   },
   a2i: (dulieu) => {
-    return a2i(dulieu);
+    let kq;
+    try {
+      kq = parseInt(dulieu);
+    } catch (err) { kq = -1; }
+    return kq
   },
   sregexp: (stim) => {
     stim = fn.a2s(stim);
@@ -224,15 +228,133 @@ const app = {
       } catch (err) { }
     },
   },
+  on: {
+    zvl: 0,
+    znc: 0,
+    zmtc: 0,
+    ztl: 0,
+    cpxd: {
+      cv: 0,
+      idma: 1615263347491,
+      idmau: 1615263347491,
+      l8: [
+        { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+        { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+        { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+      ],
+      sl0: () => {
+        let i, r,
+          zdl = app.oc.cpxd.l8 || [];
+        if (zdl.length > 0) {
+          for (i in zdl) {
+            r = zdl[i];
+            r.soluong = 0;
+            r.tienvl = 0;
+            r.tiennc = 0;
+            r.tienmtc = 0;
+          }
+        }
+      },
+      tinh: () => {
+        let i, r, _r, k,
+          plgia = fn.a2sl(app.plgia),
+          baogia = fn.a2i(app.baogia),
+          zdl = app.oc.cpxd.l8;
+        if (zdl.length > 0) {
+          for (i in zdl) {
+            r = zdl[i];
+            r.chiphi = fn.a2i(r.chiphi);
+            r.barcode = r.barcode || r.chiphi;
+            r.qrcode = r.qrcode || r.chiphi;
+            r.mota = fn.a2s(r.mota);
+            r.dvt = fn.a2s(r.dvt);
+            r.giavl = 0;
+            r.gianc = 0;
+            r.giamtc = 0;
+            if (r.chiphi in app.cpx) {
+              _r = app.cpx[r.chiphi];
+              if ('barcode' in _r) { r.barcode = _r.barcode; }
+              if ('qrcode' in _r) { r.qrcode = _r.qrcode; }
+              r.mota = _r.mota.qtgt || _r.mota;
+              r.dvt = _r.dvt;
+              k = [plgia, baogia].join('.');
+              if (k in _r) {
+                r.giavl = _r[k].giavl;
+                r.gianc = _r[k].gianc;
+                r.giamtc = _r[k].giamtc;
+              }
+            } else {
+              idb.gom.cpx();
+            }
+            r.soluong = lamtronso(Math.abs(r.soluong), 3);
+            r.tienvl = lamtronso(r.soluong * r.giavl, 0);
+            r.tiennc = lamtronso(r.soluong * r.gianc, 0);
+            r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
+          }
+        }
+      },
+    },
+    cpvt: {
+      cv: 0,
+      idma: 1615263347491,
+      idmau: 1615263347491,
+      dscp: [
+        { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+        { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+        { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+      ],
+    },
+    cpvl: {
+      cv: 0,
+      idma: 1615263347491,
+      idmau: 1615263347491,
+      dscp: [
+        { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+        { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+        { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+      ],
+    },
+    phui: [
+      { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', dai: 0.5, rong: 0.5, sau: 1 },
+      { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', dai: 0, rong: 0.3, sau: 0.6 },
+      { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', dai: 0, rong: 0.3, sau: 0.6 },
+    ],
+    tinh: () => {
+      let self = app.oc;
+      self.zvl = 0;
+      try {
+        self.zvl = self.cpxd.reduce(function (z, rec) { return z + rec.tienvl }, 0);
+        self.zvl = self.cpvt.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
+        self.zvl = self.cpvl.reduce(function (z, rec) { return z + rec.tienvl }, self.zvl);
+      } catch (err) { }
+      self.znc = 0;
+      try {
+        self.znc = self.cpxd.reduce(function (z, rec) { return z + rec.tiennc }, 0);
+        self.znc = self.cpvt.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
+        self.znc = self.cpvl.reduce(function (z, rec) { return z + rec.tiennc }, self.znc);
+      } catch (err) { }
+      self.zmtc = 0;
+      try {
+        self.zmtc = self.cpxd.reduce(function (z, rec) { return z + rec.tienmtc }, 0);
+        self.zmtc = self.cpvt.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
+        self.zmtc = self.cpvl.reduce(function (z, rec) { return z + rec.tienmtc }, self.zmtc);
+      } catch (err) { }
+    },
+  },
   cpx: {
     cv: 0, zcv: 1,
-    '1': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
-    '2': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp2', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
-    '3': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
-    sua: () => {
+    d8: {
+      '100': {},
+      '200': {},
+      '300': {},
+      '5': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+      '2': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp2', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+      '3': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    },
+    sua: (cg3 = 0) => {
       let r, i, k, idma, lkbo,
         zcv = 0,
-        d8 = app.cpx,
+        d8 = app.cpx.d8,
         k2 = [app.plgia, app.baogia].join('.'),
         zdl = app.oc.cpxd.l8 || [];
       if (zdl.length > 0) {
@@ -307,63 +429,68 @@ const app = {
         }
       }
       zdl = app.cpx;
-      lkbo = ['cv', 'zcv', 'sua', 'nap'];
-      for (k in zdl) {
-        if (lkbo.includes(k)) { continue; }
+      zcv = 0;
+      for (k in zdl.d8) {
         zcv++;
       }
       zdl.zcv = zcv;
     },
-    nap: () => {
-      let r, i, k, idma, maid, _isok,
-        isok = true,
-        cv = 0,
-        plgia = fn.a2sl(app.plgia),
-        baogia = fn.a2i(app.baogia),
-        k2 = [plgia, baogia].join('.'),
-        zdl = app.cpx,
-        lkbo = ['cv', 'zcv', 'sua', 'nap'];
-      for (k in zdl) {
-        if (lkbo.includes(k)) { continue; }
-        r = zdl[k];
-        _isok = true;
+    nap: (cg3 = 0) => {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      let cv, r, i, k, idma, maid, isok, z8, d8, plgia, baogia, k2;
+      //try {
+      app.cpx.sua();
+      z8 = app.cpx;
+      d8 = app.cpx.d8;
+      plgia = fn.a2sl(app.plgia);
+      baogia = fn.a2i(app.baogia);
+      k2 = [plgia, baogia].join('.');
+      z8.cv = fn.a2i(z8.cv);
+      //} catch (err) {
+      //  cg3 += 1;
+      //  setTimeout(() => { app.cpx.nap(cg3); }, 777);
+      //  return;
+      //}
+      console.log("start ct app.nap.cpx=", JSON.stringify(z8, null, 2));
+      cv = 0;
+      for (k in d8) {
+        r = d8[k];
+        isok = true;
         if (!('mota' in r) || !('dvt' in r)) {
-          idb.nap.chiphi({ "chiphi": k });
-          _isok = false;
+          idb.nap.cpx({ "chiphi": k });
           isok = false;
         }
-        if (!("giavl" in r[k2])) {
+        i = `if (!("giavl" in r[k2])) {
           idb.nap.baogia({ "plbg": "bgvl", "chiphi": k, "plgia": plgia, "baogia": baogia });
-          _isok = false;
           isok = false;
         }
         if (!("gianc" in r[k2])) {
           idb.nap.baogia({ "plbg": "bgnc", "chiphi": k, "plgia": plgia, "baogia": baogia });
-          _isok = false;
           isok = false;
         }
         if (!("giamtc" in r[k2])) {
           idb.nap.baogia({ "plbg": "bgmtc", "chiphi": k, "plgia": plgia, "baogia": baogia });
-          _isok = false;
           isok = false;
         }
         if (!("giatl" in r[k2])) {
           idb.nap.baogia({ "plbg": "bgtl", "chiphi": k, "plgia": plgia, "baogia": baogia });
-          _isok = false;
           isok = false;
-        }
-        if (_isok) {
-          cv++;
-          web.tiendo("cpx", fn.a2i(cv / zdl.zcv));
+        }`
+        if (isok) { cv++; }
+        if (cv > z8.cv) {
+          z8.cv = cv;
+          web.tiendo("cpx", fn.a2i(cv / z8.zcv));
         }
       }
-      if (!isok) { setTimeout(() => { app.cpx.nap(); }, 777); }
+      if (z8.cv !== 100) { setTimeout(() => { app.cpx.nap(); }, 777); }
+      console.log("end ct app.nap.cpx=", JSON.stringify(z8, null, 2));
     },
   },
 };
 
 const idb = {
-  csdl: { ten: 'cntd', cap: 1 },
+  csdl: { ten: 'CnTĐ', cap: 1 },
   taodb: () => {
     let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
     if (!indexedDB) {
@@ -412,12 +539,12 @@ const idb = {
     } catch (err) { };
   },
   gom: {
-    cpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.cpx) => {
+    cpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.cpx, cg3 = 0) => {
       try {
         if (Object.keys(dk).length === 0) { return; }
         if (Object.keys(zd8.d8).length === 0 || zd8.cv === 100) { return; }
-        gang = fn.a2i(gang);
-        if (gang > 3) { return; };
+        cg3 = fn.a2i(cg3);
+        if (cg3 > 3) { return; };
       } catch (err) { return; }
       const maxrec = 2000;
       let tin, gui, i, k, k3, v, r, phui, plcp, idma, plgia, baogia, chiphi, d1, d8, l8, nook,
@@ -486,42 +613,53 @@ const idb = {
     },
   },
   nap: {
-    chiphi: (dk = { prog: 'chiphi', idma: null }) => {
-      try {
-        if (Object.keys(dk).length < 1) { return; }
-        dk.prog = fn.a2sl(dk.prog);
-        dk.idma = fn.a2i(dk.idma);
-      } catch (err) { return; }
-
-      let phui, plcp, idma, tin, gui, i, k, zdl,
-        w = new Worker(app.url['nv']);
+    cpx: (dk = { prog: 'chiphi', idma: null }, cg3 = 0) => {
+      
+      cg3 = fn.a2i(cg3);
+      //if (cg3 > 3) { return; };
+      //try {
+      //if (Object.keys(dk).length < 1) { return; }
+      dk.idma = fn.a2i(dk.chiphi);
+      dk.prog = "chiphi";
+      //} catch (err) {
+      //  cg3 += 1;
+      //  setTimeout(() => { idb.nap.cpx(cg3); }, 777);
+      //  return;
+      //}
+      console.log("idb.nap.cpx dk=", JSON.stringify(dk, null, 2));
+      let phui, plcp, idma, tin, gui, i, k, zdl, d1r,
+        w = new Worker(app.url['nv']),
+        _prog = ['chiphi', dk.idma].join('_'),
+        d1s = app.cpx.d8[dk.idma];
+      if (!d1s) { return; }
       gui = {
         csdl: idb.csdl,
         maid: dk,
       };
-      console.log("idb.nap.maid gui=", JSON.stringify(gui, null, 2));
+      console.log("idb.nap.cpx gui=", JSON.stringify(gui, null, 2));
       w.postMessage(gui);
       w.onmessage = (e) => {
         tin = e.data;
         if (tin.cv === 100) {
-          web.tiendo(tin.prog, tin.cv);
-          zdl = 'maid' in tin ? tin.maid : [];
-          switch (tin.prog) {
-            case 'oc_cpxd':
-              if (zdl.length > 0) {
-                app.oc.cpxd.l8 = zdl;
-              } else {
-                //set soluong=0
-                app.oc.cpxd.sl0();
-              }
-              app.oc.cpxd.tinh();
-              web.oc.cpxd();
-              break;
-            default:
-          }
+          web.tiendo(_prog, tin.cv);
+          d1r = 'maid' in tin ? tin.maid.data : 'idma' in tin ? tin.idma.data : {};
 
+          console.log(
+            "nv d1r=", JSON.stringify(d1r, null, 2),
+            "ct start d1s=", JSON.stringify(d1s, null, 2),
+            "dk.idma=", JSON.stringify(dk.idma, null, 2),
+            "ct app.cpx.d8=", JSON.stringify(app.cpx.d8, null, 2)
+          );
+          if (d1r.constructor === Object) {
+            d1s.chiphi = tin.maid.idma;
+            d1s.barcode = d1r.barcode || d1r.idma;
+            d1s.qrcode = d1s.qrcode || d1r.idma;
+            d1s.mota = d1r.mota.qtgt || d1r.mota.qtgt;
+            d1s.dvt = d1r.dvt;
+          }
+          console.log("ct end d1s=", JSON.stringify(d1s, null, 2));
         } else if (tin.cv >= 0 && tin.cv < 100) {
-          web.tiendo(dk.prog, tin.cv);
+          web.tiendo(_prog, tin.cv);
         } else if (tin.cv < 0 || tin.cv > 100) {
           if (w) { w.terminate(); }
           w = null;
@@ -533,67 +671,8 @@ const idb = {
         } else {
           console.log("nv tin=", JSON.stringify(tin, null, 2));
         }
-
-        console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
+        console.log("idb.nap.cpx app.cpx=", JSON.stringify(app.cpx, null, 2));
       }
-    },
-    maid: (dk = { prog: 'on_cpxd', maid: null, idma: null }) => {
-      try {
-        if (Object.keys(dk).length < 1) { return; }
-        dk.prog = fn.a2sl(dk.prog);
-        dk.maid = fn.a2sl(dk.maid);
-        dk.idma = fn.a2i(dk.idma);
-      } catch (err) { return; }
-
-      let phui, plcp, idma, tin, gui, i, k, zdl,
-        w = new Worker(app.url['nv']);
-      gui = {
-        csdl: idb.csdl,
-        maid: dk,
-      };
-      console.log("idb.nap.maid gui=", JSON.stringify(gui, null, 2));
-      w.postMessage(gui);
-      w.onmessage = (e) => {
-        tin = e.data;
-        if (tin.cv === 100) {
-          web.tiendo(tin.prog, tin.cv);
-          zdl = 'maid' in tin ? tin.maid : [];
-          switch (tin.prog) {
-            case 'oc_cpxd':
-              if (zdl.length > 0) {
-                app.oc.cpxd.l8 = zdl;
-              } else {
-                //set soluong=0
-                app.oc.cpxd.sl0();
-              }
-              app.oc.cpxd.tinh();
-              web.oc.cpxd();
-              break;
-            default:
-          }
-
-        } else if (tin.cv >= 0 && tin.cv < 100) {
-          web.tiendo(dk.prog, tin.cv);
-        } else if (tin.cv < 0 || tin.cv > 100) {
-          if (w) { w.terminate(); }
-          w = null;
-          console.log("nv fin=", JSON.stringify(tin, null, 2));
-        } else if ("err" in tin) {
-          console.log("nv err=", JSON.stringify(tin.err, null, 2));
-        } else if ("info" in tin) {
-          console.log("nv info=", JSON.stringify(tin.info, null, 2));
-        } else {
-          console.log("nv tin=", JSON.stringify(tin, null, 2));
-        }
-
-        console.log("idb.nap.cpphui app[", phui, ".", plcp, "]=", JSON.stringify(app[phui][plcp], null, 2));
-      }
-    },
-    hoso: (dk = { idma: null }, dl = {}) => {
-      if (dk.constructor !== Object) { return; }
-    },
-    phuidao: (dk = { phui: 'on', idma: null }, dl = {}) => {
-      if (dk.constructor !== Object) { return; }
     },
 
 
@@ -1812,16 +1891,7 @@ const web = {
 };
 
 
-
-
 idb.taodb();
 web.tao();
-web.tiendo("oc_cpxd", 70);
-web.tiendo("oc_cpvl", 95);
-web.tiendo("oc_cpvt", 5);
-web.tiendo("on_cpxd", 30);
-web.tiendo("on_cpvl", 50);
-web.tiendo("on_cpvt", 30);
-web.tiendo("oc_cpvt", 80);
-web.tiendo("oc_cpvt", 100);
-web.tiendo("cp_161617181920123", 90);
+app.cpx.nap(0);
+//idb.nap.cpx({ "chiphi": "100" });
