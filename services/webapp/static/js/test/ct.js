@@ -1,4 +1,4 @@
-import { lamtronso, a2s, a2sl, a2i } from "./../utils.js"
+import { lamtronso } from "./../utils.js"
 
 d3.formatDefaultLocale({
   decimal: ",",
@@ -8,16 +8,28 @@ d3.formatDefaultLocale({
 });
 
 const fn = {
-  a2s: (dulieu) => {
-    return a2s(dulieu);
+  a2s: (dl) => {
+    try {
+      if (dl === undefined || dl === null) {
+        return '';
+      } else if (dl.constructor === String) {
+        return dl.toString();
+      }
+      else {
+        return JSON.stringify(dl);
+      }
+    } catch (err) { return ''; }
   },
-  a2sl: (dulieu) => {
-    return a2sl(dulieu);
+  a2sl: (dl) => {
+    return fn.a2s(dl).toLowerCase();
   },
-  a2i: (dulieu) => {
+  a2su: (dl) => {
+    return fn.a2s(dl).toUpperCase();
+  },
+  a2i: (dl) => {
     let kq;
     try {
-      kq = parseInt(dulieu);
+      kq = parseInt(dl);
     } catch (err) { kq = -1; }
     return kq
   },
@@ -60,6 +72,7 @@ const ga = {
 
 const app = {
   url: null,
+  ztg: 777,
   cv: 100,
   nam: new Date().getFullYear().toString(),
   hoso: { id: 123, ma: '', },
@@ -352,7 +365,9 @@ const app = {
       '3': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
     },
     sua: (cg3 = 0) => {
-      let r, i, k, idma, lkbo,
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      let r, i, k, idma,
         zcv = 0,
         d8 = app.cpx.d8,
         k2 = [app.plgia, app.baogia].join('.'),
@@ -429,29 +444,28 @@ const app = {
         }
       }
       zdl = app.cpx;
-      zcv = 0;
       for (k in zdl.d8) {
         zcv++;
       }
       zdl.zcv = zcv;
     },
     nap: (cg3 = 0) => {
-      cg3 = fn.a2i(cg3);
-      if (cg3 > 3) { return; };
       let cv, r, i, k, idma, maid, isok, z8, d8, plgia, baogia, k2;
-      //try {
-      app.cpx.sua();
-      z8 = app.cpx;
-      d8 = app.cpx.d8;
-      plgia = fn.a2sl(app.plgia);
-      baogia = fn.a2i(app.baogia);
-      k2 = [plgia, baogia].join('.');
-      z8.cv = fn.a2i(z8.cv);
-      //} catch (err) {
-      //  cg3 += 1;
-      //  setTimeout(() => { app.cpx.nap(cg3); }, 777);
-      //  return;
-      //}
+      try {
+        cg3 = fn.a2i(cg3);
+        if (cg3 > 3) { return; };
+        app.cpx.sua();
+        z8 = app.cpx;
+        d8 = app.cpx.d8;
+        plgia = fn.a2sl(app.plgia);
+        baogia = fn.a2i(app.baogia);
+        k2 = [plgia, baogia].join('.');
+        z8.cv = fn.a2i(z8.cv);
+      } catch (err) {
+        cg3 += 1;
+        setTimeout(() => { app.cpx.nap(cg3); }, 777);
+        return;
+      }
       console.log("start ct app.nap.cpx=", JSON.stringify(z8, null, 2));
       cv = 0;
       for (k in d8) {
@@ -480,10 +494,11 @@ const app = {
         if (isok) { cv++; }
         if (cv > z8.cv) {
           z8.cv = cv;
-          web.tiendo("cpx", fn.a2i(cv / z8.zcv));
+          k = fn.a2i(100 * (cv / z8.zcv));
+          web.tiendo("cpx", k);
         }
       }
-      if (z8.cv !== 100) { setTimeout(() => { app.cpx.nap(); }, 777); }
+      //if (z8.cv !== z8.zcv) { setTimeout(() => { app.cpx.nap(); }, app.ztg); }
       console.log("end ct app.nap.cpx=", JSON.stringify(z8, null, 2));
     },
   },
@@ -491,6 +506,7 @@ const app = {
 
 const idb = {
   csdl: { ten: 'CnTĐ', cap: 1 },
+  ztg: 333,
   taodb: () => {
     let indexedDB = window.indexedDB || window.mozIndexedDB || window.webkitIndexedDB || window.msIndexedDB;
     if (!indexedDB) {
@@ -537,6 +553,10 @@ const idb = {
         }
       };
     } catch (err) { };
+  },
+  xoaws: (w) => {
+    if (w) { w.terminate(); }
+    w = null;
   },
   gom: {
     cpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.cpx, cg3 = 0) => {
@@ -614,67 +634,116 @@ const idb = {
   },
   nap: {
     cpx: (dk = { prog: 'chiphi', idma: null }, cg3 = 0) => {
-      
-      cg3 = fn.a2i(cg3);
-      //if (cg3 > 3) { return; };
-      //try {
-      //if (Object.keys(dk).length < 1) { return; }
-      dk.idma = fn.a2i(dk.chiphi);
-      dk.prog = "chiphi";
-      //} catch (err) {
-      //  cg3 += 1;
-      //  setTimeout(() => { idb.nap.cpx(cg3); }, 777);
-      //  return;
-      //}
-      console.log("idb.nap.cpx dk=", JSON.stringify(dk, null, 2));
-      let phui, plcp, idma, tin, gui, i, k, zdl, d1r,
-        w = new Worker(app.url['nv']),
-        _prog = ['chiphi', dk.idma].join('_'),
+      let w, hoi, dap, d1r, d1s, k, i, _prog;
+      try {
+        cg3 = fn.a2i(cg3);
+        if (cg3 > 3) { return; };
+        if (Object.keys(dk).length < 1) { return; }
+        dk.prog = "chiphi";
+        _prog = [dk.prog, dk.idma].join('_');
+        dk.idma = fn.a2i(dk.chiphi);
         d1s = app.cpx.d8[dk.idma];
-      if (!d1s) { return; }
-      gui = {
-        csdl: idb.csdl,
-        maid: dk,
-      };
-      console.log("idb.nap.cpx gui=", JSON.stringify(gui, null, 2));
-      w.postMessage(gui);
-      w.onmessage = (e) => {
-        tin = e.data;
-        if (tin.cv === 100) {
-          web.tiendo(_prog, tin.cv);
-          d1r = 'maid' in tin ? tin.maid.data : 'idma' in tin ? tin.idma.data : {};
-
-          console.log(
-            "nv d1r=", JSON.stringify(d1r, null, 2),
-            "ct start d1s=", JSON.stringify(d1s, null, 2),
-            "dk.idma=", JSON.stringify(dk.idma, null, 2),
-            "ct app.cpx.d8=", JSON.stringify(app.cpx.d8, null, 2)
-          );
-          if (d1r.constructor === Object) {
-            d1s.chiphi = tin.maid.idma;
-            d1s.barcode = d1r.barcode || d1r.idma;
-            d1s.qrcode = d1s.qrcode || d1r.idma;
-            d1s.mota = d1r.mota.qtgt || d1r.mota.qtgt;
-            d1s.dvt = d1r.dvt;
+        if (!d1s) { return; }
+        //main
+        w = new Worker(app.url['nv']);
+        hoi = {
+          csdl: idb.csdl,
+          idma: dk,
+        };
+        console.log("idb.nap.cpx gui=", JSON.stringify(hoi, null, 2));
+        w.postMessage(hoi);
+        w.onmessage = (e) => {
+          dap = e.data;
+          if (dap.cv === 100) {
+            web.tiendo(_prog, dap.cv);
+            d1r = 'idma' in dap ? dap.idma.data : {};
+            if (Object.keys(d1r).length > 0) {
+              d1s.chiphi = dap.idma.idma;
+              d1s.barcode = d1r.barcode || d1r.idma;
+              d1s.qrcode = d1s.qrcode || d1r.idma;
+              d1s.mota = d1r.mota.qtgt || d1r.mota.qtgt;
+              d1s.dvt = d1r.dvt;
+            } else {
+              d1s.chiphi = dk.idma;
+              d1s.barcode = '';
+              d1s.qrcode = '';
+              d1s.mota = 'Chưa cập nhật ...';
+              d1s.dvt = '';
+            }
+          } else if (dap.cv >= 0 && dap.cv < 100) {
+            web.tiendo(_prog, dap.cv);
+          } else if (dap.cv < 0 || dap.cv > 100) {
+            idb.xoaws(w);
+            console.log("nv fin=", JSON.stringify(dap, null, 2));
+          } else if ("err" in dap) {
+            console.log("nv err=", JSON.stringify(dap.err, null, 2));
+          } else if ("info" in dap) {
+            console.log("nv info=", JSON.stringify(dap.info, null, 2));
+          } else {
+            console.log("nv dap=", JSON.stringify(dap, null, 2));
           }
-          console.log("ct end d1s=", JSON.stringify(d1s, null, 2));
-        } else if (tin.cv >= 0 && tin.cv < 100) {
-          web.tiendo(_prog, tin.cv);
-        } else if (tin.cv < 0 || tin.cv > 100) {
-          if (w) { w.terminate(); }
-          w = null;
-          console.log("nv fin=", JSON.stringify(tin, null, 2));
-        } else if ("err" in tin) {
-          console.log("nv err=", JSON.stringify(tin.err, null, 2));
-        } else if ("info" in tin) {
-          console.log("nv info=", JSON.stringify(tin.info, null, 2));
-        } else {
-          console.log("nv tin=", JSON.stringify(tin, null, 2));
+          console.log("idb.nap.cpx app.cpx=", JSON.stringify(app.cpx, null, 2));
         }
-        console.log("idb.nap.cpx app.cpx=", JSON.stringify(app.cpx, null, 2));
+      } catch (err) {
+        cg3 += 1;
+        setTimeout(() => { idb.nap.cpx(cg3); }, idb.ztg);
       }
     },
-
+    baogia: (dk = { prog: 'bgvl', chiphi: null, baogia: null, plgia: 'dutoan' }, cg3 = 0) => {
+      let w, hoi, dap, d1r, d1s, _prog, chiphi, baogia, plgia, k, i, k2;
+      try {
+        cg3 = fn.a2i(cg3);
+        if (cg3 > 3) { return; };
+        if (Object.keys(dk).length < 1) { return; }
+        dk.prog = fn.a2sl(dk.prog);
+        dk.chiphi = fn.a2i(dk.chiphi);
+        dk.plgia = fn.a2sl(app.plgia);
+        dk.baogia = fn.a2i(app.baogia);
+        k2 = [dk.plgia, dk.baogia].join('.');
+        d1s = app.cpx.d8[dk.chiphi][k2];
+        if (!d1s) { return; }
+        _prog = [dk.prog, k2, dk.chiphi].join('_');
+        //main
+        w = new Worker(app.url['nv']);
+        hoi = {
+          csdl: idb.csdl,
+          baogia: dk,
+        };
+        console.log("idb.nap.baogia hoi=", JSON.stringify(hoi, null, 2));
+        w.postMessage(hoi);
+        w.onmessage = (e) => {
+          dap = e.data;
+          if (dap.cv === 100) {
+            web.tiendo(_prog, dap.cv);
+            d1r = 'baogia' in dap ? dap.baogia.data : {};
+            if (prog === 'bgnc') {
+              d1s.gianc = 'gianc' in d1r ? d1r.gianc : 0;
+            } else if (prog === 'bgmtc') {
+              d1s.giamtc = 'giamtc' in d1r ? d1r.giamtc : 0;
+            } else if (prog === 'bgtl') {
+              d1s.giatl = 'giatl' in d1r ? d1r.giatl : 0;
+            } else {
+              d1s.giavl = 'giavl' in d1r ? d1r.giavl : 0;
+            }
+          } else if (dap.cv >= 0 && dap.cv < 100) {
+            web.tiendo(_prog, dap.cv);
+          } else if (dap.cv < 0 || dap.cv > 100) {
+            idb.xoaws(w);
+            console.log("nv fin=", JSON.stringify(dap, null, 2));
+          } else if ("err" in dap) {
+            console.log("nv err=", JSON.stringify(dap.err, null, 2));
+          } else if ("info" in dap) {
+            console.log("nv info=", JSON.stringify(dap.info, null, 2));
+          } else {
+            console.log("nv dap=", JSON.stringify(dap, null, 2));
+          }
+          console.log("idb.nap.cpx app.cpx=", JSON.stringify(app.cpx, null, 2));
+        }
+      } catch (err) {
+        cg3 += 1;
+        setTimeout(() => { idb.nap.cpx(cg3); }, idb.ztg);
+      }
+    },
 
   },
   luu: {
@@ -1605,7 +1674,7 @@ const web = {
       .transition()
       .duration(777)
       .style("width", cv + "%");
-    if (cv === 100) { zone.transition().delay(777).remove(); }
+    if (cv === 100) { zone.transition().delay(77).remove(); }
   },
   hov_intag: (tagid = null) => {
     let tag, zone, row, col,

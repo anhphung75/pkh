@@ -8,14 +8,16 @@ function tao_uuid() {
 }
 
 function a2s(dl) {
-  if (dl === undefined || dl === null) {
-    return '';
-  } else if (dl.constructor === String) {
-    return dl.toString();
-  }
-  else {
-    return JSON.stringify(dl);
-  }
+  try {
+    if (dl === undefined || dl === null) {
+      return '';
+    } else if (dl.constructor === String) {
+      return dl.toString();
+    }
+    else {
+      return JSON.stringify(dl);
+    }
+  } catch (err) { return ''; }
 }
 function a2sl(dl) {
   return a2s(dl).toLowerCase();
