@@ -360,6 +360,10 @@ const app = {
       '100': {},
       '200': {},
       '300': {},
+      '400': {},
+      '500': {},
+      '1': {},
+      '4': {},
       '5': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
       '2': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp2', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
       '3': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
@@ -446,26 +450,28 @@ const app = {
       zdl = app.cpx;
       for (k in zdl.d8) {
         zcv++;
+        if (!(k2 in zdl.d8[k])) { zdl.d8[k][k2] = {}; }
       }
       zdl.zcv = zcv;
+      console.log("end ct app.cpx.sua=", JSON.stringify(app.cpx.d8, null, 2));
     },
     nap: (cg3 = 0) => {
       let cv, r, i, k, idma, maid, isok, z8, d8, plgia, baogia, k2;
-      try {
-        cg3 = fn.a2i(cg3);
-        if (cg3 > 3) { return; };
-        app.cpx.sua();
-        z8 = app.cpx;
-        d8 = app.cpx.d8;
-        plgia = fn.a2sl(app.plgia);
-        baogia = fn.a2i(app.baogia);
-        k2 = [plgia, baogia].join('.');
-        z8.cv = fn.a2i(z8.cv);
-      } catch (err) {
-        cg3 += 1;
-        setTimeout(() => { app.cpx.nap(cg3); }, 777);
-        return;
-      }
+      //try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      app.cpx.sua(0);
+      z8 = app.cpx;
+      d8 = app.cpx.d8;
+      plgia = fn.a2sl(app.plgia);
+      baogia = fn.a2i(app.baogia);
+      k2 = [plgia, baogia].join('.');
+      z8.cv = fn.a2i(z8.cv);
+      //} catch (err) {
+      //  cg3 += 1;
+      //  setTimeout(() => { app.cpx.nap(cg3); }, 777);
+      //  return;
+      //}
       console.log("start ct app.nap.cpx=", JSON.stringify(z8, null, 2));
       cv = 0;
       for (k in d8) {
@@ -475,22 +481,22 @@ const app = {
           idb.nap.cpx({ "chiphi": k });
           isok = false;
         }
-        i = `if (!("giavl" in r[k2])) {
-          idb.nap.baogia({ "plbg": "bgvl", "chiphi": k, "plgia": plgia, "baogia": baogia });
+        if (!("giavl" in r[k2])) {
+          idb.nap.baogia({ "prog": "bgvl", "chiphi": k, "plgia": plgia, "baogia": baogia });
           isok = false;
         }
         if (!("gianc" in r[k2])) {
-          idb.nap.baogia({ "plbg": "bgnc", "chiphi": k, "plgia": plgia, "baogia": baogia });
+          idb.nap.baogia({ "prog": "bgnc", "chiphi": k, "plgia": plgia, "baogia": baogia });
           isok = false;
         }
         if (!("giamtc" in r[k2])) {
-          idb.nap.baogia({ "plbg": "bgmtc", "chiphi": k, "plgia": plgia, "baogia": baogia });
+          idb.nap.baogia({ "prog": "bgmtc", "chiphi": k, "plgia": plgia, "baogia": baogia });
           isok = false;
         }
         if (!("giatl" in r[k2])) {
-          idb.nap.baogia({ "plbg": "bgtl", "chiphi": k, "plgia": plgia, "baogia": baogia });
+          idb.nap.baogia({ "prog": "bgtl", "chiphi": k, "plgia": plgia, "baogia": baogia });
           isok = false;
-        }`
+        }
         if (isok) { cv++; }
         if (cv > z8.cv) {
           z8.cv = cv;
@@ -498,7 +504,7 @@ const app = {
           web.tiendo("cpx", k);
         }
       }
-      //if (z8.cv !== z8.zcv) { setTimeout(() => { app.cpx.nap(); }, app.ztg); }
+      if (z8.cv !== z8.zcv) { setTimeout(() => { app.cpx.nap(); }, app.ztg); }
       console.log("end ct app.nap.cpx=", JSON.stringify(z8, null, 2));
     },
   },
@@ -689,13 +695,14 @@ const idb = {
         setTimeout(() => { idb.nap.cpx(cg3); }, idb.ztg);
       }
     },
-    baogia: (dk = { prog: 'bgvl', chiphi: null, baogia: null, plgia: 'dutoan' }, cg3 = 0) => {
+    baogia: (dk = { prog: 'bgvl', chiphi: null, baogia: null, plgia: 'dutoan', plbg: 'bgvl' }, cg3 = 0) => {
       let w, hoi, dap, d1r, d1s, _prog, chiphi, baogia, plgia, k, i, k2;
       try {
         cg3 = fn.a2i(cg3);
         if (cg3 > 3) { return; };
         if (Object.keys(dk).length < 1) { return; }
-        dk.prog = fn.a2sl(dk.prog);
+        dk.plbg = fn.a2sl(dk.plbg);
+        dk.prog = fn.a2sl(dk.prog || dk.plbg);
         dk.chiphi = fn.a2i(dk.chiphi);
         dk.plgia = fn.a2sl(app.plgia);
         dk.baogia = fn.a2i(app.baogia);
@@ -715,15 +722,15 @@ const idb = {
           dap = e.data;
           if (dap.cv === 100) {
             web.tiendo(_prog, dap.cv);
-            d1r = 'baogia' in dap ? dap.baogia.data : {};
-            if (prog === 'bgnc') {
-              d1s.gianc = 'gianc' in d1r ? d1r.gianc : 0;
-            } else if (prog === 'bgmtc') {
-              d1s.giamtc = 'giamtc' in d1r ? d1r.giamtc : 0;
-            } else if (prog === 'bgtl') {
-              d1s.giatl = 'giatl' in d1r ? d1r.giatl : 0;
+            d1r = dap || { giavl: 0, gianc: 0, giamtc: 0, giatl: 0 };
+            if (dk.prog.includes('nc')) {
+              d1s.gianc = d1r.gianc;
+            } else if (dk.prog.includes('mtc')) {
+              d1s.giamtc = d1r.giamtc;
+            } else if (dk.prog.includes('tl')) {
+              d1s.giatl = d1r.giatl;
             } else {
-              d1s.giavl = 'giavl' in d1r ? d1r.giavl : 0;
+              d1s.giavl = d1r.giavl;
             }
           } else if (dap.cv >= 0 && dap.cv < 100) {
             web.tiendo(_prog, dap.cv);
@@ -1647,9 +1654,10 @@ const web = {
   },
   tiendo: (sv = '', cv = 0) => {
     sv = fn.a2s(sv);
-    let zone, cv0, el = ['tiendo', ...sv.split(' ')].join('_'),
-      elid = ['#', el].join(''),
+    let zone, cv0, elid, el = ['tiendo', ...sv.split(' ')].join('_'),
       rong = "18rem";
+    el = el.split('.').join('_');
+    elid = ['#', el].join('');
     cv = cv < 0 ? 0 : fn.a2i(cv % 101);
     zone = d3.select("#tiendo").select(elid);
     if (!zone.node()) {
@@ -1964,3 +1972,6 @@ idb.taodb();
 web.tao();
 app.cpx.nap(0);
 //idb.nap.cpx({ "chiphi": "100" });
+//idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgnc', plgia: 'dutoan' }, 0)
+//idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgmtc', plgia: 'dutoan' }, 0)
+//idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgtl', plgia: 'dutoan' }, 0)
