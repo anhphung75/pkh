@@ -8,14 +8,30 @@ d3.formatDefaultLocale({
 });
 
 const fn = {
-  a2s: (dulieu) => {
-    return a2s(dulieu);
+  a2s: (dl) => {
+    try {
+      if (dl === undefined || dl === null) {
+        return '';
+      } else if (dl.constructor === String) {
+        return dl.toString();
+      }
+      else {
+        return JSON.stringify(dl);
+      }
+    } catch (err) { return ''; }
   },
-  a2sl: (dulieu) => {
-    return a2sl(dulieu);
+  a2sl: (dl) => {
+    return fn.a2s(dl).toLowerCase();
   },
-  a2i: (dulieu) => {
-    return a2i(dulieu);
+  a2su: (dl) => {
+    return fn.a2s(dl).toUpperCase();
+  },
+  a2i: (dl) => {
+    let kq;
+    try {
+      kq = parseInt(dl);
+    } catch (err) { kq = -1; }
+    return kq
   },
   sregexp: (stim) => {
     stim = fn.a2s(stim);
