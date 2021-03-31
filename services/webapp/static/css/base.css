@@ -395,7 +395,7 @@ textarea {
   overflow: auto;
 }
 
-#tiendo {
+#tiendo, ol[class~=bang], ol[class~=tbl] {
   padding: 0;
   margin: 0;
   list-style: none;

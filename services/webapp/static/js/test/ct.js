@@ -87,7 +87,7 @@ const hoso = {
   },
   status: 'ok',
   lastupdate: Date.now()
-}
+};
 
 const qtgt = {
   cv: 0, zcv: 0,
@@ -116,9 +116,23 @@ const qtgt = {
   },
   status: 'ok',
   lastupdate: Date.now()
-}
+};
 
 const oc_cpxd = {
+  cv: 0, zcv: 0,
+  idma: 123, idmau: 12345,
+  tttt: {
+    maid: '2020.GMMP001.HC01.001',
+  },
+  ttdl: [
+    { chiphi: 100, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { chiphi: 200, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { chiphi: 300, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
+  //status: 'ok',
+  //lastupdate: Date.now()
+};
+const oc_cpvt = {
   cv: 0, zcv: 0,
   idma: 123, idmau: 12345,
   tttt: {
@@ -129,9 +143,232 @@ const oc_cpxd = {
     { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
     { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
   ],
-  status: 'ok',
-  lastupdate: Date.now()
+};
+const oc_cpvl = {
+  cv: 0, zcv: 0,
+  idma: 123, idmau: 12345,
+  tttt: {
+    maid: '2020.GMMP001.HC01.001',
+  },
+  ttdl: [
+    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
+};
+const oc_cptl = {
+  cv: 0, zcv: 0,
+  idma: 123, idmau: 12345,
+  tttt: {
+    maid: '2020.GMMP001.HC01.001',
+  },
+  ttdl: [
+    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
+};
+const on_cpxd = {
+  cv: 0, zcv: 0,
+  idma: 123, idmau: 12345,
+  tttt: {
+    maid: '2020.GMMP001.HC01.001',
+  },
+  ttdl: [
+    { chiphi: 100, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { chiphi: 200, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { chiphi: 300, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
+};
+const on_cpvt = {
+  cv: 0, zcv: 0,
+  idma: 123, idmau: 12345,
+  tttt: {
+    maid: '2020.GMMP001.HC01.001',
+  },
+  ttdl: [
+    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
+};
+const on_cpvl = {
+  cv: 0, zcv: 0,
+  idma: 123, idmau: 12345,
+  tttt: {
+    maid: '2020.GMMP001.HC01.001',
+  },
+  ttdl: [
+    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
+};
+const on_cptl = {
+  cv: 0, zcv: 0,
+  idma: 123, idmau: 12345,
+  tttt: {
+    maid: '2020.GMMP001.HC01.001',
+  },
+  ttdl: [
+    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
+};
+
+const cptl = {
+  cv: 0, zcv: 0,
+  idma: 123, idmau: 12345,
+  tttt: {
+    maid: '2020.GMMP001.HC01.001',
+  },
+  ttdl: [
+    { chiphi: 1, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { chiphi: 2, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { chiphi: 3, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
 }
+//tam for app
+const _cpx = {
+  ztg: 222,
+  cv: 0, zcv: 1,
+  d8: {
+    '100': {},
+    '200': {},
+    '300': {},
+    '400': {},
+    '500': {},
+    '1': {},
+    '4': {},
+    '5': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '2': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp2', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '3': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+  },
+  gom: (cg3 = 0) => {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) { return; };
+    let r, i, k, zdl, idma, l8,
+      zcv = 0,
+      d8 = _cpx.d8,
+      plgia = fn.a2sl(qtgt.ttdl.plgia || qtgt.tttt.plgia),
+      baogia = fn.a2sl(qtgt.ttdl.baogia || qtgt.tttt.baogia),
+      k2 = [plgia, baogia].join('.');
+    //ong cai
+    l8 = oc_cpxd.ttdl || oc_cpxd.l8 || [];
+    zdl = [...l8];
+    l8 = oc_cpvt.ttdl || oc_cpvt.l8 || [];
+    zdl = [...zdl, ...l8];
+    l8 = oc_cpvl.ttdl || oc_cpvl.l8 || [];
+    zdl = [...zdl, ...l8];
+    l8 = oc_cptl.ttdl || oc_cptl.l8 || [];
+    zdl = [...zdl, ...l8];
+    //ong nganh
+    l8 = on_cpxd.ttdl || on_cpxd.l8 || [];
+    zdl = [...l8];
+    l8 = on_cpvt.ttdl || on_cpvt.l8 || [];
+    zdl = [...zdl, ...l8];
+    l8 = on_cpvl.ttdl || on_cpvl.l8 || [];
+    zdl = [...zdl, ...l8];
+    l8 = on_cptl.ttdl || on_cptl.l8 || [];
+    zdl = [...zdl, ...l8];
+
+    if (zdl.length > 0) {
+      for (i in zdl) {
+        r = zdl[i];
+        idma = r.chiphi;
+        if (!(idma in d8)) {
+          d8[idma] = {};
+          d8[idma][k2] = {};
+        }
+        if (!(k2 in d8[idma])) { d8[idma][k2] = {}; }
+      }
+    }
+    zdl = _cpx;
+    for (k in zdl.d8) {
+      zcv++;
+      if (!(k2 in zdl.d8[k])) { zdl.d8[k][k2] = {}; }
+    }
+    zdl.zcv = zcv;
+    console.log("end ct _cpx.gom=", JSON.stringify(_cpx, null, 2));
+  },
+  nap: (cg3 = 0) => {
+    let cv, r, i, k, isok, z8, d8, plgia, baogia, k2;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      _cpx.gom(0);
+      if (!_cpx.zcv) { return; }
+      z8 = _cpx;
+      d8 = _cpx.d8;
+      plgia = fn.a2sl(qtgt.ttdl.plgia || qtgt.tttt.plgia);
+      baogia = fn.a2sl(qtgt.ttdl.baogia || qtgt.tttt.baogia);
+      k2 = [plgia, baogia].join('.');
+      z8.cv = fn.a2i(z8.cv);
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { app.cpx.nap(cg3); }, 777);
+      return;
+    }
+    cv = 0;
+    for (k in d8) {
+      r = d8[k];
+      isok = true;
+      if (!('mota' in r) || !('dvt' in r)) {
+        idb.nap.cpx({ "chiphi": k });
+        isok = false;
+      }
+      if (!("giavl" in r[k2])) {
+        idb.nap.baogia({ "prog": "bgvl", "chiphi": k, "plgia": plgia, "baogia": baogia });
+        isok = false;
+      }
+      if (!("gianc" in r[k2])) {
+        idb.nap.baogia({ "prog": "bgnc", "chiphi": k, "plgia": plgia, "baogia": baogia });
+        isok = false;
+      }
+      if (!("giamtc" in r[k2])) {
+        idb.nap.baogia({ "prog": "bgmtc", "chiphi": k, "plgia": plgia, "baogia": baogia });
+        isok = false;
+      }
+      if (!("giatl" in r[k2])) {
+        idb.nap.baogia({ "prog": "bgtl", "chiphi": k, "plgia": plgia, "baogia": baogia });
+        isok = false;
+      }
+      if (isok) { cv++; }
+      if (cv > z8.cv) {
+        z8.cv = cv;
+        k = fn.a2i(100 * (cv / z8.zcv));
+        web.tiendo("cpx", k);
+      }
+    }
+    if (z8.cv !== z8.zcv) { setTimeout(() => { _cpx.nap(); }, _cpx.ztg); }
+    console.log("end ct _cpx.nap=", JSON.stringify(z8, null, 2));
+  },
+  moi: (cg3 = 0) => {
+    let cv, r, i, k, isok, z8, d8, plgia, baogia, k2;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      _cpx.gom(0);
+      if (!_cpx.zcv) { return; }
+      z8 = _cpx;
+      d8 = _cpx.d8;
+      plgia = fn.a2sl(qtgt.ttdl.plgia || qtgt.tttt.plgia);
+      baogia = fn.a2sl(qtgt.ttdl.baogia || qtgt.tttt.baogia);
+      k2 = [plgia, baogia].join('.');
+      z8.cv = fn.a2i(z8.cv);
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { app.cpx.nap(cg3); }, 777);
+      return;
+    }
+    for (k in d8) {
+      r = d8[k];
+      r[k2] = {};
+    }
+    _cpx.nap(0);
+  },
+};
 
 const app = {
   url: null,
@@ -601,6 +838,22 @@ const app = {
   },
 };
 
+const sw = {
+  nv: null,
+  moi: () => {
+    let w = null;
+    if (window.Worker) {
+      if (!sw.nv) { sw.nv = d3.select("#qtgt").attr("data-nv"); }
+      w = new Worker(sw.nv);
+    }
+    return w;
+  },
+  xoa: (w) => {
+    if (w) { w.terminate(); }
+    w = null;
+  },
+};
+
 const idb = {
   csdl: { ten: 'CnTĐ', cap: 1 },
   ztg: 333,
@@ -739,10 +992,10 @@ const idb = {
         dk.prog = "chiphi";
         _prog = [dk.prog, dk.idma].join('_');
         dk.idma = fn.a2i(dk.chiphi);
-        d1s = app.cpx.d8[dk.idma];
+        d1s = _cpx.d8[dk.idma];
         if (!d1s) { return; }
         //main
-        w = new Worker(app.url['nv']);
+        w = sw.moi();
         hoi = {
           csdl: idb.csdl,
           idma: dk,
@@ -770,7 +1023,7 @@ const idb = {
           } else if (dap.cv >= 0 && dap.cv < 100) {
             web.tiendo(_prog, dap.cv);
           } else if (dap.cv < 0 || dap.cv > 100) {
-            idb.xoaws(w);
+            sw.xoa(w);
             console.log("nv fin=", JSON.stringify(dap, null, 2));
           } else if ("err" in dap) {
             console.log("nv err=", JSON.stringify(dap.err, null, 2));
@@ -779,7 +1032,7 @@ const idb = {
           } else {
             console.log("nv dap=", JSON.stringify(dap, null, 2));
           }
-          console.log("idb.nap.cpx app.cpx=", JSON.stringify(app.cpx, null, 2));
+          console.log("idb.nap.cpx _cpx=", JSON.stringify(_cpx, null, 2));
         }
       } catch (err) {
         cg3 += 1;
@@ -795,14 +1048,14 @@ const idb = {
         dk.plbg = fn.a2sl(dk.plbg);
         dk.prog = fn.a2sl(dk.prog || dk.plbg);
         dk.chiphi = fn.a2i(dk.chiphi);
-        dk.plgia = fn.a2sl(app.plgia);
-        dk.baogia = fn.a2i(app.baogia);
+        dk.plgia = fn.a2sl(qtgt.ttdl.plgia);
+        dk.baogia = fn.a2i(qtgt.ttdl.baogia);
         k2 = [dk.plgia, dk.baogia].join('.');
-        d1s = app.cpx.d8[dk.chiphi][k2];
+        d1s = _cpx.d8[dk.chiphi][k2];
         if (!d1s) { return; }
         _prog = [dk.prog, k2, dk.chiphi].join('_');
         //main
-        w = new Worker(app.url['nv']);
+        w = sw.moi();
         hoi = {
           csdl: idb.csdl,
           baogia: dk,
@@ -826,7 +1079,7 @@ const idb = {
           } else if (dap.cv >= 0 && dap.cv < 100) {
             web.tiendo(_prog, dap.cv);
           } else if (dap.cv < 0 || dap.cv > 100) {
-            idb.xoaws(w);
+            sw.xoa(w);
             console.log("nv fin=", JSON.stringify(dap, null, 2));
           } else if ("err" in dap) {
             console.log("nv err=", JSON.stringify(dap.err, null, 2));
@@ -835,7 +1088,7 @@ const idb = {
           } else {
             console.log("nv dap=", JSON.stringify(dap, null, 2));
           }
-          console.log("idb.nap.cpx app.cpx=", JSON.stringify(app.cpx, null, 2));
+          console.log("idb.nap.cpx _cpx=", JSON.stringify(_cpx, null, 2));
         }
       } catch (err) {
         cg3 += 1;
@@ -870,7 +1123,7 @@ const idb = {
         l8s = app[phui][plcp].l8;
         //if (!d1s) { return; }
         //main
-        w = new Worker(app.url['nv']);
+        w = sw.moi();
         hoi = {
           csdl: idb.csdl,
           idma: dk,
@@ -899,7 +1152,7 @@ const idb = {
           } else if (dap.cv >= 0 && dap.cv < 100) {
             web.tiendo(_prog, dap.cv);
           } else if (dap.cv < 0 || dap.cv > 100) {
-            idb.xoaws(w);
+            sw.xoa(w);
             console.log("nv fin=", JSON.stringify(dap, null, 2));
           } else if ("err" in dap) {
             console.log("nv err=", JSON.stringify(dap.err, null, 2));
@@ -944,14 +1197,15 @@ const web = {
     //web.tlmd.bth();
   },
   sw_url: () => {
-    if (!app.url) { app.url = {}; }
-    app.url["api"] = [
+    if (!sw.url) { sw.url = {}; }
+    sw.url["api"] = [
       ["https://", window.location.host, "/", idb.csdl.ten, "/api/hoso/", ga.namlamviec].join(''),
       ["https://", window.location.host, "/", idb.csdl.ten, "/api/dshc/", ga.namlamviec].join(''),
     ];
-    app.url["wss"] = ["wss://", window.location.host, "/", idb.csdl.ten, "/wss/hoso"].join('');
-    app.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
-    app.url["nv"] = d3.select("#qtgt").attr("data-nv");
+    sw.url["wss"] = ["wss://", window.location.host, "/", idb.csdl.ten, "/wss/hoso"].join('');
+    sw.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
+    sw.url["nv"] = d3.select("#qtgt").attr("data-nv");
+    if (!sw.nv) { sw.nv = d3.select("#qtgt").attr("data-nv"); }
   },
 
   otim: {
@@ -2133,8 +2387,9 @@ const web = {
 
 
 idb.taodb();
-web.tao();
-app.cpx.nap(0);
+//web.tao();
+//_cpx.gom(0);
+_cpx.moi(0);
 //idb.nap.cpx({ "chiphi": "100" });
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgnc', plgia: 'dutoan' }, 0)
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgmtc', plgia: 'dutoan' }, 0)
