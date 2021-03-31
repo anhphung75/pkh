@@ -89,9 +89,11 @@ const hoso = {
   lastupdate: Date.now()
 };
 
-const qtgt = {
-  cv: 0, zcv: 0,
-  idma: 123, idmau: 12345,
+var qtgt = {
+  cv: 0, zcv: 1,
+  ztg: 777,
+  idma: 123,
+  mau: { idma: 12345, maid: 12345, gxd: 0 },
   tttt: {
     maid: '2020.GMMP001.HC01.001',
     oc_cpxd: { idma: 123, maid: 'kh001' },
@@ -103,10 +105,10 @@ const qtgt = {
     on_cpvl: { idma: 123, maid: 'kh001' },
     on_cptl: { idma: 123, maid: 'kh001' },
     cpql: { idma: 123, maid: 'kh001' },
-  },
-  ttdl: {
     baogia: 20200827,
     plgia: 'dutoan',
+  },
+  ttdl: {
     sodhn: 1,
     gxd: 0,
     tienkhach: 0,
@@ -114,13 +116,42 @@ const qtgt = {
     ngaylap: 20210101,
     nguoilap: '',
   },
-  status: 'ok',
-  lastupdate: Date.now()
+  //status: 'ok',
+  //lastupdate: Date.now()
+  nap: (cg3 = 0) => {
+    let cv, r, i, k, isok, z8, r8, d8, plgia, baogia, cpql;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      z8 = qtgt;
+      r8 = z8.tttt;
+      d8 = z8.ttdl;
+      z8.idma = fn.a2i(z8.idma);
+      if (qtgt.idma < 1) { return; }
+      z8.cv = 0;
+      z8.zcv = 1;
+      plgia = r8.plgia || d8.plgia || 'dutoan';
+      baogia = r8.baogia || d8.baogia;
+      cpql = r8.cpql || d8.cpql;
+      r8 = {};
+      d8 = {};
+      r8.baogia = baogia;
+      r8.plgia = plgia;
+      r8.cpql = cpql;
+      idb.nap.qtgt({ prog: 'qtgt', idma: z8.idma });
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { qtgt.nap(cg3); }, qtgt.ztg);
+      return;
+    }
+    console.log("end ct qtgt.nap=", JSON.stringify(qtgt, null, 2));
+  },
 };
 
 const oc_cpxd = {
   cv: 0, zcv: 0,
-  idma: 123, idmau: 12345,
+  idma: 123,
+  mau: { idma: 12345, maid: 12345 },
   tttt: {
     maid: '2020.GMMP001.HC01.001',
   },
@@ -241,9 +272,9 @@ const _cpx = {
     '500': {},
     '1': {},
     '4': {},
-    '5': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
-    '2': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp2', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
-    '3': { cv: 0, plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { cv: 0, giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '5': { plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '2': { plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp2', dvt: 'cai', "dutoan.20190726": { giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '3': { plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
   },
   gom: (cg3 = 0) => {
     cg3 = fn.a2i(cg3);
@@ -359,7 +390,7 @@ const _cpx = {
       z8.cv = fn.a2i(z8.cv);
     } catch (err) {
       cg3 += 1;
-      setTimeout(() => { app.cpx.nap(cg3); }, 777);
+      setTimeout(() => { _cpx.moi(cg3); }, _cpx.ztg);
       return;
     }
     for (k in d8) {
@@ -904,10 +935,6 @@ const idb = {
       };
     } catch (err) { };
   },
-  xoaws: (w) => {
-    if (w) { w.terminate(); }
-    w = null;
-  },
   gom: {
     cpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.cpx, cg3 = 0) => {
       try {
@@ -983,6 +1010,60 @@ const idb = {
     },
   },
   nap: {
+    qtgt: (dk = { prog: 'qtgt', idma: null }, cg3 = 0) => {
+      let w, hoi, dap, r8r, r8s, d8r, d8s, _prog, idma;
+      try {
+        cg3 = fn.a2i(cg3);
+        if (cg3 > 3) { return; };
+        if (Object.keys(dk).length < 1) { return; }
+        dk.prog = 'qtgt';
+        dk.idma = fn.a2i(dk.idma);
+        r8s = qtgt.tttt;
+        d8s = qtgt.ttdl;
+        _prog = [dk.prog, dk.idma].join('_');
+        //main
+        w = sw.moi();
+        hoi = {
+          csdl: idb.csdl,
+          idma: dk,
+        };
+        console.log("idb.nap.qtgt hoi=", JSON.stringify(hoi, null, 2));
+        w.postMessage(hoi);
+        w.onmessage = (e) => {
+          dap = e.data;
+          if (dap.cv === 100) {
+            web.tiendo(_prog, dap.cv);
+            d8r = 'idma' in dap ? dap.idma.data || dap.idma.ttdl : {};
+            r8r = 'idma' in dap ? dap.idma.refs || dap.idma.tttt : {};
+            qtgt.cv = 1;
+            r8s.oc_cpxd = fn.a2i(r8r.oc_cpxd);
+            r8s.oc_cpvt = fn.a2i(r8r.oc_cpvt);
+            r8s.oc_cpvl = fn.a2i(r8r.oc_cpvl);
+            r8s.oc_cptl = fn.a2i(r8r.oc_cptl);
+            r8s.on_cpxd = fn.a2i(r8r.on_cpxd);
+            r8s.on_cpvt = fn.a2i(r8r.on_cpvt);
+            r8s.on_cpvl = fn.a2i(r8r.on_cpvl);
+            r8s.on_cptl = fn.a2i(r8r.on_cptl);
+
+          } else if (dap.cv >= 0 && dap.cv < 100) {
+            web.tiendo(_prog, dap.cv);
+          } else if (dap.cv < 0 || dap.cv > 100) {
+            sw.xoa(w);
+            console.log("nv fin=", JSON.stringify(dap, null, 2));
+          } else if ("err" in dap) {
+            console.log("nv err=", JSON.stringify(dap.err, null, 2));
+          } else if ("info" in dap) {
+            console.log("nv info=", JSON.stringify(dap.info, null, 2));
+          } else {
+            console.log("nv dap=", JSON.stringify(dap, null, 2));
+          }
+          console.log("idb.nap.qtgt=", JSON.stringify(qtgt, null, 2));
+        }
+      } catch (err) {
+        cg3 += 1;
+        setTimeout(() => { idb.nap.qtgt(cg3); }, idb.ztg);
+      }
+    },
     cpx: (dk = { prog: 'chiphi', idma: null }, cg3 = 0) => {
       let w, hoi, dap, d1r, d1s, k, i, _prog;
       try {
@@ -1048,7 +1129,7 @@ const idb = {
         dk.plbg = fn.a2sl(dk.plbg);
         dk.prog = fn.a2sl(dk.prog || dk.plbg);
         dk.chiphi = fn.a2i(dk.chiphi);
-        dk.plgia = fn.a2sl(qtgt.ttdl.plgia);
+        dk.plgia = fn.a2sl(qtgt.ttdl.plgia || qtgt.tttt.plgia);
         dk.baogia = fn.a2i(qtgt.ttdl.baogia);
         k2 = [dk.plgia, dk.baogia].join('.');
         d1s = _cpx.d8[dk.chiphi][k2];
@@ -1095,60 +1176,37 @@ const idb = {
         setTimeout(() => { idb.nap.cpx(cg3); }, idb.ztg);
       }
     },
-    cpxd_vt_vl: (dk = { prog: 'oc_cpxd', idma: null }, cg3 = 0) => {
-      let w, hoi, dap, l8r, l8s, phui, plcp, k, i, _prog;
+    idma: (dk = { prog: 'qtgt', idma: null }, cg3 = 0) => {
+      let w, hoi, dap, d1r, d1s, _prog;
       try {
         cg3 = fn.a2i(cg3);
         if (cg3 > 3) { return; };
         if (Object.keys(dk).length < 1) { return; }
         dk.prog = fn.a2sl(dk.prog);
-        if (dk.prog.includes('xd')) {
-          dk.prog = 'cpxd';
-          plcp = 'cpxd';
-        }
-        if (dk.prog.includes('vt')) {
-          dk.prog = 'cpvt';
-          plcp = 'cpvt';
-        }
-        if (dk.prog.includes('vl')) {
-          dk.prog = 'cpvl';
-          plcp = 'cpvl';
-        }
-        phui = dk.prog.includes('c_') ? 'oc' : 'on';
-        _prog = [phui, dk.prog, dk.idma].join('_');
         dk.idma = fn.a2i(dk.idma);
-        if (!(phui in app)) { app[phui] = {}; }
-        if (!(plcp in app[phui])) { app[phui][plcp] = {}; }
-        if (!(l8 in app[phui][plcp])) { app[phui][plcp].l8 = []; }
-        l8s = app[phui][plcp].l8;
-        //if (!d1s) { return; }
+        d1s = window[dk.prog];
+        _prog = [dk.prog, dk.idma].join('_');
         //main
         w = sw.moi();
         hoi = {
           csdl: idb.csdl,
           idma: dk,
         };
-        console.log("idb.nap.cpxd_vt_vl gui=", JSON.stringify(hoi, null, 2));
+        console.log("idb.nap.idma hoi=", JSON.stringify(hoi, null, 2));
         w.postMessage(hoi);
         w.onmessage = (e) => {
           dap = e.data;
           if (dap.cv === 100) {
             web.tiendo(_prog, dap.cv);
-            l8r = 'idma' in dap ? dap.idma.data : [];
-            if (l8r.length > 0) {
-              l8s = l8r;
-            } else {
-              if (l8r.length > 0) {
-                for (i in l8s) {
-                  r = l8s[i];
-                  r.soluong = 0;
-                  delete r.giavl;
-                  delete r.gianc;
-                  delete r.giamtc;
-                }
-              }
-            }
-            app[phui][plcp].tinh();
+            d1r = 'idma' in dap ? dap.idma : {};
+            if ('ttdl' in d1r || 'data' in d1r) {
+              d1s.ttdl = d1r.ttdl || d1r.data;
+              d1s.cv = 1;
+            };
+            if ('tttt' in d1r || 'refs' in d1r) {
+              d1s.tttt = d1r.tttt || d1r.refs;
+              d1s.cv = 1;
+            };
           } else if (dap.cv >= 0 && dap.cv < 100) {
             web.tiendo(_prog, dap.cv);
           } else if (dap.cv < 0 || dap.cv > 100) {
@@ -1161,11 +1219,11 @@ const idb = {
           } else {
             console.log("nv dap=", JSON.stringify(dap, null, 2));
           }
-          console.log("idb.nap.cpx app.cpx=", JSON.stringify(app.cpx, null, 2));
+          console.log("idb.nap.idma ", dk.prog, "=", JSON.stringify(d1s, null, 2));
         }
       } catch (err) {
         cg3 += 1;
-        setTimeout(() => { idb.nap.cpx(cg3); }, idb.ztg);
+        setTimeout(() => { idb.nap.idma(cg3); }, idb.ztg);
       }
     },
 
