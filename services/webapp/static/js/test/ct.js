@@ -105,10 +105,10 @@ var qtgt = {
     on_cpvl: { idma: 123, maid: 'kh001' },
     on_cptl: { idma: 123, maid: 'kh001' },
     cpql: { idma: 123, maid: 'kh001' },
-    baogia: 20200827,
-    plgia: 'dutoan',
   },
   ttdl: {
+    baogia: 20200827,
+    plgia: 'dutoan',
     sodhn: 1,
     gxd: 0,
     tienkhach: 0,
@@ -150,8 +150,8 @@ var qtgt = {
 
 const oc_cpxd = {
   cv: 0, zcv: 0,
+  lastupdate: Date.now(),
   idma: 123,
-  mau: { idma: 12345, maid: 12345 },
   tttt: {
     maid: '2020.GMMP001.HC01.001',
   },
@@ -160,8 +160,85 @@ const oc_cpxd = {
     { chiphi: 200, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
     { chiphi: 300, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
   ],
-  //status: 'ok',
-  //lastupdate: Date.now()
+  nap: (cg3 = 0) => {
+    let z8, r8, l8;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      z8 = oc_cpxd;
+      r8 = z8.tttt || {};
+      l8 = z8.ttdl || [];
+      z8.idma = fn.a2i(z8.idma);
+      if (z8.idma < 0) { return; }
+      z8.cv = 0;
+      z8.zcv = 1;
+      //load defa
+      r8 = {};
+      for (i in l8) {
+        r = l8[i];
+        r.soluong = 0;
+        r.tienvl = 0;
+        r.tiennc = 0;
+        r.tienmtc = 0;
+      }
+      idb.nap.idma({ prog: 'oc_cpxd', idma: z8.idma });
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { oc_cpxd.nap(cg3); }, oc_cpxd.ztg);
+      return;
+    }
+    console.log("end ct oc_cpxd.nap=", JSON.stringify(oc_cpxd, null, 2));
+  },
+  tinh: (cg3 = 0) => {
+    let z8, l8, r, k, cp,
+      cv = 0;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      z8 = oc_cpxd;
+      l8 = z8.ttdl || [];
+      z8.zcv = l8.length;
+      z8.cv = cg3 === 0 ? 0 : fn.a2i(z8.cv);
+      for (i in l8) {
+        r = l8[i];
+        cp = _cpx.d8[r.chiphi];
+        if (!('mota' in r) || !('dvt' in r)) {
+          r.barcode = cp.barcode;
+          r.qrcode = cp.qrcode;
+          r.mota = cp.mota;
+          r.dvt = cp.dvt;
+        }
+        r.soluong = lamtronso(Math.abs(r.soluong), 3);
+        k = 'giavl';
+        if (!(k in r) && k in cp) {
+          r[k] = cp[k];
+          r.tienvl = lamtronso(r.soluong * r[k], 0);
+        }
+        k = 'gianc';
+        if (!(k in r) && k in cp) {
+          r[k] = cp[k];
+          r.tiennc = lamtronso(r.soluong * r[k], 0);
+        }
+        k = 'giamtc';
+        if (!(k in r) && k in cp) {
+          r[k] = cpx[k];
+          r.tienmtc = lamtronso(r.soluong * r[k], 0);
+        }
+        if ('mota' in r && 'giavl' in r && 'gianc' in r && 'giamtc' in r) { cv++; }
+        if (cv > z8.cv) {
+          z8.cv = cv;
+          k = fn.a2i(100 * (cv / z8.zcv));
+          web.tiendo("oc_cpxd", k);
+        }
+      }
+      if (z8.cv !== z8.zcv) { setTimeout(() => { oc_cpxd.tinh(); }, oc_cpxd.ztg); }
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { oc_cpxd.tinh(cg3); }, oc_cpxd.ztg);
+      return;
+    }
+    console.log("end ct oc_cpxd.tinh=", JSON.stringify(oc_cpxd, null, 2));
+  },
 };
 const oc_cpvt = {
   cv: 0, zcv: 0,
@@ -338,7 +415,7 @@ const _cpx = {
       z8.cv = fn.a2i(z8.cv);
     } catch (err) {
       cg3 += 1;
-      setTimeout(() => { app.cpx.nap(cg3); }, 777);
+      setTimeout(() => { _cpx.nap(cg3); }, _cpx.ztg);
       return;
     }
     cv = 0;
