@@ -1314,13 +1314,12 @@ const web = {
   tagid: '',
   hov: { mau1: "yellow", mau2: "#9999ff" },
   tao: () => {
-    web.sw_url();
     //web.otim.nam();
     //web.otim.plqt();
     //web.otim.dvtc();
     //web.otim.dot();
     //web.otim.hoso();
-    web.oc.tieude();
+    web.oc.cpxd();
     //web.oc.cpvt();
     //web.oc.cpvl();
     //web.oc.bth();
@@ -1330,17 +1329,6 @@ const web = {
     //web.ongnganh();
     //web.tlmd.cptl();
     //web.tlmd.bth();
-  },
-  sw_url: () => {
-    if (!sw.url) { sw.url = {}; }
-    sw.url["api"] = [
-      ["https://", window.location.host, "/", idb.csdl.ten, "/api/hoso/", ga.namlamviec].join(''),
-      ["https://", window.location.host, "/", idb.csdl.ten, "/api/dshc/", ga.namlamviec].join(''),
-    ];
-    sw.url["wss"] = ["wss://", window.location.host, "/", idb.csdl.ten, "/wss/hoso"].join('');
-    sw.url["swidb"] = d3.select("#qtgt").attr("data-swidb");
-    sw.url["nv"] = d3.select("#qtgt").attr("data-nv");
-    if (!sw.nv) { sw.nv = d3.select("#qtgt").attr("data-nv"); }
   },
 
   otim: {
@@ -1864,45 +1852,17 @@ const web = {
         .style("display", "grid")
         .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
     },
-    cpxd: (zdl = [
-      { chiphi: 100, soluong: 0, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
-      { chiphi: 200, soluong: 0, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-      { chiphi: 300, soluong: 0, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
-    ]) => {
+    cpxd: (l8 = oc_cpxd.ttdl) => {
       let zone, i, r, row, o, dl,
         dulieu = [];
-      if (zdl === undefined || zdl === null || zdl.constructor !== Array) {
-        zdl = app.oc.cpxd.dscp;
-        if (zdl === undefined || zdl === null || zdl.constructor !== Array) {
-          return;
-        }
+      if (l8 === undefined || l8 === null || l8.constructor !== Array) {
+        return;
       }
-      console.log("web.oc.cpxd app.oc.cpxd=", JSON.stringify(app.oc));
-      for (i in zdl) {
-        r = zdl[i];
-        //tra lai chiphi
-        if (app.chiphi) {
-          dl = app.chiphi[r.chiphi];
-          r.barcode = dl.barcode;
-          r.qrcode = dl.qrcode;
-          r.mota = dl.mota;
-          r.dvt = dl.dvt;
-          r.giavl = dl.giavl;
-          r.gianc = dl.gianc;
-          r.giamtc = dl.giamtc;
-          r.giatl = dl.giatl;
-        }
-        //soluong
-        r.soluong = lamtronso(Math.abs(r.soluong), 3);
-        //tinh lai tien
-        r.tienvl = lamtronso(r.soluong * r.giavl, 0);
-        r.tiennc = lamtronso(r.soluong * r.gianc, 0);
-        r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
+      for (i in l8) {
+        r = l8[i];
         r.tt = i;
-        r.plcp = 'cpxd';
-        r.plqt = 'oc';
-        dulieu.push(r);
       }
+      console.log("web.oc.cpxd oc_cpxd=", JSON.stringify(oc_cpxd, null, 2));
       //main
       zone = d3.select("#oc_cpxd")
         .style("list-style", "none")
@@ -1912,10 +1872,8 @@ const web = {
         .style("overflow-y", "auto")
         .style("border", "1px solid #d4d4d4");
       zone.selectAll('li').remove();
-      row = zone.selectAll("li").data(dulieu).enter().append("li")
-        .style("display", "grid")
-        //.style("align-items", "center")
-        .style("grid", "auto-flow minmax(1rem, max-content) / 30fr 185fr 30fr 40fr 50fr 40fr 40fr 50fr 45fr 45fr");
+      row = zone.selectAll("li").data(l8).enter().append("li")
+        .attr("class", "grid qt3x");
 
       row.append('div')
         .attr("id", (d, i) => ['oc_cpxd', i, '0'].join('__'))
@@ -2010,16 +1968,14 @@ const web = {
         .on("change", (ev, d) => {
           let v = Math.abs(parseFloat(ev.target.value)) || 0;
           if (v > 0) {
-            let r = app.oc.cpxd[d.tt];
-            console.log("origine app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
-            console.log("soluong moi=", v);
+            let r = oc_cpxd.ttdl[d.tt];
             r.soluong = v;
             r.tienvl = lamtronso(r.soluong * r.giavl, 0);
             r.tiennc = lamtronso(r.soluong * r.gianc, 0);
             r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
             ev.target.style.height = 'auto';
             ev.target.style.height = [ev.target.scrollHeight, 'px'].join('');
-            console.log("update app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
+            console.log("update oc_pxd[", d.tt, "]=", JSON.stringify(r));
           }
           web.oc.cpxd();
           web.oc.bth();
@@ -2029,16 +1985,14 @@ const web = {
             ev.preventDefault();
             let v = Math.abs(parseFloat(ev.target.value)) || 0;
             if (v > 0) {
-              let r = app.oc.cpxd[d.tt];
-              console.log("origine app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
-              console.log("soluong moi=", v);
+              let r = oc_cpxd.ttdl[d.tt];
               r.soluong = v;
               r.tienvl = lamtronso(r.soluong * r.giavl, 0);
               r.tiennc = lamtronso(r.soluong * r.gianc, 0);
               r.tienmtc = lamtronso(r.soluong * r.giamtc, 0);
               ev.target.style.height = 'auto';
               ev.target.style.height = [ev.target.scrollHeight, 'px'].join('');
-              console.log("update app.oc.cpxd[", d.tt, "]=", JSON.stringify(r));
+              console.log("update oc_cpxd[", d.tt, "]=", JSON.stringify(r));
             }
             web.tagid = ev.target.id;
             web.oc.cpxd();
@@ -2522,7 +2476,7 @@ const web = {
 
 
 idb.taodb();
-//web.tao();
+web.tao();
 //_cpx.gom(0);
 _cpx.moi(0);
 //idb.nap.cpx({ "chiphi": "100" });

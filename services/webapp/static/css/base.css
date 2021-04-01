@@ -332,21 +332,25 @@ textarea {
 .grid {
   display: grid;
   grid-auto-flow: row;
+  list-style: none;
 }
 
 .gric {
   display: grid;
   grid-auto-flow: column;
+  list-style: none;
 }
 
 .flex {
   display: flex;
   flex-direction: row;
+  list-style: none;
 }
 
 .flec {
   display: flex;
   flex-direction: column;
+  list-style: none;
 }
 
 .fat {
