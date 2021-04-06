@@ -1375,6 +1375,51 @@ const idb = {
       }
       setTimeout(() => { idb.gom.zcpx(); }, 100);
     },
+    chiphi: (dk = { prog: 'chiphi', tjan: 0 }, zdl = chiphi, cg3 = 0) => {
+      let w, hoi, dap, d1r, d1s, k, r;
+      try {
+        cg3 = fn.a2i(cg3);
+        if (cg3 > 3) { return; };
+        if (Object.keys(dk).length < 1) { return; }
+        dk.prog = fn.a2sl(dk.prog);
+        dk.tjan = cg3 === 0 ? 0 : fn.a2i(dk.tjan);
+        //main
+        w = sw.moi('chiphi');
+        hoi = {
+          csdl: idb.csdl,
+          gom: dk,
+        };
+        console.log("idb.gom.chiphi hoi=", JSON.stringify(hoi, null, 2));
+        w.postMessage(hoi);
+        w.onmessage = (e) => {
+          dap = e.data;
+          if (dap.cv >= 0 && dap.cv <= 100) {
+            d1r = 'chiphi' in dap ? dap.chiphi : {};
+            k = d1r.idma || d1r.maid;
+            if ('ttdl' in d1r || 'data' in d1r) {
+              r = d1r.ttdl || d1r.data;
+              zdl.d8[k] = { ...r };
+              zdl.d8[k].mota = r.mota.qtgt || r.mota;
+              zdl.tjan = Date.now();
+            };
+            web.tiendo(dk.prog, dap.cv);
+          } else if (dap.cv < 0 || dap.cv > 100) {
+            sw.xoa('chiphi');
+            console.log("nv fin=", JSON.stringify(dap, null, 2));
+          } else if ("err" in dap) {
+            console.log("nv err=", JSON.stringify(dap.err, null, 2));
+          } else if ("info" in dap) {
+            console.log("nv info=", JSON.stringify(dap.info, null, 2));
+          } else {
+            console.log("nv dap=", JSON.stringify(dap, null, 2));
+          }
+          console.log("idb.gom.chiphi=", JSON.stringify(chiphi, null, 2));
+        }
+      } catch (err) {
+        cg3 += 1;
+        setTimeout(() => { idb.gom.chiphi(cg3); }, idb.ztg);
+      }
+    },
   },
   nap: {
     qtgt: (dk = { prog: 'qtgt', idma: null }, cg3 = 0) => {
