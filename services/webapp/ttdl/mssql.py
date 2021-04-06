@@ -151,11 +151,11 @@ class Mau(object):
     idma = Column(BigInteger, primary_key=True, autoincrement=False)
     tttt = Column(Unicode())
     ttdl = Column(Unicode())
-    status = Column(Unicode(50))
+    info = Column(Unicode(50))
     inok = Column(Boolean, default=False)
-    lastupdate = Column(BigInteger,
-                        default=int(arrow.utcnow().float_timestamp * 1000),
-                        onupdate=int(arrow.utcnow().float_timestamp * 1000))
+    tjan = Column(BigInteger,
+                  default=int(arrow.utcnow().float_timestamp * 1000),
+                  onupdate=int(arrow.utcnow().float_timestamp * 1000))
 
     @hybrid_property
     def refs(self):
@@ -168,7 +168,7 @@ class Mau(object):
     @refs.setter
     def refs(self, new):
         try:
-            if 'fin' in self.status.lower():
+            if 'fin' in self.info.lower():
                 return None
         except:
             pass
@@ -222,7 +222,7 @@ class Mau(object):
     @data.setter
     def data(self, new):
         try:
-            if 'fin' in self.status.lower():
+            if 'fin' in self.info.lower():
                 return None
         except:
             pass

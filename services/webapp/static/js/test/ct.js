@@ -154,6 +154,147 @@ var qtgt = {
   },
 };
 
+const chiphi = {
+  ztg: 222,
+  tjan: 0,
+  cv: 0, zcv: 1,
+  tagid: 'oc_cpxd_r1_c1',
+  plcp: 'cpxd',
+  stim: '',
+  lua: '123',
+  ttdl: {},
+  d8: {
+    "1": { plcp: 'cpvt', mota: '', dvt: '', tjan: 0 },
+  },
+  l8: [
+    { idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },
+  ],
+  loc: (cg3 = 0) => {
+    let k, r, s, ss, mota, plcp,
+      d8 = chiphi.d8,
+      l8 = [{ idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },];
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      plcp = fn.a2sl(chiphi.plcp);
+      s = fn.a2sl(chiphi.stim);
+      for (k in d8) {
+        r = { ...d8[k] };
+        ss = fn.a2sl(r);
+        if (r.plcp === plcp && ss.includes(s)) {
+          r.idma = k;
+          mota = r.mota.qtgt || r.mota;
+          r.mota = fn.stomau(mota, s);
+          r.dvt = fn.stomau(r.dvt, s);
+          l8.push(r);
+        }
+      }
+      l8 = l8.sort((a, b) => b.idma - a.idma);
+      chiphi.l8 = l8;
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { chiphi.loc(cg3); }, chiphi.ztg);
+      return;
+    }
+    chiphi.xem();
+  },
+  xem: (cg3 = 0) => {
+    let tagid, zone, row, rec;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      if (chiphi.l8.length < 1) { return; }
+      tagid = fn.a2sl(chiphi.tagid);
+      if (tagid.charAt(0) !== '#') { tagid = '#' + tagid; }
+      d3.selectAll("#xem").remove();
+      zone = d3.select(tagid).append("ol")
+        .attr("id", "xem")
+        .style("list-style", "none")
+        .style("margin", 0)
+        .style("padding", 0)
+        .style("max-height", "10.25rem")
+        .style("overflow-y", "auto")
+        .style("border", "1px solid #d4d4d4");
+      rec = zone.selectAll("li").data(chiphi.l8);
+      row = rec.exit().remove();
+      row = rec.enter()
+        .append("li")
+        .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
+        .attr("class", (d, i) => i == 0 ? 'nen0' : 'l')
+        .style("display", "grid")
+        .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
+        .on("click", (ev, d) => {
+          if (ev.target.id != 'chiphi__0__0') {
+            chiphi.lua = d.idma;
+            zone.remove();
+          }
+        });
+      //cells
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
+        .attr("class", (d, i) => {
+          ss = ['fb fito chiphi r', i, ' c1'].join('');
+          if (i == 0) {
+            return ['c u', ss].join(' ');
+          } else {
+            return ['l', ss].join(' ');
+          }
+        })
+        .style("line-height", "100%")
+        //.style("grid-area", "1/1/3/2")
+        .html(d => d.idma);
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
+        .attr("class", (d, i) => {
+          if (i == 0) {
+            return ['c u fb chiphi r', i, ' c2'].join('');
+          } else {
+            return ['l fb chiphi r', i, ' c2'].join('');
+          }
+        })
+        .style("line-height", "100%")
+        .html(d => d.mota);
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 3].join('__'))
+        .attr("class", (d, i) => {
+          if (i == 0) {
+            return ['c u fb chiphi r', i, ' c3'].join('');
+          } else {
+            return ['l fb chiphi r', i, ' c3'].join('');
+          }
+        })
+        .style("line-height", "100%")
+        .html(d => d.dvt);
+      //hov div
+      row.selectAll('div')
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { chiphi.xem(cg3); }, chiphi.ztg);
+      return;
+    }
+  },
+  gom: (cg3 = 0) => {
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      idb.gom.chiphi(tjan = fn.a2i(chiphi.tjan));
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { chiphi.gom(cg3); }, chiphi.ztg);
+      return;
+    }
+  },
+};
+
+
 const oc_cpxd = {
   cv: 0, zcv: 0,
   lastupdate: Date.now(),
@@ -1096,18 +1237,18 @@ const app = {
 };
 
 const sw = {
-  nv: null,
-  moi: () => {
-    let w = null;
+  url: null,
+  nv: {},
+  moi: (w = 1) => {
     if (window.Worker) {
-      if (!sw.nv) { sw.nv = d3.select("#qtgt").attr("data-nv"); }
-      w = new Worker(sw.nv);
+      if (!sw.url) { sw.url = d3.select("#qtgt").attr("data-nv"); }
     }
-    return w;
+    sw.nv[w] = new Worker(sw.url);
+    return sw.nv[w];
   },
-  xoa: (w) => {
-    if (w) { w.terminate(); }
-    w = null;
+  xoa: (w = 1) => {
+    if (sw.nv[w]) { sw.nv[w].terminate(); }
+    sw.nv[w] = null;
   },
 };
 
@@ -1402,7 +1543,7 @@ const idb = {
         setTimeout(() => { idb.nap.cpx(cg3); }, idb.ztg);
       }
     },
-    idma: (dk = { prog: 'qtgt', idma: null }, cg3 = 0) => {
+    idma: (dk = { prog: 'qtgt', idma: null, tjan: 0 }, cg3 = 0) => {
       let w, hoi, dap, d1r, d1s, _prog;
       try {
         cg3 = fn.a2i(cg3);
