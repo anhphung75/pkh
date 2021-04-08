@@ -155,7 +155,6 @@ var qtgt = {
 };
 
 const chiphi = {
-  self: this,
   ztg: 222,
   tjan: 0,
   cv: 0, zcv: 1,
@@ -550,13 +549,172 @@ var oc_cpxd = {
         web.tagid = ev.target.id;
         web.hov_outtag(web.tagid);
       });
+    this.moi();
     //} catch (err) {
     //  cg3 += 1;
     //  setTimeout(() => { self.xem(cg3); }, self.ztg);
     //  return;
     //}
   },
-
+  moi: function (cg3 = 0) {
+    let vz, vr, i, r, k, row, tagid,
+      tag = fn.a2sl(this.ten),
+      z8 = this,
+      l1 = [{ ...z8.l8[0] }] || [],
+      stt = z8.l8.length;
+    console.log("start ct ", z8.ten, ".moi=", JSON.stringify(l1, null, 2));
+    //try {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) return;
+    for (i in l1) {
+      r = l1[i];
+      for (k in r) {
+        if (r[k].constructor === Number) r[k] = 0;
+        if (r[k].constructor === String) r[k] = '';
+      }
+      r.tt = stt;
+    }
+    //main
+    tag = tag.charAt(0) == '#' ? tag.substr(1) : tag;
+    tagid = '#' + tag + '_moi';
+    vz = d3.select(tagid)
+      .style("list-style", "none")
+      .style("margin", 0)
+      .style("padding", 0)
+      .style("max-height", "10.25rem")
+      .style("overflow-y", "auto")
+      .style("border", "0px solid #d4d4d4");
+    vz.selectAll('li').remove();
+    row = vz.selectAll("li").data(l1);
+    vr = row.exit().remove();
+    vr = row.enter().append("li")
+      .attr("class", "grid qt3x");
+    //tt crud
+    vr.append('div')
+      .attr("id", [tag, stt, '0'].join('__'))
+      .attr("class", ['c bb fito', tag, 'r' + stt, 'c0'].join(' '))
+      .text((d) => d3.format("03d")(parseInt(d.tt) + 1));
+    //mota
+    vr.append('div')
+      .attr("class", "bb")
+      .append('textarea')
+      .attr("id", [tag, stt, '1'].join('__'))
+      .attr("class", ['j w100 fito', tag, 'r' + stt, 'c1'].join(' '))
+      .attr("rows", 1)
+      .style("margin", 0)
+      .style("padding", "1pt")
+      .style("outline", "none")
+      .text(d => d.mota)
+      .on("input", function (ev, d) {
+        let el = ev.target.parentNode,
+          stim = ev.target.value;
+        d3.select(ev.target).classed("fito", false);
+        ev.target.style.height = 'auto';
+        ev.target.style.height = [ev.target.scrollHeight, 'px'].join('');
+        web.box.chiphi(el, d, stim);
+      })
+      .on("click", function (ev, d) {
+        if (d3.select("#xem").node()) {
+          d3.selectAll("#xem").remove();
+          d3.select(ev.target).classed("fito", true);
+        } else {
+          let el = ev.target.parentNode,
+            stim = ev.target.value;
+          d3.select(ev.target).classed("fito", false);
+          web.box.chiphi(el, d, stim);
+          ev.target.focus();
+          ev.target.select();
+        }
+      })
+      .on("keydown", function (ev, d) {
+        if ([13].includes(ev.keyCode)) {
+          ev.preventDefault();
+          d3.selectAll("#xem").remove();
+          //chuyen dong ke tiep
+          web.tagid = ev.target.id;
+          web.move2id(1, 0);
+        }
+      });
+    vr.append('div')
+      .attr("id", [tag, stt, '2'].join('__'))
+      .attr("class", ['c bb', tag, 'r' + stt, 'c2'].join(' '))
+      .text((d) => d.dvt);
+    vr.append('div')
+      .attr("class", "bb")
+      .append('textarea')
+      .attr("id", [tag, stt, '3'].join('__'))
+      .attr("class", ['r f0 fito', tag, 'r' + stt, 'c3'].join(' '))
+      .attr("rows", 1)
+      .style("margin", 0)
+      .style("padding", "1pt")
+      .style("outline", "none")
+      .text((d) => d3.format(",.3r")(d.soluong))
+      .on("change", (ev, d) => {
+        let v = Math.abs(parseFloat(ev.target.value)) || 0;
+        if (v > 0) {
+          l8[d.tt].soluong = v;
+          ev.target.style.height = 'auto';
+          ev.target.style.height = [ev.target.scrollHeight, 'px'].join('');
+          z8.tinh(1);
+        }
+      })
+      .on("keydown", function (ev, d) {
+        if ([13].includes(ev.keyCode)) {
+          ev.preventDefault();
+          let v = Math.abs(parseFloat(ev.target.value)) || 0;
+          if (v > 0) {
+            l8[d.tt].soluong = v;
+            ev.target.style.height = 'auto';
+            ev.target.style.height = [ev.target.scrollHeight, 'px'].join('');
+            z8.tinh(1);
+          }
+          //chuyen dong ke tiep
+          web.tagid = ev.target.id;
+          web.move2id(1, 0);
+        }
+      });
+    vr.append('div')
+      .attr("id", [tag, stt, '4'].join('__'))
+      .attr("class", ['r bb fito', tag, 'r' + stt, 'c4'].join(' '))
+      .text((d) => d3.format(",.0r")(d.giavl));
+    vr.append('div')
+      .attr("id", [tag, stt, '5'].join('__'))
+      .attr("class", ['r bb fito', tag, 'r' + stt, 'c5'].join(' '))
+      .text((d) => d3.format(",.0r")(d.gianc));
+    vr.append('div')
+      .attr("id", [tag, stt, '6'].join('__'))
+      .attr("class", ['r bb fito', tag, 'r' + stt, 'c6'].join(' '))
+      .text((d) => d3.format(",.0r")(d.giamtc));
+    vr.append('div')
+      .attr("id", [tag, stt, '7'].join('__'))
+      .attr("class", ['r bb fito', tag, 'r' + stt, 'c7'].join(' '))
+      .text((d) => d3.format(",.0r")(d.tienvl));
+    vr.append('div')
+      .attr("id", [tag, stt, '8'].join('__'))
+      .attr("class", ['r bb fito', tag, 'r' + stt, 'c8'].join(' '))
+      .text((d) => d3.format(",.0r")(d.tiennc));
+    vr.append('div')
+      .attr("id", [tag, stt, '9'].join('__'))
+      .attr("class", ['r bb fito', tag, 'r' + stt, 'c9'].join(' '))
+      .text((d) => d3.format(",.0r")(d.tienmtc));
+    //add hov
+    k = '[id^=' + tag + ']';
+    vr.selectAll(k)
+      .on("mouseenter", (ev) => {
+        console.log("ev.target=", ev.target);
+        web.tagid = ev.target.id;
+        web.hov_intag(web.tagid);
+      })
+      .on("mouseleave", (ev) => {
+        web.tagid = ev.target.id;
+        web.hov_outtag(web.tagid);
+      });
+    //} catch (err) {
+    //  cg3 += 1;
+    //  setTimeout(() => { self.xem(cg3); }, self.ztg);
+    //  return;
+    //}
+  },
 };
 var oc_cpvt = { ...oc_cpxd };
 oc_cpvt.ten = 'oc_cpvt';
