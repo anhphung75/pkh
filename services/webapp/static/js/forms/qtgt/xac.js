@@ -2553,8 +2553,8 @@ function test_dulieu() {
           "cpql": "Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016"
         },
       },
-      "status": "Fin",
-      "lastupdate": Date.now()
+      "info": "Fin",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 2,
@@ -2567,8 +2567,8 @@ function test_dulieu() {
           "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
         },
       },
-      "status": "ok",
-      "lastupdate": Date.now()
+      "info": "ok",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 3,
@@ -2581,8 +2581,8 @@ function test_dulieu() {
           "cpql": "Nghị định 68/2019/NĐ-CP ngày 14/08/2019; Quyết định 2207/QĐ-UBND ngày 18/06/2020"
         },
       },
-      "status": "ok",
-      "lastupdate": Date.now()
+      "info": "ok",
+      "tjan": Date.now()
     },
   ]
   idb.luu("chiphiquanly", dl);
@@ -2595,8 +2595,8 @@ function test_dulieu() {
         "mabaogia": 20190825, "chiphi": 100,
         "dutoan": 1525.4, "ketoan": 1525,
       },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 1,
@@ -2605,8 +2605,8 @@ function test_dulieu() {
         "mabaogia": 20190725, "chiphi": 100,
         "dutoan": 4432.68, "ketoan": 4432,
       },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 2,
@@ -2615,8 +2615,8 @@ function test_dulieu() {
         "mabaogia": 20190721, "chiphi": 100,
         "dutoan": 5247.35, "ketoan": 5247,
       },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 3,
@@ -2625,8 +2625,8 @@ function test_dulieu() {
         "mabaogia": 20190825, "chiphi": 200,
         "dutoan": 1250.4, "ketoan": 1250,
       },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 4,
@@ -2635,8 +2635,8 @@ function test_dulieu() {
         "mabaogia": 20190721, "chiphi": 300,
         "dutoan": 1254.4, "ketoan": 1254,
       },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
   ]
   idb.luu("bgvl", dl);
@@ -2651,8 +2651,8 @@ function test_dulieu() {
         { "chiphi": 200, "soluong": 22 },
         { "chiphi": 300, "soluong": 33 },
       ],
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 1,
@@ -2661,8 +2661,8 @@ function test_dulieu() {
         { "chiphi": 200, "soluong": 20 },
         { "chiphi": 300, "soluong": 30 },
       ],
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 2,
@@ -2670,8 +2670,8 @@ function test_dulieu() {
         { "chiphi": 100, "soluong": 1 },
         { "chiphi": 200, "soluong": 2 },
       ],
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 3,
@@ -2679,16 +2679,16 @@ function test_dulieu() {
         { "chiphi": 100, "soluong": 101 },
         { "chiphi": 300, "soluong": 303 },
       ],
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": Date.now() + 4,
       "data": [
         { "chiphi": 100, "soluong": 111 },
       ],
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
   ]
   idb.luu("cpxd", dl);
@@ -2698,32 +2698,32 @@ function test_dulieu() {
     {
       "idma": 100,
       "data": { "mota": { "qtgt": "cp qtgt100", "qtvt": "cp qtvt1" }, "dvt": "cai100" },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": 200,
       "data": { "mota": { "qtgt": "cp qtgt200", "qtvt": "cp qtvt2" }, "dvt": "cai200" },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": 300,
       "data": { "mota": { "qtgt": "cp qtgt300", "qtvt": "cp qtvt3" }, "dvt": "cai300" },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": 400,
       "data": { "mota": { "qtgt": "cp qtgt400", "qtvt": "cp qtvt4" }, "dvt": "cai400" },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
     {
       "idma": 500,
       "data": { "mota": { "qtgt": "cp qtgt500", "qtvt": "cp qtvt5" }, "dvt": "cai500" },
-      "status": "chyenjson",
-      "lastupdate": Date.now()
+      "info": "chyenjson",
+      "tjan": Date.now()
     },
   ]
   idb.luu("chiphi", dl);

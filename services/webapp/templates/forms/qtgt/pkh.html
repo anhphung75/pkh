@@ -5,12 +5,11 @@
 {% end %}
 
 {% block js %}
-<script type="module" src="{{static_url(r'js/forms/qtgt/xac.js')}}"></script>
+<script type="module" src="{{static_url(r'js/forms/qtgt/ct.js')}}"></script>
 {% end %}
 
 {% block panel %}
 <div class="c u fb f6">QUYẾT TOÁN GIÁ TRỊ</div>
-<div id="tiendo"></div>
 {% end %}
 
 {% block menu %}
@@ -40,9 +39,7 @@
 {% end %}
 
 {% block webapp %}
-<section id="qtgt" data-swidb="{{static_url(r'js/forms/qtgt/swidb.js',True)}}"
-         data-swapi="{{static_url(r'js/forms/qtgt/swapi.js',True)}}"
-         data-nv="{{static_url(r'js/forms/qtgt/nv.js',True)}}">
+<section id="qtgt" data-nv="{{static_url(r'js/forms/qtgt/nv.js',True)}}">
   <div class="grid hoso">
     <div id="qrcode">qrcode</div>
     <div id="barcode">barcode</div>
@@ -87,7 +84,7 @@
     <div class="r" id="oc_zmtc">1</div>
   </div>
   <div id="show_ongcai" class="w100">
-    <ol id="oc_cpxd_tieude">
+    <ol id="oc_cpxd_tieude" class="grid qt3x">
       <li class="c tde">TT</li>
       <li class="c tde">Mô tả công tác</li>
       <li class="c tde">Đvt</li>
@@ -100,7 +97,8 @@
       <li class="c tde">Tiền mtc</li>
     </ol>
     <ol id="oc_cpxd"></ol>
-    <ol id="oc_cpvt_tieude">
+    <ol id="oc_cpxd_moi"></ol>
+    <ol id="oc_cpvt_tieude" class="grid qt3x">
       <li class="c tde">TT</li>
       <li class="c tde">Mô tả vật tư</li>
       <li class="c tde">Đvt</li>
@@ -113,7 +111,8 @@
       <li class="c tde">Tiền mtc</li>
     </ol>
     <ol id="oc_cpvt"></ol>
-    <ol id="oc_cpvl_tieude">
+    <ol id="oc_cpvt_moi"></ol>
+    <ol id="oc_cpvl_tieude" class="grid qt3x">
       <li class="c tde">TT</li>
       <li class="j tde">Mô tả vật liệu</li>
       <li class="c tde">Đvt</li>

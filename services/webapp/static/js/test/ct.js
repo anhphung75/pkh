@@ -165,6 +165,10 @@ const chiphi = {
   ttdl: {},
   d8: {
     "1": { plcp: 'cpvt', mota: '', dvt: '', tjan: 0 },
+    '2': {
+      plcp: 'cpxd', mota: 'cp2', dvt: 'cai', barcode: '', qrcode: '',
+      "dutoan.20190726": { giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 },
+    },
   },
   l8: [
     { idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },
@@ -294,8 +298,7 @@ const chiphi = {
   },
 };
 
-
-var oc_cpxd = {
+const oc_cpxd = {
   ten: "oc_cpxd",
   cv: 0, zcv: 1,
   ztg: 111,
@@ -317,9 +320,12 @@ var oc_cpxd = {
 
   },
   l8: [
-    { chiphi: 100, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
-    { chiphi: 200, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
-    { chiphi: 300, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+    { tt: 0, chiphi: 100, soluong: 0.1, mota: 'cp1', dvt: 'cai', giavl: 100, gianc: 20, giamtc: 5000, tienvl: 0, tiennc: 10, tienmtc: 20 },
+    { tt: 1, chiphi: 200, soluong: 0.2, mota: 'cp2', dvt: 'cai', giavl: 102, gianc: 60, giamtc: 80, tienvl: 0, tiennc: 200, tienmtc: 220 },
+    { tt: 2, chiphi: 300, soluong: 0.3, mota: 'cp3', dvt: 'cai', giavl: 500, gianc: 10, giamtc: 100, tienvl: 0, tiennc: 300, tienmtc: 330 }
+  ],
+  l8_: [
+    { tt: 3, chiphi: 0, soluong: 0, mota: '', dvt: '', giavl: 0, gianc: 0, giamtc: 0, tienvl: 0, tiennc: 0, tienmtc: 0 }
   ],
   nap: function (cg3 = 0) {
     let i, r,
@@ -404,8 +410,8 @@ var oc_cpxd = {
   },
   xem: function (cg3 = 0) {
     let vz, vr, i, r, k, row, tagid,
-      tag = fn.a2sl(this.ten),
       z8 = this,
+      tag = fn.a2sl(z8.ten),
       l8 = z8.l8 || [];
     //try {
     cg3 = fn.a2i(cg3);
@@ -549,7 +555,7 @@ var oc_cpxd = {
         web.tagid = ev.target.id;
         web.hov_outtag(web.tagid);
       });
-    this.moi();
+    z8.moi();
     //} catch (err) {
     //  cg3 += 1;
     //  setTimeout(() => { self.xem(cg3); }, self.ztg);
@@ -558,8 +564,8 @@ var oc_cpxd = {
   },
   moi: function (cg3 = 0) {
     let vz, vr, i, r, k, row, tagid,
-      tag = fn.a2sl(this.ten),
       z8 = this,
+      tag = fn.a2sl(z8.ten),
       l1 = [{ ...z8.l8[0] }] || [],
       stt = z8.l8.length;
     console.log("start ct ", z8.ten, ".moi=", JSON.stringify(l1, null, 2));
@@ -716,7 +722,7 @@ var oc_cpxd = {
     //}
   },
 };
-var oc_cpvt = { ...oc_cpxd };
+const oc_cpvt = { ...oc_cpxd };
 oc_cpvt.ten = 'oc_cpvt';
 const oc_cpvl = {
   cv: 0, zcv: 0,
