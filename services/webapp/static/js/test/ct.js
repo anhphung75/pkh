@@ -52,8 +52,8 @@ const fn = {
   },
   stomau: (sgoc, stim, mausac = 'red') => {
     try {
-      sgoc = a2s(sgoc);
-      stim = a2s(stim);
+      sgoc = fn.a2s(sgoc);
+      stim = fn.a2s(stim);
       if (stim.length < 1) { return sgoc; }
     } catch (err) { return sgoc; }
     let mau = fn.sregexp(stim);
@@ -154,149 +154,6 @@ var qtgt = {
   },
 };
 
-const chiphi = {
-  ztg: 222,
-  tjan: 0,
-  cv: 0, zcv: 1,
-  tagid: 'oc_cpxd_r1_c1',
-  plcp: 'cpxd',
-  stim: '',
-  lua: '123',
-  ttdl: {},
-  d8: {
-    "1": { plcp: 'cpvt', mota: '', dvt: '', tjan: 0 },
-    '2': {
-      plcp: 'cpxd', mota: 'cp2', dvt: 'cai', barcode: '', qrcode: '',
-      "dutoan.20190726": { giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 },
-    },
-  },
-  l8: [
-    { idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },
-  ],
-  loc: (cg3 = 0) => {
-    let k, r, s, ss, mota, plcp,
-      d8 = self.d8,
-      l8 = [{ idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },];
-    try {
-      cg3 = fn.a2i(cg3);
-      if (cg3 > 3) { return; };
-      plcp = fn.a2sl(self.plcp);
-      s = fn.a2sl(self.stim);
-      for (k in d8) {
-        r = { ...d8[k] };
-        ss = fn.a2sl(r);
-        if (r.plcp === plcp && ss.includes(s)) {
-          r.idma = k;
-          mota = r.mota.qtgt || r.mota;
-          r.mota = fn.stomau(mota, s);
-          r.dvt = fn.stomau(r.dvt, s);
-          l8.push(r);
-        }
-      }
-      l8 = l8.sort((a, b) => b.idma - a.idma);
-      self.l8 = l8;
-    } catch (err) {
-      cg3 += 1;
-      setTimeout(() => { self.loc(cg3); }, self.ztg);
-      return;
-    }
-    chiphi.xem();
-  },
-  xem: (cg3 = 0) => {
-    let tagid, zone, row, rec;
-    try {
-      cg3 = fn.a2i(cg3);
-      if (cg3 > 3) { return; };
-      if (self.l8.length < 1) { return; }
-      tagid = fn.a2sl(self.tagid);
-      if (tagid.charAt(0) !== '#') { tagid = '#' + tagid; }
-      d3.selectAll("#xem").remove();
-      zone = d3.select(tagid).append("ol")
-        .attr("id", "xem")
-        .style("list-style", "none")
-        .style("margin", 0)
-        .style("padding", 0)
-        .style("max-height", "10.25rem")
-        .style("overflow-y", "auto")
-        .style("border", "1px solid #d4d4d4");
-      rec = zone.selectAll("li").data(self.l8);
-      row = rec.exit().remove();
-      row = rec.enter()
-        .append("li")
-        .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
-        .attr("class", (d, i) => i == 0 ? 'nen0' : 'l')
-        .style("display", "grid")
-        .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
-        .on("click", (ev, d) => {
-          if (ev.target.id != 'chiphi__0__0') {
-            self.lua = d.idma;
-            zone.remove();
-          }
-        });
-      //cells
-      row.append("div")
-        .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
-        .attr("class", (d, i) => {
-          ss = ['fb fito chiphi r', i, ' c1'].join('');
-          if (i == 0) {
-            return ['c u', ss].join(' ');
-          } else {
-            return ['l', ss].join(' ');
-          }
-        })
-        .style("line-height", "100%")
-        //.style("grid-area", "1/1/3/2")
-        .html(d => d.idma);
-      row.append("div")
-        .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
-        .attr("class", (d, i) => {
-          if (i == 0) {
-            return ['c u fb chiphi r', i, ' c2'].join('');
-          } else {
-            return ['l fb chiphi r', i, ' c2'].join('');
-          }
-        })
-        .style("line-height", "100%")
-        .html(d => d.mota);
-      row.append("div")
-        .attr("id", (d, i) => ['chiphi', i, 3].join('__'))
-        .attr("class", (d, i) => {
-          if (i == 0) {
-            return ['c u fb chiphi r', i, ' c3'].join('');
-          } else {
-            return ['l fb chiphi r', i, ' c3'].join('');
-          }
-        })
-        .style("line-height", "100%")
-        .html(d => d.dvt);
-      //hov div
-      row.selectAll('div')
-        .on("mouseenter", (ev) => {
-          web.tagid = ev.target.id;
-          web.hov_intag(web.tagid);
-        })
-        .on("mouseleave", (ev) => {
-          web.tagid = ev.target.id;
-          web.hov_outtag(web.tagid);
-        });
-    } catch (err) {
-      cg3 += 1;
-      setTimeout(() => { self.xem(cg3); }, self.ztg);
-      return;
-    }
-  },
-  gom: (cg3 = 0) => {
-    try {
-      cg3 = fn.a2i(cg3);
-      if (cg3 > 3) { return; };
-      idb.gom.chiphi({ tjan: fn.a2i(self.tjan) }, self);
-    } catch (err) {
-      cg3 += 1;
-      setTimeout(() => { self.gom(cg3); }, self.ztg);
-      return;
-    }
-  },
-};
 
 const oc_cpxd = {
   ten: "oc_cpxd",
@@ -2991,13 +2848,201 @@ const web = {
   },
 };
 
+const chiphi = {
+  ztg: 222,
+  cv: 0, zcv: 1,
+  tagid: 'test',
+  plcp: 'cpvt',
+  stim: '',
+  lua: '123',
+  ltim: ['2021', 'cpxd'],
+  z1: { idma: 123, mota: '', dvt: '' },
+  ttdl: {},
+  d8: {
+    '1': { plcp: 'cpvt', mota: 'chiphi 1', dvt: 'dvt 1', qrcode: '', barcode: '1', tjan: 0 },
+    '2': { plcp: 'cpvt', mota: 'chiphi 2', dvt: 'dvt 2', qrcode: '', barcode: '1', tjan: 0 },
+  },
+  l8: [
+    { idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },
+    { idma: "1", plcp: 'cpvt', mota: "Mô tả chi phí 1", dvt: "Đvt 1" },
+    { idma: "2", plcp: 'cpvt', mota: "Mô tả chi phí 2", dvt: "Đvt 2" },
+  ],
+  loc: function (cg3 = 0) {
+    let k, r, s, ss, mota, plcp,
+      z8 = this,
+      d8 = z8.d8,
+      l8 = [{ idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },];
+    //try {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) { return; };
+    plcp = fn.a2sl(z8.plcp);
+    s = fn.a2sl(z8.stim);
+    for (k in d8) {
+      r = { ...d8[k] };
+      ss = fn.a2sl(r);
+      if (r.plcp === plcp && ss.includes(s)) {
+        r.idma = k;
+        mota = r.mota.qtgt || r.mota;
+        r.mota = fn.stomau(mota, s);
+        r.dvt = fn.stomau(r.dvt, s);
+        l8.push(r);
+      }
+    }
+    l8 = l8.sort((a, b) => b.idma - a.idma);
+    z8.l8 = l8;
+    //} catch (err) {
+    //  cg3 += 1;
+    //  setTimeout(() => { z8.loc(cg3); }, z8.ztg);
+    //  return;
+    //}
+    console.log("chiphi ", z8.tagid, ".loc=", JSON.stringify(z8, null, 2));
+    if (z8.xem(0)) z8.xem(0).lua();
+  },
+  xem: function (cg3 = 0) {
+    let tagid, zone, row, rec,
+      z8 = this,
+      z1 = z8.z1,
+      l8 = z8.l8;
+
+    function inp() {
+      d3.select('#inp')
+        .append('textarea')
+        .attr("class", "j w100 fito")
+        .attr("rows", 1)
+        .style("margin", 0)
+        .style("padding", "1pt")
+        .style("outline", "none")
+        .text(z8.stim)
+        .on("input", function (ev, d) {
+          let tag = ev.target;
+          z8.stim = tag.value;
+          z8.loc(0);
+          d3.select(tag).classed("fito", false);
+          tag.style.height = 'auto';
+          tag.style.height = [tag.scrollHeight, 'px'].join('');
+          //web.box.chiphi(el, d, stim);
+        })
+    };
+
+    function tim(l8) {
+
+    };
+
+    function lua() {
+      console.log("chiphi.xem ", z8.tagid, ".lua=", JSON.stringify(this, null, 2));
+      let ss,
+        rec = d3.select('#lua').selectAll("li").data(l8),
+        row = rec.exit().remove();
+      row = rec.enter()
+        .append("li")
+        .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
+        .attr("class", (d, i) => i == 0 ? 'nen0' : 'l')
+        .style("display", "grid")
+        .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
+        .on("click", (ev, d) => {
+          if (ev.target.id != 'chiphi__0__0') {
+            z1 = d;
+            zone.remove();
+            console.log("chiphi ", z8.ten, ".lua z1=", JSON.stringify(z1, null, 2));
+          }
+        });
+      //cells
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
+        .attr("class", (d, i) => {
+          ss = ['fb fito chiphi r', i, ' c1'].join('');
+          if (i == 0) {
+            return ['c u', ss].join(' ');
+          } else {
+            return ['l', ss].join(' ');
+          }
+        })
+        .style("line-height", "100%")
+        //.style("grid-area", "1/1/3/2")
+        .html(d => d.idma);
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
+        .attr("class", (d, i) => {
+          if (i == 0) {
+            return ['c u fb chiphi r', i, ' c2'].join('');
+          } else {
+            return ['l fb chiphi r', i, ' c2'].join('');
+          }
+        })
+        .style("line-height", "100%")
+        .html(d => d.mota);
+      row.append("div")
+        .attr("id", (d, i) => ['chiphi', i, 3].join('__'))
+        .attr("class", (d, i) => {
+          if (i == 0) {
+            return ['c u fb chiphi r', i, ' c3'].join('');
+          } else {
+            return ['l fb chiphi r', i, ' c3'].join('');
+          }
+        })
+        .style("line-height", "100%")
+        .html(d => d.dvt);
+      //hov div
+      row.selectAll('div')
+        .on("mouseenter", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_intag(web.tagid);
+        })
+        .on("mouseleave", (ev) => {
+          web.tagid = ev.target.id;
+          web.hov_outtag(web.tagid);
+        });
+    };
+
+    //try {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) { return; };
+    if (l8.length < 1) { return; }
+    tagid = fn.a2sl(z8.tagid);
+    if (tagid.charAt(0) !== '#') { tagid = '#' + tagid; }
+    d3.selectAll("#xem").remove();
+    zone = d3.select(tagid).append("ol")
+      .attr("id", "xem")
+      .style("list-style", "none")
+      .style("margin", 0)
+      .style("padding", 0)
+      .style("max-height", "10.25rem")
+      .style("overflow-y", "auto")
+      .style("border", "1px solid #d4d4d4")
+      .selectAll("li").data(['inp', 'tim', 'lua'])
+      .enter()
+      .append("li")
+      .attr("id", d => d)
+      .attr("class", "bb");
+    inp();
+    tim();
+    lua();
+    //} catch (err) {
+    //  cg3 += 1;
+    //  setTimeout(() => { z8.xem(cg3); }, z8.ztg);
+    //  return;
+    //}
+
+  },
+  gom: function (cg3 = 0) {
+    let z8 = this;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      idb.gom.chiphi({ prog: 'chiphi', }, z8, 0);
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { z8.gom(cg3); }, z8.ztg);
+      return;
+    }
+  },
+};
 
 idb.taodb();
 //web.tao();
 //_cpx.gom(0);
 //_cpx.moi(0);
-oc_cpxd.xem(0);
-oc_cpvt.xem(0);
+chiphi.xem(0);
 //idb.nap.cpx({ "chiphi": "100" });
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgnc', plgia: 'dutoan' }, 0)
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgmtc', plgia: 'dutoan' }, 0)

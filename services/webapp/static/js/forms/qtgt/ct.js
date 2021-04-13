@@ -137,6 +137,7 @@ const chiphi = {
   plcp: 'cpxd',
   stim: '',
   lua: '123',
+  z1: { idma: 123, mota: '', dvt: '' },
   ttdl: {},
   d8: {
     '1': { plcp: 'cpvt', mota: 'chiphi 1', dvt: 'dvt 1', qrcode: '', barcode: '1', tjan: 0 },
@@ -179,7 +180,7 @@ const chiphi = {
     let tagid, zone, row, rec,
       z8 = this,
       l8 = z8.l8;
-    try {
+    //try {
       cg3 = fn.a2i(cg3);
       if (cg3 > 3) { return; };
       if (l8.length < 1) { return; }
@@ -194,6 +195,11 @@ const chiphi = {
         .style("max-height", "10.25rem")
         .style("overflow-y", "auto")
         .style("border", "1px solid #d4d4d4");
+      //input
+      zone.append("li").append('input')
+      //ltim
+
+      //lua
       rec = zone.selectAll("li").data(l8);
       row = rec.exit().remove();
       row = rec.enter()
@@ -254,11 +260,11 @@ const chiphi = {
           web.tagid = ev.target.id;
           web.hov_outtag(web.tagid);
         });
-    } catch (err) {
-      cg3 += 1;
-      setTimeout(() => { z8.xem(cg3); }, z8.ztg);
-      return;
-    }
+    //} catch (err) {
+    //  cg3 += 1;
+    //  setTimeout(() => { z8.xem(cg3); }, z8.ztg);
+    //  return;
+    //}
   },
   gom: function (cg3 = 0) {
     let z8 = this;
