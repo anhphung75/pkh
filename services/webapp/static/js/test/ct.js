@@ -2855,7 +2855,7 @@ const chiphi = {
   plcp: 'cpvt',
   stim: '',
   lua: '123',
-  ltim: ['2021', 'cpxd'],
+  ltim: ['cpvt', 'chiphi', '1'],
   z1: { idma: 123, mota: '', dvt: '' },
   ttdl: {},
   d8: {
@@ -2863,24 +2863,49 @@ const chiphi = {
     '2': { plcp: 'cpvt', mota: 'chiphi 2', dvt: 'dvt 2', qrcode: '', barcode: '1', tjan: 0 },
   },
   l8: [
-    { idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },
+    { idma: "Mã chi phí", plcp: 'cpvt', mota: "Mô tả chi phí", dvt: "Đvt" },
     { idma: "1", plcp: 'cpvt', mota: "Mô tả chi phí 1", dvt: "Đvt 1" },
     { idma: "2", plcp: 'cpvt', mota: "Mô tả chi phí 2", dvt: "Đvt 2" },
   ],
+  gom: function (cg3 = 0) {
+    let z8 = this;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      idb.gom.chiphi({ prog: 'chiphi', }, z8, 0);
+    } catch (err) {
+      cg3 += 1;
+      setTimeout(() => { z8.gom(cg3); }, z8.ztg);
+      return;
+    }
+  },
   loc: function (cg3 = 0) {
-    let k, r, s, ss, mota, plcp,
+    let k, v, r, s, ss, mota, plcp,
       z8 = this,
       d8 = z8.d8,
-      l8 = [{ idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },];
+      l8 = [{ idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },],
+      ltim = [z8.stim, ...z8.ltim],
+      isok = true;
     //try {
     cg3 = fn.a2i(cg3);
     if (cg3 > 3) { return; };
     plcp = fn.a2sl(z8.plcp);
-    s = fn.a2sl(z8.stim);
     for (k in d8) {
       r = { ...d8[k] };
       ss = fn.a2sl(r);
-      if (r.plcp === plcp && ss.includes(s)) {
+      isok = true;
+      if (r.plcp !== plcp) {
+        isok = false;
+      } else {
+        for (v of ltim) {
+          s = fn.a2sl(v);
+          if (!(ss.includes(s))) {
+            isok = false;
+            break;
+          }
+        }
+      }
+      if (isok) {
         r.idma = k;
         mota = r.mota.qtgt || r.mota;
         r.mota = fn.stomau(mota, s);
@@ -2896,7 +2921,11 @@ const chiphi = {
     //  return;
     //}
     console.log("chiphi ", z8.tagid, ".loc=", JSON.stringify(z8, null, 2));
-    if (z8.xem(0)) z8.xem(0).lua();
+    if (d3.select("#xem").node()) {
+      z8.box_lua();
+    } else {
+      z8.xem(0);
+    }
   },
   xem: function (cg3 = 0) {
     let tagid, zone, row, rec,
@@ -2904,35 +2933,111 @@ const chiphi = {
       z1 = z8.z1,
       l8 = z8.l8;
 
-    function inp() {
-      d3.select('#inp')
-        .append('textarea')
-        .attr("class", "j w100 fito")
-        .attr("rows", 1)
-        .style("margin", 0)
-        .style("padding", "1pt")
-        .style("outline", "none")
-        .text(z8.stim)
-        .on("input", function (ev, d) {
-          let tag = ev.target;
-          z8.stim = tag.value;
-          z8.loc(0);
-          d3.select(tag).classed("fito", false);
-          tag.style.height = 'auto';
-          tag.style.height = [tag.scrollHeight, 'px'].join('');
-          //web.box.chiphi(el, d, stim);
-        })
-    };
+    //try {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) { return; };
+    if (l8.length < 1) { return; }
+    tagid = fn.a2sl(z8.tagid);
+    if (tagid.charAt(0) !== '#') { tagid = '#' + tagid; }
+    d3.selectAll("#xem").remove();
+    zone = d3.select(tagid).append("ol")
+      .attr("id", "xem")
+      .style("list-style", "none")
+      .style("margin", 0)
+      .style("padding", 0)
+      .style("max-height", "10.25rem")
+      .style("overflow-y", "auto")
+      .style("border", "1px solid #d4d4d4")
+      .selectAll("li").data(['inp', 'tim', 'lua'])
+      .enter()
+      .append("li")
+      .attr("id", d => d)
+      .attr("class", "bb");
 
-    function tim(l8) {
+    //input
+    d3.select('#inp')
+      .append('textarea')
+      .attr("class", "j w100 fito")
+      .attr("rows", 1)
+      .style("margin", 0)
+      .style("padding", "1pt")
+      .style("outline", "none")
+      .text(z1.mota || z8.stim)
+      .on("input", function (ev, d) {
+        let tag = ev.target;
+        z8.stim = tag.value;
+        z8.loc(0);
+        d3.select(tag).classed("fito", false);
+        tag.style.height = 'auto';
+        tag.style.height = [tag.scrollHeight, 'px'].join('');
+        //web.box.chiphi(el, d, stim);
+      });
+    //tim
+    z8.box_tim();
+    z8.box_lua();
 
-    };
+    //} catch (err) {
+    //  cg3 += 1;
+    //  setTimeout(() => { z8.xem(cg3); }, z8.ztg);
+    //  return;
+    //}
 
-    function lua() {
-      console.log("chiphi.xem ", z8.tagid, ".lua=", JSON.stringify(this, null, 2));
-      let ss,
-        rec = d3.select('#lua').selectAll("li").data(l8),
-        row = rec.exit().remove();
+  },
+  box_tim: function (zdl = null, cg3 = 0) {
+    let ss, rec, row,
+      z8 = this,
+      l8 = z8.ltim;
+    //try {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) { return; };
+    if (!zdl) zdl = z8.ltim;
+    if (zdl.constructor !== Array) zdl = [];
+    d3.select('#tim').selectAll('*').remove();
+    d3.select('#tim').append("ol")
+      .attr("class", 'tblx')
+      .selectAll("li").data(['__Xóa__', ...zdl])
+      .enter()
+      .append("li")
+      .attr("id", (d, i) => ['tim', i, 0].join('__'))
+      .attr("class", 'c')
+      .html((d, i) => {
+        let s = d + ` x`;
+        if (i == 0) s = `<i class="fa fa-trash"></i>`;
+        return s;
+      })
+      .on("click", (ev, d) => {
+        console.log("chiphi ", z8.tagid, ".box_tim tagid=", JSON.stringify(ev.target.id, null, 2));
+        zdl = d === '__Xóa__' ? [] : zdl.filter(rec => rec !== d);
+        z8.ltim = [...zdl];
+        z8.box_tim(zdl, 0);
+        console.log("chiphi ", z8.tagid, ".box_tim ltim=", JSON.stringify(z8.ltim, null, 2));
+      })
+      .on("mouseenter", function (ev) {
+        d3.select(this)
+          .classed('hov', true)
+          .style('color', 'red');
+      })
+      .on("mouseleave", function (ev) {
+        d3.select(this)
+          .classed('hov', false)
+          .style('color', 'black');
+      });
+    //} catch (err) {
+    //  cg3 += 1;
+    //  setTimeout(() => { z8.box_tim(cg3); }, z8.ztg);
+    //  return;
+    //}
+    console.log("chiphi ", z8.tagid, ".box_tim=", JSON.stringify(z8, null, 2));
+  },
+  box_lua: function (cg3 = 0) {
+    let ss, rec, row,
+      z8 = this,
+      l8 = z8.l8;
+    try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) { return; };
+      rec = d3.select('#lua').selectAll("li").data(l8);
+      row = rec.exit().remove();
       row = rec.enter()
         .append("li")
         .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
@@ -2941,9 +3046,9 @@ const chiphi = {
         .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
         .on("click", (ev, d) => {
           if (ev.target.id != 'chiphi__0__0') {
-            z1 = d;
-            zone.remove();
-            console.log("chiphi ", z8.ten, ".lua z1=", JSON.stringify(z1, null, 2));
+            z8.z1 = d;
+            d3.selectAll("#xem").remove();
+            console.log("chiphi ", z8.tagid, ".box_lua z8=", JSON.stringify(chiphi, null, 2));
           }
         });
       //cells
@@ -2992,50 +3097,15 @@ const chiphi = {
           web.tagid = ev.target.id;
           web.hov_outtag(web.tagid);
         });
-    };
-
-    //try {
-    cg3 = fn.a2i(cg3);
-    if (cg3 > 3) { return; };
-    if (l8.length < 1) { return; }
-    tagid = fn.a2sl(z8.tagid);
-    if (tagid.charAt(0) !== '#') { tagid = '#' + tagid; }
-    d3.selectAll("#xem").remove();
-    zone = d3.select(tagid).append("ol")
-      .attr("id", "xem")
-      .style("list-style", "none")
-      .style("margin", 0)
-      .style("padding", 0)
-      .style("max-height", "10.25rem")
-      .style("overflow-y", "auto")
-      .style("border", "1px solid #d4d4d4")
-      .selectAll("li").data(['inp', 'tim', 'lua'])
-      .enter()
-      .append("li")
-      .attr("id", d => d)
-      .attr("class", "bb");
-    inp();
-    tim();
-    lua();
-    //} catch (err) {
-    //  cg3 += 1;
-    //  setTimeout(() => { z8.xem(cg3); }, z8.ztg);
-    //  return;
-    //}
-
-  },
-  gom: function (cg3 = 0) {
-    let z8 = this;
-    try {
-      cg3 = fn.a2i(cg3);
-      if (cg3 > 3) { return; };
-      idb.gom.chiphi({ prog: 'chiphi', }, z8, 0);
     } catch (err) {
       cg3 += 1;
-      setTimeout(() => { z8.gom(cg3); }, z8.ztg);
+      setTimeout(() => { z8.box_lua(cg3); }, z8.ztg);
       return;
     }
+    console.log("chiphi ", z8.tagid, ".box_lua z1=", JSON.stringify(z8.z1, null, 2));
   },
+
+
 };
 
 idb.taodb();

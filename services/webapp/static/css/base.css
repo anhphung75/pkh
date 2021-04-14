@@ -329,13 +329,13 @@ textarea {
   display: none;
 }
 
-.grid {
+.grid, .grix {
   display: grid;
   grid-auto-flow: row;
   list-style: none;
 }
 
-.gric {
+.gric, .griy {
   display: grid;
   grid-auto-flow: column;
   list-style: none;
@@ -347,7 +347,7 @@ textarea {
   list-style: none;
 }
 
-.flec {
+.flec, .fley {
   display: flex;
   flex-direction: column;
   list-style: none;
@@ -399,7 +399,15 @@ textarea {
   overflow: auto;
 }
 
-#tiendo, ol[class~=bang], ol[class~=tbl] {
+ol[class~=tblx] {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  white-space: nowrap;
+  overflow-x: auto;
+}
+
+#tiendo, ol[class~=bang], ol[class~=tbly] {
   padding: 0;
   margin: 0;
   list-style: none;
@@ -407,7 +415,7 @@ textarea {
   overflow-y: auto;
 }
 
-#tiendo>li {
+ol[class~=tblx]>li, #tiendo>li {
   display: inline-block;
   padding: 1pt;
   margin: 0;
