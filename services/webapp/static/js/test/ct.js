@@ -2867,66 +2867,7 @@ const chiphi = {
     { idma: "1", plcp: 'cpvt', mota: "Mô tả chi phí 1", dvt: "Đvt 1" },
     { idma: "2", plcp: 'cpvt', mota: "Mô tả chi phí 2", dvt: "Đvt 2" },
   ],
-  gom: function (cg3 = 0) {
-    let z8 = this;
-    try {
-      cg3 = fn.a2i(cg3);
-      if (cg3 > 3) { return; };
-      idb.gom.chiphi({ prog: 'chiphi', }, z8, 0);
-    } catch (err) {
-      cg3 += 1;
-      setTimeout(() => { z8.gom(cg3); }, z8.ztg);
-      return;
-    }
-  },
-  loc: function (cg3 = 0) {
-    let k, v, r, s, ss, mota, plcp,
-      z8 = this,
-      d8 = z8.d8,
-      l8 = [{ idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },],
-      ltim = [z8.stim, ...z8.ltim],
-      isok = true;
-    //try {
-    cg3 = fn.a2i(cg3);
-    if (cg3 > 3) { return; };
-    plcp = fn.a2sl(z8.plcp);
-    for (k in d8) {
-      r = { ...d8[k] };
-      ss = fn.a2sl(r);
-      isok = true;
-      if (r.plcp !== plcp) {
-        isok = false;
-      } else {
-        for (v of ltim) {
-          s = fn.a2sl(v);
-          if (!(ss.includes(s))) {
-            isok = false;
-            break;
-          }
-        }
-      }
-      if (isok) {
-        r.idma = k;
-        mota = r.mota.qtgt || r.mota;
-        r.mota = fn.stomau(mota, s);
-        r.dvt = fn.stomau(r.dvt, s);
-        l8.push(r);
-      }
-    }
-    l8 = l8.sort((a, b) => b.idma - a.idma);
-    z8.l8 = l8;
-    //} catch (err) {
-    //  cg3 += 1;
-    //  setTimeout(() => { z8.loc(cg3); }, z8.ztg);
-    //  return;
-    //}
-    console.log("chiphi ", z8.tagid, ".loc=", JSON.stringify(z8, null, 2));
-    if (d3.select("#xem").node()) {
-      z8.box_lua();
-    } else {
-      z8.xem(0);
-    }
-  },
+
   xem: function (cg3 = 0) {
     let tagid, zone, row, rec,
       z8 = this,
@@ -2973,8 +2914,8 @@ const chiphi = {
         //web.box.chiphi(el, d, stim);
       });
     //tim
-    z8.box_tim();
-    z8.box_lua();
+    z8.xac.tim(z8.ltim, 0, z8);
+    z8.loc(0);
 
     //} catch (err) {
     //  cg3 += 1;
@@ -2983,60 +2924,128 @@ const chiphi = {
     //}
 
   },
-  box_tim: function (zdl = null, cg3 = 0) {
-    let ss, rec, row,
-      z8 = this,
-      l8 = z8.ltim;
-    //try {
-    cg3 = fn.a2i(cg3);
-    if (cg3 > 3) { return; };
-    if (!zdl) zdl = z8.ltim;
-    if (zdl.constructor !== Array) zdl = [];
-    d3.select('#tim').selectAll('*').remove();
-    d3.select('#tim').append("ol")
-      .attr("class", 'tblx')
-      .selectAll("li").data(['__Xóa__', ...zdl])
-      .enter()
-      .append("li")
-      .attr("id", (d, i) => ['tim', i, 0].join('__'))
-      .attr("class", 'c')
-      .html((d, i) => {
-        let s = d + ` x`;
-        if (i == 0) s = `<i class="fa fa-trash"></i>`;
-        return s;
-      })
-      .on("click", (ev, d) => {
-        console.log("chiphi ", z8.tagid, ".box_tim tagid=", JSON.stringify(ev.target.id, null, 2));
-        zdl = d === '__Xóa__' ? [] : zdl.filter(rec => rec !== d);
-        z8.ltim = [...zdl];
-        z8.box_tim(zdl, 0);
-        console.log("chiphi ", z8.tagid, ".box_tim ltim=", JSON.stringify(z8.ltim, null, 2));
-      })
-      .on("mouseenter", function (ev) {
-        d3.select(this)
-          .classed('hov', true)
-          .style('color', 'red');
-      })
-      .on("mouseleave", function (ev) {
-        d3.select(this)
-          .classed('hov', false)
-          .style('color', 'black');
-      });
-    //} catch (err) {
-    //  cg3 += 1;
-    //  setTimeout(() => { z8.box_tim(cg3); }, z8.ztg);
-    //  return;
-    //}
-    console.log("chiphi ", z8.tagid, ".box_tim=", JSON.stringify(z8, null, 2));
-  },
-  box_lua: function (cg3 = 0) {
-    let ss, rec, row,
-      z8 = this,
-      l8 = z8.l8;
-    try {
+  fn: {
+    gom: function (cg3 = 0) {
+      let z8 = this;
+      try {
+        cg3 = fn.a2i(cg3);
+        if (cg3 > 3) { return; };
+        idb.gom.chiphi({ prog: 'chiphi', }, z8, 0);
+      } catch (err) {
+        cg3 += 1;
+        setTimeout(() => { z8.gom(cg3); }, z8.ztg);
+        return;
+      }
+    },
+    loc: function (cg3 = 0) {
+      let k, v, r, s, ss, mota, plcp,
+        z8 = this,
+        d8 = z8.d8,
+        l8 = [{ idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },],
+        ltim = [z8.stim, ...z8.ltim],
+        isok = true;
+      //try {
       cg3 = fn.a2i(cg3);
       if (cg3 > 3) { return; };
-      rec = d3.select('#lua').selectAll("li").data(l8);
+      plcp = fn.a2sl(z8.plcp);
+      for (k in d8) {
+        r = { ...d8[k] };
+        ss = fn.a2sl(r);
+        isok = true;
+        if (r.plcp !== plcp) {
+          isok = false;
+        } else {
+          for (v of ltim) {
+            s = fn.a2sl(v);
+            if (!(ss.includes(s))) {
+              isok = false;
+              break;
+            }
+          }
+        }
+        if (isok) {
+          r.idma = k;
+          mota = r.mota.qtgt || r.mota;
+          r.mota = fn.stomau(mota, s);
+          r.dvt = fn.stomau(r.dvt, s);
+          l8.push(r);
+        }
+      }
+      l8 = l8.sort((a, b) => b.idma - a.idma);
+      z8.l8 = l8;
+      //} catch (err) {
+      //  cg3 += 1;
+      //  setTimeout(() => { z8.loc(cg3); }, z8.ztg);
+      //  return;
+      //}
+      console.log("chiphi ", z8.tagid, ".loc=", JSON.stringify(z8, null, 2));
+      if (d3.select("#xem").node()) {
+        z8.xac.lua(z8.l8, 0, z8);
+      } else {
+        z8.xem(0);
+      }
+    },
+  },
+  vw: {
+    tim: function (zr = null, cg = 0, zs = chiphi) {
+      console.log("chiphi start ", zs.tagid, ".xac.tim zs=", JSON.stringify(zs, null, 2));
+      let rec, row;
+      //try {
+      cg = fn.a2i(cg);
+      if (cg > 3) return zs;
+      d3.select('#tim').selectAll('*').remove();
+      if (!zr) zr = zs.ltim;
+      if (zr.constructor !== Array || zr.length < 1) {
+        console.log("exit by zr");
+        return zs;
+      }
+      console.log("start chiphi.xac.tim zr=", JSON.stringify(zr, null, 2));
+      rec = d3.select('#tim')
+        .append("ol")
+        .attr("class", 'tblx')
+        .selectAll("li").data(['__Xóa__', ...zr]);
+      row = rec.exit().remove();
+      row = rec.enter()
+        .append("li")
+        .attr("id", (d, i) => ['tim', i, 0].join('__'))
+        .attr("class", 'c')
+        .html((d, i) => {
+          let s = d + ` x`;
+          if (i == 0) s = `<i class="fa fa-trash"></i>`;
+          return s;
+        })
+        .on("click", (ev, d) => {
+          zr = d === '__Xóa__' ? [] : zr.filter(rec => rec !== d);
+          zs.ltim = [...zr];
+          zs.xac.tim(zr, 0, zs);
+          //zs.loc(0);
+          console.log("chiphi.xac.tim click=", JSON.stringify(zs.ltim, null, 2));
+        })
+        .on("mouseenter", function (ev) {
+          d3.select(this)
+            .classed('hov', true)
+            .style('color', 'red');
+        })
+        .on("mouseleave", function (ev) {
+          d3.select(this)
+            .classed('hov', false)
+            .style('color', 'black');
+        });
+      //} catch (err) {
+      //  cg += 1;
+      //  setTimeout(() => { zs.box_tim(zr,cg,zs); }, zs.ztg);
+      //}
+      console.log("chiphi end ", zs.tagid, ".xac.tim=", JSON.stringify(zs, null, 2));
+      //return zs;
+    },
+    lua: function (zr = null, cg = 0, zs = chiphi) {
+      let rec, row;
+      //try {
+      cg = fn.a2i(cg);
+      if (cg > 3) return zs;
+      if (!zr) zr = zs.l8;
+      if (zr.constructor !== Array || zr.length < 1) return zs;
+      rec = d3.select('#lua').selectAll("li").data(zr);
       row = rec.exit().remove();
       row = rec.enter()
         .append("li")
@@ -3046,20 +3055,20 @@ const chiphi = {
         .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
         .on("click", (ev, d) => {
           if (ev.target.id != 'chiphi__0__0') {
-            z8.z1 = d;
+            zs.z1 = d;
             d3.selectAll("#xem").remove();
-            console.log("chiphi ", z8.tagid, ".box_lua z8=", JSON.stringify(chiphi, null, 2));
+            console.log("chiphi ", zs.tagid, ".box_lua zs=", JSON.stringify(chiphi, null, 2));
           }
         });
       //cells
       row.append("div")
         .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
         .attr("class", (d, i) => {
-          ss = ['fb fito chiphi r', i, ' c1'].join('');
+          let s = ['fb fito chiphi r', i, ' c1'].join('');
           if (i == 0) {
-            return ['c u', ss].join(' ');
+            return ['c u', s].join(' ');
           } else {
-            return ['l', ss].join(' ');
+            return ['l', s].join(' ');
           }
         })
         .style("line-height", "100%")
@@ -3097,14 +3106,14 @@ const chiphi = {
           web.tagid = ev.target.id;
           web.hov_outtag(web.tagid);
         });
-    } catch (err) {
-      cg3 += 1;
-      setTimeout(() => { z8.box_lua(cg3); }, z8.ztg);
-      return;
-    }
-    console.log("chiphi ", z8.tagid, ".box_lua z1=", JSON.stringify(z8.z1, null, 2));
+      //} catch (err) {
+      //  cg += 1;
+      //  setTimeout(() => { zs.box_tim(zr,cg,zs); }, zs.ztg);
+      //}
+      console.log("chiphi ", zs.tagid, ".xac.lua=", JSON.stringify(chiphi, null, 2));
+      return zs;
+    },
   },
-
 
 };
 
