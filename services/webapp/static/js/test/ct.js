@@ -66,8 +66,17 @@ const fn = {
   },
 };
 
-const ga = {
-
+var ga = {
+  chiphi: {
+    tjan: 0,
+    ltim: ['cpvt', 'chiphi', '1'],
+    z1: { idma: 123, mota: '', dvt: '' },
+    ttdl: {},
+    d8: {
+      '1': { plcp: 'cpvt', mota: 'chiphi 1', dvt: 'dvt 1', qrcode: '', barcode: '1', tjan: 0 },
+      '2': { plcp: 'cpvt', mota: 'chiphi 2', dvt: 'dvt 2', qrcode: '', barcode: '1', tjan: 0 },
+    },
+  },
 };
 
 const hoso = {
