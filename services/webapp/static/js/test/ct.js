@@ -3126,11 +3126,70 @@ const chiphi = {
 
 };
 
+var bo = {
+  ltim: ['2021', 'cpxd', 'anh ne'],
+}
+var otim = {
+  tc: 1,
+  xem: function (vo = { tagid: '', ltim: [] }, cg = 0, ra = []) {
+    let tag, tagid, ltim, zone, rec, row;
+    try {
+      cg = fn.a2i(cg);
+      if (cg > 3) return ra;
+      tag = fn.a2sl(vo.tagid || 'otim');
+      if (tag.charAt(0) == '#') tag = tag.substr(1);;
+      tagid = '#' + tag;
+      vo.tagid = tagid;
+      zone = d3.select(tagid);
+      zone.selectAll('*').remove();
+      if (vo.ltim.length > 0) {
+        console.log("start dk otim vo=", JSON.stringify(vo, null, 2));
+        zone.append("ol")
+          .attr("class", 'tblx')
+          .selectAll("li").data(['__Xóa__', ...vo.ltim])
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => [tag, 'tim', i, 0].join('__'))
+          .attr("class", 'c')
+          .html((d, i) => {
+            let s = d + ` x`;
+            if (i == 0) s = `<i class="fa fa-trash"></i>`;
+            return s;
+          })
+          .on("click", (ev, d) => {
+            vo.ltim = d === '__Xóa__' ? [] : vo.ltim.filter(r => r !== d);
+            this.xem(vo, 1);
+            //console.log("otim click=", JSON.stringify(ra, null, 2));
+          })
+          .on("mouseenter", function (ev) {
+            d3.select(this)
+              .classed('hov', true)
+              .style('color', 'red');
+          })
+          .on("mouseleave", function (ev) {
+            d3.select(this)
+              .classed('hov', false)
+              .style('color', 'black');
+          });
+      }
+    } catch (err) {
+      cg += 1;
+      setTimeout(() => this.xem(vo, cg), this.tc);
+    }
+    ra = vo.ltim;
+    console.log("otim end ", tagid, "bo.ltim=", JSON.stringify(bo.ltim, null, 2));
+    console.log("otim end ", tagid, "ra=", JSON.stringify(ra, null, 2));
+    return ra;
+  }
+}
+
+
 idb.taodb();
 //web.tao();
 //_cpx.gom(0);
 //_cpx.moi(0);
-chiphi.xem(0);
+let kq = otim.xem({ tagid: 'test', ltim: bo.ltim });
+console.log("kq=", JSON.stringify(kq, null, 2));
 //idb.nap.cpx({ "chiphi": "100" });
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgnc', plgia: 'dutoan' }, 0)
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgmtc', plgia: 'dutoan' }, 0)
