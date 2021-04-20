@@ -1271,7 +1271,8 @@ def updulieu():
     Upxac('qlmltd', 2019)
     Upxac('pkh', 2021)
 # Csdl("pkh")
-# Qtgt("pkh").nap_qtgt()
+#Qtgt("pkh").nap_qtgt()
 
 
 updulieu()
+#Qtgt("pkh").tao()

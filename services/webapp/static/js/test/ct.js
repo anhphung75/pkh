@@ -3126,27 +3126,31 @@ const chiphi = {
 
 };
 
-var bo = {
+var da = {
   ltim: ['2021', 'cpxd', 'anh ne'],
 }
+
 var otim = {
-  tc: 1,
-  xem: function (vo = { tagid: '', ltim: [] }, cg = 0, ra = []) {
-    let tag, tagid, ltim, zone, rec, row;
+  tv: 1,
+  tag: 'otim',
+  l8: [],
+  xem: function (dl = { tagid: '', ltim: [] }, cg = 0) {
+    let tag, tagid, ltim, zone, rec, row,
+      t = this;
     try {
       cg = fn.a2i(cg);
-      if (cg > 3) return ra;
-      tag = fn.a2sl(vo.tagid || 'otim');
-      if (tag.charAt(0) == '#') tag = tag.substr(1);;
+      if (cg > 3) return t.l8;
+      tag = fn.a2sl(dl.tag || dl.tagid || t.tag);
+      if (tag.charAt(0) == '#') tag = tag.substr(1);
       tagid = '#' + tag;
-      vo.tagid = tagid;
+      ltim = dl.ltim || t.l8;
       zone = d3.select(tagid);
       zone.selectAll('*').remove();
-      if (vo.ltim.length > 0) {
-        console.log("start dk otim vo=", JSON.stringify(vo, null, 2));
+      if (ltim.length > 0) {
+        console.log("start dk otim dl=", JSON.stringify(dl, null, 2));
         zone.append("ol")
           .attr("class", 'tblx')
-          .selectAll("li").data(['__Xóa__', ...vo.ltim])
+          .selectAll("li").data(['__Xóa__', ...ltim])
           .enter()
           .append("li")
           .attr("id", (d, i) => [tag, 'tim', i, 0].join('__'))
@@ -3157,9 +3161,9 @@ var otim = {
             return s;
           })
           .on("click", (ev, d) => {
-            vo.ltim = d === '__Xóa__' ? [] : vo.ltim.filter(r => r !== d);
-            this.xem(vo, 1);
-            //console.log("otim click=", JSON.stringify(ra, null, 2));
+            ltim = d === '__Xóa__' ? [] : ltim.filter(r => r !== d);
+            t.l8 = ltim;
+            t.xem({ tag: tag, ltim: ltim }, 1);
           })
           .on("mouseenter", function (ev) {
             d3.select(this)
@@ -3174,12 +3178,13 @@ var otim = {
       }
     } catch (err) {
       cg += 1;
-      setTimeout(() => this.xem(vo, cg), this.tc);
+      setTimeout(() => t.xem({ tag: tag, ltim: ltim }, cg), t.tv);
     }
-    ra = vo.ltim;
-    console.log("otim end ", tagid, "bo.ltim=", JSON.stringify(bo.ltim, null, 2));
-    console.log("otim end ", tagid, "ra=", JSON.stringify(ra, null, 2));
-    return ra;
+    //ra = dl.ltim;
+    console.log("otim end ", tagid, "da.ltim=", JSON.stringify(da.ltim, null, 2));
+    console.log("otim end ", tagid, "dl=", JSON.stringify(dl, null, 2));
+    console.log("otim end ", tagid, "t=", JSON.stringify(t, null, 2));
+    return ltim;
   }
 }
 
@@ -3188,7 +3193,7 @@ idb.taodb();
 //web.tao();
 //_cpx.gom(0);
 //_cpx.moi(0);
-let kq = otim.xem({ tagid: 'test', ltim: bo.ltim });
+let kq = otim.xem({ tagid: 'test', ltim: da.ltim });
 console.log("kq=", JSON.stringify(kq, null, 2));
 //idb.nap.cpx({ "chiphi": "100" });
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgnc', plgia: 'dutoan' }, 0)
