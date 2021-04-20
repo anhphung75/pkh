@@ -2898,7 +2898,7 @@ const chiphi = {
       .style("max-height", "10.25rem")
       .style("overflow-y", "auto")
       .style("border", "1px solid #d4d4d4")
-      .selectAll("li").data(['inp', 'tim', 'lua'])
+      .selectAll("li").data(['inp', 'otim', 'lua'])
       .enter()
       .append("li")
       .attr("id", d => d)
@@ -3135,7 +3135,7 @@ var otim = {
   tag: 'otim',
   l8: [],
   xem: function (dl = { tagid: '', ltim: [] }, cg = 0) {
-    let tag, tagid, ltim, zone, rec, row,
+    let tag, tagid, zone,
       t = this;
     try {
       cg = fn.a2i(cg);
@@ -3143,14 +3143,15 @@ var otim = {
       tag = fn.a2sl(dl.tag || dl.tagid || t.tag);
       if (tag.charAt(0) == '#') tag = tag.substr(1);
       tagid = '#' + tag;
-      ltim = dl.ltim || t.l8;
+      dl = dl.ltim || dl.dstim || dl.stim || t.l8;
+      t.l8 = dl.constructor !== Array ? [dl] : dl;
       zone = d3.select(tagid);
+      if (!zone.node()) t.l8 = [];
       zone.selectAll('*').remove();
-      if (ltim.length > 0) {
-        console.log("start dk otim dl=", JSON.stringify(dl, null, 2));
+      if (t.l8.length > 0) {
         zone.append("ol")
           .attr("class", 'tblx')
-          .selectAll("li").data(['__Xóa__', ...ltim])
+          .selectAll("li").data(['__Xóa__', ...t.l8])
           .enter()
           .append("li")
           .attr("id", (d, i) => [tag, 'tim', i, 0].join('__'))
@@ -3161,16 +3162,15 @@ var otim = {
             return s;
           })
           .on("click", (ev, d) => {
-            ltim = d === '__Xóa__' ? [] : ltim.filter(r => r !== d);
-            t.l8 = ltim;
-            t.xem({ tag: tag, ltim: ltim }, 1);
+            t.l8 = d === '__Xóa__' ? [] : t.l8.filter(r => r !== d);
+            t.xem({ tag: tag, ltim: t.l8 }, 1);
           })
-          .on("mouseenter", function (ev) {
+          .on("mouseenter", function () {
             d3.select(this)
               .classed('hov', true)
               .style('color', 'red');
           })
-          .on("mouseleave", function (ev) {
+          .on("mouseleave", function () {
             d3.select(this)
               .classed('hov', false)
               .style('color', 'black');
@@ -3178,13 +3178,10 @@ var otim = {
       }
     } catch (err) {
       cg += 1;
-      setTimeout(() => t.xem({ tag: tag, ltim: ltim }, cg), t.tv);
+      setTimeout(() => t.xem({ tag: tag, ltim: t.l8 }, cg), t.tv);
     }
-    //ra = dl.ltim;
-    console.log("otim end ", tagid, "da.ltim=", JSON.stringify(da.ltim, null, 2));
-    console.log("otim end ", tagid, "dl=", JSON.stringify(dl, null, 2));
     console.log("otim end ", tagid, "t=", JSON.stringify(t, null, 2));
-    return ltim;
+    return t.l8;
   }
 }
 
@@ -3193,7 +3190,7 @@ idb.taodb();
 //web.tao();
 //_cpx.gom(0);
 //_cpx.moi(0);
-let kq = otim.xem({ tagid: 'test', ltim: da.ltim });
+let kq = otim.xem({ ltim: 'da.ltim' });
 console.log("kq=", JSON.stringify(kq, null, 2));
 //idb.nap.cpx({ "chiphi": "100" });
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgnc', plgia: 'dutoan' }, 0)

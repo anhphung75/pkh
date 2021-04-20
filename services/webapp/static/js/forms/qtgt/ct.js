@@ -85,57 +85,60 @@ var bo = {
   },
 };
 
-var otim = (vo = { tagid: '', ltim: [] }, cg = 0, ra = []) => {
-  console.log("chiphi start ", zs.tagid, ".xac.tim zs=", JSON.stringify(zs, null, 2));
-  let rec, row;
-  //try {
-  cg = fn.a2i(cg);
-  if (cg > 3) return ra;
-  d3.select('#tim').selectAll('*').remove();
-  if (!zr) zr = zs.ltim;
-  if (zr.constructor !== Array || zr.length < 1) {
-    console.log("exit by zr");
-    return zs;
+var otim = {
+  tv: 1,
+  tag: 'otim',
+  l8: [],
+  xem: function (dl = { tagid: '', ltim: [] }, cg = 0) {
+    let tag, tagid, zone,
+      t = this;
+    try {
+      cg = fn.a2i(cg);
+      if (cg > 3) return t.l8;
+      tag = fn.a2sl(dl.tag || dl.tagid || t.tag);
+      if (tag.charAt(0) == '#') tag = tag.substr(1);
+      tagid = '#' + tag;
+      dl = dl.ltim || dl.dstim || dl.stim || t.l8;
+      t.l8 = dl.constructor !== Array ? [dl] : dl;
+      zone = d3.select(tagid);
+      if (!zone.node()) t.l8 = [];
+      zone.selectAll('*').remove();
+      if (t.l8.length > 0) {
+        zone.append("ol")
+          .attr("class", 'tblx')
+          .selectAll("li").data(['__Xóa__', ...t.l8])
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => [tag, 'tim', i, 0].join('__'))
+          .attr("class", 'c')
+          .html((d, i) => {
+            let s = d + ` x`;
+            if (i == 0) s = `<i class="fa fa-trash"></i>`;
+            return s;
+          })
+          .on("click", (ev, d) => {
+            t.l8 = d === '__Xóa__' ? [] : t.l8.filter(r => r !== d);
+            t.xem({ tag: tag, ltim: t.l8 }, 1);
+          })
+          .on("mouseenter", function () {
+            d3.select(this)
+              .classed('hov', true)
+              .style('color', 'red');
+          })
+          .on("mouseleave", function () {
+            d3.select(this)
+              .classed('hov', false)
+              .style('color', 'black');
+          });
+      }
+    } catch (err) {
+      cg += 1;
+      setTimeout(() => t.xem({ tag: tag, ltim: t.l8 }, cg), t.tv);
+    }
+    console.log("otim end ", tagid, "t=", JSON.stringify(t, null, 2));
+    return t.l8;
   }
-  console.log("start chiphi.xac.tim zr=", JSON.stringify(zr, null, 2));
-  rec = d3.select('#tim')
-    .append("ol")
-    .attr("class", 'tblx')
-    .selectAll("li").data(['__Xóa__', ...zr]);
-  row = rec.exit().remove();
-  row = rec.enter()
-    .append("li")
-    .attr("id", (d, i) => ['tim', i, 0].join('__'))
-    .attr("class", 'c')
-    .html((d, i) => {
-      let s = d + ` x`;
-      if (i == 0) s = `<i class="fa fa-trash"></i>`;
-      return s;
-    })
-    .on("click", (ev, d) => {
-      zr = d === '__Xóa__' ? [] : zr.filter(rec => rec !== d);
-      zs.ltim = [...zr];
-      zs.xac.tim(zr, 0, zs);
-      //zs.loc(0);
-      console.log("chiphi.xac.tim click=", JSON.stringify(zs.ltim, null, 2));
-    })
-    .on("mouseenter", function (ev) {
-      d3.select(this)
-        .classed('hov', true)
-        .style('color', 'red');
-    })
-    .on("mouseleave", function (ev) {
-      d3.select(this)
-        .classed('hov', false)
-        .style('color', 'black');
-    });
-  //} catch (err) {
-  //  cg += 1;
-  //  setTimeout(() => { zs.box_tim(zr,cg,zs); }, zs.ztg);
-  //}
-  console.log("chiphi end ", zs.tagid, ".xac.tim=", JSON.stringify(zs, null, 2));
-  return ra;
-};
+}
 
 const qtgt = {
   cv: 0, zcv: 1,
