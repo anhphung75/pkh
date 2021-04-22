@@ -2858,7 +2858,7 @@ const web = {
 };
 
 const chiphi = {
-  ztg: 222,
+  tc: 222, tv: 1,
   cv: 0, zcv: 1,
   tagid: 'test',
   plcp: 'cpvt',
@@ -2877,7 +2877,7 @@ const chiphi = {
     { idma: "2", plcp: 'cpvt', mota: "Mô tả chi phí 2", dvt: "Đvt 2" },
   ],
 
-  xem: function (cg3 = 0) {
+  xem_old: function (cg3 = 0) {
     let tagid, zone, row, rec,
       z8 = this,
       z1 = z8.z1,
@@ -3123,6 +3123,187 @@ const chiphi = {
       return zs;
     },
   },
+  vhop: function (cg3 = 0) {
+    let tag, tagid, zone,
+      t = this;
+    //try {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) {
+      d3.selectAll("#xem").remove();
+      return;
+    };
+    tag = fn.a2sl(t.tagid);
+    if (tag.charAt(0) == '#') tag = tag.substr(1);
+    tagid = '#' + tag;
+    d3.selectAll("#xem").remove();
+    zone = d3.select(tagid).append("ol")
+      .attr("id", "xem")
+      .style("list-style", "none")
+      .style("margin", 0)
+      .style("padding", 0)
+      .style("max-height", "10.25rem")
+      .style("overflow-y", "auto")
+      .style("border", "1px solid #d4d4d4")
+      .selectAll("li").data(['inp', 'otim', 'lua'])
+      .enter()
+      .append("li")
+      .attr("id", d => d)
+      .attr("class", "bb");
+    //} catch (err) {
+    //  cg3 += 1;
+    //  setTimeout(() => t.vhop(cg3), t.tv);
+    //  return;
+    //}
+
+  },
+  vinp: function (cg3 = 0) {
+    let tag, tagid, zone,
+      t = this;
+    //try {
+    zone = d3.select("#inp");
+    zone.selectAll("*").remove();
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) return;
+    zone.append('textarea')
+      .attr("class", "j w100 fito")
+      .attr("rows", 1)
+      .style("margin", 0)
+      .style("padding", "1pt")
+      .style("outline", "none")
+      .text(z1.mota || z8.stim)
+      .on("keydown", function (ev) {
+        let s = fn.a2sl(ev.target.value);
+        let zone, h, d, c, t;
+        switch (ev.keyCode) {
+          case 13: //enter goto 1st hosoloc
+          case 45: //insert
+            if (s.length > 0 && t.ltim.indexOf(s) === -1) {
+              t.ltim.push(s);
+            }
+            this.value = "";
+            t.vtim();
+            break;
+          case 38: //mui ten len
+            break;
+          case 40: //mui ten xuong
+            break;
+          default:
+            console.log("btn=", ev.code, " keyCode=", ev.keyCode);
+        }
+      })
+      .on("input", function (ev, d) {
+        let tag = ev.target;
+        d3.select(tag).classed("fito", false);
+        tag.style.height = 'auto';
+        tag.style.height = [tag.scrollHeight, 'px'].join('');
+        t.stim = fn.a2sl(tag.value);
+        //web.box.chiphi(el, d, stim);
+      });
+
+
+    //} catch (err) {
+    //  cg3 += 1;
+    //  setTimeout(() => t.vinp(cg3), t.tv);
+    //  return;
+    //}
+
+  },
+  vtim: function (dl = { tagid: '', ltim: [] }, cg = 0) {
+    let tag, tagid, zone,
+      t = this;
+    try {
+      cg = fn.a2i(cg);
+      if (cg > 3) return t.l8;
+      tag = fn.a2sl(dl.tag || dl.tagid || t.tag);
+      if (tag.charAt(0) == '#') tag = tag.substr(1);
+      tagid = '#' + tag;
+      dl = dl.ltim || dl.dstim || dl.stim || t.ltim;
+      t.l8 = dl.constructor !== Array ? [dl] : dl;
+      zone = d3.select(tagid);
+      if (!zone.node()) t.l8 = [];
+      zone.selectAll('*').remove();
+      if (t.l8.length > 0) {
+        zone.append("ol")
+          .attr("class", 'tblx')
+          .selectAll("li").data(['__Xóa__', ...t.l8])
+          .enter()
+          .append("li")
+          .attr("id", (d, i) => [tag, 'tim', i, 0].join('__'))
+          .attr("class", 'c')
+          .html((d, i) => {
+            let s = d + ` x`;
+            if (i == 0) s = `<i class="fa fa-trash"></i>`;
+            return s;
+          })
+          .on("click", (ev, d) => {
+            t.l8 = d === '__Xóa__' ? [] : t.l8.filter(r => r !== d);
+            t.xem({ tag: tag, ltim: t.l8 }, 1);
+          })
+          .on("mouseenter", function () {
+            d3.select(this)
+              .classed('hov', true)
+              .style('color', 'red');
+          })
+          .on("mouseleave", function () {
+            d3.select(this)
+              .classed('hov', false)
+              .style('color', 'black');
+          });
+      }
+    } catch (err) {
+      cg += 1;
+      setTimeout(() => t.xem({ tag: tag, ltim: t.l8 }, cg), t.tv);
+    }
+    console.log("otim end ", tagid, "t=", JSON.stringify(t, null, 2));
+    return t.l8;
+  },
+  vlua: function (dl = { tagid: '', ltim: [] }, cg = 0) {
+    let tag, tagid, zone,
+      t = this;
+    //try {
+    cg = fn.a2i(cg);
+    if (cg > 3) return t.l8;
+    tag = fn.a2sl(dl.tag || dl.tagid || t.tag);
+    if (tag.charAt(0) == '#') tag = tag.substr(1);
+    tagid = '#' + tag;
+    dl = dl.ltim || dl.dstim || dl.stim || t.l8;
+    t.l8 = dl.constructor !== Array ? [dl] : dl;
+    zone = d3.select(tagid);
+    if (!zone.node()) t.l8 = [];
+    zone.selectAll('*').remove();
+    if (t.l8.length > 0) {
+      zone.append("ol")
+        .attr("class", 'tblx')
+        .selectAll("li").data(['__Xóa__', ...t.l8])
+        .enter()
+        .append("li")
+        .attr("id", (d, i) => [tag, 'tim', i, 0].join('__'))
+        .attr("class", 'c')
+        .html((d, i) => {
+          let s = d + ` x`;
+          if (i == 0) s = `<i class="fa fa-trash"></i>`;
+          return s;
+        })
+        .on("click", (ev, d) => {
+          t.l8 = d === '__Xóa__' ? [] : t.l8.filter(r => r !== d);
+          t.xem({ tag: tag, ltim: t.l8 }, 1);
+        })
+        .on("mouseenter", function () {
+          d3.select(this)
+            .classed('hov', true)
+            .style('color', 'red');
+        })
+        .on("mouseleave", function () {
+          d3.select(this)
+            .classed('hov', false)
+            .style('color', 'black');
+        });
+    }
+    //} catch (err) {
+    //  cg += 1;
+    //  setTimeout(() => t.xem({ tag: tag, ltim: t.l8 }, cg), t.tv);
+    //}
+  },
 
 };
 
@@ -3185,12 +3366,68 @@ var otim = {
   }
 }
 
+var wa = {
+  otim: {
+    tv: 1,
+    tag: 'otim',
+    l8: [],
+    xem: function (dl = { tagid: '', ltim: [] }, cg = 0) {
+      let tag, tagid, zone,
+        t = this;
+      try {
+        cg = fn.a2i(cg);
+        if (cg > 3) return t.l8;
+        tag = fn.a2sl(dl.tag || dl.tagid || t.tag);
+        if (tag.charAt(0) == '#') tag = tag.substr(1);
+        tagid = '#' + tag;
+        dl = dl.ltim || dl.dstim || dl.stim || t.l8;
+        t.l8 = dl.constructor !== Array ? [dl] : dl;
+        zone = d3.select(tagid);
+        if (!zone.node()) t.l8 = [];
+        zone.selectAll('*').remove();
+        if (t.l8.length > 0) {
+          zone.append("ol")
+            .attr("class", 'tblx')
+            .selectAll("li").data(['__Xóa__', ...t.l8])
+            .enter()
+            .append("li")
+            .attr("id", (d, i) => [tag, 'tim', i, 0].join('__'))
+            .attr("class", 'c')
+            .html((d, i) => {
+              let s = d + ` x`;
+              if (i == 0) s = `<i class="fa fa-trash"></i>`;
+              return s;
+            })
+            .on("click", (ev, d) => {
+              t.l8 = d === '__Xóa__' ? [] : t.l8.filter(r => r !== d);
+              t.xem({ tag: tag, ltim: t.l8 }, 1);
+            })
+            .on("mouseenter", function () {
+              d3.select(this)
+                .classed('hov', true)
+                .style('color', 'red');
+            })
+            .on("mouseleave", function () {
+              d3.select(this)
+                .classed('hov', false)
+                .style('color', 'black');
+            });
+        }
+      } catch (err) {
+        cg += 1;
+        setTimeout(() => t.xem({ tag: tag, ltim: t.l8 }, cg), t.tv);
+      }
+      console.log("otim end ", tagid, "t=", JSON.stringify(t, null, 2));
+      return t.l8;
+    }
+  }
+}
 
 idb.taodb();
 //web.tao();
 //_cpx.gom(0);
 //_cpx.moi(0);
-let kq = otim.xem({ ltim: 'da.ltim' });
+let kq = wa.otim.xem({ ltim: ['da.ltim', '2021', 'cpxd'] });
 console.log("kq=", JSON.stringify(kq, null, 2));
 //idb.nap.cpx({ "chiphi": "100" });
 //idb.nap.baogia({ baogia: 20190726, chiphi: 100, plbg: 'bgnc', plgia: 'dutoan' }, 0)
