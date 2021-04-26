@@ -28,6 +28,7 @@ class Dulieu:
         self.tbl_dot()
         self.tbl_donvithicong()
         self.tbl_qtvt()
+        self.nhansu()
 
     def tbl_dot(self):
         sql = (
@@ -89,6 +90,10 @@ class Dulieu:
         if ((dl == None) or (len(dl) < 1)):
             return
         self.cpvt = dl
+
+    def nhansu(self):
+        if self.ngaylap > 20210422:
+            self.duyet['nhanvien'] = 'Nguyễn Tuấn Ngọc'
 
 
 def dulieuin(schema):

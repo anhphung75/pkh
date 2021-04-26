@@ -30,6 +30,7 @@ class Dulieu:
         self.tinh_hoso()
         self.tinh_cpvl()
         self.tinh_cpong()
+        self.nhansu()
 
     def tbl_dot(self):
         sql = (
@@ -299,6 +300,10 @@ class Dulieu:
         for k in dl:
             tam.append(dl[k])
         self.cpong = tam
+
+    def nhansu(self):
+        if self.ngaylap > 20210422:
+            self.duyet['nhanvien'] = 'Nguyễn Tuấn Ngọc'
 
 
 def dulieuin(schema):

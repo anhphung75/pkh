@@ -2869,261 +2869,16 @@ const cpx = {
   ttdl: {},
   d8: {
     '1': { plcp: 'cpvt', mota: 'chiphi 1', dvt: 'dvt 1', qrcode: '', barcode: '1', tjan: 0 },
-    '2': { plcp: 'cpvt', mota: 'chiphi 2', dvt: 'dvt 2', qrcode: '', barcode: '1', tjan: 0 },
+    '2': { plcp: 'cpvt', mota: 'chiphi 2', dvt: 'dvt 2', qrcode: '', barcode: '2', tjan: 0 },
+    '3': { plcp: 'cpvt', mota: 'chiphi 3', dvt: 'dvt 3', qrcode: '', barcode: '3', tjan: 0 },
+    '4': { plcp: 'cpvt', mota: 'chiphi 4', dvt: 'dvt 4', qrcode: '', barcode: '4', tjan: 0 },
+    '5': { plcp: 'cpvt', mota: 'chiphi 5', dvt: 'dvt 5', qrcode: '', barcode: '5', tjan: 0 },
   },
   l8: [
     { idma: "Mã chi phí", plcp: 'cpvt', mota: "Mô tả chi phí", dvt: "Đvt" },
     { idma: "1", plcp: 'cpvt', mota: "Mô tả chi phí 1", dvt: "Đvt 1" },
     { idma: "2", plcp: 'cpvt', mota: "Mô tả chi phí 2", dvt: "Đvt 2" },
   ],
-
-  xem_old: function (cg3 = 0) {
-    let tagid, zone, row, rec,
-      z8 = this,
-      z1 = z8.z1,
-      l8 = z8.l8;
-
-    //try {
-    cg3 = fn.a2i(cg3);
-    if (cg3 > 3) { return; };
-    if (l8.length < 1) { return; }
-    tagid = fn.a2sl(z8.tagid);
-    if (tagid.charAt(0) !== '#') { tagid = '#' + tagid; }
-    d3.selectAll("#xem").remove();
-    zone = d3.select(tagid).append("ol")
-      .attr("id", "xem")
-      .style("list-style", "none")
-      .style("margin", 0)
-      .style("padding", 0)
-      .style("max-height", "10.25rem")
-      .style("overflow-y", "auto")
-      .style("border", "1px solid #d4d4d4")
-      .selectAll("li").data(['inp', 'otim', 'lua'])
-      .enter()
-      .append("li")
-      .attr("id", d => d)
-      .attr("class", "bb");
-
-    //input
-    d3.select('#inp')
-      .append('textarea')
-      .attr("class", "j w100 fito")
-      .attr("rows", 1)
-      .style("margin", 0)
-      .style("padding", "1pt")
-      .style("outline", "none")
-      .text(z1.mota || z8.stim)
-      .on("input", function (ev, d) {
-        let tag = ev.target;
-        z8.stim = tag.value;
-        z8.loc(0);
-        d3.select(tag).classed("fito", false);
-        tag.style.height = 'auto';
-        tag.style.height = [tag.scrollHeight, 'px'].join('');
-        //web.box.chiphi(el, d, stim);
-      });
-    //tim
-    z8.xac.tim(z8.ltim, 0, z8);
-    z8.loc(0);
-
-    //} catch (err) {
-    //  cg3 += 1;
-    //  setTimeout(() => { z8.xem(cg3); }, z8.ztg);
-    //  return;
-    //}
-
-  },
-  fn: {
-    gom: function (cg3 = 0) {
-      let z8 = this;
-      try {
-        cg3 = fn.a2i(cg3);
-        if (cg3 > 3) { return; };
-        idb.gom.chiphi({ prog: 'chiphi', }, z8, 0);
-      } catch (err) {
-        cg3 += 1;
-        setTimeout(() => { z8.gom(cg3); }, z8.ztg);
-        return;
-      }
-    },
-
-  },
-  vw: {
-    tim: function (zr = null, cg = 0, zs = chiphi) {
-      console.log("chiphi start ", zs.tagid, ".xac.tim zs=", JSON.stringify(zs, null, 2));
-      let rec, row;
-      //try {
-      cg = fn.a2i(cg);
-      if (cg > 3) return zs;
-      d3.select('#tim').selectAll('*').remove();
-      if (!zr) zr = zs.ltim;
-      if (zr.constructor !== Array || zr.length < 1) {
-        console.log("exit by zr");
-        return zs;
-      }
-      console.log("start chiphi.xac.tim zr=", JSON.stringify(zr, null, 2));
-      rec = d3.select('#tim')
-        .append("ol")
-        .attr("class", 'tblx')
-        .selectAll("li").data(['__Xóa__', ...zr]);
-      row = rec.exit().remove();
-      row = rec.enter()
-        .append("li")
-        .attr("id", (d, i) => ['tim', i, 0].join('__'))
-        .attr("class", 'c')
-        .html((d, i) => {
-          let s = d + ` x`;
-          if (i == 0) s = `<i class="fa fa-trash"></i>`;
-          return s;
-        })
-        .on("click", (ev, d) => {
-          zr = d === '__Xóa__' ? [] : zr.filter(rec => rec !== d);
-          zs.ltim = [...zr];
-          zs.xac.tim(zr, 0, zs);
-          //zs.loc(0);
-          console.log("chiphi.xac.tim click=", JSON.stringify(zs.ltim, null, 2));
-        })
-        .on("mouseenter", function (ev) {
-          d3.select(this)
-            .classed('hov', true)
-            .style('color', 'red');
-        })
-        .on("mouseleave", function (ev) {
-          d3.select(this)
-            .classed('hov', false)
-            .style('color', 'black');
-        });
-      //} catch (err) {
-      //  cg += 1;
-      //  setTimeout(() => { zs.box_tim(zr,cg,zs); }, zs.ztg);
-      //}
-      console.log("chiphi end ", zs.tagid, ".xac.tim=", JSON.stringify(zs, null, 2));
-      //return zs;
-    },
-    lua: function (zr = null, cg = 0, zs = chiphi) {
-      let rec, row;
-      //try {
-      cg = fn.a2i(cg);
-      if (cg > 3) return zs;
-      if (!zr) zr = zs.l8;
-      if (zr.constructor !== Array || zr.length < 1) return zs;
-      rec = d3.select('#lua').selectAll("li").data(zr);
-      row = rec.exit().remove();
-      row = rec.enter()
-        .append("li")
-        .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
-        .attr("class", (d, i) => i == 0 ? 'nen0' : 'l')
-        .style("display", "grid")
-        .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
-        .on("click", (ev, d) => {
-          if (ev.target.id != 'chiphi__0__0') {
-            zs.z1 = d;
-            d3.selectAll("#xem").remove();
-            console.log("chiphi ", zs.tagid, ".box_lua zs=", JSON.stringify(chiphi, null, 2));
-          }
-        });
-      //cells
-      row.append("div")
-        .attr("id", (d, i) => ['chiphi', i, 1].join('__'))
-        .attr("class", (d, i) => {
-          let s = ['fb fito chiphi r', i, ' c1'].join('');
-          if (i == 0) {
-            return ['c u', s].join(' ');
-          } else {
-            return ['l', s].join(' ');
-          }
-        })
-        .style("line-height", "100%")
-        //.style("grid-area", "1/1/3/2")
-        .html(d => d.idma);
-      row.append("div")
-        .attr("id", (d, i) => ['chiphi', i, 2].join('__'))
-        .attr("class", (d, i) => {
-          if (i == 0) {
-            return ['c u fb chiphi r', i, ' c2'].join('');
-          } else {
-            return ['l fb chiphi r', i, ' c2'].join('');
-          }
-        })
-        .style("line-height", "100%")
-        .html(d => d.mota);
-      row.append("div")
-        .attr("id", (d, i) => ['chiphi', i, 3].join('__'))
-        .attr("class", (d, i) => {
-          if (i == 0) {
-            return ['c u fb chiphi r', i, ' c3'].join('');
-          } else {
-            return ['l fb chiphi r', i, ' c3'].join('');
-          }
-        })
-        .style("line-height", "100%")
-        .html(d => d.dvt);
-      //hov div
-      row.selectAll('div')
-        .on("mouseenter", (ev) => {
-          web.tagid = ev.target.id;
-          web.hov_intag(web.tagid);
-        })
-        .on("mouseleave", (ev) => {
-          web.tagid = ev.target.id;
-          web.hov_outtag(web.tagid);
-        });
-      //} catch (err) {
-      //  cg += 1;
-      //  setTimeout(() => { zs.box_tim(zr,cg,zs); }, zs.ztg);
-      //}
-      console.log("chiphi ", zs.tagid, ".xac.lua=", JSON.stringify(chiphi, null, 2));
-      return zs;
-    },
-  },
-  floc: function (cg3 = 0) {
-    let k, v, r, s, ss, mota, plcp,
-      t = this,
-      d8 = t.d8,
-      l8 = [{ idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },],
-      ltim = [t.stim, ...t.ltim],
-      isok = true;
-    //try {
-    cg3 = fn.a2i(cg3);
-    if (cg3 > 3) { return; };
-    plcp = fn.a2sl(t.plcp);
-    for (k in d8) {
-      r = { ...d8[k] };
-      ss = fn.a2sl(r);
-      isok = true;
-      if (r.plcp !== plcp) {
-        isok = false;
-      } else {
-        for (v of ltim) {
-          s = fn.a2sl(v);
-          if (!(ss.includes(s))) {
-            isok = false;
-            break;
-          }
-        }
-      }
-      if (isok) {
-        r.idma = k;
-        mota = r.mota.qtgt || r.mota;
-        r.mota = fn.stomau(mota, s);
-        r.dvt = fn.stomau(r.dvt, s);
-        l8.push(r);
-      }
-    }
-    l8 = l8.sort((a, b) => b.idma - a.idma);
-    t.l8 = l8;
-    //} catch (err) {
-    //  cg3 += 1;
-    //  setTimeout(() => { t.loc(cg3); }, t.ztg);
-    //  return;
-    //}
-    console.log("chiphi ", t.tagid, ".loc=", JSON.stringify(t, null, 2));
-    if (d3.select("#xem").node()) {
-      t.xac.lua(t.l8, 0, t);
-    } else {
-      t.xem(0);
-    }
-  },
   wxem: function (cg3 = 0) {
     let tag, el0, box,
       t = this;
@@ -3176,16 +2931,17 @@ const cpx = {
       .text(t.z1.mota || t.stim)
       .on("keydown", function (ev) {
         let s = fn.a2sl(ev.target.value);
-        let box, h, d, c;
         switch (ev.keyCode) {
           case 13: //enter goto 1st hosoloc
+            ev.preventDefault();
+            
           case 45: //insert
             console.log("btn=insert");
             if (s.length > 0 && t.ltim.indexOf(s) === -1) {
               t.ltim.push(s);
             }
             this.value = "";
-            t.wtim();
+            t.wtim(0);
             break;
           case 38: //mui ten len
             break;
@@ -3201,6 +2957,7 @@ const cpx = {
         el.style.height = 'auto';
         el.style.height = [el.scrollHeight, 'px'].join('');
         t.stim = fn.a2sl(el.value);
+        t.wlua(0);
         //web.box.chiphi(el, d, stim);
       });
 
@@ -3258,55 +3015,100 @@ const cpx = {
     //  setTimeout(() => t.xem({ tag: tag, ltim: t.l8 }, cg), t.tv);
     //}
     console.log(tag, " otim end t=", JSON.stringify(t, null, 2));
-    //t.floc(0)
-    //t.wlua(0);
+    t.wlua(0);
   },
-  wlua: function (dl = { tagid: '', ltim: [] }, cg = 0) {
-    let tag, tagid, box,
-      t = this;
+  wlua: function (cg = 0) {
+    let box, plcp, l8, r, k, v, s, ss, isok, cells, j, mota,
+      t = this,
+      stim = fn.a2sl(t.stim),
+      ltim = [...t.ltim, stim];
     //try {
     cg = fn.a2i(cg);
     if (cg > 3) return t.l8;
-    tag = fn.a2sl(dl.tag || dl.tagid || t.tag);
-    if (tag.charAt(0) == '#') tag = tag.substr(1);
-    tagid = '#' + tag;
-    dl = dl.ltim || dl.dstim || dl.stim || t.l8;
-    t.l8 = dl.constructor !== Array ? [dl] : dl;
-    box = d3.select(tagid);
-    if (!box.node()) t.l8 = [];
-    box.selectAll('*').remove();
-    if (t.l8.length > 0) {
-      box.append("ol")
-        .attr("class", 'tblx')
-        .selectAll("li").data(['__Xóa__', ...t.l8])
-        .enter()
-        .append("li")
-        .attr("id", (d, i) => [tag, 'tim', i, 0].join('__'))
-        .attr("class", 'c')
+    plcp = fn.a2sl(t.plcp);
+    l8 = [];
+    for (k in t.d8) {
+      r = { ...t.d8[k] };
+      ss = fn.a2sl(r);
+      isok = true;
+      console.log("wlua r=", JSON.stringify(r, null, 2));
+      if (fn.a2sl(r.plcp) !== plcp) isok = false;
+      console.log("1 isok=", JSON.stringify(isok, null, 2));
+      if (isok) {
+        for (v of ltim) {
+          s = fn.a2sl(v);
+          if (!(ss.includes(s))) {
+            isok = false;
+            break;
+          }
+        }
+        console.log("2 isok=", JSON.stringify(isok, null, 2));
+      }
+      if (isok) {
+        r.idma = k;
+        mota = r.mota.qtgt || r.mota;
+        l8.push(r);
+      }
+    }
+    l8 = l8.sort((a, b) => a.idma - b.idma);
+    t.l8 = l8;
+    l8 = [
+      { idma: "Mã chi phí", mota: "Mô tả chi phí", dvt: "Đvt" },
+      { idma: "0", mota: "", dvt: "" }, ...l8];
+    //show
+    box = d3.select('#lua').selectAll("*").remove();
+    box = d3.select('#lua').selectAll("li").data(l8)
+      .enter()
+      .append("li")
+      .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
+      .attr("class", (d, i) => i == 0 ? 'nen0' : 'l')
+      .style("display", "grid")
+      .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
+      .on("click", (ev, d) => {
+        if (ev.target.id != 'chiphi__0__0') {
+          t.z1 = d;
+          d3.selectAll("#xem").remove();
+          console.log("chiphi .box_lua zs=", JSON.stringify(t, null, 2));
+        }
+      });
+    //cells
+    cells = ['idma', 'mota', 'dvt'];
+    for (j in cells) {
+      box.append("div")
+        .attr("id", (d, i) => ['chiphi', i, j + 1].join('__'))
+        .attr("class", (d, i) => {
+          if (i == 0) {
+            return ['c u fb fito chiphi', 'r' + i, 'c' + (j + 1)].join(' ');
+          } else {
+            return ['l fb fito chiphi', 'r' + i, 'c' + (j + 1)].join(' ');
+          }
+        })
+        .style("line-height", "100%")
+        //.style("grid-area", "1/1/3/2")
         .html((d, i) => {
-          let s = d + ` x`;
-          if (i == 0) s = `<i class="fa fa-trash"></i>`;
-          return s;
-        })
-        .on("click", (ev, d) => {
-          t.l8 = d === '__Xóa__' ? [] : t.l8.filter(r => r !== d);
-          t.xem({ tag: tag, ltim: t.l8 }, 1);
-        })
-        .on("mouseenter", function () {
-          d3.select(this)
-            .classed('hov', true)
-            .style('color', 'red');
-        })
-        .on("mouseleave", function () {
-          d3.select(this)
-            .classed('hov', false)
-            .style('color', 'black');
+          if (i !== 0) {
+            return fn.stomau(d[cells[j]], stim);
+          } else {
+            return d[cells[j]];
+          }
         });
     }
+    //hov div
+    box.selectAll('div')
+      .on("mouseenter", (ev) => {
+        web.tagid = ev.target.id;
+        web.hov_intag(web.tagid);
+      })
+      .on("mouseleave", (ev) => {
+        web.tagid = ev.target.id;
+        web.hov_outtag(web.tagid);
+      });
+
     //} catch (err) {
     //  cg += 1;
     //  setTimeout(() => t.xem({ tag: tag, ltim: t.l8 }, cg), t.tv);
     //}
+    console.log("cpx.wlua end cpx=", JSON.stringify(t, null, 2));
   },
 };
 

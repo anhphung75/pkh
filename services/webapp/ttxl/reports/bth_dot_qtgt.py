@@ -34,6 +34,7 @@ class Dulieu:
         self.tbl_donvithicong()
         self.tim_ztrongai()
         self.tim_zhoso_zchualam()
+        self.nhansu()
         # self.tim_khuvuc()
 
     def tao_chuoi_ngay(self, dngay):
@@ -164,6 +165,10 @@ class Dulieu:
             return
         self.zhoso = dl[0]["hoso"]
         self.zchualam = self.zhoso - self.zthicong - self.ztrongai
+
+    def nhansu(self):
+        if self.ngaylap > 20210422:
+            self.duyet['nhanvien'] = 'Nguyễn Tuấn Ngọc'
 
 
 def dulieuin(schema):

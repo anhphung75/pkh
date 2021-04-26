@@ -122,6 +122,7 @@ class Dulieu:
         self.dton_vl()
         self.tlmd()
         self.get_chiphiquanly()
+        self.nhansu()
 
     def tbl_qtgt(self):
         sql = (
@@ -455,6 +456,10 @@ class Dulieu:
             self.maubaocao = 'oc'
         else:
             self.maubaocao = 'on'
+
+    def nhansu(self):
+        if self.ngaylap > 20210422:
+            self.duyet['nhanvien'] = 'Nguyễn Tuấn Ngọc'
 
 
 def dulieuin(schema):
