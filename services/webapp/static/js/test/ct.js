@@ -2930,11 +2930,19 @@ const cpx = {
       .style("outline", "none")
       .text(t.z1.mota || t.stim)
       .on("keydown", function (ev) {
-        let s = fn.a2sl(ev.target.value);
+        let elid, s = fn.a2sl(ev.target.value);
+        if (!web.tagid.includes('chiphi__')) {
+          web.tagid = 'chiphi__1__0';
+          web.hov_intag(web.tagid);
+        }
         switch (ev.keyCode) {
           case 13: //enter goto 1st hosoloc
             ev.preventDefault();
-            
+            elid = web.tagid.charAt(0) !== '#' ? '#' + web.tagid : web.tagid;
+            t.z1.idma = d3.select(elid).attr("data-idma");
+            console.log("btn=", ev.code, " keyCode=", ev.keyCode);
+            console.log("btn t.z1=", JSON.stringify(t.z1, null, 2));
+            d3.selectAll("#xem").remove();
           case 45: //insert
             console.log("btn=insert");
             if (s.length > 0 && t.ltim.indexOf(s) === -1) {
@@ -3061,6 +3069,7 @@ const cpx = {
       .enter()
       .append("li")
       .attr("id", (d, i) => ['chiphi', i, 0].join('__'))
+      .attr("data-idma", d => d.idma)
       .attr("class", (d, i) => i == 0 ? 'nen0' : 'l')
       .style("display", "grid")
       .style("grid", "auto-flow minmax(1rem, max-content)/3fr 8fr 1fr")
@@ -3075,12 +3084,13 @@ const cpx = {
     cells = ['idma', 'mota', 'dvt'];
     for (j in cells) {
       box.append("div")
-        .attr("id", (d, i) => ['chiphi', i, j + 1].join('__'))
+        .attr("id", (d, i) => ['chiphi', i, fn.a2i(j) + 1].join('__'))
+        .attr("data-idma", d => d.idma)
         .attr("class", (d, i) => {
           if (i == 0) {
-            return ['c u fb fito chiphi', 'r' + i, 'c' + (j + 1)].join(' ');
+            return ['c u fb fito chiphi', 'r' + i, 'c' + (fn.a2i(j) + 1)].join(' ');
           } else {
-            return ['l fb fito chiphi', 'r' + i, 'c' + (j + 1)].join(' ');
+            return ['l fb fito chiphi', 'r' + i, 'c' + (fn.a2i(j) + 1)].join(' ');
           }
         })
         .style("line-height", "100%")
