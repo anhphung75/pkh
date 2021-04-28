@@ -66,6 +66,49 @@ const fn = {
   },
 };
 
+var da = {
+  cpx: {
+    '1': { plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp1', dvt: 'cai', "dutoan.20190726": { giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '2': { plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp2', dvt: 'cai', "dutoan.20190726": { giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+    '3': { plcp: 'cpxd', barcode: '', qrcode: '', mota: 'cp3', dvt: 'cai', "dutoan.20190726": { giavl: 100, gianc: 20, giamtc: 5000, giatl: 0 }, },
+  },
+  qtgt: {
+    123: {
+      tttt: {
+        maid: '2020.GMMP001.HC01.001',
+        oc_cpxd: { idma: 123, maid: 'kh001' },
+        oc_cpvt: { idma: 123, maid: 'kh001' },
+        oc_cpvl: { idma: 123, maid: 'kh001' },
+        oc_cptl: { idma: 123, maid: 'kh001' },
+        on_cpxd: { idma: 123, maid: 'kh001' },
+        on_cpvt: { idma: 123, maid: 'kh001' },
+        on_cpvl: { idma: 123, maid: 'kh001' },
+        on_cptl: { idma: 123, maid: 'kh001' },
+        cpql: { idma: 123, maid: 'kh001' },
+      },
+      ttdl: {
+        baogia: 20200827,
+        plgia: 'dutoan',
+        sodhn: 1,
+        gxd: 0,
+        tienkhach: 0,
+        tiencty: 0,
+        ngaylap: 20210101,
+        nguoilap: '',
+      },
+    },
+  },
+};
+
+var dx = {
+  cpx: { idma: 123, mota: '', dvt: '' },
+  qtgt: { idma: 123, plbg: 'dutoan', baogia: '20190726', cpql: '20190726' },
+  oc_cpxd: [
+    {},
+    {},
+  ]
+};
+
 var ga = {
   chiphi: {
     tjan: 0,
