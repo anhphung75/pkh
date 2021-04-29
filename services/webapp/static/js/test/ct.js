@@ -2802,77 +2802,58 @@ const idb = {
     } catch (err) { };
   },
   gom: {
-    cpx: (dk = { baogia: app.baogia, plgia: app.plgia }, zd8 = app.cpx, cg3 = 0) => {
-      try {
-        if (Object.keys(dk).length === 0) { return; }
-        if (Object.keys(zd8.d8).length === 0 || zd8.cv === 100) { return; }
-        cg3 = fn.a2i(cg3);
-        if (cg3 > 3) { return; };
-      } catch (err) { return; }
-      const maxrec = 2000;
-      let tin, gui, i, k, k3, v, r, phui, plcp, idma, plgia, baogia, chiphi, d1, d8, l8, nook,
-        cv = 0, zcv,
-        w = {},
-        zdl = zd8.d8;
-      l8 = [];
-      for (k in zdl) {
-        r = zdl[k];
-        r.chiphi = k;
-        l8.push(r);
-      }
-      l8 = l8.sort((a, b) => b.idma - a.idma);
-      for (i in l8) {
-        d1 = l8[i];
-        if (i + 1 > maxrec && 'giavl' in d1 && 'gianc' in d1 && 'giamtc' in d1 && 'giatl' in d1) {
-          k = d1.chiphi;
-          if (k in zdl) { delete zdl[k]; }
+    cpx: (cg3 = 0) => {
+      let w, hoi, dap, d1r, d1s, k, r,
+        dk = {},
+        d8 = ga.cpx;
+      //try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) return;
+      dk.prog = 'chiphi';
+      //main
+      w = sw.moi('cpx');
+      hoi = {
+        csdl: idb.csdl,
+        gom: dk,
+      };
+      console.log("idb.gom.cpx hoi=", JSON.stringify(hoi, null, 2));
+      w.postMessage(hoi);
+      w.onmessage = (e) => {
+        dap = e.data;
+        if (dap.cv >= 0 && dap.cv <= 100) {
+          d1r = 'chiphi' in dap ? dap.chiphi : {};
+          k = d1r.idma || d1r.maid;
+          if ('ttdl' in d1r || 'data' in d1r) {
+            r = d1r.ttdl || d1r.data;
+            d1s = { ...d8[k] };
+            if (!(k in d8) || d1r.tjan > d1s.tjan) {
+              d1s = {};
+              d1s.idma = r.idma || Date.now();
+              d1s.maid = r.maid || d1s.idma;
+              d1s.plcp = r.plcp || 'cpvt';
+              d1s.mota = r.mota.qtgt || r.mota || '...';
+              d1s.dvt = r.dvt || '...';
+              d1s.tjan = Date.now();
+              d8[k] = d1s;
+            }
+          };
+          web.tiendo(dk.prog, dap.cv);
+        } else if (dap.cv < 0 || dap.cv > 100) {
+          sw.xoa('cpx');
+          console.log("nv fin=", JSON.stringify(dap, null, 2));
+        } else if ("err" in dap) {
+          console.log("nv err=", JSON.stringify(dap.err, null, 2));
+        } else if ("info" in dap) {
+          console.log("nv info=", JSON.stringify(dap.info, null, 2));
+        } else {
+          console.log("nv dap=", JSON.stringify(dap, null, 2));
         }
+        console.log("idb.gom.cpx=", JSON.stringify(ga.cpx, null, 2));
       }
-      zcv = l8.length;
-      if (zcv < 1) { return; };
-      //check new cp
-      baogia = fn.a2i(dk.baogia);
-      plgia = fn.a2sl(dk.plgia);
-      if (baogia !== zd8.baogia || plgia !== zd8.plgia) {
-        zd8.plgia = plgia;
-        zd8.baogia = baogia;
-        for (k in zdl) {
-          d1 = zdl[k];
-          d1.baogia = baogia;
-          d1.chiphi = k;
-          d1.plgia = plgia;
-          d1.idma = [baogia, k, plgia].join('.');
-          if ('giavl' in d1) { delete d1.giavl }
-          if ('gianc' in d1) { delete d1.gianc }
-          if ('giamtc' in d1) { delete d1.giamtc }
-          if ('giatl' in d1) { delete d1.giatl }
-        }
-      }
-      zd8.cv = 0;
-      for (k in zdl) {
-        d1 = zdl[k];
-        if (!('mota' in d1) || !('dvt' in d1)) {
-          nook = true;
-          idb.nap.chiphi({ idma: d1.chiphi }, d1, 0);
-        };
-        if (!('giavl' in d1)) {
-          nook = true;
-          idb.nap.baogia({ baogia: baogia, plgia: plgia, plbg: 'bgvl', chiphi: d1.chiphi }, d1, 0);
-        };
-        if (!('gianc' in d1)) {
-          nook = true;
-          idb.nap.bgvl();
-        };
-        if (!('giamtc' in d1)) {
-          nook = true;
-          idb.nap.bgvl();
-        };
-        if (!('giall' in d1)) {
-          nook = true;
-          idb.nap.bgvl();
-        };
-      }
-      setTimeout(() => { idb.gom.zcpx(); }, 100);
+      //} catch (err) {
+      //  cg3 += 1;
+      //  setTimeout(() => idb.gom.cpx(cg3), idb.ztg);
+      //}
     },
     chiphi: (dk = { prog: 'chiphi', tjan: 0 }, zdl = chiphi, cg3 = 0) => {
       let w, hoi, dap, d1r, d1s, k, r;
@@ -3152,7 +3133,7 @@ const app = {
       if (cg3 > 3) return;
       idb.taodb();
       idb.gom.cpx(0);
-      cpx.wxem();
+      //cpx.wxem();
     } catch (err) {
       cg3 += 1;
       setTimeout(() => app.run(cg3), app.tc);
