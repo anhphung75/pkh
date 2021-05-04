@@ -770,6 +770,43 @@ const idb = {
       }
       //} catch (err) { self.postMessage({ cv: cv, err: err }); }
     },
+    cpx: (cg3 = 0) => {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) {
+        self.postMessage({ cv: -1, kq: "bất quá tam" });
+        return;
+      }
+      let db, cs,
+        zr = 0,
+        cv = 0,
+        kq = {},
+        tbl = 'chiphi';
+      try {
+        indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+          db = e.target.result.transaction(tbl, 'readonly').objectStore(tbl);
+          db.count().onsuccess = (e) => {
+            zr = e.target.result;
+            if (zr < 1) self.postMessage({ "cv": -1, "info": "bảng chưa có dữ liệu" });
+          }
+
+          db.openCursor(null, 'prev').onsuccess = (e) => {
+            cs = e.target.result;
+            if (cs) {
+              kq = cs.value;
+              cv++;
+              self.postMessage({ "cv": fn.a2i(cv * 100 / zr), "cpx": kq });
+              cs.continue();
+            } else {
+              self.postMessage({ "cv": -1, "info": "fin" });
+            }
+          }
+        }
+      } catch (err) {
+        cg3 += 1;
+        self.postMessage({ "err": err });
+        setTimeout(() => idb.nap.cpx(cg3), 222);
+      }
+    },
   },
 };
 
@@ -778,14 +815,15 @@ const idb = {
 self.onmessage = (ev) => {
   let csdl_ten, csdl_cap,
     tin = ev.data;
-  try {
-    csdl_ten = fn.a2s(tin.csdl.ten) || fn.a2s(idb.csdl.ten);
-    csdl_cap = fn.a2i(tin.csdl.cap) || fn.a2i(idb.csdl.cap);
-    if (csdl_cap < 1) { csdl_cap = 1; }
-    idb.csdl = { ten: csdl_ten, cap: csdl_cap };
-    self.postMessage({ info: { status: "nhan tu boss idb", db: idb.csdl, tin: tin } });
-    if ('idma' in tin) { idb.nap1.idma(tin.idma, 0); }
-    if ('maid' in tin) { idb.nap1.maid(tin.maid, 0); }
-    if ('baogia' in tin) { idb.nap1.baogia(tin.baogia, 0); }
-  } catch (err) { self.postMessage({ cv: -1, kq: "nothing to do" }); };
+  //try {
+  csdl_ten = fn.a2s(tin.csdl.ten) || fn.a2s(idb.csdl.ten);
+  csdl_cap = fn.a2i(tin.csdl.cap) || fn.a2i(idb.csdl.cap);
+  if (csdl_cap < 1) { csdl_cap = 1; }
+  idb.csdl = { ten: csdl_ten, cap: csdl_cap };
+  self.postMessage({ info: { status: "nhan tu boss idb", db: idb.csdl, tin: tin } });
+  if ('idma' in tin) idb.nap1.idma(tin.idma, 0);
+  if ('maid' in tin) idb.nap1.maid(tin.maid, 0);
+  if ('baogia' in tin) idb.nap1.baogia(tin.baogia, 0);
+  if (tin.gom && tin.gom.prog.includes('cpx')) idb.nap.cpx(0);
+  //} catch (err) { self.postMessage({ cv: -1, kq: "nothing to do" }); };
 }

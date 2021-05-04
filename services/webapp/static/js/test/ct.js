@@ -2809,7 +2809,7 @@ const idb = {
       //try {
       cg3 = fn.a2i(cg3);
       if (cg3 > 3) return;
-      dk.prog = 'chiphi';
+      dk.prog = 'cpx';
       //main
       w = sw.moi('cpx');
       hoi = {
@@ -2821,7 +2821,7 @@ const idb = {
       w.onmessage = (e) => {
         dap = e.data;
         if (dap.cv >= 0 && dap.cv <= 100) {
-          d1r = 'chiphi' in dap ? dap.chiphi : {};
+          d1r = 'cpx' in dap ? dap.cpx : {};
           k = d1r.idma || d1r.maid;
           if ('ttdl' in d1r || 'data' in d1r) {
             r = d1r.ttdl || d1r.data;
@@ -2848,8 +2848,8 @@ const idb = {
         } else {
           console.log("nv dap=", JSON.stringify(dap, null, 2));
         }
-        console.log("idb.gom.cpx=", JSON.stringify(ga.cpx, null, 2));
       }
+      console.log("ct idb.gom.cpx=", JSON.stringify(ga.cpx, null, 2));
       //} catch (err) {
       //  cg3 += 1;
       //  setTimeout(() => idb.gom.cpx(cg3), idb.ztg);
