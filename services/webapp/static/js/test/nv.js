@@ -23,11 +23,9 @@ const fn = {
     return fn.a2s(dl).toUpperCase();
   },
   a2i: (dl) => {
-    let kq;
     try {
-      kq = parseInt(dl);
-    } catch (err) { kq = -1; }
-    return kq
+      return dl ? parseInt(dl) : -1;
+    } catch (err) { return -1; }
   },
   isexist: (ma, dl) => {
     if (ma === undefined || ma === null) {
@@ -686,144 +684,86 @@ const idb = {
     },
   },
 
-  nap: {
-    nap_old: (bang, nap = null, gang = 0) => {
-      gang = gang === '0' ? 0 : parseInt(gang) || -1;
-      if (gang > 3) {
-        self.postMessage({ cv: -1, kq: "bất quá tam" });
-        return;
-      }
-      if (bang) {
-        bang = bang.toString().toLowerCase();
-      } else {
-        self.postMessage({ cv: -1, kq: "bảng chưa tạo" });
-        return;
-      };
-      let db, tr, rec, r, i, cs, k,
-        zr = 0,
-        cv = 0,
-        kq = [];
-      if (nap === undefined || nap === null) {
-        self.postMessage({ cv: -1, kq: "không yêu cầu" });
-        return;
-      } else if (nap.constructor === Object) {
-        //tim theo dict dieu kien
-      } else if (nap.constructor === Array) {
-        //search theo list dieu kien
-      } else if (nap.constructor === String || nap.constructor === Number) {
-        //search
-        nap = nap.toString().toLowerCase();
-        nap = nap.split(' ').join(' ');
-        if (nap.split(' ').join('') === '') {
-          self.postMessage({ cv: -1, kq: "không rõ yêu cầu" });
-          return;
-        } else {
-          nap = [nap];
-        }
-      } else {
-        self.postMessage({ cv: -1, kq: "không rõ yêu cầu" });
-        return;
-      }
-      //try {
+  nap: (dk = { prog: 'chiphi', idma: null }, cg3 = 0) => {
+    //try {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) {
+      self.postMessage({ cv: -1, kq: "bất quá tam" });
+      return;
+    }
+    let db, cs,
+      cv = 0,
+      kq = { "cv": -1 },
+      zr = 0,
+      tbl = fn.a2sl(dk.tbl || dk.bang) || 'chiphi',
+      prog = fn.a2sl(dk.prog),
+      idma = fn.a2i(dk.idma) || -1;
+    if (prog.includes('cpx')) tbl = 'chiphi';
+    console.log("nv-nap.cpx idma=", JSON.stringify(idma, null, 2));
+    if (idma > 0) {
       indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
-        db = e.target.result;
-        tr = db.transaction(bang, 'readonly')
-        tr.objectStore(bang)
-          .count()
-          .onsuccess = (e) => { zr = e.target.result; }
-
-        tr = db.transaction(bang, 'readonly')
-        tr.objectStore(bang)
-          .openCursor(null, 'prev')
-          .onsuccess = (e) => {
-            cs = e.target.result;
-            if (cs) {
-              rec = cs.value;
-              if (gom === undefined || gom === null) {
-                kq.push(rec);
-              } else if (gom.constructor === Array) {
-                for (i in gom) {
-                  r = cs.value.data;
-                  if (gom[i] in r) { kq[gom[i]].add(r[gom[i]]); }
-                  r = cs.value.refs;
-                  if (gom[i] in r) { kq[gom[i]].add(r[gom[i]]); }
-                }
-              } else if (gom.constructor === Object) {
-                for (k in gom) {
-                  r = cs.value.data;
-                  if (k in r && r[k] === gom[k]) { kq.push(rec); }
-                  r = cs.value.refs;
-                  if (k in r && r[k] === gom[k]) { kq.push(rec); }
-                }
-              } else {
-                kq.push(rec);
-              }
-              cv++;
-              self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
-              cs.continue();
-            } else {
-              for (k in kq) { kq[k] = [...kq[k]]; }
-              self.postMessage({ cv: parseInt(cv * 100 / zr), gom: kq });
-              self.postMessage({ cv: -1, kq: "fin" });
-            }
-          }
-      }
-      //} catch (err) { self.postMessage({ cv: cv, err: err }); }
-    },
-    cpx: (cg3 = 0) => {
-      cg3 = fn.a2i(cg3);
-      if (cg3 > 3) {
-        self.postMessage({ cv: -1, kq: "bất quá tam" });
-        return;
-      }
-      let db, cs,
-        zr = 0,
-        cv = 0,
-        kq = {},
-        tbl = 'chiphi';
-      try {
-        indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
-          db = e.target.result.transaction(tbl, 'readonly').objectStore(tbl);
-          db.count().onsuccess = (e) => {
-            zr = e.target.result;
-            if (zr < 1) self.postMessage({ "cv": -1, "info": "bảng chưa có dữ liệu" });
-          }
-
-          db.openCursor(null, 'prev').onsuccess = (e) => {
-            cs = e.target.result;
-            if (cs) {
-              kq = cs.value;
-              cv++;
-              self.postMessage({ "cv": fn.a2i(cv * 100 / zr), "cpx": kq });
-              cs.continue();
-            } else {
-              self.postMessage({ "cv": -1, "info": "fin" });
-            }
+        db = e.target.result.transaction(tbl, 'readonly').objectStore(tbl);
+        db.openCursor(IDBKeyRange.only(idma)).onsuccess = (e) => {
+          cs = e.target.result;
+          if (cs) {
+            cv++;
+            kq.cv = fn.a2i(cv * 100);
+            kq[prog] = cs.value;
+            self.postMessage(kq);
+            cs.continue();
+          } else {
+            self.postMessage({ "cv": -1, "info": "fin" });
           }
         }
-      } catch (err) {
-        cg3 += 1;
-        self.postMessage({ "err": err });
-        setTimeout(() => idb.nap.cpx(cg3), 222);
       }
-    },
+    } else {
+      indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+        db = e.target.result.transaction(tbl, 'readonly').objectStore(tbl);
+        db.count().onsuccess = (e) => {
+          zr = e.target.result;
+          if (zr < 1) self.postMessage({ "cv": -1, "info": "bảng chưa có dữ liệu" });
+        }
+        db.openCursor(null, 'prev').onsuccess = (e) => {
+          cs = e.target.result;
+          if (cs) {
+            cv++;
+            kq.cv = fn.a2i(cv * 100 / zr);
+            kq[prog] = cs.value;
+            self.postMessage(kq);
+            cs.continue();
+          } else {
+            self.postMessage({ "cv": -1, "info": "fin" });
+          }
+        }
+      }
+    }
+    //} catch (err) {
+    //  cg3 += 1;
+    //  self.postMessage({ "err": err });
+    //  setTimeout(() => idb.nap.cpx(cg3), 222);
+    //}
   },
 };
 
 
 //main worker
 self.onmessage = (ev) => {
-  let csdl_ten, csdl_cap,
+  let csdl_ten, csdl_cap, dl,
     tin = ev.data;
   //try {
   csdl_ten = fn.a2s(tin.csdl.ten) || fn.a2s(idb.csdl.ten);
   csdl_cap = fn.a2i(tin.csdl.cap) || fn.a2i(idb.csdl.cap);
   if (csdl_cap < 1) { csdl_cap = 1; }
   idb.csdl = { ten: csdl_ten, cap: csdl_cap };
-  self.postMessage({ info: { status: "nhan tu boss idb", db: idb.csdl, tin: tin } });
+  self.postMessage({ "info": { "status": "nhan tu boss idb", "db": idb.csdl, "tin": tin } });
   if ('idma' in tin) idb.nap1.idma(tin.idma, 0);
   if ('maid' in tin) idb.nap1.maid(tin.maid, 0);
   if ('baogia' in tin) idb.nap1.baogia(tin.baogia, 0);
   if (tin.gom && tin.gom.prog.includes('cpx')) idb.nap.cpx(0);
+  if (tin.nap) {
+    dl = tin.nap;
+    if (dl.prog.includes('cpx')) idb.nap(dl, 0);
+    if (dl.prog.includes('chiphi')) idb.nap(dl, 0);
+  }
   //} catch (err) { self.postMessage({ cv: -1, kq: "nothing to do" }); };
 }

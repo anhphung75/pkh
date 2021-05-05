@@ -27,11 +27,9 @@ const fn = {
     return fn.a2s(dl).toUpperCase();
   },
   a2i: (dl) => {
-    let kq;
     try {
-      kq = parseInt(dl);
-    } catch (err) { kq = -1; }
-    return kq
+      return dl ? parseInt(dl) : -1;
+    } catch (err) { return -1; }
   },
   sregexp: (stim) => {
     stim = fn.a2s(stim);
@@ -2801,6 +2799,9 @@ const idb = {
       };
     } catch (err) { };
   },
+  xem: (bien) => {
+    console.log("ct-idb.xem ", bien, "=", JSON.stringify(bien, null, 2));
+  },
   gom: {
     cpx: (cg3 = 0) => {
       let w, hoi, dap, d1r, d1s, k, r,
@@ -2821,7 +2822,7 @@ const idb = {
       w.onmessage = (e) => {
         dap = e.data;
         if (dap.cv >= 0 && dap.cv <= 100) {
-          d1r = 'cpx' in dap ? dap.cpx : {};
+          d1r = dk.prog in dap ? dap[dk.prog] : {};
           k = d1r.idma || d1r.maid;
           if ('ttdl' in d1r || 'data' in d1r) {
             r = d1r.ttdl || d1r.data;
@@ -2833,7 +2834,7 @@ const idb = {
               d1s.plcp = r.plcp || 'cpvt';
               d1s.mota = r.mota.qtgt || r.mota || '...';
               d1s.dvt = r.dvt || '...';
-              d1s.tjan = Date.now();
+              d1s.tjan = d1r.tjan || Date.now();
               d8[k] = d1s;
             }
           };
@@ -2841,6 +2842,7 @@ const idb = {
         } else if (dap.cv < 0 || dap.cv > 100) {
           sw.xoa('cpx');
           console.log("nv fin=", JSON.stringify(dap, null, 2));
+          idb.xem(ga.cpx);
         } else if ("err" in dap) {
           console.log("nv err=", JSON.stringify(dap.err, null, 2));
         } else if ("info" in dap) {
@@ -2849,56 +2851,11 @@ const idb = {
           console.log("nv dap=", JSON.stringify(dap, null, 2));
         }
       }
-      console.log("ct idb.gom.cpx=", JSON.stringify(ga.cpx, null, 2));
+
       //} catch (err) {
       //  cg3 += 1;
       //  setTimeout(() => idb.gom.cpx(cg3), idb.ztg);
       //}
-    },
-    chiphi: (dk = { prog: 'chiphi', tjan: 0 }, zdl = chiphi, cg3 = 0) => {
-      let w, hoi, dap, d1r, d1s, k, r;
-      try {
-        cg3 = fn.a2i(cg3);
-        if (cg3 > 3) { return; };
-        if (Object.keys(dk).length < 1) { return; }
-        dk.prog = fn.a2sl(dk.prog);
-        dk.tjan = cg3 === 0 ? 0 : fn.a2i(dk.tjan);
-        //main
-        w = sw.moi('chiphi');
-        hoi = {
-          csdl: idb.csdl,
-          gom: dk,
-        };
-        console.log("idb.gom.chiphi hoi=", JSON.stringify(hoi, null, 2));
-        w.postMessage(hoi);
-        w.onmessage = (e) => {
-          dap = e.data;
-          if (dap.cv >= 0 && dap.cv <= 100) {
-            d1r = 'chiphi' in dap ? dap.chiphi : {};
-            k = d1r.idma || d1r.maid;
-            if ('ttdl' in d1r || 'data' in d1r) {
-              r = d1r.ttdl || d1r.data;
-              zdl.d8[k] = { ...r };
-              zdl.d8[k].mota = r.mota.qtgt || r.mota;
-              zdl.tjan = Date.now();
-            };
-            web.tiendo(dk.prog, dap.cv);
-          } else if (dap.cv < 0 || dap.cv > 100) {
-            sw.xoa('chiphi');
-            console.log("nv fin=", JSON.stringify(dap, null, 2));
-          } else if ("err" in dap) {
-            console.log("nv err=", JSON.stringify(dap.err, null, 2));
-          } else if ("info" in dap) {
-            console.log("nv info=", JSON.stringify(dap.info, null, 2));
-          } else {
-            console.log("nv dap=", JSON.stringify(dap, null, 2));
-          }
-          console.log("idb.gom.chiphi=", JSON.stringify(chiphi, null, 2));
-        }
-      } catch (err) {
-        cg3 += 1;
-        setTimeout(() => { idb.gom.chiphi(cg3); }, idb.ztg);
-      }
     },
   },
   nap: {
@@ -2956,7 +2913,7 @@ const idb = {
         setTimeout(() => { idb.nap.qtgt(cg3); }, idb.ztg);
       }
     },
-    cpx: (dk = { prog: 'chiphi', idma: null }, cg3 = 0) => {
+    cpx_old: (dk = { prog: 'chiphi', idma: null }, cg3 = 0) => {
       let w, hoi, dap, d1r, d1s, k, i, _prog;
       try {
         cg3 = fn.a2i(cg3);
@@ -3011,6 +2968,61 @@ const idb = {
         cg3 += 1;
         setTimeout(() => { idb.nap.cpx(cg3); }, idb.ztg);
       }
+    },
+    cpx: (dk = { prog: 'cpx', idma: null }, cg3 = 0) => {
+      let w, hoi, dap, d1r, d1s, k, r, prog,
+        d8 = ga.cpx;
+      //try {
+      cg3 = fn.a2i(cg3);
+      if (cg3 > 3) return;
+      dk.prog = 'cpx';
+      dk.idma = fn.a2i(dk.idma || dk.chiphi);
+      prog = [dk.prog, dk.idma].join('_');
+      //main
+      w = sw.moi('cpx');
+      hoi = {
+        csdl: idb.csdl,
+        nap: dk,
+      };
+      console.log("idb.gom.cpx hoi=", JSON.stringify(hoi, null, 2));
+      w.postMessage(hoi);
+      w.onmessage = (e) => {
+        dap = e.data;
+        if (dap.cv >= 0 && dap.cv <= 100) {
+          d1r = dk.prog in dap ? dap[dk.prog] : {};
+          k = d1r.idma || d1r.maid;
+          if ('ttdl' in d1r || 'data' in d1r) {
+            r = d1r.ttdl || d1r.data;
+            d1s = { ...d8[k] };
+            if (!(k in d8) || d1r.tjan > d1s.tjan) {
+              d1s = {};
+              d1s.idma = r.idma || Date.now();
+              d1s.maid = r.maid || d1s.idma;
+              d1s.plcp = r.plcp || 'cpvt';
+              d1s.mota = r.mota.qtgt || r.mota || '...';
+              d1s.dvt = r.dvt || '...';
+              d1s.tjan = d1r.tjan || Date.now();
+              d8[k] = d1s;
+            }
+          };
+          web.tiendo(prog, dap.cv);
+        } else if (dap.cv < 0 || dap.cv > 100) {
+          sw.xoa('cpx');
+          console.log("nv fin=", JSON.stringify(dap, null, 2));
+          idb.xem(ga.cpx);
+        } else if ("err" in dap) {
+          console.log("nv err=", JSON.stringify(dap.err, null, 2));
+        } else if ("info" in dap) {
+          console.log("nv info=", JSON.stringify(dap.info, null, 2));
+        } else {
+          console.log("nv dap=", JSON.stringify(dap, null, 2));
+        }
+      }
+
+      //} catch (err) {
+      //  cg3 += 1;
+      //  setTimeout(() => idb.gom.cpx(cg3), idb.ztg);
+      //}
     },
     baogia: (dk = { prog: 'bgvl', chiphi: null, baogia: null, plgia: 'dutoan', plbg: 'bgvl' }, cg3 = 0) => {
       let w, hoi, dap, d1r, d1s, _prog, chiphi, baogia, plgia, k, i, k2;
@@ -3132,7 +3144,7 @@ const app = {
       cg3 = fn.a2i(cg3);
       if (cg3 > 3) return;
       idb.taodb();
-      idb.gom.cpx(0);
+      idb.nap.cpx({ "idma": 100 }, 0);
       //cpx.wxem();
     } catch (err) {
       cg3 += 1;
