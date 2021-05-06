@@ -27,6 +27,96 @@ const fn = {
       return dl ? parseInt(dl) : -1;
     } catch (err) { return -1; }
   },
+  is1val: (ma, dl, gop = false) => {
+    if (dl === undefined || dl === null) return false;
+    if (ma === undefined || ma === null) return true;
+    if (ma.constructor !== String || ma.constructor !== Number) return false;
+    let v, k, isok = false;
+    if (ma.constructor === String) {
+      ma = fn.a2sl(ma);
+      ma = ma.replace(/\s\s+/g, ' ');
+      ma = ma.trim();
+      if (ma.split(' ').join('') == '') return true;
+      if (dl.constructor === String) {
+        dl = fn.a2sl(dl);
+        if (gop == true) {
+          return dl == ma ? true : false;
+        } else {
+          return dl.includes(ma) ? true : false;
+        }
+      } else if (dl.constructor === Number) {
+        dl += "";
+        if (gop == true) {
+          return dl == ma ? true : false;
+        } else {
+          return dl.includes(ma) ? true : false;
+        }
+      } else if (dl.constructor === Array) {
+        for (v of dl) {
+          isok = fn.is1val(ma, v, gop);
+          if (isok == true) return true;
+        }
+      } else if (dl.constructor === Object) {
+        for (k in dl) {
+          isok = fn.is1val(ma, dl[k], gop);
+          if (isok == true) return true;
+        }
+      } else { return false; }
+    }
+    if (ma.constructor === Number) {
+      if (dl.constructor === Number) {
+        if (gop == true) {
+          return dl == ma ? true : false;
+        } else {
+          ma += "";
+          dl += "";
+          return dl.includes(ma) ? true : false;
+        }
+      } else if (dl.constructor === Array) {
+        for (v of dl) {
+          isok = fn.is1val(ma, v, gop);
+          if (isok === true) return true;
+        }
+      } else if (dl.constructor === Object) {
+        for (k in dl) {
+          isok = fn.is1val(ma, dl[k], gop);
+          if (isok === true) return true;
+        }
+      } else { return false; }
+    }
+  },
+  isval: (ma, dl, gop = false) => {
+    if (dl === undefined || dl === null) return false;
+    let v, isok = false;
+    if (ma === undefined || ma === null) {
+      return true;
+    } else if (ma.constructor === Array) {
+      for (v of ma) {
+        isok = fn.is1val(v, dl, gop);
+        if (isok == true) return true;
+      }
+    } else if (ma.constructor === String || ma.constructor === Number) {
+      isok = fn.is1val(ma, dl, gop);
+      if (isok == true) return true;
+    } else { return true; }
+  },
+  iskey: (ma, dl, gop = false) => {
+    if (dl === undefined || dl === null) return false;
+    if (ma === undefined || ma === null) return false;
+    if (ma.constructor !== Object || dl.constructor !== Object) return false;
+    let v, k, ktim, vtim, isok = false;
+    for (ktim in ma) {
+      vtim = ma[ktim];
+      for (k in dl) {
+        v = dl[k];
+        if (ktim == k) {
+          isok = fn.is1val(vtim, v, gop);
+          if (isok == true) return true;
+        }
+      }
+    }
+    return false;
+  },
   isexist: (ma, dl) => {
     if (ma === undefined || ma === null) {
       return true;
@@ -82,30 +172,6 @@ const fn = {
           }
         }
       }
-      if (isok === false) { return false; }
-    }
-    return true;
-  },
-  isval: (ma, dl) => {
-    if (dl === undefined || dl === null) {
-      return false;
-    }
-    if (ma === undefined || ma === null) {
-      return true;
-    } else if (ma.constructor === Array) {
-    } else if (ma.constructor === String) {
-      ma = ma.replace(/\s\s+/g, ' ');
-      ma = ma.trim();
-      if (ma.split(' ').join('') === '') { return true; }
-      ma = [ma];
-    } else if (ma.constructor === Number || ma.constructor === Boolean) {
-      ma = [ma];
-    } else { return true; }
-    //main
-    let isok, i, v;
-    for (i in ma) {
-      v = ma[i];
-      isok = fn.isexist(v, dl);
       if (isok === false) { return false; }
     }
     return true;
@@ -572,7 +638,7 @@ const idb = {
     },
   },
 
-  gom: {
+  gom_old: {
     key: (bang, gom, gang = 0) => {
       gang = gang === '0' ? 0 : parseInt(gang) || -1;
       if (gang > 3) { self.postMessage({ cv: -1, kq: "bất quá tam" }); }
@@ -684,7 +750,7 @@ const idb = {
     },
   },
 
-  nap: (dk = { prog: 'chiphi', idma: null }, cg3 = 0) => {
+  nap: (dk = { prog: 'cpx', bang: 'chiphi', idma: null }, cg3 = 0) => {
     //try {
     cg3 = fn.a2i(cg3);
     if (cg3 > 3) {
@@ -698,7 +764,6 @@ const idb = {
       tbl = fn.a2sl(dk.tbl || dk.bang) || 'chiphi',
       prog = fn.a2sl(dk.prog),
       idma = fn.a2i(dk.idma) || -1;
-    if (prog.includes('cpx')) tbl = 'chiphi';
     console.log("nv-nap.cpx idma=", JSON.stringify(idma, null, 2));
     if (idma > 0) {
       indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
@@ -743,6 +808,58 @@ const idb = {
     //  setTimeout(() => idb.nap.cpx(cg3), 222);
     //}
   },
+  gom: (dk = { prog: 'chiphi', bang: 'chiphi', gom: null, gop: false }, cg3 = 0) => {
+    //try {
+    cg3 = fn.a2i(cg3);
+    if (cg3 > 3) {
+      self.postMessage({ cv: -1, kq: "bất quá tam" });
+      return;
+    }
+    let db, cs, isok, dl,
+      cv = 0,
+      kq = { "cv": -1 },
+      zr = 0,
+      tbl = fn.a2sl(dk.tbl || dk.bang) || 'chiphi',
+      prog = fn.a2sl(dk.prog),
+      ma = dk.gom || dk.otim || dk.ltim || dk.stim,
+      gop = dk.gop || false;
+    console.log("nv-gom ma=", JSON.stringify(ma, null, 2));
+
+    indexedDB.open(idb.csdl.ten, idb.csdl.cap).onsuccess = (e) => {
+      db = e.target.result.transaction(tbl, 'readonly').objectStore(tbl);
+      db.count().onsuccess = (e) => {
+        zr = e.target.result;
+        if (zr < 1) self.postMessage({ "cv": -1, "info": "bảng chưa có dữ liệu" });
+      }
+      db.openCursor(null, 'prev').onsuccess = (e) => {
+        cs = e.target.result;
+        if (cs) {
+          if (ma === undefined || ma === null) isok = false;
+          dl = cs.value;
+          if (ma.constructor === Array || ma.constructor === String || ma.constructor === Number) {
+            isok = fn.isval(ma, dl, gop);
+          } else if (ma.constructor === Object) {
+            isok = fn.iskey(ma, dl, gop);
+          } else { isok = false; }
+          if (isok == true) {
+            cv++;
+            kq.cv = fn.a2i(cv * 100 / zr);
+            kq[prog] = dl;
+            self.postMessage(kq);
+          }
+          cs.continue();
+        } else {
+          self.postMessage({ "cv": -1, "info": "fin" });
+        }
+      }
+    }
+
+    //} catch (err) {
+    //  cg3 += 1;
+    //  self.postMessage({ "err": err });
+    //  setTimeout(() => idb.nap.cpx(cg3), 222);
+    //}
+  },
 };
 
 
@@ -762,8 +879,15 @@ self.onmessage = (ev) => {
   if (tin.gom && tin.gom.prog.includes('cpx')) idb.nap.cpx(0);
   if (tin.nap) {
     dl = tin.nap;
-    if (dl.prog.includes('cpx')) idb.nap(dl, 0);
-    if (dl.prog.includes('chiphi')) idb.nap(dl, 0);
+    if (dl.prog.includes('cpx')) dl.bang = 'chiphi';
+    if (dl.prog.includes('chiphi')) dl.bang = 'chiphi';
+    idb.nap(dl, 0);
+  }
+  if (tin.gom) {
+    dl = tin.gom;
+    if (dl.prog.includes('cpx')) dl.bang = 'chiphi';
+    if (dl.prog.includes('chiphi')) dl.bang = 'chiphi';
+    idb.gom(dl, 0);
   }
   //} catch (err) { self.postMessage({ cv: -1, kq: "nothing to do" }); };
 }
