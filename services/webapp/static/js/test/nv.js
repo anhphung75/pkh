@@ -28,6 +28,9 @@ const fn = {
     } catch (err) { return -1; }
   },
   is1val: (ma, dl, gop = false) => {
+    console.log("nv-fn.is1val ma=", JSON.stringify(ma, null, 2));
+    console.log("nv-fn.is1val dl=", JSON.stringify(dl, null, 2));
+    console.log("nv-fn.is1val gop=", JSON.stringify(gop, null, 2));
     if (dl === undefined || dl === null) return false;
     if (ma === undefined || ma === null) return true;
     if (ma.constructor !== String || ma.constructor !== Number) return false;
@@ -97,8 +100,10 @@ const fn = {
       }
     } else if (ma.constructor === String || ma.constructor === Number) {
       isok = fn.is1val(ma, dl, gop);
+      console.log("nv-fn.isval ma=String-Number isok=", JSON.stringify(isok, null, 2));
       if (isok == true) return true;
     } else { return true; }
+    //return false;
   },
   iskey: (ma, dl, gop = false) => {
     if (dl === undefined || dl === null) return false;
@@ -838,9 +843,11 @@ const idb = {
           dl = cs.value;
           if (ma.constructor === Array || ma.constructor === String || ma.constructor === Number) {
             isok = fn.isval(ma, dl, gop);
+            console.log("nv-gom ma=Array-String-Number isok=", JSON.stringify(isok, null, 2));
           } else if (ma.constructor === Object) {
             isok = fn.iskey(ma, dl, gop);
           } else { isok = false; }
+          console.log("nv-gom last isok=", JSON.stringify(isok, null, 2));
           if (isok == true) {
             cv++;
             kq.cv = fn.a2i(cv * 100 / zr);
@@ -876,7 +883,6 @@ self.onmessage = (ev) => {
   if ('idma' in tin) idb.nap1.idma(tin.idma, 0);
   if ('maid' in tin) idb.nap1.maid(tin.maid, 0);
   if ('baogia' in tin) idb.nap1.baogia(tin.baogia, 0);
-  if (tin.gom && tin.gom.prog.includes('cpx')) idb.nap.cpx(0);
   if (tin.nap) {
     dl = tin.nap;
     if (dl.prog.includes('cpx')) dl.bang = 'chiphi';

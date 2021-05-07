@@ -2803,14 +2803,14 @@ const idb = {
     console.log("ct-idb.xem ", bien, "=", JSON.stringify(bien, null, 2));
   },
   gom: {
-    cpx: (cg3 = 0) => {
-      let w, hoi, dap, d1r, d1s, k, r,
-        dk = {},
+    cpx: (dk = { prog: 'cpx', otim: null, gop: false }, cg3 = 0) => {
+      let w, hoi, dap, d1r, d1s, k, r, prog,
         d8 = ga.cpx;
       //try {
       cg3 = fn.a2i(cg3);
       if (cg3 > 3) return;
       dk.prog = 'cpx';
+      prog = [dk.prog, fn.a2s(Date.now())].join('_');
       //main
       w = sw.moi('cpx');
       hoi = {
@@ -2838,7 +2838,7 @@ const idb = {
               d8[k] = d1s;
             }
           };
-          web.tiendo(dk.prog, dap.cv);
+          web.tiendo(prog, dap.cv);
         } else if (dap.cv < 0 || dap.cv > 100) {
           sw.xoa('cpx');
           console.log("nv fin=", JSON.stringify(dap, null, 2));
@@ -3144,7 +3144,7 @@ const app = {
       cg3 = fn.a2i(cg3);
       if (cg3 > 3) return;
       idb.taodb();
-      idb.nap.cpx({ "idma": 100 }, 0);
+      idb.gom.cpx({ "otim": 'cai100' }, 0);
       //cpx.wxem();
     } catch (err) {
       cg3 += 1;
