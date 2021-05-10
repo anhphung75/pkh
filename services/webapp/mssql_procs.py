@@ -420,7 +420,6 @@ class Qtgt:
             pass
 
     def nap_qtgt(self):
-        sql0 = ''
         sql = (f"DROP PROC {self.xac}.nap_qtgt")
         try:
             db.core().execute(sql)
@@ -452,21 +451,19 @@ class Qtgt:
             f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; "
             f"SELECT top 1 maqt,mauqt,{cr} INTO #bdl FROM {self.xac}.tamqt WHERE maqt='Sao ma co'; "
             # load gxd
-            f"IF @Gxd>0 Begin "
-            f"If Not Exists (Select * From #bdl) "
+            f"If (Not Exists (Select * From #bdl) And @Gxd>0) "
             f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
             f"FROM {self.xac}.qt WHERE gxd=@Gxd Order By lastupdate Desc, maqt Desc; "
-            f"If Not Exists (Select * From #bdl) "
+            f"If (Not Exists (Select * From #bdl) And @Gxd>0) "
             f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
-            f"FROM {self.kho}.qt WHERE gxd=@Gxd Order By lastupdate Desc, maqt Desc; End "
+            f"FROM {self.kho}.qt WHERE gxd=@Gxd Order By lastupdate Desc, maqt Desc; "
             # load mauqt
-            f"IF DataLength(@Mauqt)>0 Begin "
-            f"If Not Exists (Select * From #bdl) "
+            f"If (Not Exists (Select * From #bdl) And DataLength(@Mauqt)>0) "
             f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
             f"FROM {self.xac}.qt WHERE maqt=@Mauqt; "
-            f"If Not Exists (Select * From #bdl) "
+            f"If (Not Exists (Select * From #bdl) And DataLength(@Mauqt)>0) "
             f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,maqt,{cr} "
-            f"FROM {self.kho}.qt WHERE maqt=@Mauqt; End "
+            f"FROM {self.kho}.qt WHERE maqt=@Mauqt; "
             # load maqt
             f"If Not Exists (Select * From #bdl) "
             f"INSERT INTO #bdl (maqt,mauqt,{cr}) SELECT TOP 1 @Maqt,'moi',{cr} "
@@ -485,14 +482,14 @@ class Qtgt:
         # up qtgt ref
         du = ','.join(map(lambda k: f"s.{k}=r.{k}", refs))
         sql += (
-            f"UPDATE #bdl SET {du} "
+            f"UPDATE s SET {du} "
             f"FROM #bdl s INNER JOIN {self.xac}.qt r ON s.maqt=r.maqt; ")
         # up to tamqt
         cs += ['maqt', 'mauqt'] + refs
         du = ','.join(map(lambda k: f"s.{k}=r.{k}", cs))
         cr = ','.join(map(lambda k: f"r.{k}", cs))
         cs = ','.join(cs.copy())
-        sql0 += (
+        sql += (
             f"MERGE {self.xac}.tamqt AS s USING #bdl AS r ON s.maqt=r.maqt "
             f"WHEN MATCHED THEN UPDATE SET {du} "
             f"WHEN NOT MATCHED THEN INSERT ({cs}) VALUES ({cr}) "
@@ -507,7 +504,7 @@ class Qtgt:
             f"s.nam=r.nam,s.plqt=r.plqt,s.quy=r.quy,s.sodot=r.sodot,s.nhathauid=r.nhathauid "
             f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.dot r ON s.madot=r.madot; ")
         # nap qt3x
-        sql0 += (
+        sql += (
             f"Select top 1 @Mauqt=Isnull(mauqt,''), @Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
             f"EXEC {self.xac}.nap_qt31 @Maqt, @Mauqt; "
             f"EXEC {self.xac}.nap_qt32 @Maqt, @Mauqt; "
@@ -515,7 +512,7 @@ class Qtgt:
             f"EXEC {self.xac}.nap_qt34 @Maqt, @Mauqt; "
             f"EXEC {self.xac}.nap_qt35 @Maqt, @Mauqt; ")
         # up chiphikhuvuc
-        sql0 += (
+        sql += (
             f"IF @Status Not Like '%fin%' BEGIN "
             f"Select Top 1 @Maq=maq FROM {self.xac}.tamqt; "
             f"UPDATE s SET "
@@ -1270,9 +1267,11 @@ def updulieu():
     Upxac('qlmltd', 2021)
     Upxac('qlmltd', 2019)
     Upxac('pkh', 2021)
+
+
 # Csdl("pkh")
-#Qtgt("pkh").nap_qtgt()
+# Qtgt("pkh").nap_qtgt()
 
 
-updulieu()
-#Qtgt("pkh").tao()
+# updulieu()
+Qtgt("pkh").tao()
