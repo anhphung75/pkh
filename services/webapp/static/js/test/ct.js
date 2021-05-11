@@ -12,8 +12,14 @@ const fn = {
     try {
       if (dl === undefined || dl === null) {
         return '';
+      } else if (dl.constructor === Error || dl.constructor === RegExp) {
+        return '';
       } else if (dl.constructor === String) {
-        return dl.toString();
+        return dl;
+      } else if (dl.constructor === Number) {
+        return dl + '';
+      } else if (dl.constructor === Date || dl.constructor === Boolean) {
+        return String(dl);
       }
       else {
         return JSON.stringify(dl);
@@ -34,17 +40,11 @@ const fn = {
   sregexp: (stim) => {
     stim = fn.a2s(stim);
     if (stim.length < 1) { return stim; }
-    let k,
+    let v,
       ltim = [...stim],
       mau = "";
-    for (k in ltim) {
-      if (
-        ["$", "(", ")", "[", ".", "+", "*", "^", "?", "\\"].includes(ltim[k])
-      ) {
-        mau += "\\" + ltim[k];
-      } else {
-        mau += ltim[k];
-      }
+    for (v of ltim) {
+      ["$", "(", ")", "[", ".", "+", "*", "^", "?", "\\"].includes(v) ? mau += "\\" + v : mau += v;
     }
     return mau;
   },
@@ -3144,7 +3144,7 @@ const app = {
       cg3 = fn.a2i(cg3);
       if (cg3 > 3) return;
       idb.taodb();
-      idb.gom.cpx({ "otim": 'cai100' }, 0);
+      idb.gom.cpx({ "otim": 'cai300' }, 0);
       //cpx.wxem();
     } catch (err) {
       cg3 += 1;

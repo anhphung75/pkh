@@ -213,6 +213,7 @@ class Qtgt:
         self.nap_qt3x(3)
         self.nap_qt3x(4)
         self.nap_qt3x(5)
+        self.nap_qt3x_khuvuc()
         self.nap_qtgt()
         self.tinh_qt3x(1)
         self.tinh_qt3x(2)
@@ -349,7 +350,8 @@ class Qtgt:
             f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
             f"Set @Maqt=Isnull(CAST(@Maqt as NVARCHAR(255)),''); "
             f"IF DataLength(@Maqt)<1 RETURN; "
-            f"Set @Mauqt=Isnull(CAST(@Mauqt as NVARCHAR(255)),''); ")
+            f"Set @Mauqt=Isnull(CAST(@Mauqt as NVARCHAR(255)),''); "
+            f"Declare @Sl INT=0; ")
         if i in [1, 2, 3, 4]:
             cs = ['tt', 'maqt', 'mauqtgt', 'tienvl', 'tiennc', 'tienmtc',
                   'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc']
@@ -367,12 +369,12 @@ class Qtgt:
             f"SELECT top 1 maqtgt,{cs} INTO #bdl FROM {self.xac}.tamqt3{i} "
             f"WHERE maqt='sao ma co'; "
             # load Mauqt
-            f"IF DataLength(@Mauqt)>0 Begin "
+            f"If (Not Exists (Select * From #bdl) And DataLength(@Mauqt)>0) "
             f"INSERT INTO #bdl ({cs}) SELECT {cr} FROM {self.xac}.qt3{i} "
             f"WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
-            f"If Not Exists (Select * From #bdl) "
+            f"If (Not Exists (Select * From #bdl) And DataLength(@Mauqt)>0) "
             f"INSERT INTO #bdl ({cs}) SELECT {cr} FROM {self.kho}.qt3{i} "
-            f"WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; End "
+            f"WHERE maqt=@Mauqt AND chiphiid>0 ORDER BY tt,chiphiid; "
             # load Maqt
             f"If Not Exists (Select * From #bdl) "
             f"INSERT INTO #bdl ({cs}) SELECT {cr} FROM {self.xac}.qt3{i} "
@@ -381,23 +383,25 @@ class Qtgt:
             f"INSERT INTO #bdl ({cs}) SELECT {cr} FROM {self.kho}.qt3{i} "
             f"WHERE maqt=@Maqt AND chiphiid>0 ORDER BY tt,chiphiid; "
             # load default
+            f"If Exists (Select * From #bdl) Set @Sl=1; "
+            f"Select Top 1 @Mauqt=maqt From {self.kho}.qt3{i} Order By lastupdate Desc; "
             f"If Not Exists (Select * From #bdl) "
-            f"Begin INSERT INTO #bdl ({cs}) SELECT {cs} FROM {self.xac}.tamqt3{i} "
-            f"WHERE chiphiid>0 ORDER BY tt,chiphiid; Set @Mauqt='moi'; End "
+            f"INSERT INTO #bdl ({cs}) SELECT {cs} FROM {self.xac}.tamqt3{i} "
+            f"WHERE chiphiid>0 ORDER BY tt,chiphiid; "
             f"If Not Exists (Select * From #bdl) "
-            f"Begin Select Top 1 @Mauqt=maqt From {self.kho}.qt3{i} Order By lastupdate Desc; "
             f"INSERT INTO #bdl ({cs}) SELECT {cr} FROM {self.kho}.qt3{i} "
-            f"WHERE chiphiid>0 AND maqt=@Mauqt ORDER BY tt,chiphiid; Set @Mauqt='moi'; End "
+            f"WHERE chiphiid>0 AND maqt=@Mauqt ORDER BY tt,chiphiid; "
             f"If Not Exists (Select * From #bdl) RETURN; ")
         if i in [1, 2, 3, 4]:
-            sql += f"IF @Mauqt='moi' UPDATE #bdl SET soluong=0; "
+            sql += f"IF @Sl=0 UPDATE #bdl SET soluong=0; "
         else:
-            sql += f"IF @Mauqt='moi' UPDATE #bdl SET oc_sl=0,on_sl=0; "
+            sql += f"IF @Sl=0 UPDATE #bdl SET oc_sl=0,on_sl=0; "
         # up maqtgt
         sql += (
             f"UPDATE #bdl SET maqt=@Maqt,"
             f"maqtgt=Case When tt<10 Then CONCAT(@Maqt,{i}0,tt) Else CONCAT(@Maqt,{i},tt) End "
-            f"WHERE tt>0; ")
+            f"WHERE tt>0; "
+            f"Select 'qt3{i}' as _bdl, @Maqt as _maqt, @Mauqt as _mauqt, * from #bdl; ")
         # up to tamqt3x
         if i in [1, 2, 3, 4]:
             cs = ['tt', 'maqt', 'maqtgt', 'mauqtgt', 'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc',
@@ -413,6 +417,41 @@ class Qtgt:
             f"WHEN MATCHED THEN UPDATE SET {du} "
             f"WHEN NOT MATCHED THEN INSERT ({cs}) VALUES ({cr}) "
             f"WHEN NOT MATCHED BY SOURCE THEN DELETE; ")
+        sql += f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END; "
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+    def nap_qt3x_khuvuc(self):
+        sql = (f"DROP PROC {self.xac}.nap_qt3x_khuvuc")
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+        sql = (
+            f"CREATE PROC {self.xac}.nap_qt3x_khuvuc "
+            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
+            f"Declare @Maq INT=0, @Status NVARCHAR(255)=''; ")
+        sql += (
+            f"Select top 1 @Maq=Isnull(maq,0),@Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
+            f"IF @Status Like '%fin%' Return; "
+            f"UPDATE s SET "
+            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
+            f"FROM {self.xac}.tamqt31 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
+            f"UPDATE s SET "
+            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
+            f"FROM {self.xac}.tamqt32 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
+            f"UPDATE s SET "
+            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
+            f"FROM {self.xac}.tamqt33 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
+            f"UPDATE s SET "
+            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
+            f"FROM {self.xac}.tamqt34 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
+            f"UPDATE s SET "
+            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
+            f"FROM {self.xac}.tamqt35 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; ")
         sql += f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END; "
         try:
             db.core().execute(sql)
@@ -502,34 +541,9 @@ class Qtgt:
             # up dot
             f"UPDATE s SET "
             f"s.nam=r.nam,s.plqt=r.plqt,s.quy=r.quy,s.sodot=r.sodot,s.nhathauid=r.nhathauid "
-            f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.dot r ON s.madot=r.madot; ")
-        # nap qt3x
-        sql += (
-            f"Select top 1 @Mauqt=Isnull(mauqt,''), @Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
-            f"EXEC {self.xac}.nap_qt31 @Maqt, @Mauqt; "
-            f"EXEC {self.xac}.nap_qt32 @Maqt, @Mauqt; "
-            f"EXEC {self.xac}.nap_qt33 @Maqt, @Mauqt; "
-            f"EXEC {self.xac}.nap_qt34 @Maqt, @Mauqt; "
-            f"EXEC {self.xac}.nap_qt35 @Maqt, @Mauqt; ")
-        # up chiphikhuvuc
-        sql += (
-            f"IF @Status Not Like '%fin%' BEGIN "
-            f"Select Top 1 @Maq=maq FROM {self.xac}.tamqt; "
-            f"UPDATE s SET "
-            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
-            f"FROM {self.xac}.tamqt31 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
-            f"UPDATE s SET "
-            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
-            f"FROM {self.xac}.tamqt32 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
-            f"UPDATE s SET "
-            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
-            f"FROM {self.xac}.tamqt33 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
-            f"UPDATE s SET "
-            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
-            f"FROM {self.xac}.tamqt34 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
-            f"UPDATE s SET "
-            f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
-            f"FROM {self.xac}.tamqt35 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; END ")
+            f"FROM {self.xac}.tamqt s INNER JOIN {self.kho}.dot r ON s.madot=r.madot; "
+            f"EXEC {self.xac}.nap_qt3x; ")
+
         sql += f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
         try:
             db.core().execute(sql)
@@ -560,7 +574,7 @@ class Qtgt:
             sql += (
                 f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; "
                 f"SELECT maqt,maqtgt,chiphiid,giavl,gianc,giamtc,tienvl,tiennc,tienmtc, "
-                f"IDENTITY(INT, 1, 1) AS tt,abs(isnull(soluong,0)) as soluong "
+                f"(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) AS tt,abs(isnull(soluong,0)) as soluong "
                 f"INTO #bdl FROM {self.xac}.tamqt3{i} WHERE chiphiid>0 ORDER BY tt,chiphiid; "
                 f"If Not Exists (Select * From #bdl) RETURN; "
                 # tinh toan lai gia
@@ -584,7 +598,7 @@ class Qtgt:
         else:
             sql += (
                 f"SELECT maqt,maqtgt,chiphiid,gia,oc_tien,on_tien, "
-                f"IDENTITY(INT, 1, 1) AS tt,abs(isnull(oc_sl,0)) as oc_sl,abs(isnull(on_sl,0)) as on_sl "
+                f"(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) AS tt,abs(isnull(oc_sl,0)) as oc_sl,abs(isnull(on_sl,0)) as on_sl "
                 f"INTO #bdl FROM {self.xac}.tamqt3{i} WHERE chiphiid>0 ORDER BY tt,chiphiid; "
                 f"If Not Exists (Select * From #bdl) RETURN; "
                 # tinh toan lai gia
@@ -1270,8 +1284,12 @@ def updulieu():
 
 
 # Csdl("pkh")
-# Qtgt("pkh").nap_qtgt()
+Qtgt("pkh").tinh_qt3x(1)
+Qtgt("pkh").tinh_qt3x(2)
+Qtgt("pkh").tinh_qt3x(3)
+Qtgt("pkh").tinh_qt3x(4)
+Qtgt("pkh").tinh_qt3x(5)
 
 
 # updulieu()
-Qtgt("pkh").tao()
+# Qtgt("pkh").tao()

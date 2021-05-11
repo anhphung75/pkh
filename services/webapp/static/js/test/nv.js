@@ -8,8 +8,14 @@ const fn = {
     try {
       if (dl === undefined || dl === null) {
         return '';
+      } else if (dl.constructor === Error || dl.constructor === RegExp) {
+        return '';
       } else if (dl.constructor === String) {
-        return dl.toString();
+        return dl;
+      } else if (dl.constructor === Number) {
+        return dl + '';
+      } else if (dl.constructor === Date || dl.constructor === Boolean) {
+        return String(dl);
       }
       else {
         return JSON.stringify(dl);
@@ -27,66 +33,128 @@ const fn = {
       return dl ? parseInt(dl) : -1;
     } catch (err) { return -1; }
   },
-  is1val: (ma, dl, gop = false) => {
+  sval: (dl) => {
+    let k, v,
+      s = '';
+    if (dl.constructor === Object) {
+      for (k in dl) { s = s === '' ? fn.sval(dl[k]) : [s, fn.sval(dl[k])].join(' '); }
+    } else if (dl.constructor === Array) {
+      for (v of ma) { s = s === '' ? fn.sval(dl[k]) : [s, fn.sval(dl[k])].join(' '); }
+    } else {
+      s = s === '' ? fn.a2s(dl) : [s, fn.a2s(dl)].join(' ');
+    }
+    return s;
+  },
+  tim: (ma, dl, isval = true) => {
     console.log("nv-fn.is1val ma=", JSON.stringify(ma, null, 2));
     console.log("nv-fn.is1val dl=", JSON.stringify(dl, null, 2));
-    console.log("nv-fn.is1val gop=", JSON.stringify(gop, null, 2));
-    if (dl === undefined || dl === null) return false;
-    if (ma === undefined || ma === null) return true;
-    if (ma.constructor !== String || ma.constructor !== Number) return false;
-    let v, k, isok = false;
-    if (ma.constructor === String) {
+    if (isval) dl = fn.sval(dl);
+    dl = fn.a2sl(dl);
+    if (dl === '') return false;
+    let v, k;
+    if (ma.constructor === Object) {
+      for (k in ma) { if (!fn.tim(ma[k], dl)) return false; }
+      return true;
+    } else if (ma.constructor === Array) {
+      for (v of ma) { if (!fn.tim(v, dl)) return false; }
+      return true;
+    } else {
       ma = fn.a2sl(ma);
-      ma = ma.replace(/\s\s+/g, ' ');
-      ma = ma.trim();
-      if (ma.split(' ').join('') == '') return true;
-      if (dl.constructor === String) {
-        dl = fn.a2sl(dl);
-        if (gop == true) {
-          return dl == ma ? true : false;
-        } else {
-          return dl.includes(ma) ? true : false;
-        }
-      } else if (dl.constructor === Number) {
-        dl += "";
-        if (gop == true) {
-          return dl == ma ? true : false;
-        } else {
-          return dl.includes(ma) ? true : false;
-        }
-      } else if (dl.constructor === Array) {
-        for (v of dl) {
-          isok = fn.is1val(ma, v, gop);
-          if (isok == true) return true;
-        }
-      } else if (dl.constructor === Object) {
-        for (k in dl) {
-          isok = fn.is1val(ma, dl[k], gop);
-          if (isok == true) return true;
-        }
-      } else { return false; }
     }
-    if (ma.constructor === Number) {
-      if (dl.constructor === Number) {
-        if (gop == true) {
-          return dl == ma ? true : false;
-        } else {
-          ma += "";
-          dl += "";
-          return dl.includes(ma) ? true : false;
-        }
-      } else if (dl.constructor === Array) {
-        for (v of dl) {
-          isok = fn.is1val(ma, v, gop);
-          if (isok === true) return true;
-        }
-      } else if (dl.constructor === Object) {
-        for (k in dl) {
-          isok = fn.is1val(ma, dl[k], gop);
-          if (isok === true) return true;
-        }
-      } else { return false; }
-    }
+    ma = ma.replace(/\s\s+/g, ' ');
+    ma = ma.trim();
+    if (ma.split(' ').join('') === '') return true;
+    return dl.includes(ma) ? true : false;
+  },
+  upkey: (rs, rr) => {
+    let k, k1, v1,
+      keyxoa = ['notes', 'ghichu', 'old_'];
+    if (rr === null || rr === undefined) {
+      return rs;
+    } else if (rr.constructor === Object) {
+      if (!rs || rs.constructor !== Object) { rs = {}; }
+      for (k in rr) {
+        if (rr[k] === null || rr[k] === undefined) {
+        } else if (rr[k].constructor === Object) {
+          if (rs[k] === null || rs[k] === undefined) {
+            rs[k] = {};
+          } else if (rs[k].constructor !== Object) {
+            k1 = ["old", k].join("_");
+            v1 = rs[k];
+            rs[k] = {};
+            rs[k][k1] = v1;
+          } else { }
+          rs[k] = fn.upkey(rs[k], rr[k]);
+        } else if (rr[k].constructor === Array) {
+          if (rs[k] === null || rs[k] === undefined) {
+            rs[k] = [];
+          } else if (rs[k].constructor !== Array) {
+            rs[k] = [rs[k]];
+          } else { }
+          rs[k] = fn.upkey(rs[k], rr[k]);
+        } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
+          rs[k] = rr[k];
+        } else if (rr[k].constructor === String) {
+          rr[k] = rr[k].replace(/\s\s+/g, ' ');
+          rr[k] = rr[k].trim();
+          if (rr[k].split(' ').join('') !== '') {
+            rs[k] = rr[k];
+          } else {
+            for (k1 in keyxoa) {
+              if (k.includes(keyxoa[k1]) && k in rs) {
+                delete rs[k];
+                break;
+              }
+            }
+          }
+        } else { }
+      }
+      if (Object.keys(rs).length == 0) { return null; }
+    } else if (rr.constructor === Array) {
+      if (!rs || rs.constructor !== Array) { rs = []; }
+      for (k in rr) {
+        if (rr[k] === null || rr[k] === undefined) {
+        } else if (rr[k].constructor === Object) {
+          if (rs[k] === null || rs[k] === undefined) {
+            rs[k] = {};
+          } else if (rs[k].constructor !== Object) {
+            k1 = ["old", k, rs[k]].join("_");
+            v1 = rs[k];
+            rs[k] = {};
+            rs[k][k1] = v1;
+          } else { }
+          rs[k] = fn.upkey(rs[k], rr[k]);
+        } else if (rr[k].constructor === Array) {
+          if (rs[k] === null || rs[k] === undefined) {
+            rs[k] = [];
+          } else if (rs[k].constructor !== Array) {
+            rs[k] = [rs[k]];
+          } else { }
+          rs[k] = fn.upkey(rs[k], rr[k]);
+        } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
+          rs.push(rr[k]);
+        } else if (rr[k].constructor === String) {
+          rr[k] = rr[k].replace(/\s\s+/g, ' ');
+          rr[k] = rr[k].trim();
+          if (rr[k].split(' ').join('') !== '') {
+            rs.push(rr[k]);
+          }
+        } else { }
+      }
+      rs = [...new Set(rs)];
+      if (rs.length == 0) { return null; }
+    } else if (rr.constructor === Number || rr.constructor === Boolean) {
+      rs = rr;
+    } else if (rr.constructor === String) {
+      rr = rr.replace(/\s\s+/g, ' ');
+      rr[k] = rr[k].trim();
+      if (rr.split(' ').join('') !== '') {
+        rs = rr;
+      } else {
+        return null;
+      }
+    } else { }
+    return rs;
   },
   isval: (ma, dl, gop = false) => {
     if (dl === undefined || dl === null) return false;
@@ -96,12 +164,12 @@ const fn = {
     } else if (ma.constructor === Array) {
       for (v of ma) {
         isok = fn.is1val(v, dl, gop);
-        if (isok == true) return true;
+        if (isok === true) return true;
       }
     } else if (ma.constructor === String || ma.constructor === Number) {
       isok = fn.is1val(ma, dl, gop);
       console.log("nv-fn.isval ma=String-Number isok=", JSON.stringify(isok, null, 2));
-      if (isok == true) return true;
+      if (isok === true) return true;
     } else { return true; }
     //return false;
   },
@@ -223,96 +291,7 @@ const fn = {
     }
     return rs;
   },
-  upkey: (rs, rr) => {
-    let k, k1, v1,
-      keyxoa = ['notes', 'ghichu', 'old_'];
-    if (rr === null || rr === undefined) {
-      return rs;
-    } else if (rr.constructor === Object) {
-      if (!rs || rs.constructor !== Object) { rs = {}; }
-      for (k in rr) {
-        if (rr[k] === null || rr[k] === undefined) {
-        } else if (rr[k].constructor === Object) {
-          if (rs[k] === null || rs[k] === undefined) {
-            rs[k] = {};
-          } else if (rs[k].constructor !== Object) {
-            k1 = ["old", k].join("_");
-            v1 = rs[k];
-            rs[k] = {};
-            rs[k][k1] = v1;
-          } else { }
-          rs[k] = fn.upkey(rs[k], rr[k]);
-        } else if (rr[k].constructor === Array) {
-          if (rs[k] === null || rs[k] === undefined) {
-            rs[k] = [];
-          } else if (rs[k].constructor !== Array) {
-            rs[k] = [rs[k]];
-          } else { }
-          rs[k] = fn.upkey(rs[k], rr[k]);
-        } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
-          rs[k] = rr[k];
-        } else if (rr[k].constructor === String) {
-          rr[k] = rr[k].replace(/\s\s+/g, ' ');
-          rr[k] = rr[k].trim();
-          if (rr[k].split(' ').join('') !== '') {
-            rs[k] = rr[k];
-          } else {
-            for (k1 in keyxoa) {
-              if (k.includes(keyxoa[k1]) && k in rs) {
-                delete rs[k];
-                break;
-              }
-            }
-          }
-        } else { }
-      }
-      if (Object.keys(rs).length == 0) { return null; }
-    } else if (rr.constructor === Array) {
-      if (!rs || rs.constructor !== Array) { rs = []; }
-      for (k in rr) {
-        if (rr[k] === null || rr[k] === undefined) {
-        } else if (rr[k].constructor === Object) {
-          if (rs[k] === null || rs[k] === undefined) {
-            rs[k] = {};
-          } else if (rs[k].constructor !== Object) {
-            k1 = ["old", k, rs[k]].join("_");
-            v1 = rs[k];
-            rs[k] = {};
-            rs[k][k1] = v1;
-          } else { }
-          rs[k] = fn.upkey(rs[k], rr[k]);
-        } else if (rr[k].constructor === Array) {
-          if (rs[k] === null || rs[k] === undefined) {
-            rs[k] = [];
-          } else if (rs[k].constructor !== Array) {
-            rs[k] = [rs[k]];
-          } else { }
-          rs[k] = fn.upkey(rs[k], rr[k]);
-        } else if (rr[k].constructor === Number || rr[k].constructor === Boolean) {
-          rs.push(rr[k]);
-        } else if (rr[k].constructor === String) {
-          rr[k] = rr[k].replace(/\s\s+/g, ' ');
-          rr[k] = rr[k].trim();
-          if (rr[k].split(' ').join('') !== '') {
-            rs.push(rr[k]);
-          }
-        } else { }
-      }
-      rs = [...new Set(rs)];
-      if (rs.length == 0) { return null; }
-    } else if (rr.constructor === Number || rr.constructor === Boolean) {
-      rs = rr;
-    } else if (rr.constructor === String) {
-      rr = rr.replace(/\s\s+/g, ' ');
-      rr[k] = rr[k].trim();
-      if (rr.split(' ').join('') !== '') {
-        rs = rr;
-      } else {
-        return null;
-      }
-    } else { }
-    return rs;
-  },
+
 };
 
 var sv = {
@@ -813,7 +792,7 @@ const idb = {
     //  setTimeout(() => idb.nap.cpx(cg3), 222);
     //}
   },
-  gom: (dk = { prog: 'chiphi', bang: 'chiphi', gom: null, gop: false }, cg3 = 0) => {
+  gom: (dk = { prog: 'chiphi', bang: 'chiphi', gom: null }, cg3 = 0) => {
     //try {
     cg3 = fn.a2i(cg3);
     if (cg3 > 3) {
@@ -839,21 +818,11 @@ const idb = {
       db.openCursor(null, 'prev').onsuccess = (e) => {
         cs = e.target.result;
         if (cs) {
-          if (ma === undefined || ma === null) isok = false;
+          cv++;
+          kq = { "cv": fn.a2i(cv * 100 / zr) };
           dl = cs.value;
-          if (ma.constructor === Array || ma.constructor === String || ma.constructor === Number) {
-            isok = fn.isval(ma, dl, gop);
-            console.log("nv-gom ma=Array-String-Number isok=", JSON.stringify(isok, null, 2));
-          } else if (ma.constructor === Object) {
-            isok = fn.iskey(ma, dl, gop);
-          } else { isok = false; }
-          console.log("nv-gom last isok=", JSON.stringify(isok, null, 2));
-          if (isok == true) {
-            cv++;
-            kq.cv = fn.a2i(cv * 100 / zr);
-            kq[prog] = dl;
-            self.postMessage(kq);
-          }
+          if (fn.tim(ma, dl)) kq[prog] = dl;
+          self.postMessage(kq);
           cs.continue();
         } else {
           self.postMessage({ "cv": -1, "info": "fin" });
