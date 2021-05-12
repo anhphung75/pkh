@@ -338,20 +338,20 @@ class Qtgt:
     def nap_qt3x(self, i=1):
         if i not in [1, 2, 3, 4, 5]:
             return
-        sql = (f"DROP PROC {self.xac}.nap_qt3{i}")
+        prog = f"{self.xac}.nap_qt3{i}"
+        sql = f"DROP PROC {prog}"
         try:
             db.core().execute(sql)
         except:
             pass
-        # main prog
-        sql = (
-            f"CREATE PROC {self.xac}.nap_qt3{i} "
-            f"@Maqt NVARCHAR(255),@Mauqt NVARCHAR(255)='' "
-            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"Set @Maqt=Isnull(CAST(@Maqt as NVARCHAR(255)),''); "
+        sql = f"CREATE PROC {prog} WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
+        # load refs
+        sql += (
+            f"Declare @Maqt NVARCHAR(255)='',@Mauqt NVARCHAR(255)='',@Sl INT=0; "
+            f"Select Top 1 @Maqt=Isnull(maqt,''),@Mauqt=Isnull(mauqt,'') From {self.xac}.tamqt; "
             f"IF DataLength(@Maqt)<1 RETURN; "
-            f"Set @Mauqt=Isnull(CAST(@Mauqt as NVARCHAR(255)),''); "
-            f"Declare @Sl INT=0; ")
+            f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
+        # load data
         if i in [1, 2, 3, 4]:
             cs = ['tt', 'maqt', 'mauqtgt', 'tienvl', 'tiennc', 'tienmtc',
                   'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc']
@@ -365,7 +365,7 @@ class Qtgt:
         cs = ','.join(cs.copy())
         cr = ','.join(cr.copy())
         sql += (
-            f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; "
+            # load null bdl
             f"SELECT top 1 maqtgt,{cs} INTO #bdl FROM {self.xac}.tamqt3{i} "
             f"WHERE maqt='sao ma co'; "
             # load Mauqt
@@ -424,19 +424,20 @@ class Qtgt:
             pass
 
     def nap_qt3x_khuvuc(self):
-        sql = (f"DROP PROC {self.xac}.nap_qt3x_khuvuc")
+        prog = f"{self.xac}.nap_qt3x_khuvuc"
+        sql = f"DROP PROC {prog}"
         try:
             db.core().execute(sql)
         except:
             pass
-        # main prog
-        sql = (
-            f"CREATE PROC {self.xac}.nap_qt3x_khuvuc "
-            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"Declare @Maq INT=0, @Status NVARCHAR(255)=''; ")
+        sql = f"CREATE PROC {prog} WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
+        # load refs
         sql += (
-            f"Select top 1 @Maq=Isnull(maq,0),@Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
-            f"IF @Status Like '%fin%' Return; "
+            f"Declare @Maq INT,@Status NVARCHAR(255); "
+            f"Select Top 1 @Maq=Isnull(maq,0),@Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
+            f"IF @Status Like '%fin%' RETURN; "
+            f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
+        sql += (
             f"UPDATE s SET "
             f"s.chiphiid=Case When @Maq=2 then r.q2 When @Maq=9 then r.q9 Else r.td End "
             f"FROM {self.xac}.tamqt31 s INNER JOIN {self.kho}.chiphikhuvuc r ON s.chiphiid=r.chiphiid; "
@@ -553,35 +554,33 @@ class Qtgt:
     def tinh_qt3x(self, i=1):
         if i not in [1, 2, 3, 4, 5]:
             return
-        sql = (f"DROP PROC {self.xac}.tinh_qt3{i}")
+        prog = f"{self.xac}.tinh_qt3{i}"
+        sql = f"DROP PROC {prog}"
         try:
             db.core().execute(sql)
         except:
             pass
-        # main prog
-        sql = (
-            f"CREATE PROC {self.xac}.tinh_qt3{i} "
-            f"@Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(255)='dutoan' "
-            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"Set @Plgia=Isnull(CAST(@Plgia as NVARCHAR(255)),''); "
-            f"Set @Hesoid=Isnull(CAST(@Hesoid as INT),0); "
-            f"Set @Baogiaid=Isnull(CAST(@Baogiaid as INT),0); "
-            f"IF (@Baogiaid<1) OR (@Hesoid<1) OR (DataLength(@Plgia)<1) RETURN; "
-            f"Declare @Maqt NVARCHAR(255)=''; "
-            f"Select Top 1 @Maqt=maqt From {self.xac}.tamqt; "
-            f"IF DataLength(Isnull(@Maqt,''))<1 Return; ")
+        sql = f"CREATE PROC {prog} WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
+        # load refs
+        sql += (
+            f"Declare @Maqt NVARCHAR(255),@Plgia NVARCHAR(255),@Baogia INT=0,@Cpql INT=0; "
+            f"Select Top 1 @Maqt=Isnull(maqt,''),@Plgia=Isnull(plgia,'dutoan'),"
+            f"@Baogia=Isnull(baogiaid,0),@Cpql=Isnull(hesoid,0) "
+            f"From {self.xac}.tamqt; "
+            f"IF DataLength(@Maqt)<1 RETURN; "
+            f"IF (@Baogia<1) OR (@Cpql<1) OR (DataLength(@Plgia)<1) RETURN; "
+            f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
         if i in [1, 2, 3, 4]:
             sql += (
-                f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; "
                 f"SELECT maqt,maqtgt,chiphiid,giavl,gianc,giamtc,tienvl,tiennc,tienmtc, "
                 f"(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) AS tt,abs(isnull(soluong,0)) as soluong "
                 f"INTO #bdl FROM {self.xac}.tamqt3{i} WHERE chiphiid>0 ORDER BY tt,chiphiid; "
                 f"If Not Exists (Select * From #bdl) RETURN; "
                 # tinh toan lai gia
                 f"UPDATE #bdl SET "
-                f"giavl=dbo.giavl(chiphiid,@Baogiaid,@Plgia),"
-                f"gianc=dbo.gianc(chiphiid,@Baogiaid,@Plgia),"
-                f"giamtc=dbo.giamtc(chiphiid,@Baogiaid,@Plgia),"
+                f"giavl=dbo.giavl(chiphiid,@Baogia,@Plgia),"
+                f"gianc=dbo.gianc(chiphiid,@Baogia,@Plgia),"
+                f"giamtc=dbo.giamtc(chiphiid,@Baogia,@Plgia),"
                 f"maqt=@Maqt,"
                 f"maqtgt=(Case When tt<10 Then CONCAT(@Maqt,{i}0,tt) Else CONCAT(@Maqt,{i},tt) End); "
                 # lam tron
@@ -603,7 +602,7 @@ class Qtgt:
                 f"If Not Exists (Select * From #bdl) RETURN; "
                 # tinh toan lai gia
                 f"UPDATE #bdl SET "
-                f"gia=dbo.giatl(chiphiid,@Baogiaid,@Plgia),"
+                f"gia=dbo.giatl(chiphiid,@Baogia,@Plgia),"
                 f"maqt=@Maqt,"
                 f"maqtgt=(Case When tt<10 Then CONCAT(@Maqt,{i}0,tt) Else CONCAT(@Maqt,{i},tt) End); "
                 # lam tron
@@ -613,8 +612,8 @@ class Qtgt:
                 f" gia=dbo.lamtronso(gia,0); "
                 # tinh tien
                 f"UPDATE #bdl SET "
-                f"oc_tien=(Case When @Hesoid<20200827 Then (dbo.lamtronso(oc_sl*gia/1000,0)*1000) Else dbo.lamtronso(oc_sl*gia,0) End),"
-                f"on_tien=(Case When @Hesoid<20200827 Then (dbo.lamtronso(on_sl*gia/1000,0)*1000) Else dbo.lamtronso(on_sl*gia,0) End); ")
+                f"oc_tien=(Case When @Cpql<20200827 Then (dbo.lamtronso(oc_sl*gia/1000,0)*1000) Else dbo.lamtronso(oc_sl*gia,0) End),"
+                f"on_tien=(Case When @Cpql<20200827 Then (dbo.lamtronso(on_sl*gia/1000,0)*1000) Else dbo.lamtronso(on_sl*gia,0) End); ")
         # test
         sql += f"Select 'qt3{i} bdl' as test,* from #bdl; "
         # up to tami
@@ -638,21 +637,14 @@ class Qtgt:
             pass
 
     def tinh_qtgt(self):
-        sql = (f"DROP PROC {self.xac}.tinh_qtgt")
+        prog = f"{self.xac}.tinh_qtgt"
+        sql = f"DROP PROC {prog}"
         try:
             db.core().execute(sql)
         except:
             pass
-        # main prog
-        sql = (
-            f"CREATE PROC {self.xac}.tinh_qtgt "
-            f"@Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(255)='dutoan' "
-            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"Set @Plgia=Isnull(CAST(@Plgia as NVARCHAR(255)),''); "
-            f"Set @Hesoid=Isnull(CAST(@Hesoid as INT),0); "
-            f"Set @Baogiaid=Isnull(CAST(@Baogiaid as INT),0); "
-            f"IF (@Baogiaid<1) OR (@Hesoid<1) OR (DataLength(@Plgia)<1) RETURN; "
-            f"DECLARE ")
+        sql = f"CREATE PROC {prog} WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
+        sql += f"DECLARE @Maqt NVARCHAR(255),@Plgia NVARCHAR(255),@Baogia INT=0,@Cpql INT=0,"
         # heso chiphi
         lds = [
             "vl", "nc", "mtc", "tructiepkhac", "chung", "giantiepkhac",
@@ -670,13 +662,14 @@ class Qtgt:
         for chiphi in lds:
             sql += f"@on{chiphi} DECIMAL(38,9),@oc{chiphi} DECIMAL(38,9),"
         sql += f"@Plqt NVARCHAR(50); "
-        # tinh tamqtx
+        # load refs
         sql += (
-            f"EXEC {self.xac}.tinh_qt31 @Baogiaid, @Hesoid, @Plgia; "
-            f"EXEC {self.xac}.tinh_qt32 @Baogiaid, @Hesoid, @Plgia; "
-            f"EXEC {self.xac}.tinh_qt33 @Baogiaid, @Hesoid, @Plgia; "
-            f"EXEC {self.xac}.tinh_qt34 @Baogiaid, @Hesoid, @Plgia; "
-            f"EXEC {self.xac}.tinh_qt35 @Baogiaid, @Hesoid, @Plgia; ")
+            f"Select Top 1 @Maqt=Isnull(maqt,''),@Plgia=Isnull(plgia,'dutoan'),"
+            f"@Baogia=Isnull(baogiaid,0),@Cpql=Isnull(hesoid,0) "
+            f"From {self.xac}.tamqt; "
+            f"IF DataLength(@Maqt)<1 RETURN; "
+            f"IF (@Baogia<1) OR (@Cpql<1) OR (DataLength(@Plgia)<1) RETURN; "
+            f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
         # load Zvl, Znc, Zmtc, Tailap
         sql += (
             f"SELECT @ocZvl=Sum(zVl), @ocZnc=Sum(zNc), @ocZmtc=Sum(zMtc) FROM "
@@ -692,7 +685,7 @@ class Qtgt:
             f"Select Isnull(sum(tienvl),0) As zVl, Isnull(sum(tiennc),0) As zNc, Isnull(sum(tienmtc),0) As zMtc "
             f"From {self.xac}.tamqt34) AS U; "
             f"SELECT @onTailap=Isnull(sum(on_tien),0) From {self.xac}.tamqt35; ")
-        # load hesochiphi
+        # load chiphi quan ly - hesochiphi
         ods = {
             "nc": "heso_nc", "mtc": "heso_mtc", "tructiepkhac": "heso_ttpk", "chung": "heso_cpchung",
             "giantiepkhac": "giantiepkhac", "thutinhtruoc": "heso_thunhaptt",
@@ -700,7 +693,7 @@ class Qtgt:
         sql += f"Select "
         for heso in ods:
             sql += f"@{heso}=Isnull({ods[heso]},0),"
-        sql += f"@vl=1.0000 From {self.kho}.hesochiphi Where hesoid=@Hesoid; "
+        sql += f"@vl=1.0000 From {self.kho}.hesochiphi Where hesoid=@Cpql; "
         # tinh chi phi
         lds = ["on", "oc"]
         for phui in lds:
@@ -782,19 +775,16 @@ class Qtgt:
             f"slong= Isnull((Select sum(sl) From {self.xac}.tttt_qt01 "
             f"Where tinhtrang='Moi' AND phanloai='Ong'),0),"
             # tong hop cat
-            f"slcat= Case When @Hesoid>=20200827"
+            f"slcat= Case When @Cpql>=20200827 "
             f"Then Isnull((Select sum(sl) From {self.xac}.tttt_qt01 "
             f"Where tinhtrang='Moi' AND phanloai='Cat20200827'),0)"
             f"Else Isnull((Select sum(sl) From {self.xac}.tttt_qt01 "
             f"Where tinhtrang='Moi' AND phanloai='Cat'),0) End,"
-            f"tiencat= Case When @Hesoid>=20200827"
+            f"tiencat= Case When @Cpql>=20200827 "
             f"Then Isnull((Select sum(vl) From {self.xac}.tttt_qt01 "
             f"Where tinhtrang='Moi' AND phanloai='Cat20200827'),0)"
             f"Else Isnull((Select sum(vl) From {self.xac}.tttt_qt01 "
             f"Where tinhtrang='Moi' AND phanloai='Cat'),0) End; ")
-        sql += (
-            f"If @Baogiaid>0 Update {self.xac}.tamqt SET baogiaid=@Baogiaid; "
-            f"If @Hesoid>0 Update {self.xac}.tamqt SET hesoid=@Hesoid; ")
         sql += f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
         try:
             db.core().execute(sql)
@@ -804,34 +794,32 @@ class Qtgt:
     def luu_qt3x(self, i=1):
         if i not in [1, 2, 3, 4, 5]:
             return
-        sql = (f"DROP PROC {self.xac}.luu_qt3{i}")
+        prog = f"{self.xac}.luu_qt3{i}"
+        sql = f"DROP PROC {prog}"
         try:
             db.core().execute(sql)
         except:
             pass
-        # main prog
-        sql = (
-            f"CREATE PROC {self.xac}.luu_qt3{i} "
-            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"Declare @Maqt NVARCHAR(255)='',@Status NVARCHAR(255)='',@Soluong DECIMAL(38,9); "
-            f"Select Top 1 @Maqt=maqt,@Status=tinhtrang From {self.xac}.tamqt; "
-            f"Set @Maqt=Isnull(CAST(@Maqt as NVARCHAR(255)),''); "
-            f"Set @Status=Isnull(CAST(@Status as NVARCHAR(255)),''); "
+        sql = f"CREATE PROC {prog} WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
+        # load refs
+        sql += (
+            f"Declare @Maqt NVARCHAR(255),@Status NVARCHAR(255),@Zsl DECIMAL(38,9); "
+            f"Select Top 1 @Maqt=Isnull(maqt,''),@Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
             f"IF (DataLength(@Maqt)<1) OR (@Status like '%fin%') RETURN; "
             f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
         # load tamdulieu
         if i in [1, 2, 3, 4]:
-            cr = ['IDENTITY(INT, 1, 1) AS tt', 'maqt', 'maqtgt', 'chiphiid',
+            cr = ['(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) AS tt', 'maqt', 'maqtgt', 'chiphiid',
                   'soluong', 'giavl', 'gianc', 'giamtc', 'tienvl', 'tiennc', 'tienmtc']
             sql += (
                 f"SELECT {','.join(cr)} INTO #bdl FROM {self.xac}.tamqt3{i} "
                 f"WHERE maqt=@Maqt And chiphiid>0 ORDER BY tt,chiphiid; "
-                f"Select @Soluong=Isnull(sum(soluong),0) From #bdl; "
-                f"If @soluong<=0 DELETE FROM #bdl; "
                 f"If Exists (Select * From #bdl) UPDATE #bdl SET maqt=@Maqt,"
-                f"maqtgt=(Case When tt<10 Then CONCAT(@Maqt,{i}0,tt) Else CONCAT(@Maqt,{i},tt) End); ")
+                f"maqtgt=(Case When tt<10 Then CONCAT(@Maqt,{i}0,tt) Else CONCAT(@Maqt,{i},tt) End); "
+                f"Select @Zsl=Isnull(sum(soluong),0) From #bdl; "
+                f"If @Zsl<=0 DELETE FROM #bdl; ")
         else:
-            cr = ['IDENTITY(INT, 1, 1) AS tt', 'maqt', 'maqtgt', 'chiphiid',
+            cr = ['(ROW_NUMBER() OVER(ORDER BY tt,chiphiid)) AS tt', 'maqt', 'maqtgt', 'chiphiid',
                   'gia', 'oc_sl', 'on_sl', 'oc_tien', 'on_tien']
             sql += (
                 f"SELECT {','.join(cr)} INTO #bdl FROM {self.xac}.tamqt3{i} "
@@ -873,20 +861,19 @@ class Qtgt:
             pass
 
     def luu_qtgt(self):
-        sql = (f"DROP PROC {self.xac}.luu_qtgt")
+        prog = f"{self.xac}.luu_qtgt"
+        sql = f"DROP PROC {prog}"
         try:
             db.core().execute(sql)
         except:
             pass
-        # main prog
-        sql = (
-            f"CREATE PROC {self.xac}.luu_qtgt "
-            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
-            f"Declare @Maqt NVARCHAR(255)='',@Status NVARCHAR(255)=''; "
-            f"Select Top 1 @Maqt=maqt,@Status=tinhtrang From {self.xac}.tamqt; "
-            f"Set @Maqt=Isnull(CAST(@Maqt as NVARCHAR(255)),''); "
-            f"Set @Status=Isnull(CAST(@Status as NVARCHAR(255)),''); "
-            f"IF (DataLength(@Maqt)<1) OR (@Status like '%fin%') RETURN; ")
+        sql = f"CREATE PROC {prog} WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
+        # load refs
+        sql += (
+            f"Declare @Maqt NVARCHAR(255),@Status NVARCHAR(255); "
+            f"Select Top 1 @Maqt=Isnull(maqt,''),@Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
+            f"IF (DataLength(@Maqt)<1) OR (@Status like '%fin%') RETURN; "
+            f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
         # init data
         cs = [
             'maqt', 'baogiaid', 'hesoid', 'plgia', 'madot', 'hosoid', 'tt', 'soho',
@@ -913,32 +900,46 @@ class Qtgt:
             pass
 
     def tinhlai_dot_qtgt(self):
-        sql = (f"DROP PROC {self.xac}.tinhlai_dot_qtgt ")
+        prog = f"{self.xac}.tinhlai_dot_qtgt"
+        sql = f"DROP PROC {prog}"
         try:
             db.core().execute(sql)
         except:
             pass
         # main prog
         sql = (
-            f"CREATE PROC {self.xac}.tinhlai_dot_qtgt "
-            f"@Madot NVARCHAR(255)='' "
-            f"WITH ENCRYPTION AS BEGIN SET NOCOUNT ON "
+            f"CREATE PROC {prog} @Madot NVARCHAR(255)='' WITH ENCRYPTION AS BEGIN SET NOCOUNT ON "
             f"Set @Madot=Isnull(CAST(@Madot as NVARCHAR(255)),''); "
             f"IF DataLength(@Madot)<1 RETURN; "
-            f"DECLARE @Maqt NVARCHAR(255)='', @Baogiaid INT=0, @Hesoid INT=0, @Plgia NVARCHAR(255)='dutoan'; "
+            f"DECLARE @Maqt NVARCHAR(255)=''; "
             f"DECLARE mCursor CURSOR FOR "
-            f"Select maqt,baogiaid,hesoid,plgia From {self.xac}.qt "
-            f"Where madot=@Madot AND Left(Isnull(tinhtrang, ''), 2) Not In ('Fi', 'TN', 'OK', 'oK'); "
+            f"Select maqt From {self.xac}.qt Where madot=@Madot "
+            f"AND Left(Isnull(tinhtrang, ''), 2) Not In ('Fi', 'TN', 'OK', 'oK'); "
             f"OPEN mCursor; "
             f"BEGIN TRY ")
         # mo cursor
         sql += (
-            f"Fetch Next From mCursor INTO @Maqt, @Baogiaid, @Hesoid, @Plgia; "
+            f"Fetch Next From mCursor INTO @Maqt; "
             f"WHILE @@FETCH_STATUS=0 Begin Begin "
             f"EXEC {self.xac}.nap_qtgt @Maqt; "
-            f"EXEC {self.xac}.tinh_qtgt @Baogiaid, @Hesoid, @Plgia; "
+            f"EXEC {self.xac}.nap_qt31; "
+            f"EXEC {self.xac}.nap_qt32; "
+            f"EXEC {self.xac}.nap_qt33; "
+            f"EXEC {self.xac}.nap_qt34; "
+            f"EXEC {self.xac}.nap_qt35; "
+            f"EXEC {self.xac}.tinh_qt31; "
+            f"EXEC {self.xac}.tinh_qt32; "
+            f"EXEC {self.xac}.tinh_qt33; "
+            f"EXEC {self.xac}.tinh_qt34; "
+            f"EXEC {self.xac}.tinh_qt35; "
+            f"EXEC {self.xac}.tinh_qtgt; "
+            f"EXEC {self.xac}.luu_qt31; "
+            f"EXEC {self.xac}.luu_qt32; "
+            f"EXEC {self.xac}.luu_qt33; "
+            f"EXEC {self.xac}.luu_qt34; "
+            f"EXEC {self.xac}.luu_qt35; "
             f"EXEC {self.xac}.luu_qtgt; End "
-            f"Fetch Next From mCursor INTO @Maqt, @Baogiaid, @Hesoid, @Plgia; End ")
+            f"Fetch Next From mCursor INTO @Maqt; End ")
         sql += (
             f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH "
             f"CLOSE mCursor; DEALLOCATE mCursor; END; ")
@@ -1284,12 +1285,7 @@ def updulieu():
 
 
 # Csdl("pkh")
-Qtgt("pkh").tinh_qt3x(1)
-Qtgt("pkh").tinh_qt3x(2)
-Qtgt("pkh").tinh_qt3x(3)
-Qtgt("pkh").tinh_qt3x(4)
-Qtgt("pkh").tinh_qt3x(5)
 
 
-# updulieu()
-# Qtgt("pkh").tao()
+updulieu()
+#Qtgt("pkh").tao()
