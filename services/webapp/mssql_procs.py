@@ -805,7 +805,7 @@ class Qtgt:
         sql += (
             f"Declare @Maqt NVARCHAR(255),@Status NVARCHAR(255),@Zsl DECIMAL(38,9); "
             f"Select Top 1 @Maqt=Isnull(maqt,''),@Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
-            f"IF (DataLength(@Maqt)<1) OR (@Status like '%fin%') RETURN; "
+            f"IF (DataLength(@Maqt)<1) OR (@Status like '%fin%') OR (@Status like '%ok%') RETURN; "
             f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
         # load tamdulieu
         if i in [1, 2, 3, 4]:
@@ -872,7 +872,7 @@ class Qtgt:
         sql += (
             f"Declare @Maqt NVARCHAR(255),@Status NVARCHAR(255); "
             f"Select Top 1 @Maqt=Isnull(maqt,''),@Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
-            f"IF (DataLength(@Maqt)<1) OR (@Status like '%fin%') RETURN; "
+            f"IF (DataLength(@Maqt)<1) OR (@Status like '%fin%') OR (@Status like '%ok%') RETURN; "
             f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
         # init data
         cs = [
@@ -1288,4 +1288,4 @@ def updulieu():
 
 
 updulieu()
-#Qtgt("pkh").tao()
+# Qtgt("pkh").tao()
