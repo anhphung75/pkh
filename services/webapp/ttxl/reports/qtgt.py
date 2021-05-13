@@ -231,6 +231,9 @@ class Dulieu:
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
             cp['soluong'] = lamtronso(cp['soluong'], 3)
+            cp['giavl'] = lamtronso(cp['giavl'], 0)
+            cp['gianc'] = lamtronso(cp['gianc'], 0)
+            cp['giamtc'] = lamtronso(cp['giamtc'], 0)
         self.oc_cpxd = dl
 
     def qtoc_vt(self):
@@ -254,6 +257,9 @@ class Dulieu:
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
             cp['soluong'] = lamtronso(cp['soluong'], 3)
+            cp['giavl'] = lamtronso(cp['giavl'], 0)
+            cp['gianc'] = lamtronso(cp['gianc'], 0)
+            cp['giamtc'] = lamtronso(cp['giamtc'], 0)
         self.oc_cpvt = dl
 
     def qtoc_vl(self):
@@ -277,6 +283,9 @@ class Dulieu:
             self.ocznc += cp['tiennc']
             self.oczmtc += cp['tienmtc']
             cp['soluong'] = lamtronso(cp['soluong'], 3)
+            cp['giavl'] = lamtronso(cp['giavl'], 0)
+            cp['gianc'] = lamtronso(cp['gianc'], 0)
+            cp['giamtc'] = lamtronso(cp['giamtc'], 0)
         self.oc_cpvl = dl
 
     def qton_xd(self):
@@ -299,6 +308,9 @@ class Dulieu:
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
             cp['soluong'] = lamtronso(cp['soluong'], 3)
+            cp['giavl'] = lamtronso(cp['giavl'], 0)
+            cp['gianc'] = lamtronso(cp['gianc'], 0)
+            cp['giamtc'] = lamtronso(cp['giamtc'], 0)
         self.on_cpxd = dl
 
     def qton_vt(self):
@@ -322,6 +334,9 @@ class Dulieu:
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
             cp['soluong'] = lamtronso(cp['soluong'], 3)
+            cp['giavl'] = lamtronso(cp['giavl'], 0)
+            cp['gianc'] = lamtronso(cp['gianc'], 0)
+            cp['giamtc'] = lamtronso(cp['giamtc'], 0)
         self.on_cpvt = dl
 
     def qton_vl(self):
@@ -345,6 +360,9 @@ class Dulieu:
             self.onznc += cp['tiennc']
             self.onzmtc += cp['tienmtc']
             cp['soluong'] = lamtronso(cp['soluong'], 3)
+            cp['giavl'] = lamtronso(cp['giavl'], 0)
+            cp['gianc'] = lamtronso(cp['gianc'], 0)
+            cp['giamtc'] = lamtronso(cp['giamtc'], 0)
         self.on_cpvl = dl
 
     def tlmd(self):
@@ -371,6 +389,9 @@ class Dulieu:
             if (cp['tien_oc']+cp['tien_on']+cp['sl_oc']+cp['sl_on']) > 0:
                 self.ocztl += cp['tien_oc']
                 self.onztl += cp['tien_on']
+                cp['sl_oc'] = lamtronso(cp['sl_oc'], 3)
+                cp['sl_oc'] = lamtronso(cp['sl_oc'], 3)
+                cp['gia'] = lamtronso(cp['gia'], 0)
                 cptl.append(cp)
         self.cptl = cptl
         # test

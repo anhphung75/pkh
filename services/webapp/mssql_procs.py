@@ -518,7 +518,8 @@ class Qtgt:
             f"Order By baogiaid DESC) Else baogiaid End,"
             f"hesoid=Case When Isnull(hesoid,0)<1 Then (Select Top 1 hesoid From {self.kho}.hesochiphi "
             f"Order By hesoid DESC) Else hesoid End,"
-            f"plgia=Isnull(plgia,'dutoan'); ")
+            f"plgia=Isnull(plgia,'dutoan'),"
+            f"ngaylap=Isnull(ngaylap,getdate()); ")
         # up qtgt ref
         du = ','.join(map(lambda k: f"s.{k}=r.{k}", refs))
         sql += (
@@ -615,21 +616,30 @@ class Qtgt:
                 f"oc_tien=(Case When @Cpql<20200827 Then (dbo.lamtronso(oc_sl*gia/1000,0)*1000) Else dbo.lamtronso(oc_sl*gia,0) End),"
                 f"on_tien=(Case When @Cpql<20200827 Then (dbo.lamtronso(on_sl*gia/1000,0)*1000) Else dbo.lamtronso(on_sl*gia,0) End); ")
         # test
-        sql += f"Select 'qt3{i} bdl' as test,* from #bdl; "
-        # up to tami
+        sql += f"Select 'bdl tinh_qt3{i}' as test,* from #bdl; "
+        # up to tamqt3x
         if i in [1, 2, 3, 4]:
             cs = ['tt', 'maqt', 'maqtgt', 'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc',
                   'tienvl', 'tiennc', 'tienmtc']
         else:
             cs = ['tt', 'maqt', 'maqtgt', 'chiphiid',
                   'gia', 'oc_sl', 'on_sl', 'oc_tien', 'on_tien']
+        # xoa rec thua
+        sql += (
+            f"DELETE FROM {self.xac}.tamqt3{i} "
+            f"WHERE maqt=@Maqt AND maqtgt NOT IN (Select maqtgt From #bdl); ")
+        # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
+        sql += (
+            f"UPDATE s SET {','.join(du)} "
+            f"FROM {self.xac}.tamqt3{i} s INNER JOIN #bdl r ON s.maqtgt=r.maqtgt; ")
+        # add rec chua co
         cr = map(lambda k: f"r.{k}", cs)
         sql += (
-            f"MERGE {self.xac}.tamqt3{i} AS s USING #bdl AS r ON s.maqtgt=r.maqtgt "
-            f"WHEN MATCHED THEN UPDATE SET {','.join(du)} "
-            f"WHEN NOT MATCHED THEN INSERT ({','.join(cs)}) VALUES ({','.join(cr)}) "
-            f"WHEN NOT MATCHED BY SOURCE THEN DELETE; ")
+            f"INSERT INTO {self.xac}.tamqt3{i} ({','.join(cs)},mauqtgt) "
+            f"SELECT {','.join(cr)},r.maqtgt "
+            f"FROM {self.xac}.tamqt3{i} s RIGHT JOIN #bdl r ON s.maqtgt=r.maqtgt "
+            f"WHERE s.maqtgt Is Null ORDER BY r.maqtgt; ")
         sql += f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
         try:
             db.core().execute(sql)
@@ -1288,4 +1298,4 @@ def updulieu():
 
 
 updulieu()
-# Qtgt("pkh").tao()
+# Qtgt("pkh").nap_qtgt()

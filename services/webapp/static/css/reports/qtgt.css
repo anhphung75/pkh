@@ -72,7 +72,7 @@ main {
 
 .kettoan2 {
   width: 100%;
-  grid: auto-flow minmax(1rem, max-content) / 150fr 405fr;
+  grid: auto-flow minmax(1rem, max-content) / 165fr 390fr;
 }
 
 .chuky2 {

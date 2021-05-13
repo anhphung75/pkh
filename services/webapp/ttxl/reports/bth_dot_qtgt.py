@@ -35,7 +35,7 @@ class Dulieu:
         self.tim_ztrongai()
         self.tim_zhoso_zchualam()
         self.nhansu()
-        # self.tim_khuvuc()
+        self.sua_khuvuc()
 
     def tao_chuoi_ngay(self, dngay):
         kq = ""
@@ -169,6 +169,15 @@ class Dulieu:
     def nhansu(self):
         if self.ngaylap > 20210422:
             self.duyet['nhanvien'] = 'Nguyễn Tuấn Ngọc'
+
+    def sua_khuvuc(self):
+        if self.ngaylap > 20210207:
+            if 'Bình Dương,' in self.khuvuc:
+                self.khuvuc = 'Bình Dương, Tp.Thủ Đức'
+            elif 'Bình Dương' in self.khuvuc:
+                self.khuvuc = 'Bình Dương'
+            else:
+                self.khuvuc = 'Tp.Thủ Đức'
 
 
 def dulieuin(schema):
