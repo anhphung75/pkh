@@ -1082,7 +1082,7 @@ class Upkho:
             cs = [
                 'madot', 'hop', 'nam', 'plqt', 'quy', 'sodot', 'nhathauid', 'ngaylendot', 'ngaydshc', 'ngaythicong',
                 'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt', 'dautucty', 'dautukhach',
-                'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'tinhtrang',
+                'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'tinhtrang', 'tt',
                 'sophieunhap', 'sophieuxuat', 'tinhtrangqtvt']
         else:
             cs = [
@@ -1209,7 +1209,7 @@ class Upxac:
         cs = [
             'madot', 'hop', 'nam', 'plqt', 'quy', 'sodot', 'nhathauid', 'ngaylendot', 'ngaydshc', 'ngaythicong',
             'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt', 'dautucty', 'dautukhach',
-            'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'ghichu', 'tinhtrang',
+            'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'ghichu', 'tinhtrang', 'tt',
             'sophieunhap', 'sophieuxuat', 'ghichuqtvt', 'tinhtrangqtvt']
         # xoa rec thua
         sql = (
