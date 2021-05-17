@@ -252,6 +252,18 @@ class Rpt_Qtgt(WebBase):
         else:
             self.render("errors/404.html", error=None)
 
+class Rpt_Qtgt_new(WebBase):
+    def get(self, schema):
+        schema = schema.lower()
+        if schema == "qlmltđ":
+            schema = "qlmltd"
+        if schema in ['pkh', 'pkd', 'qlmlq2', 'qlmlq9', 'qlmltd']:
+            data = qtgt.dulieuin(schema)
+            self.render("reports/qtgt_new/main.html", error=None,
+                        dulieuin=data['dulieuin'], qtgt=data['qtgt'])
+        else:
+            self.render("errors/404.html", error=None)
+
 
 class Rpt_Qtvt(WebBase):
     def get(self, schema):
@@ -319,6 +331,7 @@ class WebApp(web.Application):
             # report
             (r"/([^/]+)/reports/dutoan", Rpt_Dutoan),
             (r"/([^/]+)/reports/qtgt", Rpt_Qtgt),
+            (r"/([^/]+)/reports/qtgt_new", Rpt_Qtgt_new),
             (r"/([^/]+)/reports/qtvt", Rpt_Qtvt),
             (r"/([^/]+)/reports/tonghop/dotqtgt", Rpt_BthDotQtgt),
             (r"/([^/]+)/reports/tonghop/dotvl", Rpt_BthDotVl),
@@ -369,6 +382,8 @@ class WebApp(web.Application):
                 "RptQtgt_OngnganhCpxd": rptqtgt.OngnganhCpxd,
                 "RptQtgt_OngnganhCpvt": rptqtgt.OngnganhCpvt,
                 "RptQtgt_OngnganhCpvl": rptqtgt.OngnganhCpvl,
+                "RptQtgt_Chiphi": rptqtgt.Chiphi,
+                "RptQtgt_ChiphiTieude": rptqtgt.ChiphiTieude,
                 "RptQtgt_ChiphiDandong": rptqtgt.ChiphiDandong,
                 "RptQtgt_Cpql_Nd32_2015": rptqtgt.Cpql_Nd32_2015,
                 "RptQtgt_Cpql2_Nd32_2015": rptqtgt.Cpql2_Nd32_2015,

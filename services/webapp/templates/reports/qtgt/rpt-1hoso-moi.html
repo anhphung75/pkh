@@ -1,0 +1,412 @@
+<div id="{{uid}}">
+  {% set pages =1 %}
+  {% set page =1 %}
+  <div class="A4doc">
+    <div class="trangin trang1">
+      {% module RptQtgt_Quochuy(ttdl.dvtc, ttdl.ngaylap) %}
+      <header>
+        {% module RptQtgt_Tieude(ttdl.tieude, ttdl.sohoso, ttdl.sodot, ttdl.khachhang, ttdl.diachigandhn) %}
+      </header>
+      <main>
+        {% set z=0 %}
+        {#Ongcai#}
+        {% if ttdl.oc_cpxd or ttdl.oc_cpvt or ttdl.oc_cpvl %}
+        {% module RptQtgt_PhuiTieude() %}
+        {% end %}
+        {#oc_cpxd#}
+        {% set zdl=ttdl.oc_cpxd %}
+        {% set isok=True %}
+        {% while isok and len(zdl)>0 %}
+        {% set cp=zdl.pop(0) %}
+        {% module RptQtgt_Chiphi(cp) %}
+        {% set z+=1 %}
+        {% if z>50 %}
+        {% set isok=False %}
+        {% end %}
+        {% end %}
+        {#oc_cpvt#}
+        {% if len(zdl)==0 %}
+        {% set isok=True %}
+        {% set zdl=ttdl.oc_cpvt %}
+        {% end %}
+        {% if isok and len(zdl)>0 %}
+        {% module RptQtgt_ChiphiTieude('Vật tư cấp mới') %}
+        {% set z+=1 %}
+        {% while isok and len(zdl)>0 %}
+        {% set cp=zdl.pop(0) %}
+        {% module RptQtgt_Chiphi(cp) %}
+        {% set z+=1 %}
+        {% if z>50 %}
+        {% set isok=False %}
+        {% end %}
+        {% end %}
+        {% end %}
+        {#oc_cpvl#}
+        {% if len(zdl)==0 %}
+        {% set isok=True %}
+        {% set zdl=ttdl.oc_cpvl %}
+        {% end %}
+        {% if isok and len(zdl)>0 %}
+        {% module RptQtgt_ChiphiTieude('Vật liệu xây dựng') %}
+        {% set z+=1 %}
+        {% while isok and len(zdl)>0 %}
+        {% set cp=zdl.pop(0) %}
+        {% module RptQtgt_Chiphi(cp) %}
+        {% set z+=1 %}
+        {% if z>50 %}
+        {% set isok=False %}
+        {% end %}
+        {% end %}
+        {% end %}
+        {#oc_tong#}
+        {% if len(zdl)==0 %}
+        {% set isok=True %}
+        {% end %}
+        {% if isok and (ttdl.oczvl or ttdl.ocznc or ttdl.oczmtc) %}
+        {% module RptQtgt_PhuiTong(ttdl.oczvl,ttdl.ocznc,ttdl.oczmtc) %}
+        {% set z+=2 %}
+        {% if z>50 %}
+        {% set isok=False %}
+        {% end %}
+        {% end %}
+        {#Ongnganh#}
+        {% if isok and (ttdl.on_cpxd or ttdl.on_cpvt or ttdl.on_cpvl) %}
+        {% module RptQtgt_PhuiTieude() %}
+        {% end %}
+        {#on_cpxd#}
+        {% set zdl=ttdl.on_cpxd %}
+        {% while isok and len(zdl)>0 %}
+        {% set cp=zdl.pop(0) %}
+        {% module RptQtgt_Chiphi(cp) %}
+        {% set z+=1 %}
+        {% if z>50 %}
+        {% set isok=False %}
+        {% end %}
+        {% end %}
+        {#on_cpvt#}
+        {% if len(zdl)==0 %}
+        {% set isok=True %}
+        {% set zdl=ttdl.on_cpvt %}
+        {% end %}
+        {% if isok and len(zdl)>0 %}
+        {% module RptQtgt_ChiphiTieude('Vật tư cấp mới') %}
+        {% set z+=1 %}
+        {% while isok and len(zdl)>0 %}
+        {% set cp=zdl.pop(0) %}
+        {% module RptQtgt_Chiphi(cp) %}
+        {% set z+=1 %}
+        {% if z>50 %}
+        {% set isok=False %}
+        {% end %}
+        {% end %}
+        {% end %}
+        {#on_cpvl#}
+        {% if len(zdl)==0 %}
+        {% set isok=True %}
+        {% set zdl=ttdl.on_cpvl %}
+        {% end %}
+        {% if isok and len(zdl)>0 %}
+        {% module RptQtgt_ChiphiTieude('Vật liệu xây dựng') %}
+        {% set z+=1 %}
+        {% while isok and len(zdl)>0 %}
+        {% set cp=zdl.pop(0) %}
+        {% module RptQtgt_Chiphi(cp) %}
+        {% set z+=1 %}
+        {% if z>50 %}
+        {% set isok=False %}
+        {% end %}
+        {% end %}
+        {% end %}
+        {#oc_tong#}
+        {% if len(zdl)==0 %}
+        {% set isok=True %}
+        {% end %}
+        {% if isok and ttdl.onzvlncmtc>0 %}
+        {% module RptQtgt_PhuiTong(ttdl.onzvl,ttdl.onznc,ttdl.onzmtc) %}
+        {% set z+=2 %}
+        {% if z>50 %}
+        {% set isok=False %}
+        {% end %}
+        {% end %}
+        {#cpql#}
+        {% if isok %}
+        {% if ttdl.occongtrinh and ttdl.oncongtrinh %}
+        {% if ttdl.cpqlid>=20200721 %}
+        {% module RptQtgt_Cpql2_Nd68_2019(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+        ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,
+        ttdl.oczvlncmtc, ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung, ttdl.ocgiantiepkhac, ttdl.ocgiantiep,
+        ttdl.ocgiaxaydung, ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue, ttdl.ockhaosatthietke, ttdl.ocgiamsat,
+        ttdl.octuvan, ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung, ttdl.octongxaydung,
+        ttdl.ocztl,ttdl.occongtrinh,
+        ttdl.onzvlncmtc, ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung, ttdl.ongiantiepkhac, ttdl.ongiantiep,
+        ttdl.ongiaxaydung, ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue, ttdl.onkhaosatthietke, ttdl.ongiamsat,
+        ttdl.ontuvan, ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung, ttdl.ontongxaydung,
+        ttdl.onztl,ttdl.oncongtrinh,
+        ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+        {% else %}
+        {% module RptQtgt_Cpql2_Nd32_2015(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+        ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,ttdl.ocvl,ttdl.ocnc,ttdl.ocmtc,
+        ttdl.oczvlncmtc, ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung, ttdl.ocgiantiepkhac, ttdl.ocgiantiep,
+        ttdl.ocgiaxaydung, ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue, ttdl.ockhaosatthietke, ttdl.ocgiamsat,
+        ttdl.octuvan, ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung, ttdl.octongxaydung,
+        ttdl.ocztl,ttdl.occongtrinh,ttdl.onvl,ttdl.onnc,ttdl.onmtc,
+        ttdl.onzvlncmtc, ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung, ttdl.ongiantiepkhac, ttdl.ongiantiep,
+        ttdl.ongiaxaydung, ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue, ttdl.onkhaosatthietke, ttdl.ongiamsat,
+        ttdl.ontuvan, ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung, ttdl.ontongxaydung,
+        ttdl.onztl,ttdl.oncongtrinh,
+        ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+        {% end %}
+        {% elif ttdl.occongtrinh %}
+        {% if ttdl.cpqlid>=20200721 %}
+        {% module RptQtgt_Cpql_Nd68_2019(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+        ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat, ttdl.oczvlncmtc,
+        ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung, ttdl.ocgiantiepkhac, ttdl.ocgiantiep, ttdl.ocgiaxaydung,
+        ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue, ttdl.ockhaosatthietke, ttdl.ocgiamsat, ttdl.octuvan,
+        ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung, ttdl.octongxaydung, ttdl.occongtrinh,
+        ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+        {% else %}
+        {% module RptQtgt_Cpql_Nd32_2015(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+        ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,
+        ttdl.ocvl,ttdl.ocnc,ttdl.ocmtc,ttdl.oczvlncmtc, ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung,
+        ttdl.ocgiantiepkhac, ttdl.ocgiantiep, ttdl.ocgiaxaydung, ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue,
+        ttdl.ockhaosatthietke, ttdl.ocgiamsat, ttdl.octuvan, ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung,
+        ttdl.octongxaydung, ttdl.occongtrinh,
+        ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+        {% end %}
+        {% else %}
+        {% if ttdl.cpqlid>=20200721 %}
+        {% module RptQtgt_Cpql_Nd68_2019(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+        ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat, ttdl.onzvlncmtc,
+        ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung, ttdl.ongiantiepkhac, ttdl.ongiantiep, ttdl.ongiaxaydung,
+        ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue, ttdl.onkhaosatthietke, ttdl.ongiamsat, ttdl.ontuvan,
+        ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung, ttdl.ontongxaydung, ttdl.oncongtrinh, ttdl.xaydung,
+        ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+        {% else %}
+        {% module RptQtgt_Cpql_Nd32_2015(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+        ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,
+        ttdl.onvl,ttdl.onnc,ttdl.onmtc,ttdl.onzvlncmtc, ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung,
+        ttdl.ongiantiepkhac, ttdl.ongiantiep, ttdl.ongiaxaydung, ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue,
+        ttdl.onkhaosatthietke, ttdl.ongiamsat, ttdl.ontuvan, ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung,
+        ttdl.ontongxaydung, ttdl.oncongtrinh, ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue,
+        ttdl.thuecongtrinh, ttdl.cptl) %}
+        {% end %}
+        {% end %}
+        {% end %}
+        {#kettoan#}
+        {% if isok %}
+        <div class="keep w100">
+          {% module RptQtgt_Kettoan(ttdl.tiencty, ttdl.tienkhach) %}
+          {% module RptKyduyet3(ttdl.duyet,ttdl.kiemtra,ttdl.lapbang) %}
+        </div>
+        {% end %}
+      </main>
+      <footer>
+        {% module RptQtgt_Footer(ttdl.cpqlid, ttdl.mabaogia, ttdl.tt, page, pages) %}
+      </footer>
+    </div>
+  </div>
+</div>
+
+{% set page=2 %}
+<div class="A4doc">
+  <div class="trangin trang2">
+    <header>
+      {% module RptQtgt_Tieude(ttdl.tieude, ttdl.sohoso, ttdl.sodot, ttdl.khachhang, ttdl.diachigandhn) %}
+    </header>
+    {% set z=0 %}
+    {#Ongcai#}
+    {% if ttdl.oc_cpxd or ttdl.oc_cpvt or ttdl.oc_cpvl %}
+    {% module RptQtgt_PhuiTieude() %}
+    {% end %}
+    {#oc_cpxd#}
+    {% set zdl=ttdl.oc_cpxd %}
+    {% set isok=True %}
+    {% while isok and len(zdl)>0 %}
+    {% set cp=zdl.pop(0) %}
+    {% module RptQtgt_Chiphi(cp) %}
+    {% set z+=1 %}
+    {% if z>50 %}
+    {% set isok=False %}
+    {% end %}
+    {% end %}
+    {#oc_cpvt#}
+    {% if len(zdl)==0 %}
+    {% set isok=True %}
+    {% set zdl=ttdl.oc_cpvt %}
+    {% end %}
+    {% if isok and len(zdl)>0 %}
+    {% module RptQtgt_ChiphiTieude('Vật tư cấp mới') %}
+    {% set z+=1 %}
+    {% while isok and len(zdl)>0 %}
+    {% set cp=zdl.pop(0) %}
+    {% module RptQtgt_Chiphi(cp) %}
+    {% set z+=1 %}
+    {% if z>50 %}
+    {% set isok=False %}
+    {% end %}
+    {% end %}
+    {% end %}
+    {#oc_cpvl#}
+    {% if len(zdl)==0 %}
+    {% set isok=True %}
+    {% set zdl=ttdl.oc_cpvl %}
+    {% end %}
+    {% if isok and len(zdl)>0 %}
+    {% module RptQtgt_ChiphiTieude('Vật liệu xây dựng') %}
+    {% set z+=1 %}
+    {% while isok and len(zdl)>0 %}
+    {% set cp=zdl.pop(0) %}
+    {% module RptQtgt_Chiphi(cp) %}
+    {% set z+=1 %}
+    {% if z>50 %}
+    {% set isok=False %}
+    {% end %}
+    {% end %}
+    {% end %}
+    {#oc_tong#}
+    {% if len(zdl)==0 %}
+    {% set isok=True %}
+    {% end %}
+    {% if isok and (ttdl.oczvl or ttdl.ocznc or ttdl.oczmtc) %}
+    {% module RptQtgt_PhuiTong(ttdl.oczvl,ttdl.ocznc,ttdl.oczmtc) %}
+    {% set z+=2 %}
+    {% if z>50 %}
+    {% set isok=False %}
+    {% end %}
+    {% end %}
+    {#Ongnganh#}
+    {% if isok and (ttdl.on_cpxd or ttdl.on_cpvt or ttdl.on_cpvl) %}
+    {% module RptQtgt_PhuiTieude() %}
+    {% end %}
+    {#on_cpxd#}
+    {% set zdl=ttdl.on_cpxd %}
+    {% while isok and len(zdl)>0 %}
+    {% set cp=zdl.pop(0) %}
+    {% module RptQtgt_Chiphi(cp) %}
+    {% set z+=1 %}
+    {% if z>50 %}
+    {% set isok=False %}
+    {% end %}
+    {% end %}
+    {#on_cpvt#}
+    {% if len(zdl)==0 %}
+    {% set isok=True %}
+    {% set zdl=ttdl.on_cpvt %}
+    {% end %}
+    {% if isok and len(zdl)>0 %}
+    {% module RptQtgt_ChiphiTieude('Vật tư cấp mới') %}
+    {% set z+=1 %}
+    {% while isok and len(zdl)>0 %}
+    {% set cp=zdl.pop(0) %}
+    {% module RptQtgt_Chiphi(cp) %}
+    {% set z+=1 %}
+    {% if z>50 %}
+    {% set isok=False %}
+    {% end %}
+    {% end %}
+    {% end %}
+    {#on_cpvl#}
+    {% if len(zdl)==0 %}
+    {% set isok=True %}
+    {% set zdl=ttdl.on_cpvl %}
+    {% end %}
+    {% if isok and len(zdl)>0 %}
+    {% module RptQtgt_ChiphiTieude('Vật liệu xây dựng') %}
+    {% set z+=1 %}
+    {% while isok and len(zdl)>0 %}
+    {% set cp=zdl.pop(0) %}
+    {% module RptQtgt_Chiphi(cp) %}
+    {% set z+=1 %}
+    {% if z>50 %}
+    {% set isok=False %}
+    {% end %}
+    {% end %}
+    {% end %}
+    {#oc_tong#}
+    {% if len(zdl)==0 %}
+    {% set isok=True %}
+    {% end %}
+    {% if isok and ttdl.onzvlncmtc>0 %}
+    {% module RptQtgt_PhuiTong(ttdl.onzvl,ttdl.onznc,ttdl.onzmtc) %}
+    {% set z+=2 %}
+    {% if z>50 %}
+    {% set isok=False %}
+    {% end %}
+    {% end %}
+    {#cpql#}
+    {% if isok %}
+    {% if ttdl.occongtrinh and ttdl.oncongtrinh %}
+    {% if ttdl.cpqlid>=20200721 %}
+    {% module RptQtgt_Cpql2_Nd68_2019(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+    ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,
+    ttdl.oczvlncmtc, ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung, ttdl.ocgiantiepkhac, ttdl.ocgiantiep,
+    ttdl.ocgiaxaydung, ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue, ttdl.ockhaosatthietke, ttdl.ocgiamsat,
+    ttdl.octuvan, ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung, ttdl.octongxaydung,
+    ttdl.ocztl,ttdl.occongtrinh,
+    ttdl.onzvlncmtc, ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung, ttdl.ongiantiepkhac, ttdl.ongiantiep,
+    ttdl.ongiaxaydung, ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue, ttdl.onkhaosatthietke, ttdl.ongiamsat,
+    ttdl.ontuvan, ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung, ttdl.ontongxaydung,
+    ttdl.onztl,ttdl.oncongtrinh,
+    ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+    {% else %}
+    {% module RptQtgt_Cpql2_Nd32_2015(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+    ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,ttdl.ocvl,ttdl.ocnc,ttdl.ocmtc,
+    ttdl.oczvlncmtc, ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung, ttdl.ocgiantiepkhac, ttdl.ocgiantiep,
+    ttdl.ocgiaxaydung, ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue, ttdl.ockhaosatthietke, ttdl.ocgiamsat,
+    ttdl.octuvan, ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung, ttdl.octongxaydung,
+    ttdl.ocztl,ttdl.occongtrinh,ttdl.onvl,ttdl.onnc,ttdl.onmtc,
+    ttdl.onzvlncmtc, ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung, ttdl.ongiantiepkhac, ttdl.ongiantiep,
+    ttdl.ongiaxaydung, ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue, ttdl.onkhaosatthietke, ttdl.ongiamsat,
+    ttdl.ontuvan, ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung, ttdl.ontongxaydung,
+    ttdl.onztl,ttdl.oncongtrinh,
+    ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+    {% end %}
+    {% elif ttdl.occongtrinh %}
+    {% if ttdl.cpqlid>=20200721 %}
+    {% module RptQtgt_Cpql_Nd68_2019(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+    ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat, ttdl.oczvlncmtc,
+    ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung, ttdl.ocgiantiepkhac, ttdl.ocgiantiep, ttdl.ocgiaxaydung,
+    ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue, ttdl.ockhaosatthietke, ttdl.ocgiamsat, ttdl.octuvan,
+    ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung, ttdl.octongxaydung, ttdl.occongtrinh,
+    ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+    {% else %}
+    {% module RptQtgt_Cpql_Nd32_2015(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+    ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,
+    ttdl.ocvl,ttdl.ocnc,ttdl.ocmtc,ttdl.oczvlncmtc, ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung,
+    ttdl.ocgiantiepkhac, ttdl.ocgiantiep, ttdl.ocgiaxaydung, ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue,
+    ttdl.ockhaosatthietke, ttdl.ocgiamsat, ttdl.octuvan, ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung,
+    ttdl.octongxaydung, ttdl.occongtrinh,
+    ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+    {% end %}
+    {% else %}
+    {% if ttdl.cpqlid>=20200721 %}
+    {% module RptQtgt_Cpql_Nd68_2019(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+    ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat, ttdl.onzvlncmtc,
+    ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung, ttdl.ongiantiepkhac, ttdl.ongiantiep, ttdl.ongiaxaydung,
+    ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue, ttdl.onkhaosatthietke, ttdl.ongiamsat, ttdl.ontuvan,
+    ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung, ttdl.ontongxaydung, ttdl.oncongtrinh, ttdl.xaydung,
+    ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+    {% else %}
+    {% module RptQtgt_Cpql_Nd32_2015(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+    ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,
+    ttdl.onvl,ttdl.onnc,ttdl.onmtc,ttdl.onzvlncmtc, ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung,
+    ttdl.ongiantiepkhac, ttdl.ongiantiep, ttdl.ongiaxaydung, ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue,
+    ttdl.onkhaosatthietke, ttdl.ongiamsat, ttdl.ontuvan, ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung,
+    ttdl.ontongxaydung, ttdl.oncongtrinh, ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue,
+    ttdl.thuecongtrinh, ttdl.cptl) %}
+    {% end %}
+    {% end %}
+    {% end %}
+    {#kettoan#}
+    {% if isok %}
+    <div class="keep w100">
+      {% module RptQtgt_Kettoan(ttdl.tiencty, ttdl.tienkhach) %}
+      {% module RptKyduyet3(ttdl.duyet,ttdl.kiemtra,ttdl.lapbang) %}
+    </div>
+    {% end %}
+    <main></main>
+    <footer>
+      {% module RptQtgt_Footer(ttdl.cpqlid, ttdl.mabaogia, ttdl.tt, page, pages) %}
+    </footer>
+  </div>
+</div>

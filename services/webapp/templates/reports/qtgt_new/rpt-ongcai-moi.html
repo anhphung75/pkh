@@ -1,0 +1,59 @@
+<div id="{{uid}}">
+  {% set page =1 %}
+  {% set pages =1 %}
+  <div class="A4doc">
+    <div class="trangin trang1">
+      {% if page==1 %}
+      {% module RptQtgt_Quochuy(ttdl.dvtc, ttdl.ngaylap) %}
+      {% end %}
+      <header>
+        {% module RptQtgt_Tieude(ttdl.tieude, ttdl.sohoso, ttdl.sodot, ttdl.khachhang, ttdl.diachigandhn) %}
+      </header>
+      <main>
+        {% module RptQtgt_PhuiTieude() %}
+        {% module RptQtgt_OngcaiCpxd(ttdl.oc_cpxd) %}
+        {% module RptQtgt_OngcaiCpvt(ttdl.oc_cpvt) %}
+        {% module RptQtgt_OngcaiCpvl(ttdl.oc_cpvl) %}
+        {% module RptQtgt_PhuiTong(ttdl.oczvl,ttdl.ocznc,ttdl.oczmtc) %}
+      </main>
+      <footer>
+        {% module RptQtgt_Footer(ttdl.cpqlid, ttdl.mabaogia, ttdl.tt, page, pages) %}
+      </footer>
+    </div>
+  </div>
+</div>
+
+{% set pages=2 %}
+
+<div class="A4doc">
+  <div class="trangin trang2">
+    <header>
+      {% set page +=1 %}
+      {% module RptQtgt_Tieude(ttdl.tieude, ttdl.sohoso, ttdl.sodot, ttdl.khachhang, ttdl.diachigandhn) %}
+    </header>
+    {% if ttdl.cpqlid>=20200721 %}
+    {% module RptQtgt_Cpql_Nd68_2019(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+    ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat, ttdl.oczvlncmtc,
+    ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung, ttdl.ocgiantiepkhac, ttdl.ocgiantiep, ttdl.ocgiaxaydung,
+    ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue, ttdl.ockhaosatthietke, ttdl.ocgiamsat, ttdl.octuvan,
+    ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung, ttdl.octongxaydung, ttdl.occongtrinh,
+    ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+    {% else %}
+    {% module RptQtgt_Cpql_Nd32_2015(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung,
+    ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat,
+    ttdl.ocvl,ttdl.ocnc,ttdl.ocmtc,ttdl.oczvlncmtc, ttdl.octructiepkhac, ttdl.octructiep, ttdl.occhung,
+    ttdl.ocgiantiepkhac, ttdl.ocgiantiep, ttdl.ocgiaxaydung, ttdl.octhutinhtruoc, ttdl.ocxaydungtruocthue,
+    ttdl.ockhaosatthietke, ttdl.ocgiamsat, ttdl.octuvan, ttdl.octongxaydungtruocthue, ttdl.octhuetongxaydung,
+    ttdl.octongxaydung, ttdl.occongtrinh,
+    ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+    {% end %}
+    <div class="keep w100">
+      {% module RptQtgt_Kettoan(ttdl.tiencty, ttdl.tienkhach) %}
+      {% module RptKyduyet3(ttdl.duyet,ttdl.kiemtra,ttdl.lapbang) %}
+    </div>
+    <main></main>
+    <footer>
+      {% module RptQtgt_Footer(ttdl.cpqlid, ttdl.mabaogia, ttdl.tt, page, pages) %}
+    </footer>
+  </div>
+</div>

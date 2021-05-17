@@ -238,11 +238,11 @@ class Dulieu:
 
     def qtoc_vt(self):
         sql = (
-            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
-            f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
-            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0)"
-            f" Order By qt.maqtgt"
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,cp.mapl1 as plcp,"
+            f"isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc "
+            f"From dbo.chiphi cp RIGHT JOIN {self.schema}.qt32 qt ON cp.chiphiid=qt.chiphiid "
+            f"Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0) "
+            f"Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -315,11 +315,11 @@ class Dulieu:
 
     def qton_vt(self):
         sql = (
-            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
-            f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
-            f" From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid"
-            f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0)"
-            f" Order By qt.maqtgt"
+            f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,cp.mapl1 as plcp,"
+            f"isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc "
+            f"From dbo.chiphi cp RIGHT JOIN {self.schema}.qt34 qt ON cp.chiphiid=qt.chiphiid "
+            f"Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0) "
+            f"Order By qt.maqtgt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):

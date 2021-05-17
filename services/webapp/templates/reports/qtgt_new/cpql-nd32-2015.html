@@ -1,0 +1,140 @@
+<div class="flex hov">
+  <div class="l u fb c6">TỔNG KẾT KINH PHÍ: </div>
+  <div class="l c6" style="flex:1;">Theo Nghị định 32/2015/NĐ-CP ngày 25/03/2015; Quyết định 3384/QĐ-UBND 02/07/2016
+  </div>
+</div>
+<div class="grid cpql hov">
+  <div class="c fb btl">Nội dung chi phí</div>
+  <div class="c fb btl">Cách tính</div>
+  <div class="c fb btl">Giá trị (VNĐ)</div>
+  <div class="c fb btrl">Ký hiệu</div>
+</div>
+
+<div class="grid cpql hov">
+  <div class="l u fb btl c3">
+    {% if maubaocao=='on' %}
+    PHẦN 1: LẮP ĐẶT ĐỒNG HỒ NƯỚC
+    {% else %}
+    PHẦN 1: LẮP ĐẶT MẠNG CẤP NƯỚC
+    {% end %}
+  </div>
+  <div class="btl"></div>
+  <div class="btl"></div>
+  <div class="btrl"></div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">1. Chi phí vật tư (trước thuế)</div>
+  <div class="c bl">VL</div>
+  <div class="r bl">{{cpvl}}</div>
+  <div class="c brl">VL</div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">2. Chi phí nhân công</div>
+  <div class="c bl">NC</div>
+  <div class="r bl">{{cpnc}}</div>
+  <div class="c brl">NC</div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">3. Chi phí máy thi công</div>
+  <div class="c bl">MTC</div>
+  <div class="r bl">{{cpmtc}}</div>
+  <div class="c brl">MTC</div>
+</div>
+<div class="grid cpql hov">
+  <div class="r bl" style="padding-left:3pt">Cộng</div>
+  <div class="c bl">VL + NC + MTC</div>
+  <div class="r fb btl">{{cpzvlncmtc}}</div>
+  <div class="c fb brl">A</div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">4. Trực tiếp chi phí khác</div>
+  <div class="c bl">A x 0,0%</div>
+  <div class="r bl">{{cptructiepkhac}}</div>
+  <div class="c brl">TT</div>
+</div>
+<div class="grid cpql hov">
+  <div class="r bl" style="padding-left:3pt">Chi phí trực tiếp</div>
+  <div class="c bl">TT + A</div>
+  <div class="r fb btl">{{cptructiep}}</div>
+  <div class="c fb brl">T</div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">5. Chi phí chung</div>
+  <div class="c bl">T x {{chung}}</div>
+  <div class="r bl">{{cpchung}}</div>
+  <div class="c brl">C</div>
+</div>
+<div class="grid cpql hov">
+  <div class="r bl" style="padding-left:3pt">Giá thành xây dựng</div>
+  <div class="c bl">T + C</div>
+  <div class="r fb btl">{{cpgiaxaydung}}</div>
+  <div class="c fb brl">Z</div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">6. Thu nhập chịu thuế tính trước</div>
+  <div class="c bl">Z x {{thutinhtruoc}}</div>
+  <div class="r bl">{{cpthutinhtruoc}}</div>
+  <div class="c brl">TL</div>
+</div>
+<div class="grid cpql hov">
+  <div class="r bl">Giá trị xây dựng trước thuế</div>
+  <div class="c bl">Z + TL</div>
+  <div class="r fb btl">{{cpxaydungtruocthue}}</div>
+  <div class="c fb brl">G</div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">7. Chi phí khảo sát thiết kế</div>
+  <div class="c bl">G x {{khaosat}} x {{thietke}}</div>
+  <div class="r bl">{{cpkhaosatthietke}}</div>
+  <div class="c brl">I</div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">8. Chi phí giám sát</div>
+  <div class="c bl">G x {{giamsat}}</div>
+  <div class="r bl">{{cpgiamsat}}</div>
+  <div class="c brl">J</div>
+</div>
+<div class="grid cpql hov">
+  <div class="r bl">Tổng giá trị xây dựng trước thuế</div>
+  <div class="c bl">G + I + J</div>
+  <div class="r fb btl">{{cptongxaydungtruocthue}}</div>
+  <div class="c fb brl">L(A)</div>
+</div>
+<div class="grid cpql hov">
+  <div class="l bl" style="padding-left:3pt">9. Thuế giá trị gia tăng đầu ra</div>
+  <div class="c bl">L(A) x 10%</div>
+  <div class="r bl">{{cpthuetongxaydung}}</div>
+  <div class="c brl">GTGT1</div>
+</div>
+<div class="grid cpql hov">
+  <div class="r fb bbl">Chi phí xây dựng sau thuế (Phần 1)</div>
+  <div class="c bbl">L(A) + GTGT1</div>
+  <div class="r fb btbl">{{cptongxaydung}}</div>
+  <div class="c fb brbl">Gxd1</div>
+</div>
+{# phan tai lap mat duong #}
+{% module RptQtgt_Tlmd(cptl, maubaocao) %}
+<div class="grid cpql hov">
+  <div class="r fb bl">Chi phí xây dựng sau thuế (Phần 2)</div>
+  <div class="c"></div>
+  <div class="r fb bl">{{tailap}}</div>
+  <div class="c fb brl">Gxd2</div>
+</div>
+<div class="grid cpql hov">
+  <div class="c u fb btl f1">TỔNG CỘNG</div>
+  <div class="c btl">Gxd1 + Gxd2</div>
+  <div class="r fb btl f1">{{congtrinh}}</div>
+  <div class="c fb btrl">Gxd</div>
+</div>
+<div class="grid cpql hov">
+  <div class="r bl">Trong đó: giá trị trước thuế</div>
+  <div class="c bl"></div>
+  <div class="r bl">{{congtrinhtruocthue}}</div>
+  <div class="c brl"></div>
+</div>
+<div class="grid cpql hov">
+  <div class="r bbl">Thuế giá trị gia tăng 10%</div>
+  <div class="c bbl"></div>
+  <div class="r bbl">{{thuecongtrinh}}</div>
+  <div class="c brbl"></div>
+</div>

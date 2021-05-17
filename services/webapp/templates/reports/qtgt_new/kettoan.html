@@ -1,0 +1,37 @@
+{% if (tiencty*tienkhach)>0 %}
+<div class="l u fb w100 f1 c6">THANH TOÁN CHI PHÍ</div>
+<div class="grid kettoanso hov">
+  <div class="c fb btbl">Nội dung</div>
+  <div class="c fb btbl">Chi phí trước thuế</div>
+  <div class="c fb btbl">Thuế giá trị gia tăng</div>
+  <div class="c fb ba">Cộng</div>
+</div>
+<div class="grid kettoanso hov">
+  <div class="l bl">1. Cty Cp Cấp nước Thủ Đức đầu tư</div>
+  <div class="r bl">{{tienctytruocthue}}</div>
+  <div class="r bl">{{thuecty}}</div>
+  <div class="r fb brl">{{tienctyso}}</div>
+</div>
+<div class="grid kettoanso hov">
+  <div class="l bbl">2. Khách hàng đầu tư</div>
+  <div class="r bbl">{{tienkhachtruocthue}}</div>
+  <div class="r bbl">{{thuekhach}}</div>
+  <div class="r fb brbl">{{tienkhachso}}</div>
+</div>
+{% end %}
+{% if tiencty>0 %}
+<div class="grid kettoan2 hov">
+  <div class="l" style="padding-left:6pt">Kết toán chi phí Cấp nước Thủ Đức đầu tư:</div>
+  <div class="l fb">{{tienctyso}} VNĐ</div>
+  <div class="r fu" style="padding-right:3pt">Bằng chữ:</div>
+  <div class="l fb">{{tienctychu}}</div>
+</div>
+{% end %}
+{% if tienkhach>0 %}
+<div class="grid kettoan2 hov">
+  <div class="l" style="padding-left:6pt">Kết toán chi phí khách hàng đầu tư:</div>
+  <div class="l fb">{{tienkhachso}} VNĐ</div>
+  <div class="r fu" style="padding-right:3pt">Bằng chữ:</div>
+  <div class="l fb">{{tienkhachchu}}</div>
+</div>
+{% end %}

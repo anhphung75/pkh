@@ -1,8 +1,4 @@
-{% if len(cpxd)>0 %}
-{% set zone=f"oc-cpxd" %}
-{% for cp in cpxd %}
-{% set stt=cpxd.index(cp) %}
-{% set uid=f"{zone}{stt:03}" %}
+{% if cp %}
 <ol id='{{uid}}' class="grid bang hov">
   <li class="bl l {{zone}}">{{cp["mota"]}}</li>
   <li class="bl c {{zone}}">{{cp["dvt"]}}</li>
@@ -14,5 +10,4 @@
   <li class="bl r nc wb {{zone}}">{{cp["tiennc"]}}</li>
   <li class="brl r mtc wb {{zone}}">{{cp["tienmtc"]}}</li>
 </ol>
-{% end %}
 {% end %}

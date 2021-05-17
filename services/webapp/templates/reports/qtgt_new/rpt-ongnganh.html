@@ -1,0 +1,31 @@
+<div id="{{uid}}">
+  {% set pages=1 %}
+  <div class="A4doc">
+    <div class="trangin trang1">
+      <header>
+        {% set page=1 %}
+        {% module RptQtgt_Quochuy(ttdl.dvtc, ttdl.ngaylap) %}
+        {% module RptQtgt_Tieude(ttdl.tieude, ttdl.sohoso, ttdl.sodot, ttdl.khachhang, ttdl.diachigandhn) %}
+      </header>
+      <main>
+        {% module RptQtgt_PhuiTieude() %}
+        {% module RptQtgt_OngnganhCpxd(ttdl.on_cpxd) %}
+        {% module RptQtgt_OngnganhCpvt(ttdl.on_cpvt) %}
+        {% module RptQtgt_OngnganhCpvl(ttdl.on_cpvl) %}
+        {% module RptQtgt_PhuiTong(ttdl.onzvl,ttdl.onznc,ttdl.onzmtc) %}
+      </main>
+      {% if ttdl.cpqlid>=20200721 %}
+        {% module RptQtgt_Cpql_Nd68_2019(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung, ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat, ttdl.onzvlncmtc, ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung, ttdl.ongiantiepkhac, ttdl.ongiantiep, ttdl.ongiaxaydung, ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue, ttdl.onkhaosatthietke, ttdl.ongiamsat, ttdl.ontuvan, ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung, ttdl.ontongxaydung, ttdl.oncongtrinh, ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+      {% else %}
+        {% module RptQtgt_Cpql_Nd32_2015(ttdl.maubaocao, ttdl.vl, ttdl.nc, ttdl.mtc, ttdl.tructiepkhac, ttdl.chung, ttdl.giantiepkhac, ttdl.thutinhtruoc, ttdl.khaosat, ttdl.thietke, ttdl.giamsat, ttdl.onvl,ttdl.onnc,ttdl.onmtc,ttdl.onzvlncmtc, ttdl.ontructiepkhac, ttdl.ontructiep, ttdl.onchung, ttdl.ongiantiepkhac, ttdl.ongiantiep, ttdl.ongiaxaydung, ttdl.onthutinhtruoc, ttdl.onxaydungtruocthue, ttdl.onkhaosatthietke, ttdl.ongiamsat, ttdl.ontuvan, ttdl.ontongxaydungtruocthue, ttdl.onthuetongxaydung, ttdl.ontongxaydung, ttdl.oncongtrinh, ttdl.xaydung, ttdl.tailap, ttdl.congtrinh, ttdl.congtrinhtruocthue, ttdl.thuecongtrinh, ttdl.cptl) %}
+      {% end %}
+      <div class="keep w100">
+        {% module RptQtgt_Kettoan(ttdl.tiencty, ttdl.tienkhach) %}
+        {% module RptKyduyet3(ttdl.duyet,ttdl.kiemtra,ttdl.lapbang) %}
+      </div>
+      <footer>
+        {% module RptQtgt_Footer(ttdl.cpqlid, ttdl.mabaogia, ttdl.tt, page, pages) %}
+      </footer>
+    </div>
+  </div>
+</div>

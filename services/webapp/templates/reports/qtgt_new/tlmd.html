@@ -1,0 +1,31 @@
+<div class="grid tlmd">
+  <div class="l u fb bl c3 cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')">
+    PHẦN 2: TÁI LẬP MẶT ĐƯỜNG (CV số 327/BGTLMĐ ngày 01/04/2014)
+  </div>
+  <div class="r cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="l cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="l cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="r cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="r bl cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  <div class="c brl cptl00" onmouseover="hover_class_in('cptl00')" onmouseout="hover_class_out('cptl00')"> </div>
+  {% for cp in cptl %}
+    {% set uid=f"cptl-{cptl.index(cp):02}" %}
+    <div class="l bl {{uid}}" onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')">
+      {{cp['mota']}}
+    </div>
+    <div class="r {{uid}}" onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')">
+      {{cp['soluong']}}
+    </div>
+    <div class="c {{uid}}" onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')">
+      {{cp['dvt']}} x
+    </div>
+    <div class="r {{uid}}" onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')">
+      {{cp['gia']}}
+    </div>
+    <div class="r {{uid}}" onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"></div>
+    <div class="r bl {{uid}}" onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')">
+      {{cp['tien']}}
+    </div>
+    <div class="c brl {{uid}}" onmouseover="hover_class_in('{{uid}}')" onmouseout="hover_class_out('{{uid}}')"></div>
+  {% end %}
+</div>
