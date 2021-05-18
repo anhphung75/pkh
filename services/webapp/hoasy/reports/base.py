@@ -5,12 +5,15 @@ import tornado.web as web
 class Quochuy(web.UIModule):
     def render(self, ngaylap=20200904):
         # format so:
-        if ngaylap >= 20210207:
-            diachi = "08- Khổng Tử- P.Bình Thọ- Tp.Thủ Đức"
+        d=int(ngaylap)
+        print(f"ngayla={ngaylap} type={type(ngaylap)}")
+        if d >= 20210207:
+            khuvuc = 'Tp.Thủ Đức'
         else:
-            diachi = "08- Khổng Tử- P.Bình Thọ- Q.Thủ Đức"
-        ngaylap = f"{ngaylap}"
-        ngaylap = f"Thủ Đức, ngày {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
+            khuvuc = 'Q.Thủ Đức'
+        diachi = f"08- Khổng Tử- P.Bình Thọ- {khuvuc}"
+        s = str(ngaylap)
+        ngaylap = f"{khuvuc}, ngày {s[-2:]} tháng {s[-4:-2]} năm {s[:-4]}"
         return self.render_string(
             "reports/quochuy.html",
             ngaylap=ngaylap, diachi=diachi)

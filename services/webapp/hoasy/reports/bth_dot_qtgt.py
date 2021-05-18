@@ -7,11 +7,12 @@ class Dot(web.UIModule):
         uid = f"bth_dot_qtgt_{madot}"
         ngaylap = ttdl.ngaylap
         if ngaylap >= 20210207:
-            diachi = "08- Khổng Tử- P.Bình Thọ- Tp.Thủ Đức"
+            khuvuc = 'Tp.Thủ Đức'
         else:
-            diachi = "08- Khổng Tử- P.Bình Thọ- Q.Thủ Đức"
+            khuvuc = 'Q.Thủ Đức'
+        diachi = f"08- Khổng Tử- P.Bình Thọ- {khuvuc}"
         ngaylap = f"{ngaylap}"
-        ngaylap = f"Thủ Đức, ngày {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
+        ngaylap = f"{khuvuc}, ngày {ngaylap[-2:]} tháng {ngaylap[-4:-2]} năm {ngaylap[:-4]}"
         ztiencty = tachhangso(ttdl.ztiencty, 0)
         ztienkhach = tachhangso(ttdl.ztienkhach, 0)
         m = Tien(ttdl.zgxd)

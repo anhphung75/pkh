@@ -43,8 +43,8 @@ class Dulieu:
             return
         dl = dl[0]
         self.sodot = dl["sodot"]
-        self.ngaylap = dl["ngaylap"]
         self.dvtcid = dl["dvtcid"]
+        self.ngaylap = dl["ngaylap"]
 
     def tbl_donvithicong(self):
         sql = (
