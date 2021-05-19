@@ -1065,7 +1065,7 @@ class Upkho:
     def __init__(self, xac='pkh'):
         self.xac = xac
         self.kho = 'dbo'
-        self.tao()
+        # self.tao()
 
     def tao(self):
         self.dot()
@@ -1083,19 +1083,19 @@ class Upkho:
                 'madot', 'hop', 'nam', 'plqt', 'quy', 'sodot', 'nhathauid', 'ngaylendot', 'ngaydshc', 'ngaythicong',
                 'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt', 'dautucty', 'dautukhach',
                 'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'tinhtrang', 'tt',
-                'sophieunhap', 'sophieuxuat', 'tinhtrangqtvt']
+                'sophieunhap', 'sophieuxuat', 'tinhtrangqtvt', 'lastupdate']
         else:
             cs = [
                 'quy', 'ngaydshc', 'ngaythicong', 'khuvuc', 'tonghs', 'qt_tong', 'qt_ok', 'qt_tn', 'qt_thieu', 'trigiaqt',
                 'dautucty', 'dautukhach', 'trigianc', 'trigiavl', 'ngaylap', 'nguoilap', 'tinhtrang',
-                'sophieunhap', 'sophieuxuat', 'tinhtrangqtvt']
+                'sophieunhap', 'sophieuxuat', 'tinhtrangqtvt', 'lastupdate']
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
-            f"UPDATE s SET {','.join(du)},s.lastupdate=getdate(), "
-            f"s.ghichu=Case When s.ghichu=r.ghichu then s.ghichu "
+            f"UPDATE s SET {','.join(du)},"
+            f"s.ghichu=Case When CharIndex(r.ghichu,s.ghichu)>0 then s.ghichu "
             f"Else Concat(s.ghichu,r.ghichu) End, "
-            f"s.ghichuqtvt=Case When s.ghichuqtvt=r.ghichuqtvt then s.ghichuqtvt "
+            f"s.ghichuqtvt=Case When CharIndex(r.ghichuqtvt,s.ghichuqtvt)>0 then s.ghichuqtvt "
             f"Else Concat(s.ghichuqtvt,r.ghichuqtvt) End "
             f"FROM {self.kho}.dot s INNER JOIN {self.xac}.dot r ON s.madot=r.madot "
             f"WHERE s.lastupdate<r.lastupdate And s.tinhtrang not like '%fin%'; ")
@@ -1107,14 +1107,14 @@ class Upkho:
     def qtvt(self):
         cs = [
             'madot', 'maqtvt', 'tt', 'mavattu', 'chiphiid', 'dvt', 'ghichu',
-            'soluongcap', 'soluongsudung', 'soluongtainhap', 'soluongbosung']
+            'soluongcap', 'soluongsudung', 'soluongtainhap', 'soluongbosung', 'lastupdate']
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
-            f"UPDATE s SET {','.join(du)},s.lastupdate=getdate() "
+            f"UPDATE s SET {','.join(du)} "
             f"FROM ({self.kho}.qtvt s INNER JOIN {self.xac}.qtvt r ON s.maqtvt=r.maqtvt) "
             f"LEFT JOIN {self.kho}.dot dot ON s.madot=r.madot "
-            f"WHERE s.lastupdate<r.lastupdate And dot.tinhtrang not like '%fin%'; ")
+            f"WHERE s.lastupdate<r.lastupdate And dot.tinhtrangqtvt not like '%fin%'; ")
         try:
             db.core().execute(sql)
         except:
@@ -1123,7 +1123,7 @@ class Upkho:
     def qtgt(self):
         if self.xac in ['pkh', 'pna']:
             cs = [
-                'maqt', 'baogiaid', 'hesoid', 'plgia', 'madot', 'hosoid', 'tt', 'soho',
+                'lastupdate', 'maqt', 'baogiaid', 'hesoid', 'plgia', 'madot', 'hosoid', 'tt', 'soho',
                 'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
                 'gxd', 'dautucty', 'dautukhach', 'tinhtrang', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
                 'sodhn', 'hieudhn', 'chisodhn', 'madshc',
@@ -1134,7 +1134,7 @@ class Upkho:
                 'cptt', 'cong', 'thuevat', 'trigiaqtt', 'tinhtrangqtt']
         else:
             cs = [
-                'baogiaid', 'hesoid', 'plgia', 'tt', 'soho',
+                'lastupdate', 'baogiaid', 'hesoid', 'plgia', 'tt', 'soho',
                 'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
                 'gxd', 'dautucty', 'dautukhach', 'tinhtrang', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
                 'sodhn', 'hieudhn', 'chisodhn', 'madshc',
@@ -1145,11 +1145,11 @@ class Upkho:
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
-            f"UPDATE s SET {','.join(du)},s.lastupdate=getdate(), "
-            f"s.ghichu=Case When s.ghichu=r.ghichu then s.ghichu "
+            f"UPDATE s SET {','.join(du)},"
+            f"s.ghichu=Case When CharIndex(r.ghichu,s.ghichu)>0 then s.ghichu "
             f"Else Concat(s.ghichu,r.ghichu) End, "
-            f"s.ghichuqtt=Case When s.ghichuqtt=r.ghichuqtt then s.ghichuqtt "
-            f"Else Concat(s.ghichuqtt,r.ghichuqtt) End "
+            f"s.ghichuqtvt=Case When CharIndex(r.ghichuqtvt,s.ghichuqtvt)>0 then s.ghichuqtvt "
+            f"Else Concat(s.ghichuqtvt,r.ghichuqtvt) End "
             f"FROM {self.kho}.qt s INNER JOIN {self.xac}.qt r ON s.maqt=r.maqt "
             f"WHERE s.lastupdate<r.lastupdate And s.tinhtrang not like '%fin%'; ")
         try:
@@ -1159,25 +1159,32 @@ class Upkho:
 
     def qt3x(self, i=1):
         if i in [1, 2, 3, 4]:
-            cs = ['tt', 'maqt', 'maqtgt',  'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc',
+            cs = ['lastupdate', 'tt', 'maqt', 'maqtgt',  'chiphiid', 'soluong', 'giavl', 'gianc', 'giamtc',
                   'trigiavl', 'trigianc', 'trigiamtc']
         else:
-            cs = ['tt', 'maqt', 'maqtgt', 'chiphiid',
+            cs = ['lastupdate', 'tt', 'maqt', 'maqtgt', 'chiphiid',
                   'dongia', 'sl1', 'sl2', 'trigia1', 'trigia2']
         # update rec co san
         du = map(lambda k: f"s.{k}=r.{k}", cs)
         sql = (
-            f"UPDATE s SET {','.join(du)},s.lastupdate=getdate() "
+            f"UPDATE s SET {','.join(du)} "
             f"FROM ({self.kho}.qt3{i} s INNER JOIN {self.xac}.qt3{i} r ON s.maqtgt=r.maqtgt) "
             f"LEFT JOIN {self.kho}.qt qt ON qt.maqt=r.maqt "
             f"WHERE s.lastupdate<r.lastupdate And qt.tinhtrang not like '%fin%'; ")
         # add rec chua co
         cr = map(lambda k: f"r.{k}", cs)
         sql += (
-            f"INSERT INTO {self.kho}.qt3{i} ({','.join(cs)},lastupdate) "
-            f"SELECT {','.join(cr)},getdate() as lastupdate "
+            f"INSERT INTO {self.kho}.qt3{i} ({','.join(cs)}) "
+            f"SELECT {','.join(cr)} "
             f"FROM {self.xac}.qt3{i} r LEFT JOIN {self.kho}.qt3{i} s ON s.maqtgt=r.maqtgt "
             f"WHERE s.maqtgt Is Null ")
+        # xoa rec thua
+        sql += (
+            f"DELETE FROM {self.kho}.qt3{i} WHERE maqtgt IN (Select s.maqtgt "
+            f"FROM ({self.xac}.qt3{i} r RIGHT JOIN {self.kho}.qt3{i} s ON r.maqtgt = s.maqtgt) "
+            f"INNER JOIN {self.kho}.qt qt ON s.maqt = qt.maqt "
+            f"WHERE s.maqt In (Select maqt from {self.xac}.qt3{i} group by maqt) "
+            f"AND r.maqtgt Is Null AND qt.tinhtrang Not Like '*fin*'); ")
         try:
             db.core().execute(sql)
         except:
@@ -1296,6 +1303,6 @@ def updulieu():
 
 # Csdl("pkh")
 
-
-updulieu()
+Upkho("pkh").dot()
+# updulieu()
 # Qtgt("pkh").nap_qtgt()
