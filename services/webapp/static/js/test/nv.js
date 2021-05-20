@@ -52,7 +52,9 @@ const fn = {
     dl = fn.a2sl(dl);
     if (dl === '') return false;
     let v, k;
-    if (ma.constructor === Object) {
+    if (ma === null || ma === undefined) {
+      return true;
+    } else if (ma.constructor === Object) {
       for (k in ma) { if (!fn.tim(ma[k], dl)) return false; }
       return true;
     } else if (ma.constructor === Array) {

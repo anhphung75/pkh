@@ -5,8 +5,7 @@ import tornado.web as web
 class Quochuy(web.UIModule):
     def render(self, ngaylap=20200904):
         # format so:
-        d=int(ngaylap)
-        print(f"ngayla={ngaylap} type={type(ngaylap)}")
+        d = int(ngaylap)
         if d >= 20210207:
             khuvuc = 'Tp.Thủ Đức'
         else:

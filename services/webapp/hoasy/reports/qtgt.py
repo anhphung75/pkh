@@ -173,12 +173,8 @@ class Tlmd(web.UIModule):
         # markup cptl
         for cp in cptl:
             cp['gia'] = tachhangso(cp['gia'], 0)
-            if "oc" in maubaocao:
-                cp['soluong'] = tachhangso(cp["sl_oc"], 3)
-                cp['tien'] = tachhangso(cp["tien_oc"], 0)
-            else:
-                cp['soluong'] = tachhangso(cp["sl_on"], 3)
-                cp['tien'] = tachhangso(cp["tien_on"], 0)
+            cp['soluong'] = tachhangso(cp["sl_oc"]+cp["sl_on"], 3)
+            cp['tien'] = tachhangso(cp["tien_oc"]+cp["tien_on"], 0)
         return self.render_string(
             "reports/qtgt/tlmd.html",
             cptl=cptl)

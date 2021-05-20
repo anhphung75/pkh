@@ -15,7 +15,7 @@ class Dulieu:
         self.ngaygancuoi = 99990101
         self.hoso = None
         self.cpvl = None
-        self.cpong = None
+        self.cpong = []
         self.duyet = {'pbd': 'KT.GIÁM ĐÓC', 'chucvu': 'PHÓ GIÁM ĐỐC',
                       'nhanvien': 'Nguyễn Công Minh'}
         self.kiemtra = {'pbd': 'KẾ HOẠCH-VẬT TƯ-TỔNG HỢP',
@@ -29,7 +29,7 @@ class Dulieu:
         self.tbl_donvithicong()
         self.tinh_hoso()
         self.tinh_cpvl()
-        self.tinh_cpong()
+        # self.tinh_cpong()
         self.nhansu()
 
     def tbl_dot(self):
