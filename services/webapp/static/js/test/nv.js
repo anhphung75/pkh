@@ -36,7 +36,9 @@ const fn = {
   sval: (dl) => {
     let k, v,
       s = '';
-    if (dl.constructor === Object) {
+    if (dl === undefined || dl === null || dl === '') {
+      return '';
+    } else if (dl.constructor === Object) {
       for (k in dl) { s = s === '' ? fn.sval(dl[k]) : [s, fn.sval(dl[k])].join(' '); }
     } else if (dl.constructor === Array) {
       for (v of ma) { s = s === '' ? fn.sval(dl[k]) : [s, fn.sval(dl[k])].join(' '); }
