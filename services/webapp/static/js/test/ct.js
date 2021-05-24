@@ -3144,7 +3144,7 @@ const app = {
       cg3 = fn.a2i(cg3);
       if (cg3 > 3) return;
       idb.taodb();
-      idb.gom.cpx({otim:''}, 0);
+      idb.gom.cpx({ otim: '' }, 0);
       //cpx.wxem();
     } catch (err) {
       cg3 += 1;

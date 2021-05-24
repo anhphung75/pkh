@@ -133,7 +133,16 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select top 1 madot,ngaylap,isnull(plgia,'dutoan') as plgia,isnull(tt,1) as tt,"
+                f" isnull(dautucty,0) as tiencty, isnull(dautukhach,0) as tienkhach,isnull(gxd,0) as gxd,"
+                f" convert(datetime,baogiaid-2) as mabaogia,isnull(hesoid,0) as cpqlid,isnull(hosoid,0) as hosoid"
+                f" From dbo.qt qt"
+                f" Where (qt.maqt='{self.maqt}' And datalength(qt.madot)>0)"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         dl = dl[0]
         self.ngaylap = dl['ngaylap']
         self.gxd = dl['gxd']
@@ -220,7 +229,15 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+                f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+                f" From dbo.chiphi cp RIGHT JOIN dbo.qt31 qt ON cp.chiphiid=qt.chiphiid"
+                f" Where (qt.maqt='{self.maqt}' And datalength(cp.chiphiid)>0) Order By qt.maqtgt"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         # load gia
         # tinh tien
         for cp in dl:
@@ -246,7 +263,16 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,cp.mapl1 as plcp,"
+                f"isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc "
+                f"From dbo.chiphi cp RIGHT JOIN dbo.qt32 qt ON cp.chiphiid=qt.chiphiid "
+                f"Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0) "
+                f"Order By qt.maqtgt"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         # load gia
         # tinh tien
         for cp in dl:
@@ -272,7 +298,16 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+                f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+                f" From dbo.chiphi cp RIGHT JOIN dbo.qt32 qt ON cp.chiphiid=qt.chiphiid"
+                f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%' And datalength(cp.chiphiid)>0)"
+                f" Order By qt.maqtgt"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         # load gia
         # tinh tien
         for cp in dl:
@@ -297,7 +332,15 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+                f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+                f" From dbo.chiphi cp RIGHT JOIN dbo.qt33 qt ON cp.chiphiid=qt.chiphiid"
+                f" Where (qt.maqt='{self.maqt}' And datalength(cp.chiphiid)>0) Order By qt.maqtgt"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         # load gia
         # tinh tien
         for cp in dl:
@@ -323,7 +366,16 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,cp.mapl1 as plcp,"
+                f"isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc "
+                f"From dbo.chiphi cp RIGHT JOIN dbo.qt34 qt ON cp.chiphiid=qt.chiphiid "
+                f"Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VT%' And datalength(cp.chiphiid)>0) "
+                f"Order By qt.maqtgt"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         # load gia
         # tinh tien
         for cp in dl:
@@ -349,7 +401,16 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,isnull(qt.soluong,0) as soluong,"
+                f" isnull(qt.giavl,0) as giavl,isnull(qt.gianc,0) as gianc,isnull(qt.giamtc,0) as giamtc"
+                f" From dbo.chiphi cp RIGHT JOIN dbo.qt34 qt ON cp.chiphiid=qt.chiphiid"
+                f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'VL%' And datalength(cp.chiphiid)>0)"
+                f" Order By qt.maqtgt"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         # load gia
         # tinh tien
         for cp in dl:
@@ -375,7 +436,16 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select cp.chiphiid,cp.diengiai as mota,cp.dvt,"
+                f" isnull(qt.sl1,0) as sl_oc,isnull(qt.sl2,0) as sl_on,isnull(qt.dongia,0) as gia"
+                f" From dbo.chiphi cp RIGHT JOIN dbo.qt35 qt ON cp.chiphiid=qt.chiphiid"
+                f" Where (qt.maqt='{self.maqt}' And cp.mapl1 Like 'TL%' And datalength(cp.chiphiid)>0)"
+                f" Order By qt.maqtgt"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         # load gia
         # tinh tien
         cptl = []

@@ -959,6 +959,32 @@ class Qtgt:
             pass
 
 
+class Qtvt:
+    def __init__(self, xac='pkh'):
+        self.xac = xac
+        self.kho = 'dbo'
+
+    def nap_qtvt(self):
+        prog = f"{self.xac}.nap_qtvt"
+        sql = f"DROP PROC {prog}"
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+        sql = f"CREATE PROC {prog} WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+        # main prog
+
+        sql += f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
+        try:
+            db.core().execute(sql)
+        except:
+            pass
+
+
 class Qtgt_thau:
     def __init__(self, xac='pkh'):
         self.xac = xac

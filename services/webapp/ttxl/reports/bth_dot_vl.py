@@ -76,7 +76,7 @@ class Dulieu:
             f" From {self.schema}.qt r RIGHT JOIN dbo.hoso h ON r.hosoid=h.hosoid"
             f" Where (madot='{self.madot}' And datalength(ngaygan)>0"
             f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
-            f" Order By ngaygan"
+            f" Order By r.tt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):
@@ -149,8 +149,68 @@ class Dulieu:
             f") AS t ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid")
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1) or ("chiphiid" not in dl[0])):
-            self.cpvl = []
-            return
+            sql = (
+                f"SELECT t.chiphiid, t.giavl, t.hosoid, t.soluong, t.tt FROM ("
+                f"Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt "
+                f"From (dbo.qt32 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.chiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And qt.hesoid>=20200827 And cp.mapl1 Like 'VL%' "
+
+                f"UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt "
+                f"From (dbo.qt34 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.chiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And qt.hesoid>=20200827 And cp.mapl1 Like 'VL%' "
+
+                f"UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt "
+                f"From (dbo.qt31 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.chiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And qt.hesoid>=20200827 And cp.mapl1 Like 'VL%' "
+
+                f"UNION ALL Select r.chiphiid, isnull(r.giavl,0) as giavl, qt.hosoid, r.soluong, qt.tt "
+                f"From (dbo.qt33 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.chiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And qt.hesoid>=20200827 And cp.mapl1 Like 'VL%' "
+                # cpvl nd32
+                f"UNION ALL Select r.chiphiid,isnull(r.giavl,0) as giavl,qt.hosoid,r.soluong,qt.tt "
+                f"From (dbo.qt32 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.plchiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And qt.hesoid<20200827 And cp.phanloai='Cat' And cp.tinhtrang='Moi' "
+
+                f"UNION ALL Select r.chiphiid,isnull(r.giavl,0) as giavl,qt.hosoid,r.soluong,qt.tt "
+                f"From (dbo.qt34 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.plchiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And qt.hesoid<20200827 And cp.phanloai='Cat' And cp.tinhtrang='Moi' "
+
+                f"UNION ALL Select r.chiphiid,isnull(r.giavl,0) as giavl,qt.hosoid,r.soluong,qt.tt "
+                f"From (dbo.qt31 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.plchiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And qt.hesoid<20200827 And cp.phanloai='Cat' And cp.tinhtrang='Moi' "
+
+                f"UNION ALL Select r.chiphiid,isnull(r.giavl,0) as giavl,qt.hosoid,r.soluong,qt.tt "
+                f"From (dbo.qt33 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.plchiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And qt.hesoid<20200827 And cp.phanloai='Cat' And cp.tinhtrang='Moi'"
+                f") AS t ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid")
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1) or ("chiphiid" not in dl[0])):
+                self.cpvl = []
+                return
         tam = {}
         for r in dl:
             k = (r["chiphiid"], r["giavl"], r["hosoid"])
@@ -242,8 +302,41 @@ class Dulieu:
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1) or ("chiphiid" not in dl[0])):
-            self.cpong = []
-            return
+            sql = (
+                f"SELECT t.chiphiid, t.giavl, t.hosoid, t.soluong FROM ("
+                f"Select r.chiphiid,isnull(r.giavl,0) as giavl,qt.hosoid,r.soluong,qt.tt "
+                f"From (dbo.qt32 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.plchiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And cp.phanloai='Ong' And cp.tinhtrang='Moi' "
+
+                f"UNION ALL Select r.chiphiid,isnull(r.giavl,0) as giavl,qt.hosoid,r.soluong,qt.tt "
+                f"From (dbo.qt34 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.plchiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And cp.phanloai='Ong' And cp.tinhtrang='Moi' "
+
+                f"UNION ALL Select r.chiphiid,isnull(r.giavl,0) as giavl,qt.hosoid,r.soluong,qt.tt "
+                f"From (dbo.qt31 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.plchiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And cp.phanloai='Ong' And cp.tinhtrang='Moi' "
+
+                f"UNION ALL Select r.chiphiid,isnull(r.giavl,0) as giavl,qt.hosoid,r.soluong,qt.tt "
+                f"From (dbo.qt33 r LEFT JOIN dbo.qt qt ON qt.maqt=r.maqt) "
+                f"LEFT JOIN dbo.plchiphi cp ON cp.chiphiid=r.chiphiid "
+                f"Where qt.madot='{self.madot}' And r.soluong>0 "
+                f"And (qt.tinhtrang like 'ok%' Or qt.tinhtrang like 'fin%') "
+                f"And cp.phanloai='Ong' And cp.tinhtrang='Moi' "
+                f") AS t ORDER BY t.chiphiid,t.giavl,t.tt,t.hosoid"
+            )
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1) or ("chiphiid" not in dl[0])):
+                self.cpong = []
+                return
         tam = {}
         for r in dl:
             k = (r["chiphiid"], r["giavl"], r["hosoid"])
