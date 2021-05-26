@@ -880,9 +880,11 @@ class Qtgt:
         sql = f"CREATE PROC {prog} WITH ENCRYPTION AS BEGIN SET NOCOUNT ON BEGIN TRY "
         # load refs
         sql += (
-            f"Declare @Maqt NVARCHAR(255),@Status NVARCHAR(255); "
+            f"Declare @Maqt NVARCHAR(255),@Status NVARCHAR(255),@Maxtt INT; "
             f"Select Top 1 @Maqt=Isnull(maqt,''),@Status=Isnull(tinhtrang,'') From {self.xac}.tamqt; "
             f"IF (DataLength(@Maqt)<1) OR (@Status like '%fin%') OR (@Status like '%ok%') RETURN; "
+            f"Select @Maxtt=Isnull(MAX(tt),0) From {self.xac}.qt "
+            f"Where madot=(Select Top 1 madot From {self.xac}.tamqt);"
             f"IF OBJECT_ID('tempdb..#bdl') IS NOT NULL DROP TABLE #bdl; ")
         # init data
         cs = [
@@ -903,6 +905,7 @@ class Qtgt:
             f"WHEN MATCHED THEN UPDATE SET {','.join(du)},s.lastupdate=getdate(),s.tinhtrang=N'OK',s.inok=-1 "
             f"WHEN NOT MATCHED THEN INSERT ({','.join(cs)},lastupdate,tinhtrang) "
             f"VALUES ({','.join(cr)},getdate(),N'OK'); ")
+        sql += f"UPDATE {self.xac}.qt SET tt=Case When tt>0 Then tt Else @Maxtt+1 End WHERE maqt=@Maqt; "
         sql += f"END TRY BEGIN CATCH PRINT 'Error: ' + ERROR_MESSAGE(); END CATCH END;"
         try:
             db.core().execute(sql)

@@ -72,11 +72,11 @@ class Dulieu:
 
     def tinh_hoso(self):
         sql = (
-            f"Select r.ngaygan,r.hosoid,h.sohoso,h.khachhang,h.diachikhachhang"
-            f" From {self.schema}.qt r RIGHT JOIN dbo.hoso h ON r.hosoid=h.hosoid"
-            f" Where (madot='{self.madot}' And datalength(ngaygan)>0"
-            f" And (tinhtrang like 'ok%' or tinhtrang like 'fin%'))"
-            f" Order By r.tt"
+            f"Select r.ngaygan,r.hosoid,h.sohoso,h.khachhang,h.diachikhachhang "
+            f"From {self.schema}.qt r RIGHT JOIN dbo.hoso h ON r.hosoid=h.hosoid "
+            f"Where (r.madot='{self.madot}' And datalength(r.ngaygan)>0 "
+            f"And (r.tinhtrang like 'ok%' or r.tinhtrang like 'fin%')) "
+            f"Order By r.tt, r.ngaygan, r.maqt"
         )
         dl = runsql(sql)
         if ((dl == None) or (len(dl) < 1)):

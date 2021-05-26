@@ -252,6 +252,7 @@ class Rpt_Qtgt(WebBase):
         else:
             self.render("errors/404.html", error=None)
 
+
 class Rpt_Qtgt_new(WebBase):
     def get(self, schema):
         schema = schema.lower()
