@@ -476,11 +476,12 @@ class Qtgt:
             f"Set @Gxd=Isnull(CAST(@Gxd as DECIMAL(38,9)),0.0); "
             f"Declare @Maq INT=26,@Status NVARCHAR(255); ")
         # data init
-        refs = ['madot', 'hosoid', 'tt', 'soho', 'tinhtrang', 'ghichu',
+        refs = ['madot', 'hosoid', 'tt', 'soho', 'tinhtrang', 'ghichu', 'nguoilap', 'ngaylap',
+                #'ngaygan', 'ngayhoancong', 'sodhn', 'hieudhn', 'chisodhn', 'madshc',
                 'hesothauid', 'tinhtrangqtt', 'ghichuqtt']
-        cs = ['baogiaid', 'hesoid', 'plgia', 'sodhn', 'hieudhn', 'chisodhn', 'madshc',
-              'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
-              'gxd', 'dautucty', 'dautukhach', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
+        cs = ['baogiaid', 'hesoid', 'plgia',
+              'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh',
+              'gxd2kq1', 'gxd2kq2', 'gxd', 'dautucty', 'dautukhach',
               'tvlcai', 'tnccai', 'tmtccai', 'tvlnganh', 'tncnganh', 'tmtcnganh', 'tgxd1kq1', 'tgxd1kq2',
               'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
               'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
@@ -890,8 +891,8 @@ class Qtgt:
         cs = [
             'maqt', 'baogiaid', 'hesoid', 'plgia', 'madot', 'hosoid', 'tt', 'soho',
             'vlcai', 'nccai', 'mtccai', 'gxd1kq1', 'gxd1kq2', 'vlnganh', 'ncnganh', 'mtcnganh', 'gxd2kq1', 'gxd2kq2',
-            'gxd', 'dautucty', 'dautukhach', 'ghichu', 'nguoilap', 'ngaylap', 'ngaygan', 'ngayhoancong',
-            'sodhn', 'hieudhn', 'chisodhn', 'madshc',
+            'gxd', 'dautucty', 'dautukhach', 'ghichu', 'nguoilap', 'ngaylap',
+            # 'ngaygan', 'ngayhoancong', 'sodhn', 'hieudhn', 'chisodhn', 'madshc',
             'hesothauid', 'tvlcai', 'tnccai', 'tmtccai', 'tvlnganh', 'tncnganh', 'tmtcnganh', 'tgxd1kq1', 'tgxd1kq2',
             'sldh', 'dhn15', 'dhn25', 'dhn50', 'dhn80', 'dhn100',
             'slong', 'ong25', 'ong34', 'ong50', 'ong100', 'ong125', 'ong150', 'ong200', 'ong250',
@@ -1388,4 +1389,5 @@ def updulieu():
 
 # Upkho("pkh")
 updulieu()
+# Qtgt("pkh").nap_qtgt()
 # Qtgt("pkh").luu_qtgt()
