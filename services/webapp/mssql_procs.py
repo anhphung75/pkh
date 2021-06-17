@@ -1391,3 +1391,4 @@ def updulieu():
 updulieu()
 # Qtgt("pkh").nap_qtgt()
 # Qtgt("pkh").luu_qtgt()
+#Upkho("pkh")

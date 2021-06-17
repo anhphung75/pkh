@@ -78,17 +78,24 @@ class Dulieu:
 
     def tbl_qtvt(self):
         sql = (
-            f"Select isnull(tt,0) as tt, isnull(mavattu,'') as mavattu, isnull(tenvattu,'') as motacpvt,"
-            f" isnull(dvt,'') as dvt, isnull(soluongcap,0) as thuccap,isnull(soluongsudung,0) as sudung,"
-            f" isnull(soluongtainhap,0) as tainhap,isnull(soluongbosung,0) as bosung,"
-            f" isnull(ghichu,'') as ghichu"
-            f" From {self.schema}.qtvt"
-            f" Where (madot='{self.madot}' And datalength(chiphiid)>0) Order By maqtvt"
-        )
+            f"Select isnull(tt,0) as tt, isnull(qt.mavattu,cp.maso) as mavattu, isnull(qt.tenvattu,cp.diengiai) as motacpvt,"
+            f"isnull(qt.dvt,cp.dvt) as dvt, isnull(soluongcap,0) as thuccap,isnull(soluongsudung,0) as sudung,"
+            f"isnull(soluongtainhap,0) as tainhap,isnull(soluongbosung,0) as bosung,"
+            f"isnull(qt.ghichu,'') as ghichu "
+            f"From {self.schema}.qtvt qt LEFT JOIN dbo.chiphi cp ON qt.chiphiid=cp.chiphiid "
+            f"Where (madot='{self.madot}' And datalength(qt.chiphiid)>0) Order By maqtvt")
         dl = runsql(sql)
-        print(f"cpvt dl={dl}")
         if ((dl == None) or (len(dl) < 1)):
-            return
+            sql = (
+                f"Select isnull(tt,0) as tt, isnull(qt.mavattu,cp.maso) as mavattu, isnull(qt.tenvattu,cp.diengiai) as motacpvt,"
+                f"isnull(qt.dvt,cp.dvt) as dvt, isnull(soluongcap,0) as thuccap,isnull(soluongsudung,0) as sudung,"
+                f"isnull(soluongtainhap,0) as tainhap,isnull(soluongbosung,0) as bosung,"
+                f"isnull(qt.ghichu,'') as ghichu "
+                f"From dbo.qtvt qt LEFT JOIN dbo.chiphi cp ON qt.chiphiid=cp.chiphiid "
+                f"Where (madot='{self.madot}' And datalength(qt.chiphiid)>0) Order By maqtvt")
+            dl = runsql(sql)
+            if ((dl == None) or (len(dl) < 1)):
+                return
         self.cpvt = dl
 
     def nhansu(self):

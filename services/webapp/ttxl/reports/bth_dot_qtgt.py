@@ -38,21 +38,19 @@ class Dulieu:
         self.sua_khuvuc()
 
     def tao_chuoi_ngay(self, dngay):
-        kq = ""
         try:
-            snam = ""
-            for nam in sorted(dngay.keys()):
-                sthang = ""
-                for thang in sorted(dngay[nam].keys()):
-                    sngay = ""
-                    for ngay in sorted(dngay[nam][thang].keys()):
-                        sngay += f"-{ngay}"
-                    sthang += f"+ {sngay[1:]}/{int(thang):02}"
-                snam = f"+ {nam}({sthang[2:]})"
-            kq = snam[2:]
+            snam = []
+            for nam in sorted(dngay):
+                sthang = []
+                for thang in sorted(dngay[nam]):
+                    sngay = []
+                    for ngay in sorted(dngay[nam][thang]):
+                        sngay.append(f"{ngay}")
+                    sthang.append(f"{'-'.join(sngay)}/{int(thang):02}")
+                snam.append(f"{nam}({' + '.join(sthang)})")
         except:
             pass
-        return kq
+        return " + ".join(snam)
 
     def tbl_dot(self):
         sql = (
