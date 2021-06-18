@@ -29,6 +29,8 @@ from hoasy.reports import qtvt as rptqtvt
 from hoasy.reports import bth_dot_qtgt as rptbthqtgt
 from hoasy.reports import bth_dot_vl as rptbthvl
 
+from mssql_procs import updulieu
+
 # tornado.locale.set_default_locale('vi_VI')
 
 
@@ -201,6 +203,12 @@ class MainHandler(WebBase):
         self.render("base_vuejs3.html", error=None)
 
 
+class Db_Update(WebBase):
+    def get(self):
+        self.set_secure_cookie("pbd", "Ph0ngK3H0@ch")
+        updulieu
+
+
 class Test(WebBase):
     def get(self):
         self.set_secure_cookie("pbd", "Ph0ngK3H0@ch")
@@ -323,6 +331,7 @@ class WebApp(web.Application):
         handlers = [
             (r"/", MainHandler),
             (r"/test", Test),
+            (r"/pkh/api/capnhat", Db_Update),
             (r"/([^/]+)/api/hoso/([^/]+)", Api_Hoso_Rest),
             # api socket
             (r"/([^/]+)/wss/hoso", Wss_Hoso),

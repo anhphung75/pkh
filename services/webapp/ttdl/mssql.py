@@ -8,6 +8,7 @@ import json
 from sqlalchemy import create_engine, ForeignKey, inspect
 from sqlalchemy import Column, Sequence, func, desc
 from sqlalchemy import BigInteger, Unicode, Boolean
+from sqlalchemy.engine import URL
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.hybrid import hybrid_property, hybrid_method
@@ -373,9 +374,13 @@ class Server():
         self.pwd = pwd
         self.host = host
         self.dbname = dbname
-        self.cnnstr = (
-            f"mssql+pyodbc://{self.user}:{self.pwd}@{self.host}/{self.dbname}?"
-            f"driver=ODBC+Driver+17+for+SQL+Server")
+        cnn_str = (f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+                   f"SERVER={self.host};"
+                   f"DATABASE={self.dbname};"
+                   f"UID={self.user};"
+                   f"PWD={self.pwd}")
+        self.cnn_url = URL.create("mssql+pyodbc",
+                                  query={"odbc_connect": cnn_str})
 
     def core(self):
         try:
@@ -383,7 +388,7 @@ class Server():
             #    "DRIVER={FreeTDS};SERVER=mssql;Port:1433;DATABASE=master;UID=sa;PWD=w3b@pkh2019")
             # cnnstr = f"mssql+pyodbc:///?odbc_connect={params}"
             # cnnstr = f"sqlite:///:memory:"
-            engine = create_engine(self.cnnstr, echo=True)
+            engine = create_engine(self.cnn_url, echo=True)
             engine.execution_options(isolation_level="AUTOCOMMIT")
         except:
             return None
@@ -445,7 +450,7 @@ class Server():
 
 def runsql(sql=''):
     engine = Server("pkh.tctb", "123456789",
-                    "192.168.24.4:1433", "PKHData")
+                    "192.168.24.4,1433", "PKHData")
     try:
         kq = engine.core().execute(sql)
         data = []

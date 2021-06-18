@@ -2,7 +2,7 @@ import json
 from ttdl.mssql import Server
 
 
-db = Server("pkh", "Ph0ngK3H0@ch", "192.168.24.4:1433", "PKHData")
+db = Server("pkh", "Ph0ngK3H0@ch", "192.168.24.4,1433", "PKHData")
 # db.show_views()
 
 
