@@ -3,7 +3,7 @@
 ###########
 
 # pull official base image
-FROM ubuntu:18.04 as builder
+FROM ubuntu:20.10 as builder
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
@@ -39,7 +39,7 @@ RUN python3 -m pip wheel --wheel-dir /complier/wheels -r requirements.txt
 #########
 
 # pull official base image
-FROM ubuntu:18.04
+FROM ubuntu:20.10
 
 ENV DEBIAN_FRONTEND noninteractive
 ENV LANG C.UTF-8
@@ -55,7 +55,7 @@ RUN apt-get update && apt-get install -y --fix-missing --no-install-recommends \
 
 # install SQL Server drivers
 RUN curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add -
-RUN curl https://packages.microsoft.com/config/ubuntu/18.04/prod.list > /etc/apt/sources.list.d/mssql-release.list
+RUN curl https://packages.microsoft.com/config/ubuntu/20.10/prod.list > /etc/apt/sources.list.d/mssql-release.list
 RUN apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql17 locales \
   # update locale-gen for mssql
   && echo "en_US.UTF-8 UTF-8" > /etc/locale.gen \
