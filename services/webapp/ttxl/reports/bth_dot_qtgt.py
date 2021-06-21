@@ -47,7 +47,7 @@ class Dulieu:
                     for ngay in sorted(dngay[nam][thang]):
                         sngay.append(f"{ngay}")
                     sthang.append(f"{'-'.join(sngay)}/{int(thang):02}")
-                snam.append(f"{nam}({' + '.join(sthang)})")
+                snam.append(f"{nam}({'  + '.join(sthang)})")
         except:
             pass
         return " + ".join(snam)
