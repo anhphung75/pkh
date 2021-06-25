@@ -551,37 +551,73 @@ const hoso = {
 const qtgt = {
   cv: 0, zcv: 1,
   ztg: 777,
-  idma: 123,
+
   mau: { idma: 12345, maid: 12345, gxd: 0 },
-  tttt: {
-    maid: '2020.GMMP001.HC01.001',
-    oc_cpxd: { idma: 123, maid: 'kh001' },
-    oc_cpvt: { idma: 123, maid: 'kh001' },
-    oc_cpvl: { idma: 123, maid: 'kh001' },
-    oc_cptl: { idma: 123, maid: 'kh001' },
-    on_cpxd: { idma: 123, maid: 'kh001' },
-    on_cpvt: { idma: 123, maid: 'kh001' },
-    on_cpvl: { idma: 123, maid: 'kh001' },
-    on_cptl: { idma: 123, maid: 'kh001' },
-    cpql: { idma: 123, maid: 'kh001' },
+  d8n: {
+    idma: 123,
   },
-  ttdl: {
-    baogia: 20200827,
-    plgia: 'dutoan',
-    sodhn: 1,
-    gxd: 0,
-    tienkhach: 0,
-    tiencty: 0,
-    ngaylap: 20210101,
-    nguoilap: '',
+  d8s: {
+    idma: 123,
+    tttt: {
+      maid: '2020.GMMP001.HC01.001',
+      oc_cpxd: { idma: 123, maid: 'kh001' },
+      oc_cpvt: { idma: 123, maid: 'kh001' },
+      oc_cpvl: { idma: 123, maid: 'kh001' },
+      oc_cptl: { idma: 123, maid: 'kh001' },
+      on_cpxd: { idma: 123, maid: 'kh001' },
+      on_cpvt: { idma: 123, maid: 'kh001' },
+      on_cpvl: { idma: 123, maid: 'kh001' },
+      on_cptl: { idma: 123, maid: 'kh001' },
+      cpql: { idma: 123, maid: 'kh001' },
+    },
+    ttdl: {
+      baogia: 20200827,
+      plgia: 'dutoan',
+      sodhn: 1,
+      gxd: 0,
+      tienkhach: 0,
+      tienung: 0,
+      tiencty: 0,
+      ngaylap: 20210101,
+      nguoilap: '',
+    },
+    info: 'sua',
+    tjan: Date.now()
   },
-  //status: 'ok',
-  //lastupdate: Date.now()
-  mabaogia: (plgia = null, baogia = null) => {
-    plgia = fn.a2sl(plgia || qtgt.ttdl.plgia || qtgt.tttt.plgia);
-    baogia = fn.a2sl(baogia || qtgt.ttdl.baogia || qtgt.tttt.baogia);
-    qtgt.ttdl.plgia = plgia;
-    qtgt.ttdl.baogia = baogia;
+  d8l: {
+    idma: 123,
+    tttt: {
+      maid: '2020.GMMP001.HC01.001',
+      oc_cpxd: { idma: 123, maid: 'kh001' },
+      oc_cpvt: { idma: 123, maid: 'kh001' },
+      oc_cpvl: { idma: 123, maid: 'kh001' },
+      oc_cptl: { idma: 123, maid: 'kh001' },
+      on_cpxd: { idma: 123, maid: 'kh001' },
+      on_cpvt: { idma: 123, maid: 'kh001' },
+      on_cpvl: { idma: 123, maid: 'kh001' },
+      on_cptl: { idma: 123, maid: 'kh001' },
+      cpql: { idma: 123, maid: 'kh001' },
+    },
+    ttdl: {
+      baogia: 20200827,
+      plgia: 'dutoan',
+      sodhn: 1,
+      gxd: 0,
+      tienkhach: 0,
+      tienung: 0,
+      tiencty: 0,
+      ngaylap: 20210101,
+      nguoilap: '',
+    },
+    info: 'ok',
+    tjan: Date.now()
+  },
+
+  mabaogia: function (plgia = null, baogia = null) {
+    plgia = fn.a2sl(plgia || this.d8s.ttdl.plgia || this.d8n.ttdl.plgia);
+    baogia = fn.a2sl(baogia || this.d8s.ttdl.baogia || this.d8n.ttdl.baogia);
+    this.d8s.ttdl.plgia = plgia;
+    this.d8s.ttdl.baogia = baogia;
     return [plgia, baogia].join('.');
   },
   nap: (cg3 = 0) => {

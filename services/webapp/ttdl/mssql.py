@@ -153,7 +153,6 @@ class Mau(object):
     tttt = Column(Unicode())
     ttdl = Column(Unicode())
     info = Column(Unicode(50))
-    inok = Column(Boolean, default=False)
     tjan = Column(BigInteger,
                   default=int(arrow.utcnow().float_timestamp * 1000),
                   onupdate=int(arrow.utcnow().float_timestamp * 1000))
