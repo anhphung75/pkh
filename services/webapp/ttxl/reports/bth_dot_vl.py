@@ -82,11 +82,14 @@ class Dulieu:
         if ((dl == None) or (len(dl) < 1)):
             return
         self.hoso = {}
+        ngaygan = []
         for r in dl:
+            ngaygan.append(r['ngaygan'])
             self.hoso[r["hosoid"]] = {
                 "sohoso": r["sohoso"], "khachhang": r["khachhang"], "diachigandhn": r["diachikhachhang"]}
-        self.ngaygandau = dl[0]["ngaygan"]
-        self.ngaygancuoi = dl[-1]["ngaygan"]
+        ngaygan.sort()
+        self.ngaygandau = ngaygan[0]
+        self.ngaygancuoi = ngaygan[-1]
 
     def tinh_cpvl(self):
         sql = (

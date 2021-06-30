@@ -1381,7 +1381,7 @@ def updulieu():
     Upkho("pkh")
     Upxac('qlmlq2', 2021)
     Upxac('qlmltd', 2021)
-    Upxac('qlmltd', 2019)
+    #Upxac('qlmltd', 2019)
     Upxac('pkh', 2021)
 
 
